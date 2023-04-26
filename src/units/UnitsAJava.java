@@ -52,10 +52,6 @@ public class UnitTypes{
     //tank
     public static @EntityDef({Unitc.class, Tankc.class}) UnitType anagh, akshaj, amitojas, agnitejas, ayustejas
 
-    //region neoplasm
-
-    public static @EntityDef({Unitc.class, Crawlc.class}) UnitType latum, renale;
-
     //endregion
 
     public static void load(){
