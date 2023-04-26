@@ -14,6 +14,7 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
+
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -26,8 +27,9 @@ import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
+import mindustry.content.*;
 
-public class UnitsAjava {
+public class UnitsAJava {
     public static UnitType barrier;
     public static void load(){
 
