@@ -35,6 +35,7 @@ public static void load(){
         health = 140;
         canBoost = true;
         boostMultiplier = 1.5f;
+        constructor = MechUnit::create;
 
         abilities.add(new ShieldArcAbility(){{
             region = "aj-barrier-shield";
