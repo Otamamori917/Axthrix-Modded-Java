@@ -50,7 +50,7 @@ public class UnitTypes{
     public static @EntityDef({Unitc.class, WaterMovec.class}) UnitType ace, adept, maestro, doyen, demon;
 
     //tank
-    public static @EntityDef({Unitc.class, Tankc.class}) UnitType anagh, akshaj, amitojas, agnitejas, ayustejas
+    public static @EntityDef({Unitc.class, Tankc.class}) UnitType anagh, akshaj, amitojas, agnitejas, ayustejas;
 
     //endregion
 
