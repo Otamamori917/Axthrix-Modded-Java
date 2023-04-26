@@ -32,29 +32,63 @@ public class UnitTypes{
     //region standard
 
     //mech
-    public static @EntityDef({Unitc.class, Mechc.class}) UnitType barrier, blockade, pailsade, parapet, impediment;
+    public static ({Unitc.class, Mechc.class}) UnitType barrier, blockade, pailsade, parapet, impediment;
 
     //legs
-    public static @EntityDef({Unitc.class, Legsc.class}) UnitType anwir, azalea;
+    public static ({Unitc.class, Legsc.class}) UnitType anwir, azalea;
 
     //hover unused
-    //public static @EntityDef({Unitc.class, ElevationMovec.class}) UnitType ;
+    //public static ({Unitc.class, ElevationMovec.class}) UnitType ;
 
     //air
-    public static @EntityDef({Unitc.class}) UnitType spark, bolt, crack, thunder, lightning, da, da2, dh, dh2, bijou, bijoux, ambrosia;
+    public static ({Unitc.class}) UnitType spark, bolt, crack, thunder, lightning, da, da2, dh, dh2, bijou, bijoux, ambrosia;
 
     //payload unused
-    //public static @EntityDef({Unitc.class, Payloadc.class}) UnitType ;
+    //public static ({Unitc.class, Payloadc.class}) UnitType ;
 
     //naval
-    public static @EntityDef({Unitc.class, WaterMovec.class}) UnitType ace, adept, maestro, doyen, demon;
+    public static ({Unitc.class, WaterMovec.class}) UnitType ace, adept, maestro, doyen, demon;
 
     //tank
-    public static @EntityDef({Unitc.class, Tankc.class}) UnitType anagh, akshaj, amitojas, agnitejas, ayustejas;
+    public static ({Unitc.class, Tankc.class}) UnitType anagh, akshaj, amitojas, agnitejas, ayustejas;
 
     //endregion
 
     public static void load(){
+
+        barrier = new UnitType("barrier"){{
+            speed = 0.55f;
+            hitSize = 6f;
+            health = 140;
+            canBoost = true;
+            boostMultiplier = 1.5f;
+
+            abilities.add(new ShieldArcAbility(){{
+                region = "aj-barrier-shield";
+                radius = 34f;
+                angle = 82f;
+                regen = 0.4f;
+                cooldown = 150f;
+                max = 400f;
+                width = 6f;
+            }});
+
+            weapons.add(new PointDefenseWeapon("1-point-defense"){{
+                mirror = false;
+                x = 0f;
+                y = 0f;
+                reload = 9f;
+                targetInterval = 10f;
+                targetSwitchInterval = 15f;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 100f;
+                    damage = 17f;
+                }};
+            }});
+        }};
 
     }
 }
