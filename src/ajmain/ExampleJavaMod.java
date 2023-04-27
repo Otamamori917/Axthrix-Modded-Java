@@ -30,7 +30,7 @@ public class ExampleJavaMod extends Mod{
 
     @Override
     public void loadContent(){
-        UnitsAJava.load();
+        import ajmain.content.UnitsAJava;
         Log.info("Loading content.");
     }
 
