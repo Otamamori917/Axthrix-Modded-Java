@@ -8,7 +8,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
-import ajmain.UnitsAJava;
+import ajmain.content.UnitsAJava;
 
 public class ExampleJavaMod extends Mod{
 
