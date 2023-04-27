@@ -10,20 +10,20 @@ import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 import ajmain.units.UnitsAJava;
 
-public class ExampleJavaMod extends Mod{
+public class starter extends Mod{
 
-    public ExampleJavaMod(){
-        Log.info("Loaded ExampleJavaMod constructor.");
+    public starter(){
+        Log.info("Loaded  constructor.");
 
         //listen for game load event
         Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
             Time.runTask(10f, () -> {
-                BaseDialog dialog = new BaseDialog("frog");
-                dialog.cont.add("behold").row();
+                BaseDialog dialog = new BaseDialog("welcome");
+                dialog.cont.add("welcome to Axthrix this mod is still in development so expect bugs").row();
                 //mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
-                dialog.cont.image(Core.atlas.find("example-java-mod-frog")).pad(20f).row();
-                dialog.cont.button("I see", dialog::hide).size(100f, 50f);
+                dialog.cont.image(Core.atlas.find("aj-icon")).pad(20f).row();
+                dialog.cont.button("okay", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
         });
