@@ -31,7 +31,7 @@ public class ExampleJavaMod extends Mod{
 
     @Override
     public void loadContent(){
-        new UnitsAJava.load();
+        new UnitsAJava().load();
         Log.info("Loading content.");
     }
 
