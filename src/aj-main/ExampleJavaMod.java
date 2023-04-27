@@ -1,4 +1,4 @@
-package AJMain.ExampleJavaMod;
+package aj-main.ExampleJavaMod;
 
 import arc.*;
 import arc.util.*;

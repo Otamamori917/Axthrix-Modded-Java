@@ -8,7 +8,7 @@ name: "aj"
 author: "Otamamori"
 
 #the fully qualified main class of the mod
-main: "AJMain.ExampleJavaMod"
+main: "aj-main.ExampleJavaMod"
 
 #the mod description as seen in the mod dialog
 description: "A java version of Axthrix Modded."
