@@ -155,7 +155,7 @@ public class UnitsAJava {
                 reload = Mathf.random(25,35);
                 inaccuracy = 20;
                 shoot.shots = 4;
-                shoot.shotDelay = 10;
+                shoot.shotDelay = Mathf.random(40,50);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
@@ -168,11 +168,12 @@ public class UnitsAJava {
                 }};
             }});
 
-                weapons.add(new PointDefenseWeapon("aj-2-point-def"){{
+                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
                 mirror = true;
+                alternate = false;
                 x = 2f;
                 y = -1f;
-                reload = 9f;
+                reload = 8f;
                 targetInterval = 10f;
                 targetSwitchInterval = 15f;
 
