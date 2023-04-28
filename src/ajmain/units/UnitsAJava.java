@@ -152,10 +152,10 @@ public class UnitsAJava {
                 mirror = true;
                 alternate = false;
                 top = false;
-                reload = Mathf.random(25,35);
+                reload = 20;
                 inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(50,60);
+                shoot.shotDelay = Mathf.random(40,60);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
