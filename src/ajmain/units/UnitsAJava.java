@@ -43,7 +43,7 @@ public class UnitsAJava {
 
             abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
 
-             weapons.add(new PointDefenseWeapon("-point-def"){{
+             weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
                 mirror = false;
                 x = 0f;
                 y = 0f;
@@ -71,16 +71,16 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 34f;
-                angle = 82f;
-                regen = 0.4f;
-                cooldown = 150f;
-                max = 400f;
-                width = 6f;
-                y = -6f;
+                radius = 50f;
+                angle = 50f;
+                regen = 0.6f;
+                cooldown = 200f;
+                max = 600f;
+                width = 8f;
+                y = -20f;
             }});
 
-             weapons.add(new Weapon("-grs"){{
+             weapons.add(new Weapon("aj-blockade-grs"){{
                 shootSound = Sounds.missile;
                 x = 6;
                 y = 1;
@@ -99,6 +99,20 @@ public class UnitsAJava {
                     collidesTeam = true;
                     backColor = Pal.heal;
                     frontColor = Color.white;
+                }};
+                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
+                mirror = false;
+                x = 0f;
+                y = 0f;
+                reload = 9f;
+                targetInterval = 10f;
+                targetSwitchInterval = 15f;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 100f;
+                   damage = 17f;
                 }};
             }});
         }};
