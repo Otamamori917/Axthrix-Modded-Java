@@ -39,7 +39,7 @@ public class UnitsAJava {
            health = 140;
            canBoost = true;
            boostMultiplier = 1.5f;
-           constructor = MechUnit.create();
+           constructor = MechUnit::create;
 
             abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
 
@@ -67,7 +67,7 @@ public class UnitsAJava {
            health = 140;
            canBoost = true;
            boostMultiplier = 1.5f;
-           constructor = MechUnit.create();
+           constructor = MechUnit::create;
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
