@@ -39,7 +39,7 @@ public class UnitsAJava {
            health = 140;
            canBoost = true;
            boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
+           constructor = MechUnit = =create;
 
             abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
 
@@ -67,7 +67,7 @@ public class UnitsAJava {
            health = 140;
            canBoost = true;
            boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
+           constructor = MechUnit = =create;
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
@@ -81,24 +81,24 @@ public class UnitsAJava {
             }});
 
              weapons.add(new Weapon("-grs"){{
-                shootSound: Sounds.missile
-                x: 6f;
-                y: 1f;
-                mirror: true;
-                top: false;
-                reload: 40f;
-                inaccuracy: 20f;
-                shoot.shots = 3f;
-                shoot.shotDelay = 5f;  
+                shootSound = Sounds.missile
+                x = 6;
+                y = 1;
+                mirror = true;
+                top = false;
+                reload = 40;
+                inaccuracy = 20;
+                shoot.shots = 3;
+                shoot.shotDelay = 5;  
 
                 bullet = new MissileBulletType(2f, 9){{
-                    damage: 8f;
-                    lifetime: 100f;
-                    speed: 3f;
-                    healPercent: 1f;
-                    collidesTeam: true;
-                    backColor: 98FF98;
-                    frontColor: FFFFFF;
+                    damage = 8;
+                    lifetime = 100;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
                 }};
             }});
         }};
