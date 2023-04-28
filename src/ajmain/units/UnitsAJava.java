@@ -49,6 +49,7 @@ public class UnitsAJava {
                 cooldown = 150f;
                 max = 400f;
                 width = 6f;
+                y = -6f;
             }});
 
              weapons.add(new PointDefenseWeapon("1-point-def"){{
