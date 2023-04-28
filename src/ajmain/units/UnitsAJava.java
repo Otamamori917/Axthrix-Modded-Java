@@ -100,22 +100,23 @@ public class UnitsAJava {
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};
-                    weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
-                    mirror = false;
-                    x = 0f;
-                    y = 0f;
-                    reload = 9f;
-                    targetInterval = 10f;
-                    targetSwitchInterval = 15f;
+            }});
+            
+                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
+                mirror = false;
+                x = 0f;
+                y = 0f;
+                reload = 9f;
+                targetInterval = 10f;
+                targetSwitchInterval = 15f;
 
-                    bullet = new BulletType(){{
-                        shootEffect = Fx.sparkShoot;
-                        hitEffect = Fx.pointHit;
-                        maxRange = 100f;
-                        damage = 17f;
-                    }};
-                }});
-            }};
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 100f;
+                    damage = 17f;
+                }};
+            }});
         }};    
     }
 }    
