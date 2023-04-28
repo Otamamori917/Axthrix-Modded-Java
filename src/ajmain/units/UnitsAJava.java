@@ -152,7 +152,7 @@ public class UnitsAJava {
                 mirror = true;
                 alternate = false;
                 top = false;
-                reload = Math.random(25,35);
+                reload = Mathf.random(25,35);
                 inaccuracy = 20;
                 shoot.shots = 4;
                 shoot.shotDelay = 10;
