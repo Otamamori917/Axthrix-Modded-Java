@@ -145,7 +145,7 @@ public class UnitsAJava {
                 y = -20f;
             }});
 
-             weapons.add(new Weapon("aj-reapeater"){{
+             weapons.add(new Weapon("aj-repeater"){{
                 shootSound = Sounds.blaster;
                 x = 7;
                 y = 1;
@@ -153,9 +153,9 @@ public class UnitsAJava {
                 alternate = false;
                 top = false;
                 reload = Mathf.random(25,35);
-                inaccuracy = 20;
+                inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(40,50);
+                shoot.shotDelay = Mathf.random(50,60);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
