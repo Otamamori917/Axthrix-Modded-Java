@@ -41,18 +41,9 @@ public class UnitsAJava {
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
-            abilities.add(new ShieldArcAbility(){{
-                region = "aj-barrier-shield";
-                radius = 34f;
-                angle = 82f;
-                regen = 0.4f;
-                cooldown = 150f;
-                max = 400f;
-                width = 6f;
-                y = -6f;
-            }});
+            abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
 
-             weapons.add(new PointDefenseWeapon("1-point-def"){{
+             weapons.add(new PointDefenseWeapon("-point-def"){{
                 mirror = false;
                 x = 0f;
                 y = 0f;
@@ -65,6 +56,49 @@ public class UnitsAJava {
                     hitEffect = Fx.pointHit;
                     maxRange = 100f;
                    damage = 17f;
+                }};
+            }});
+        }};
+
+
+        blockade = new UnitType("blockade"){{
+           speed = 0.55f;
+           hitSize = 6f;
+           health = 140;
+           canBoost = true;
+           boostMultiplier = 1.5f;
+           constructor = MechUnit::create;
+
+            abilities.add(new ShieldArcAbility(){{
+                region = "aj-blockade-shield";
+                radius = 34f;
+                angle = 82f;
+                regen = 0.4f;
+                cooldown = 150f;
+                max = 400f;
+                width = 6f;
+                y = -6f;
+            }});
+
+             weapons.add(new Weapon("-grs"){{
+                shootSound: Sounds.missile
+                x: 6f;
+                y: 1f;
+                mirror: true;
+                top: false;
+                reload: 40f;
+                inaccuracy: 20f;
+                shoot.shots = 3f;
+                shoot.shotDelay = 5f;  
+
+                bullet = new MissileBulletType(2f, 9){{
+                    damage: 8f;
+                    lifetime: 100f;
+                    speed: 3f;
+                    healPercent: 1f;
+                    collidesTeam: true;
+                    backColor: 98FF98;
+                    frontColor: FFFFFF;
                 }};
             }});
         }};
