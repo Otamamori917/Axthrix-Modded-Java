@@ -32,6 +32,9 @@ import mindustry.content.*;
 public class UnitsAJava {
     public static UnitType barrier;
     public static UnitType blockade;
+    public static UnitType palisade;
+    public static UnitType parapet;
+    public static UnitType impediment;
     public static void load(){
         UnitType barrier = new UnitType("barrier"){{
            speed = 0.55f;
@@ -59,6 +62,8 @@ public class UnitsAJava {
                 }};
             }});
         }};
+
+
 
 
         UnitType blockade = new UnitType("blockade"){{
@@ -101,7 +106,7 @@ public class UnitsAJava {
                     frontColor = Color.white;
                 }};
             }});
-            
+
                 weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
                 mirror = false;
                 x = 0f;
@@ -117,6 +122,67 @@ public class UnitsAJava {
                     damage = 17f;
                 }};
             }});
-        }};    
+        }}; 
+
+
+
+        UnitType palisade = new UnitType("palisade"){{
+           speed = 0.55f;
+           hitSize = 6f;
+           health = 140;
+           canBoost = true;
+           boostMultiplier = 1.5f;
+           constructor = MechUnit::create;
+
+            abilities.add(new ShieldArcAbility(){{
+                region = "aj-palisade-shield";
+                radius = 50f;
+                angle = 50f;
+                regen = 0.6f;
+                cooldown = 200f;
+                max = 600f;
+                width = 8f;
+                y = -20f;
+            }});
+
+             weapons.add(new Weapon("aj-reapeater"){{
+                shootSound = Sounds.blaster;
+                x = 7;
+                y = 1;
+                mirror = true;
+                alternate = false;
+                top = false;
+                reload = 30;
+                inaccuracy = 20;
+                shoot.shots = 4;
+                shoot.shotDelay = Math.random(5,15)  
+
+                bullet = new LaserBoltBulletType(2f, 9){{
+                    damage = 20;
+                    lifetime = 60;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
+                }};
+            }});
+
+                weapons.add(new PointDefenseWeapon("aj-2-point-def"){{
+                mirror = true;
+                x = 2f;
+                y = -1f;
+                reload = 9f;
+                targetInterval = 10f;
+                targetSwitchInterval = 15f;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 100f;
+                    damage = 17f;
+                }};
+            }});
+        }}; 
     }
 }    
