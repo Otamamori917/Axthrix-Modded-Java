@@ -51,7 +51,7 @@ public class UnitsAJava {
                 width = 6f;
             }});
 
-             weapons.add(new PointDefenseWeapon("1-point-defense"){{
+             weapons.add(new PointDefenseWeapon("1-point-def"){{
                 mirror = false;
                 x = 0f;
                 y = 0f;
