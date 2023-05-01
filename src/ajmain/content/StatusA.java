@@ -7,10 +7,11 @@ import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.content.*;
 
 import static mindustry.Vars.*;
 
-public class StatusEffects{
+public class StatusEffects {
     public static StatusEffect turteI, turteII, turteIII;
 
     public static void load(){
