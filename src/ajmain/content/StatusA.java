@@ -9,19 +9,19 @@ public class StatusA {
     public static void load(){
 
 
-        turteI = new StatusEffect("Turteℐ"){{
+        turteI = new StatusEffect("TurteI"){{
             color = Pal.heal;
             healthMultiplier = 1.25f;
             speedMultiplier = 0.80f;
         }};
 
-        turteII = new StatusEffect("Turteℐℐ"){{
+        turteII = new StatusEffect("TurteII"){{
             color = Pal.heal;
             healthMultiplier = 2.50f;
             speedMultiplier = 0.40f;
         }}; 
 
-        turteIII = new StatusEffect("Turteℐℐℐ"){{
+        turteIII = new StatusEffect("TurteIII"){{
             color = Pal.heal;
             healthMultiplier = 5f;
             speedMultiplier = 0.20f;
