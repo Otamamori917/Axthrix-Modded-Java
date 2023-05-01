@@ -11,7 +11,7 @@ import mindustry.content.*;
 
 import static mindustry.Vars.*;
 
-public class StatusEffects {
+public class StatusEffect {
     public static StatusEffect turteI, turteII, turteIII;
 
     public static void load(){
