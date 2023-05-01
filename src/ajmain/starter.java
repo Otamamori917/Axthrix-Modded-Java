@@ -8,7 +8,8 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
-import ajmain.units.UnitsAJava;
+import ajmain.UnitsAJava;
+import ajmain.StatusA;
 
 public class starter extends Mod{
 
@@ -32,6 +33,7 @@ public class starter extends Mod{
     @Override
     public void loadContent(){
         new UnitsAJava().load();
+        new StatusA().load();
         Log.info("Loading content.");
     }
 

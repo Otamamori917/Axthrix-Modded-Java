@@ -30,12 +30,11 @@ import static mindustry.Vars.*;
 import mindustry.content.*;
 
 public class UnitsAJava {
-    public static UnitType barrier;
-    public static UnitType blockade;
-    public static UnitType palisade;
-    public static UnitType parapet;
-    public static UnitType impediment;
+    public static UnitType barrier, blockade, palisade, parapet, impediment;
+    
     public static void load(){
+
+
         UnitType barrier = new UnitType("barrier"){{
            speed = 0.55f;
            hitSize = 6f;
@@ -83,6 +82,8 @@ public class UnitsAJava {
                 max = 600f;
                 width = 8f;
                 y = -20f;
+                whenShooting = false;
+                offsetRegion = true;
             }});
 
              weapons.add(new Weapon("aj-blockade-grs"){{
@@ -126,6 +127,7 @@ public class UnitsAJava {
 
 
 
+
         UnitType palisade = new UnitType("palisade"){{
            speed = 0.55f;
            hitSize = 6f;
@@ -141,6 +143,8 @@ public class UnitsAJava {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
+                whenShooting = false;
+                offsetRegion = true;
                 width = 8f;
                 y = -20f;
             }});
@@ -155,7 +159,72 @@ public class UnitsAJava {
                 reload = 20;
                 inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(40,60);
+                shoot.shotDelay = Mathf.random(30,80);
+
+                bullet = new LaserBoltBulletType(2f, 9){{
+                    damage = 20;
+                    lifetime = 60;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
+                }};
+            }});
+
+                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
+                mirror = true;
+                alternate = false;
+                x = 2f;
+                y = -1f;
+                reload = 8f;
+                targetInterval = 10f;
+                targetSwitchInterval = 15f;
+
+                bullet = new BulletType(){{
+                    shootEffect = Fx.sparkShoot;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 100f;
+                    damage = 17f;
+                }};
+            }});
+        }}; 
+
+
+
+
+        UnitType parapet = new UnitType("parapet"){{
+           speed = 0.55f;
+           hitSize = 6f;
+           health = 140;
+           canBoost = true;
+           boostMultiplier = 1.5f;
+           constructor = MechUnit::create;
+
+            abilities.add(new ShieldArcAbility(){{
+                region = "aj-parapet-shield";
+                radius = 50f;
+                angle = 50f;
+                regen = 0.6f;
+                cooldown = 200f;
+                max = 600f;
+                width = 8f;
+                y = -20f;
+                offsetRegion = true;
+            }});
+
+             weapons.add(new Weapon("aj-repeater"){{
+                shootStatus:
+                shootSound = Sounds.blaster;
+                x = 7;
+                y = 1;
+                mirror = true;
+                alternate = false;
+                top = false;
+                reload = 20;
+                inaccuracy = 1;
+                shoot.shots = 4;
+                shoot.shotDelay = Mathf.random(30,80);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
