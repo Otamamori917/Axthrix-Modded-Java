@@ -1,4 +1,4 @@
-package mindustry.content;
+package ajmain.content;
 
 import arc.*;
 import arc.graphics.*;

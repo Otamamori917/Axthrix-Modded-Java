@@ -1,4 +1,4 @@
-package ajmain.units;
+package ajmain.content;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
