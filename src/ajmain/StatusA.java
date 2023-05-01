@@ -20,21 +20,18 @@ public class StatusEffects{
             color = Pal.heal;
             healthMultiplier = 1.25f;
             speedMultiplier = 0.80f;
-            effectChance: 0.08f;
         }};
 
         turteII = new StatusEffect("TurteII"){{
             color = Pal.heal;
             healthMultiplier = 2.50f;
             speedMultiplier = 0.40f;
-            effectChance: 0.04f;
         }}; 
 
         turteIII = new StatusEffect("TurteIII"){{
             color = Pal.heal;
             healthMultiplier = 5f;
             speedMultiplier = 0.20f;
-            effectChance: 0.02f;
         }};     
     }
 }        
