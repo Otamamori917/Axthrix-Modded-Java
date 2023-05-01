@@ -8,8 +8,8 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
-import ajmain.UnitsAJava;
-import ajmain.StatusA;
+import ajmain.content.UnitsAJava;
+import ajmain.content.StatusA;
 
 public class starter extends Mod{
 
@@ -34,7 +34,7 @@ public class starter extends Mod{
     public void loadContent(){
         new UnitsAJava().load();
         new StatusA().load();
-        Log.info("Loading content.");
+        Log.info("Axthrix Content Loaded. :)");
     }
 
 }
