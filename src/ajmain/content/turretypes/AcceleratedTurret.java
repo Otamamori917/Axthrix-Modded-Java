@@ -23,12 +23,12 @@ public class AcceleratedTurret extends ItemTurret{
     public final int boostTimer = timers++;
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
     
-    public AcceleratedTurret(string name){
+    public AcceleratedTurret(){
         super(name);
     }
 
     public class AcceleratedTurretBuild extends ItemTurretBuild{
-        public float boost;
+        public float accelBoost;
 
         @Override
         public void updateTile(){
