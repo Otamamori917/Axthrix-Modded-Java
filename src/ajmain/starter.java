@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
-import ajmain.content.turretypes.AcceleratedTurret;
+import ajmain.content.turretypes.acceleratedTurret;
 import ajmain.content.UnitsAJava;
 import ajmain.content.StatusA;
 
@@ -34,7 +34,7 @@ public class starter extends Mod{
 
     @Override
     public void loadContent(){
-        new AcceleratedTurret().load();
+        new acceleratedTurret().load();
         new StatusA().load();
         new UnitsAJava().load();
         Log.info("Axthrix Content Loaded. :)");
