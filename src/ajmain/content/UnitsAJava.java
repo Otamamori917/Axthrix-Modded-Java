@@ -83,7 +83,7 @@ public class UnitsAJava {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f
+                width = 8f;
                 whenShooting = false;
             }});
 
@@ -209,7 +209,8 @@ public class UnitsAJava {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f            }});
+                width = 8f;            
+            }});
 
              weapons.add(new Weapon("aj-obilvion"){{
                 shootSound = Sounds.blaster;
