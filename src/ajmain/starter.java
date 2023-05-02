@@ -34,7 +34,7 @@ public class starter extends Mod{
 
     @Override
     public void loadContent(){
-        new AcceleratedTurret().load();
+        new AcceleratedTurretA().load();
         new StatusA().load();
         new UnitsAJava().load();
         Log.info("Axthrix Content Loaded. :)");
