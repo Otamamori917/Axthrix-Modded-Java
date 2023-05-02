@@ -21,14 +21,20 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class AcceleratedTurret extends ItemTurret{
-    public float accelerated = true, acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
 
     public AcceleratedTurret(String name){
         super(name);
 
-        
+        @Override
+        protected void updateShooting(){
+            if(!hasAmmo()) return;
 
+            act = Mathf.wait(act, acceleratedDelay(), peekAmmo().reloadMultiplier = acceleratedBonus);
 
-        
+            BulletType type = peekAmmo();
+
+            shoot(type);
+        }
     }
 }
