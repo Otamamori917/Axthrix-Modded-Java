@@ -31,7 +31,7 @@ public class StatusA {
 
         
         precludedX = new StatusEffect("precludedX"){{
-            color = Color.valueOf("8B4000");
+            color = Color.royal;
             speedMultiplier = 0.01f;
             buildSpeedMultiplier = 0f;
             reloadMultiplier = 4f;
@@ -42,7 +42,7 @@ public class StatusA {
         }};
 
         precludedA = new StatusEffect("precludedA"){{
-            color = Color.valueOf("8B4000");
+            color = Color.royal;
             speedMultiplier = 4f;
             buildSpeedMultiplier = 4f;
             disarm = true;
