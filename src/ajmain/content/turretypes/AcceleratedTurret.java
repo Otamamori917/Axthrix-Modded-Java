@@ -35,21 +35,18 @@ public class AcceleratedTurret extends ItemTurret{
             super.updateTile();
 
             if(isShooting()){
-                if(timer.get(boostTimer, acceleratedDelay)) boost = acceleratedBonus;
+                if(timer.get(boostTimer, acceleratedDelay)) accelBoost = acceleratedBonus;
             }else{
-                boost = 1;
+                accelBoost = 1;
             }
         }
 
-        protected void updateShooting(){
+        protected void updateReload(){
+            float accelBoost = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+            reloadCounter += delta() * accelBoost * baseReloadSpeed();
 
-            if(reloadCounter >= reload && acceleratedBonus){
-                BulletType type = peekAmmo();
-
-                shoot(type);
-
-                reloadCounter %= reload;
-            }
+            //cap reload for visual reasons
+            reloadCounter = Math.min(reloadCounter, reload);
         }
     }
 }
