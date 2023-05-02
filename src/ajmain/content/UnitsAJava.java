@@ -68,16 +68,17 @@ public class UnitsAJava {
 
 
         UnitType blockade = new UnitType("blockade"){{
-           speed = 0.55f;
-           hitSize = 6f;
-           health = 140;
+           speed = 0.7f;
+           hitSize = 11f;
+           health = 350;
+           buildSpeed = 2f;
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 20f;
+                radius = 0f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
@@ -129,16 +130,16 @@ public class UnitsAJava {
 
 
         UnitType palisade = new UnitType("palisade"){{
-           speed = 0.55f;
-           hitSize = 6f;
-           health = 140;
+           hitSize = 13;
+           health = 750;
+           buildSpeed = 3f;
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
-                radius = 20f;
+                radius = 0f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
@@ -148,7 +149,7 @@ public class UnitsAJava {
 
              weapons.add(new Weapon("aj-repeater"){{
                 shootStatus = StatusA.vindicationI;
-                shootStatusDuration = 30f;
+                shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
                 x = 7;
                 y = 1;
@@ -158,7 +159,7 @@ public class UnitsAJava {
                 reload = 20;
                 inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(30,80);
+                shoot.shotDelay = 10
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
@@ -193,29 +194,28 @@ public class UnitsAJava {
 
 
         UnitType parapet = new UnitType("parapet"){{
-           speed = 0.55f;
-           hitSize = 6f;
-           health = 140;
+           speed = 0.44f;
+           hitSize = 24f;
+           health = 8600;
+           buildSpeed = 4f;
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
-                radius = 20f;
+                radius = 0f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f;
-                y = -20f;
-                offsetRegion = true;
+                width = 8f
             }});
 
              weapons.add(new Weapon("aj-obilvion"){{
                 shootSound = Sounds.blaster;
                 shootStatus = StatusA.vindicationII;
-                shootStatusDuration = 30f;
+                shootStatusDuration = 120f;
                 x = 7;
                 y = 1;
                 mirror = true;
