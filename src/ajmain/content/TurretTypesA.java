@@ -35,6 +35,6 @@ public class AcceleratedTurret extends ItemTurret{
             BulletType type = peekAmmo();
 
             shoot(type);
-        }
+        };
     }
 }
