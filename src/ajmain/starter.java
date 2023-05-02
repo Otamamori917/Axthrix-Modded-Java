@@ -1,12 +1,12 @@
 package ajmain;
 
-import ajmain.content.BlocksA;
 import arc.*;
 import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
+import ajmain.content.BlocksA;
 import ajmain.content.UnitsAJava;
 import ajmain.content.StatusA;
 
