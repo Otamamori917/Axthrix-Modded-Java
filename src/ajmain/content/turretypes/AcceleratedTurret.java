@@ -19,11 +19,11 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class AcceleratedTurretJava extends ItemTurret{
+public class AcceleratedTurret extends ItemTurret{
     public final int boostTimer = timers++;
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
     
-    public AcceleratedTurretJava(String name){
+    public AcceleratedTurretA(String name){
         super(name);
     }
 
