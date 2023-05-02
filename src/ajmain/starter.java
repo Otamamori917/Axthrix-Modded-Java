@@ -1,15 +1,12 @@
 package ajmain;
 
+import ajmain.content.BlocksA;
 import arc.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
 import mindustry.game.EventType.*;
-import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
-import ajmain.content.turretypes.AcceleratedTurretA;
 import ajmain.content.UnitsAJava;
 import ajmain.content.StatusA;
 
@@ -34,9 +31,9 @@ public class starter extends Mod{
 
     @Override
     public void loadContent(){
-        new AcceleratedTurretA().load();
-        new StatusA().load();
-        new UnitsAJava().load();
+        StatusA.load();
+        UnitsAJava.load();
+        BlocksA.load();
         Log.info("Axthrix Content Loaded. :)");
     }
 
