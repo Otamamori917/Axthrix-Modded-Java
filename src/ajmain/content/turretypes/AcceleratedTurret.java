@@ -1,4 +1,4 @@
-package ajmain.content;
+package ajmain.content.turretypes;
 
 import arc.*;
 import arc.graphics.*;
@@ -16,7 +16,6 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import progressed.util.*;
 
 import static mindustry.Vars.*;
 
