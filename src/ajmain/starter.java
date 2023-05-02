@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
-import ajmain.content.turretypes.AcceleratedTurret;
+import ajmain.content.turretypes.AcceleratedTurretA;
 import ajmain.content.UnitsAJava;
 import ajmain.content.StatusA;
 
