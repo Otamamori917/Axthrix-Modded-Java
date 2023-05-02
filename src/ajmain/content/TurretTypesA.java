@@ -21,20 +21,36 @@ import progressed.util.*;
 import static mindustry.Vars.*;
 
 public class AcceleratedTurret extends ItemTurret{
+    public static final int boostTimer = timers++;
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
-
-    public AcceleratedTurret(String name){
+    
+    public AcceleratedTurret(string name){
         super(name);
+    }
+
+    public class AcceleratedTurretBuild extends ItemTurretBuild{
+        public float boost;
 
         @Override
-        protected void updateShooting();(){
-            if(!hasAmmo()) return;
+        public void updateTile(){
+            super.updateTile();
 
-            Mathf.wait(acceleratedDelay(), peekAmmo().reloadMultiplier = acceleratedBonus);
+            if(isShooting()){
+                if(timer.get(boostTimer, acceleratedDelay)) boost = acceleratedBonus;
+            }else{
+                boost = 1;
+            }
+        }
 
-            BulletType type = peekAmmo();
+        protected void updateShooting(){
 
-            shoot(type);
-        };
+            if(reloadCounter >= reload && acceleratedBonus()){
+                BulletType type = peekAmmo();
+
+                shoot(type);
+
+                reloadCounter %= reload;
+            }
+        }
     }
 }
