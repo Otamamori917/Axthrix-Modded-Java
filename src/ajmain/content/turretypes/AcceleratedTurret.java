@@ -23,7 +23,7 @@ public class AcceleratedTurret extends ItemTurret{
     public final int boostTimer = timers++;
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
     
-    public AcceleratedTurretA(String name){
+    public AcceleratedTurret(String name){
         super(name);
     }
 
