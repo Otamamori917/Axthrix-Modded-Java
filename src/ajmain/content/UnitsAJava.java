@@ -29,6 +29,8 @@ import static arc.math.Angles.*;
 import static mindustry.Vars.*;
 import mindustry.content.*;
 
+import ajmain.content.StatusA;
+
 public class UnitsAJava {
     public static UnitType barrier, blockade, palisade, parapet, impediment;
     
@@ -75,15 +77,13 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 50f;
+                radius = 20f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
                 width = 8f;
-                y = -20f;
                 whenShooting = false;
-                offsetRegion = true;
             }});
 
              weapons.add(new Weapon("aj-blockade-grs"){{
@@ -138,18 +138,17 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
-                radius = 50f;
+                radius = 20f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                whenShooting = false;
-                offsetRegion = true;
                 width = 8f;
-                y = -20f;
             }});
 
              weapons.add(new Weapon("aj-repeater"){{
+                shootStatus = StatusA.vindicationI;
+                shootStatusDuration = 30f;
                 shootSound = Sounds.blaster;
                 x = 7;
                 y = 1;
@@ -203,7 +202,7 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
-                radius = 50f;
+                radius = 20f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
@@ -213,22 +212,22 @@ public class UnitsAJava {
                 offsetRegion = true;
             }});
 
-             weapons.add(new Weapon("aj-repeater"){{
-                shootStatus:
+             weapons.add(new Weapon("aj-obilvion"){{
                 shootSound = Sounds.blaster;
+                shootStatus = StatusA.vindicationII;
+                shootStatusDuration = 30f;
                 x = 7;
                 y = 1;
                 mirror = true;
                 alternate = false;
-                top = false;
                 reload = 20;
                 inaccuracy = 1;
                 shoot.shots = 4;
                 shoot.shotDelay = Mathf.random(30,80);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
-                    damage = 20;
-                    lifetime = 60;
+                    damage = 40;
+                    lifetime = 80;
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
