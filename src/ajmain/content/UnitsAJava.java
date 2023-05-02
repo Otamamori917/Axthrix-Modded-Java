@@ -83,7 +83,7 @@ public class UnitsAJava {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f;
+                width = 8f
                 whenShooting = false;
             }});
 
@@ -159,7 +159,7 @@ public class UnitsAJava {
                 reload = 20;
                 inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = 10
+                shoot.shotDelay = 10;
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 20;
@@ -209,8 +209,7 @@ public class UnitsAJava {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f
-            }});
+                width = 8f            }});
 
              weapons.add(new Weapon("aj-obilvion"){{
                 shootSound = Sounds.blaster;
@@ -220,10 +219,10 @@ public class UnitsAJava {
                 y = 1;
                 mirror = true;
                 alternate = false;
-                reload = 20;
+                reload = 40;
                 inaccuracy = 1;
                 shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(30,80);
+                shoot.shotDelay = Mathf.random(50,80);
 
                 bullet = new LaserBoltBulletType(2f, 9){{
                     damage = 40;
