@@ -43,7 +43,7 @@ public class AcceleratedTurret extends ItemTurret{
 
         protected void updateShooting(){
 
-            if(reloadCounter >= reload && acceleratedBonus()){
+            if(reloadCounter >= reload && acceleratedBonus){
                 BulletType type = peekAmmo();
 
                 shoot(type);
