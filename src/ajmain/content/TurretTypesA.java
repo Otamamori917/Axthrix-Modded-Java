@@ -27,7 +27,7 @@ public class AcceleratedTurret extends ItemTurret{
         super(name);
 
         @Override
-        protected void updateShooting(){
+        protected void updateShooting();{
             if(!hasAmmo()) return;
 
             Mathf.wait(acceleratedDelay(), peekAmmo().reloadMultiplier = acceleratedBonus);
