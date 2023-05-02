@@ -2,6 +2,7 @@ package ajmain.content;
 
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.content.*;
 
 public class StatusA {
     public static StatusEffect vindicationI, vindicationII, vindicationIII, precludedX, precludedA;
