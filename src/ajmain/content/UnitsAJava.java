@@ -78,12 +78,12 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 0f;
+                radius = 40f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f;
+                width = 2f;
                 whenShooting = false;
             }});
 
@@ -139,12 +139,12 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
-                radius = 0f;
+                radius = 60f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f;
+                width = 4f;
             }});
 
              weapons.add(new Weapon("aj-repeater"){{
@@ -204,12 +204,12 @@ public class UnitsAJava {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
-                radius = 0f;
+                radius = 80f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 8f;            
+                width = 1f;            
             }});
 
              weapons.add(new Weapon("aj-obilvion"){{
