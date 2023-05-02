@@ -30,7 +30,7 @@ public class AcceleratedTurret extends ItemTurret{
         protected void updateShooting(){
             if(!hasAmmo()) return;
 
-            act = Mathf.wait(act, acceleratedDelay(), peekAmmo().reloadMultiplier = acceleratedBonus);
+            Mathf.wait(acceleratedDelay(), peekAmmo().reloadMultiplier = acceleratedBonus);
 
             BulletType type = peekAmmo();
 
