@@ -33,8 +33,8 @@ public class starter extends Mod{
 
     @Override
     public void loadContent(){
-        new UnitsAJava().load();
         new StatusA().load();
+        new UnitsAJava().load();
         Log.info("Axthrix Content Loaded. :)");
     }
 
