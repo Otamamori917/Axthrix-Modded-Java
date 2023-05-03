@@ -1,15 +1,15 @@
-package ajmain.content.turretypes;
+package ajmain.content.types.weapontypes;
 
 import mindustry.world.blocks.defense.turrets.*;
 
-public class AcceleratedTurret extends ItemTurret{
+public class AcceleratedWeapon extends Weapon{
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
     
-    public AcceleratedTurret(String name){
+    public AcceleratedWeapon(String name){
         super(name);
     }
 
-    public class AcceleratedTurretBuild extends ItemTurretBuild{
+    public class AcceleratedWeaponBuild extends WeaponBuild{
         public float accelTimer, accelBoost;
 
         @Override

@@ -1,6 +1,6 @@
 package ajmain.content;
 
-import ajmain.content.turretypes.*;
+import ajmain.content.types.turretypes.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Sounds;
