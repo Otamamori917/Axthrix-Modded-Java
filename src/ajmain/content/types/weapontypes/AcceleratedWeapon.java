@@ -42,4 +42,4 @@ public class AcceleratedWeapon extends Weapon{
             reloadCounter = Math.min(reloadCounter, reload);
         }
     }
-}
+}*\
