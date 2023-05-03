@@ -27,7 +27,7 @@ public class AcceleratedWeapon extends Weapon{
 
         @Override
         protected void updateReload(){
-            float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+            float multiplier = hasAmmo() ? peekAmmo()unit.reloadMultiplier : 1f;
             reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
 
             //cap reload for visual reasons
