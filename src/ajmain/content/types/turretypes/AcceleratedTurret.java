@@ -26,6 +26,7 @@ public class AcceleratedTurret extends ItemTurret{
             }else{
                 accelCount = 0;
                 accelCounter = 0;
+                accelBoost = 1;
                 }
             }
 
