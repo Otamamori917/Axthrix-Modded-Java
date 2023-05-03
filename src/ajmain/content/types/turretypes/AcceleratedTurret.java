@@ -1,4 +1,4 @@
-package ajmain.content.turretypes;
+package ajmain.content.types.turretypes;
 
 import mindustry.world.blocks.defense.turrets.*;
 
