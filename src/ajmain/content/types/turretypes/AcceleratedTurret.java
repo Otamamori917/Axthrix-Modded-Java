@@ -10,7 +10,7 @@ public class AcceleratedTurret extends ItemTurret{
     }
 
     public class AcceleratedTurretBuild extends ItemTurretBuild{
-        public float accelTimer, accelBoost, accelCount, accelCounter, boost;
+        public float accelTimer, accelBoost, accelCount, accelCounter, Boost;
 
         @Override
         public void updateTile(){
@@ -27,7 +27,7 @@ public class AcceleratedTurret extends ItemTurret{
             if(isShooting()){
                 accelCounter += edelta();
                 if(accelCount < acceleratedSteps && accelCounter >= accelTimer){
-                    boost += (accelBoost - 1);
+                    Boost += (accelBoost - 1);
                     accelCount++;
                     accelCounter %= accelTimer;
                 }
@@ -40,7 +40,7 @@ public class AcceleratedTurret extends ItemTurret{
         @Override
         protected void updateReload(){
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
-            reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
+            reloadCounter += delta() * multiplier * Boost * baseReloadSpeed();
 
             reloadCounter = Math.min(reloadCounter, reload);
         }
