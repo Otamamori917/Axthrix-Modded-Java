@@ -1,4 +1,4 @@
-package ajmain.content.types.weapontypes;
+/*package ajmain.content.types.weapontypes;
 
 import mindustry.type.Weapon.*;
 
@@ -35,4 +35,4 @@ public class AcceleratedWeapon extends Weapon{
             reloadCounter = Math.min(reloadCounter, reload);
         }
     }
-}
+}*/

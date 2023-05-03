@@ -3,14 +3,14 @@ package ajmain.content.types.turretypes;
 import mindustry.world.blocks.defense.turrets.*;
 
 public class AcceleratedTurret extends ItemTurret{
-    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f, acceleratedSteps = 1;
     
     public AcceleratedTurret(String name){
         super(name);
     }
 
     public class AcceleratedTurretBuild extends ItemTurretBuild{
-        public float accelTimer, accelBoost;
+        public float accelTimer, accelBoost, accelCount;
 
         @Override
         public void updateTile(){
@@ -24,25 +24,24 @@ public class AcceleratedTurret extends ItemTurret{
                 accelTimer = 0;
             }
 
-//            if(isShooting()){
-//                accelCounter += edelta();
-//                if(accelCount < max && accelCounter >= accelTimer){
-//                    boost += (accelBoost - 1);
-//                    accelCount++;
-//                    accelCounter %= accelTimer;
-//                }
-//            }else{
-//                accelCount = 0;
-//                accelCounter = 0;
-//                }
-//            }
+            if(isShooting()){
+                accelCounter += edelta();
+                if(accelCount < acceleratedSteps && accelCounter >= accelTimer){
+                    boost += (accelBoost - 1);
+                    accelCount++;
+                    accelCounter %= accelTimer;
+                }
+            }else{
+                accelCount = 0;
+                accelCounter = 0;
+                }
+            }
 
         @Override
         protected void updateReload(){
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
             reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
 
-            //cap reload for visual reasons
             reloadCounter = Math.min(reloadCounter, reload);
         }
     }
