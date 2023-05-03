@@ -3,7 +3,7 @@ package ajmain.content.types.turretypes;
 import mindustry.world.blocks.defense.turrets.*;
 
 public class AcceleratedTurret extends ItemTurret{
-    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f, acceleratedSteps = 1;
+    public float acceleratedDelay = 120, acceleratedBonus = 1.5f, acceleratedSteps = 1;
     
     public AcceleratedTurret(String name){
         super(name);
@@ -19,9 +19,9 @@ public class AcceleratedTurret extends ItemTurret{
             if(isShooting()){
                 accelCounter += edelta();
                 if(accelCount < acceleratedSteps && accelCounter >= accelTimer){
-                    accelBoost += (accelBoost - 1);
+                    accelBoost += (acceleratedBonus - 1);
                     accelCount++;
-                    accelCounter %= accelTimer;
+                    accelCounter %= (accelTimer = acceleratedDelay);
                 }
             }else{
                 accelCount = 0;
