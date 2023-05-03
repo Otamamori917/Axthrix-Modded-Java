@@ -40,7 +40,7 @@ public class AcceleratedTurret extends ItemTurret{
         @Override
         protected void updateReload(){
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
-            reloadCounter += delta() * multiplier * boost * baseReloadSpeed();
+            reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
 
             reloadCounter = Math.min(reloadCounter, reload);
         }
