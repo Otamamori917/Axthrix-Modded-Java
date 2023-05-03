@@ -28,7 +28,7 @@ public class AcceleratedTurret extends ItemTurret{
         @Override
         protected void updateReload(){
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
-            accelBoost/2 = Stage
+            accelBoost/2 = Stage;
             reloadCounter += delta() * multiplier * Stage * baseReloadSpeed();
             
             reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
