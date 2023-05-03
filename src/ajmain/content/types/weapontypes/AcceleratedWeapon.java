@@ -1,45 +1,38 @@
-//package ajmain.content.types.weapontypes;
+package ajmain.content.types.weapontypes;
 
-//import mindustry.type.Weapon.*;
+import mindustry.type.Weapon.*;
 
-//public class AcceleratedWeapon extends Weapon{
-//public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
-//
-//public AcceleratedWeapon(String name){
-//super(name);
-//}
+public class AcceleratedWeapon extends Weapon{
+    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    
+    public AcceleratedWeapon(String name){
+        super(name);
+    }
 
-//public class AcceleratedWeaponBuild extends WeaponBuild{
-//public float accelTimer, accelBoost;
+    public class AcceleratedWeaponBuild extends WeaponBuild{
+        public float accelTimer, accelBoost;
 
-//@Override
-//public void draw(Unit unit, WeaponMount mount){
-//super.draw(unit, mount);
 
-//AcceleratedMount accel = (AcceleratedMount)mount;
+        @Override
+        public void draw(Unit unit, WeaponMount mount){
+            super.draw(unit, mount);
 
-//}
+            if(isShooting()){
+                accelTimer += edelta();
+                if(accelTimer >= acceleratedDelay) accelBoost = acceleratedBonus;
+            }else{
+                accelBoost = 1;
+                accelTimer = 0;
+            }
+        }
 
-//@Override
-//public void updateTile(){
-///uper.updateTile();
+        @Override
+        protected void updateReload(){
+            float multiplier = hasAmmo() ? peekAmmo().unit.reloadMultiplier : 1f;
+            reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
 
-//if(isShooting()){
-//accelTimer += edelta();
-//if(accelTimer >= acceleratedDelay) accelBoost = acceleratedBonus;
-//}else{
-//accelBoost = 1;
-//accelTimer = 0;
-//
-//}
-
-//@Override
-//protected void updateReload(){
-//float multiplier = hasAmmo() ? peekAmmo().unit.reloadMultiplier : 1f;
-//reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
-
-//ap reload for visual reasons
-//reloadCounter = Math.min(reloadCounter, reload);
-//}
-//}
-//}
+            //cap reload for visual reasons
+            reloadCounter = Math.min(reloadCounter, reload);
+        }
+    }
+}
