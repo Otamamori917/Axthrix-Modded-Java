@@ -36,7 +36,6 @@ public class AcceleratedTurret extends ItemTurret{
                 accelCounter = 0;
                 }
             }
-        }
 
         @Override
         protected void updateReload(){
