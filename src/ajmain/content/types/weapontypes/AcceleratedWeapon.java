@@ -1,15 +1,15 @@
 package ajmain.content.types.weapontypes;
 
-import mindustry.type.Weapon.*;
+import mindustry.entities.units.WeaponMount.*;
 
-public class AcceleratedWeapon extends Weapon{
+public class AcceleratedWeaponMount extends WeaponMount{
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
     
-    public AcceleratedWeapon(String name){
+    public AcceleratedWeaponMount(String name){
         super(name);
     }
 
-    public class AcceleratedWeaponBuild extends WeaponBuild{
+    public class AcceleratedWeaponBuild extends WeaponMountBuild{
         public float accelTimer, accelBoost;
 
         @Override
