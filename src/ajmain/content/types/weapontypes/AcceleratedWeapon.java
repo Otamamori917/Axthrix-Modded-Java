@@ -1,4 +1,4 @@
-package ajmain.content.types.weapontypes;
+/**package ajmain.content.types.weapontypes;
 
 import mindustry.type.Weapon.*;
 
