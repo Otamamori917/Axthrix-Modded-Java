@@ -1,6 +1,6 @@
-package ajmain.content.types.turretypes;
+package ajmain.content.turretypes;
 
-import mindustry.type.Weapon.*;
+import mindustry.world.blocks.defense.turrets.*;
 
 public class AcceleratedTurret extends ItemTurret{
     public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
