@@ -9,18 +9,6 @@ public class AcceleratedTurret extends ItemTurret{
         super(name);
     }
 
-    @Override
-    public void setBars(){
-        super.setBars();
-
-        if(accelBoost > 0){
-            addBar("FireRate", (TurretBuild entity) ->
-            new Bar(() ->
-            Core.bundle.format("bar.firerate", (int)accelBoost),
-            () -> pal.heal));
-        }
-    }
-
     public class AcceleratedTurretBuild extends ItemTurretBuild{
         public float accelBoost, accelCount, accelCounter;
 
