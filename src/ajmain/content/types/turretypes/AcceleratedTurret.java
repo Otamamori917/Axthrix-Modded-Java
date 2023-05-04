@@ -1,5 +1,7 @@
 package ajmain.content.types.turretypes;
 
+import arc.math.*;
+
 import mindustry.world.blocks.defense.turrets.*;
 
 public class AcceleratedTurret extends ItemTurret{
