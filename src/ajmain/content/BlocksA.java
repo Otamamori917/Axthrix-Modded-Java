@@ -46,8 +46,8 @@ public class BlocksA {
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
                         homingPower = 4f;
-                        homingRange = 100;
-                        homingDelay = 10f;
+                        homingRange = 50;
+                        homingDelay = 20f;
                         width = 2f;
                         height = 5f;
                         hitSize = 1f;
