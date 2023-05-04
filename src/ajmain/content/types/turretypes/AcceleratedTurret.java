@@ -16,12 +16,13 @@ public class AcceleratedTurret extends ItemTurret{
         addBar("aj-firerate-bonus", (AcceleratedTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.aj-firerate-bonus", (int)(Math.min(accelBoost * 100f))),
             () -> Pal.heal
-            () -> (entity.accelBoost - 1) / ((acceleratedBonus - 1) * acceleratedSteps)
+            () -> (float)entity.accelCount / acceleratedSteps
         ));
     }
 
     public class AcceleratedTurretBuild extends ItemTurretBuild{
-        public float accelBoost, accelCount, accelCounter;
+        public float accelBoost, accelCounter;
+        public int accelCount;
 
         @Override
         public void updateTile(){
