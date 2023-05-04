@@ -38,9 +38,10 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot.shots = 2;
+            shoot.shotDelay = 5;
             shoot = new ShootHelix(){{
-                mag = 2f;
-                scl = 4f;
+                mag = 1f;
+                scl = 2f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
