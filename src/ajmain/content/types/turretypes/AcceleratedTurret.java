@@ -18,7 +18,7 @@ public class AcceleratedTurret extends ItemTurret{
 
             if(isShooting()){
                 accelCounter += edelta();
-                if(accelCount < acceleratedSteps && accelCounter >= accelTimer){
+                if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
                     accelBoost += (acceleratedBonus - 1);
                     accelCount++;
                     accelCounter %= acceleratedDelay;
