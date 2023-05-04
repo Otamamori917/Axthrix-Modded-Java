@@ -3,6 +3,7 @@ package ajmain.content.types.turretypes;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import arc.*;
+import arc.util.*;
 
 import mindustry.world.blocks.defense.turrets.*;
 
