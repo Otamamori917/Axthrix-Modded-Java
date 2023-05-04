@@ -18,9 +18,9 @@ public class BlocksA {
     public static void load(){
         acceleratedTurret = new AcceleratedTurret("accelerated-turret"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            acceleratedDelay = 30f;
-            acceleratedBonus = 2f;
-            acceleratedSteps = 40f;
+            acceleratedDelay = 60f;
+            acceleratedBonus = 1.5f;
+            acceleratedSteps = 10f;
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 420f;
