@@ -43,17 +43,97 @@ public class BlocksA {
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
-                        damage = 10f;
+                        damage = 15f;
                         homingPower = 4f;
                         homingRange = 50;
                         homingDelay = 20f;
                         width = 2f;
-                        height = 5f;
-                        hitSize = 1f;
+                        height = 4f;
+                        hitSize = 2f;
                         lifetime = 100f;
                     }}
             );
-            inaccuracy = 0f;
+            inaccuracy = 2f;
+        }};
+
+
+
+
+        razdor = new AcceleratedTurret("razdor"){{
+            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            acceleratedDelay = 120f;
+            acceleratedBonus = 2f;
+            acceleratedSteps = 2f;
+            buildCostMultiplier = 0.1f;
+            size = 3;
+            scaledHealth = 420f;
+            reload = 10f;
+            range = 180f;
+            maxAmmo = 300;
+            ammoPerShot = 2;
+            consumeAmmoOnce = false;
+            recoil = 3f;
+            rotateSpeed = 2f;
+            targetAir = true;
+            targetGround = true;
+            shootY = -2f;
+            shootSound = Sounds.shootBig;
+            shoot = new ShootHelix(){{
+                mag = 2f;
+                scl = 3f;
+            }};
+            ammo(
+                    Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 30f;
+                        homingPower = 4f;
+                        homingRange = 50;
+                        homingDelay = 20f;
+                        width = 3f;
+                        height = 6f;
+                        hitSize = 3f;
+                        lifetime = 100f;
+                    }}
+            );
+            inaccuracy = 2f;
+        }};
+
+
+        smuta = new AcceleratedTurret("smuta"){{
+            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            acceleratedDelay = 120f;
+            acceleratedBonus = 2f;
+            acceleratedSteps = 2f;
+            buildCostMultiplier = 0.1f;
+            size = 3;
+            scaledHealth = 420f;
+            reload = 10f;
+            range = 180f;
+            maxAmmo = 300;
+            ammoPerShot = 2;
+            consumeAmmoOnce = false;
+            recoil = 3f;
+            rotateSpeed = 2f;
+            targetAir = true;
+            targetGround = true;
+            shootY = -2f;
+            shootSound = Sounds.shootBig;
+            shoot = new ShootHelix(){{
+                mag = 3f;
+                scl = 4f;
+            }};
+            ammo(
+                    Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 60f;
+                        homingPower = 4f;
+                        homingRange = 50;
+                        homingDelay = 20f;
+                        width = 4f;
+                        height = 8f;
+                        hitSize = 4f;
+                        lifetime = 100f;
+                    }}
+            );
+            inaccuracy = 2f;
         }};
     }
 }
