@@ -37,7 +37,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot.shots = 2;
+            shoot.shots = 4;
             shoot.shotDelay = 20;
             shoot = new ShootHelix(){{
                 mag = 1f;
