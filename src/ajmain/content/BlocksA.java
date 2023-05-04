@@ -20,6 +20,8 @@ public class BlocksA {
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            minWarmup = 30f;
+            warmupMaintainTime = 90f;
             acceleratedDelay = 120f;
             acceleratedBonus = 2f;
             acceleratedSteps = 2f;
@@ -61,6 +63,8 @@ public class BlocksA {
 
         razdor = new AcceleratedTurret("razdor"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            minWarmup = 30f;
+            warmupMaintainTime = 90f;
             acceleratedDelay = 120f;
             acceleratedBonus = 2f;
             acceleratedSteps = 2f;
@@ -100,6 +104,8 @@ public class BlocksA {
 
         smuta = new AcceleratedTurret("smuta"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            minWarmup = 30f;
+            warmupMaintainTime = 90f;
             acceleratedDelay = 120f;
             acceleratedBonus = 2f;
             acceleratedSteps = 2f;
@@ -118,8 +124,8 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot = new ShootHelix(){{
-                mag = 2f;
-                scl = 3f;
+                mag = 1.75f;
+                scl = 2.75f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{

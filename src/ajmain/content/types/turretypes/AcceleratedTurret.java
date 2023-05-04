@@ -9,6 +9,16 @@ public class AcceleratedTurret extends ItemTurret{
         super(name);
     }
 
+    @Override
+    public void setBars(){
+        super.setBars();
+        addBar("aj-firerate-bonus", (AcceleratedTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.aj-firerate-bonus", (int)(Math.min(accelBoost * 100f))),
+            entity::barColor,
+            entity::accelBoost
+        ));
+    }
+
     public class AcceleratedTurretBuild extends ItemTurretBuild{
         public float accelBoost, accelCount, accelCounter;
 
