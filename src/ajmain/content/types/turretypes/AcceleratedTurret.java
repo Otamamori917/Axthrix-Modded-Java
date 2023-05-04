@@ -1,6 +1,7 @@
 package ajmain.content.types.turretypes;
 
 import mindustry.graphics.*;
+import mindustry.ui.*;
 import arc.*;
 
 import mindustry.world.blocks.defense.turrets.*;
@@ -16,7 +17,7 @@ public class AcceleratedTurret extends ItemTurret{
     public void setBars(){
         super.setBars();
         addBar("aj-firerate-bonus", (AcceleratedTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.aj-firerate-bonus", (int)(Math.min(accelBoost * 100f))),
+            () -> Core.bundle.format("bar.aj-firerate-bonus", (int)(Math.min(accelcount * 100f))),
             () -> Pal.heal,
             () -> entity.accelCount / acceleratedSteps));
     }
