@@ -13,20 +13,20 @@ public class BlocksA {
     public static Block
 
     //turrets
-    acceleratedTurret;
+    kramola, razdor, smuta;
 
     public static void load(){
-        acceleratedTurret = new AcceleratedTurret("accelerated-turret"){{
+        kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            acceleratedDelay = 60f;
-            acceleratedBonus = 1.5f;
-            acceleratedSteps = 10f;
+            acceleratedDelay = 120f;
+            acceleratedBonus = 2f;
+            acceleratedSteps = 2f;
             buildCostMultiplier = 0.1f;
-            size = 4;
+            size = 1;
             scaledHealth = 420f;
-            reload = 30f;
+            reload = 10f;
             range = 180f;
-            maxAmmo = 400;
+            maxAmmo = 200;
             ammoPerShot = 2;
             consumeAmmoOnce = false;
             recoil = 3f;
@@ -35,15 +35,20 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
+            shoot.shots = 2f;
+            shoot = new ShootHelix(){{
+                mag = 2f;
+                scl = 4f;
+            }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
-                        width = 16f;
-                        height = 21f;
-                        hitSize = 5f;
+                        width = 2f;
+                        height = 5f;
+                        hitSize = 1f;
                         lifetime = 100f;
                     }}
             );
-            inaccuracy = 4f;
+            inaccuracy = 0f;
         }};
     }
 }
