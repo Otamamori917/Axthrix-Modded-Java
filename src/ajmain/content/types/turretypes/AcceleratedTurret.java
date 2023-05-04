@@ -10,7 +10,7 @@ public class AcceleratedTurret extends ItemTurret{
     }
 
     public class AcceleratedTurretBuild extends ItemTurretBuild{
-        public float accelTimer, accelBoost, accelCount, accelCounter;
+        public float accelBoost, accelCount, accelCounter;
 
         @Override
         public void updateTile(){
@@ -21,7 +21,7 @@ public class AcceleratedTurret extends ItemTurret{
                 if(accelCount < acceleratedSteps && accelCounter >= accelTimer){
                     accelBoost += (acceleratedBonus - 1);
                     accelCount++;
-                    accelCounter %= (accelTimer = acceleratedDelay);
+                    accelCounter %= acceleratedDelay;
                 }
             }else{
                 accelCount = 0;
