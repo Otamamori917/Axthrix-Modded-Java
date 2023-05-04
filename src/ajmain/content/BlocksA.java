@@ -79,8 +79,8 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot = new ShootHelix(){{
-                mag = 2f;
-                scl = 3f;
+                mag = 1.5f;
+                scl = 2.5f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
@@ -104,11 +104,11 @@ public class BlocksA {
             acceleratedBonus = 2f;
             acceleratedSteps = 2f;
             buildCostMultiplier = 0.1f;
-            size = 3;
+            size = 4;
             scaledHealth = 420f;
             reload = 10f;
             range = 180f;
-            maxAmmo = 300;
+            maxAmmo = 400;
             ammoPerShot = 2;
             consumeAmmoOnce = false;
             recoil = 3f;
@@ -118,8 +118,8 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot = new ShootHelix(){{
-                mag = 3f;
-                scl = 4f;
+                mag = 2f;
+                scl = 3f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
