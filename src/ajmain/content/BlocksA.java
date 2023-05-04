@@ -2,10 +2,12 @@ package ajmain.content;
 
 import ajmain.content.types.turretypes.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
 
 import static mindustry.type.ItemStack.*;
 
