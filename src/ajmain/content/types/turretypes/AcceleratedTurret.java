@@ -15,7 +15,7 @@ public class AcceleratedTurret extends ItemTurret{
         super.setBars();
         addBar("aj-firerate-bonus", (AcceleratedTurretBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.aj-firerate-bonus", (int)(Math.min(accelBoost * 100f))),
-            () -> Pal.heal,
+            () -> Pal.heal ,
             () -> entity.accelCount / acceleratedSteps));
     }
 
