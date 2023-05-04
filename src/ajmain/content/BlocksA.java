@@ -38,13 +38,16 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot.shots = 2;
-            shoot.shotDelay = 5;
+            shoot.shotDelay = 20;
             shoot = new ShootHelix(){{
                 mag = 1f;
                 scl = 2f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
+                        homingPower = 4f;
+                        homingRange = 100;
+                        homingDelay = 10f;
                         width = 2f;
                         height = 5f;
                         hitSize = 1f;
