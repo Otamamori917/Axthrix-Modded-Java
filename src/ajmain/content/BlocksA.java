@@ -24,7 +24,7 @@ public class BlocksA {
             acceleratedBonus = 2f;
             acceleratedSteps = 2f;
             buildCostMultiplier = 0.1f;
-            size = 1;
+            size = 2;
             scaledHealth = 420f;
             reload = 10f;
             range = 180f;
@@ -37,14 +37,13 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot.shots = 4;
-            shoot.shotDelay = 20;
             shoot = new ShootHelix(){{
                 mag = 1f;
                 scl = 2f;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 10f;
                         homingPower = 4f;
                         homingRange = 50;
                         homingDelay = 20f;
