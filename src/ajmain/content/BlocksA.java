@@ -8,7 +8,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
-import static mindustry.Vars.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -38,7 +37,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot.shots = 2f;
+            shoot.shots = 2;
             shoot = new ShootHelix(){{
                 mag = 2f;
                 scl = 4f;
