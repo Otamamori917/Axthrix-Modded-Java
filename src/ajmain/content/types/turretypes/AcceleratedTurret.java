@@ -18,7 +18,8 @@ public class AcceleratedTurret extends ItemTurret{
             new Bar(() ->
             Core.bundle.format("bar.firerate", (int)entity.firerate, (int)(Math.min(entity.firerate / accelBoost))),
             () -> pal.heal
-            () -> entity.firerate = accelBoost));
+            () -> (entity.firerate = accelBoost);
+            ));
         }
     }
 
