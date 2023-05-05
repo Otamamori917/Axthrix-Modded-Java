@@ -22,9 +22,13 @@ public class BlocksA {
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             minWarmup = 30f;
             warmupMaintainTime = 90f;
+            //custom varibles
             acceleratedDelay = 120f;
-            acceleratedBonus = 2f;
-            acceleratedSteps = 2f;
+            acceleratedBonus = 1.5f;
+            acceleratedSteps = 3;
+            burnoutDelay = 600f;
+            cooldownDelay = 300f;
+
             buildCostMultiplier = 0.1f;
             size = 2;
             scaledHealth = 420f;
@@ -65,9 +69,13 @@ public class BlocksA {
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             minWarmup = 30f;
             warmupMaintainTime = 90f;
+            //custom varibles
             acceleratedDelay = 120f;
-            acceleratedBonus = 2f;
-            acceleratedSteps = 2f;
+            acceleratedBonus = 1.5f;
+            acceleratedSteps = 3;
+            burnoutDelay = 700f;
+            cooldownDelay = 400f;
+
             buildCostMultiplier = 0.1f;
             size = 3;
             scaledHealth = 420f;
@@ -106,9 +114,13 @@ public class BlocksA {
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             minWarmup = 30f;
             warmupMaintainTime = 90f;
+            //custom varibles
             acceleratedDelay = 120f;
-            acceleratedBonus = 2f;
-            acceleratedSteps = 2f;
+            acceleratedBonus = 1.5f;
+            acceleratedSteps = 3;
+            burnoutDelay = 800f;
+            cooldownDelay = 500f;
+
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 420f;
