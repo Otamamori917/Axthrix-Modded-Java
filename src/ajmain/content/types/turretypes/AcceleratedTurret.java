@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.draw.*;
 
 public class AcceleratedTurret extends ItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
