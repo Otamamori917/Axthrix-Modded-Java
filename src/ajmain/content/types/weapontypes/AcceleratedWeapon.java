@@ -21,10 +21,11 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class AcceleratedWeapon extends Weapon{{
+    public boolean burnsOut = true;
+
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
     public float burnoutDelay = 240, cooldownDelay = 120;
-    public boolean burnsOut = true;
 
     public AcceleratedWeapon(String name){
         super(name);
