@@ -17,6 +17,24 @@ public class AcceleratedTurret extends ItemTurret{
         super(name);
     }
 
+        drawer = new DrawTurret(){
+            TextureRegion heatsink, heatsink-heat;
+
+            @Override
+            public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
+                super.getRegionsToOutline(block, out);
+                out.add(heatsink);
+            }
+
+            @Override
+            public void load(Block block){
+                super.load(block);
+
+                heatsink = Core.atlas.find(block.name + "-heatsink");
+                heatsink-heat = Core.atlas.find(block.name + "-heatsink-heat");
+            }
+
+
     @Override
     public void setBars(){
         super.setBars();
