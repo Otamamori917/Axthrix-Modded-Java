@@ -4,7 +4,7 @@ import arc.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.graphics.*;
-import mindsutry.ui.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 
 public class AcceleratedTurret extends ItemTurret{
