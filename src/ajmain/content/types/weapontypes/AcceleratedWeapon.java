@@ -20,7 +20,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class AcceleratedWeapon extends Weapon{{
+public class AcceleratedWeapon extends Weapon{
     public Float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public Int acceleratedSteps = 1;
     public Float burnoutDelay = 240, cooldownDelay = 120;
@@ -79,16 +79,8 @@ public class AcceleratedWeapon extends Weapon{{
         reloadCounter = Math.min(reloadCounter, reload);
     }
         
-        public float boostf(){
-            if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
-            return Mathf.clamp((float)accelCount / acceleratedSteps);
-        }
-
-        
-        public static class AcceleratedMount extends WeaponMount{
-            public AcceleratedMount(Weapon weapon){
-               super(weapon);
-            }
-        }
+    public float boostf(){
+        if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
+        return Mathf.clamp((float)accelCount / acceleratedSteps);
     }
 }
