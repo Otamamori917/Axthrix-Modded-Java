@@ -1,38 +1,66 @@
-/*package ajmain.content.types.weapontypes;
+package ajmain.content.types.turretypes;
 
-import mindustry.type.Weapon.*;
+import arc.*;
+import arc.math.*;
+import arc.util.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.draw.*;
 
-public class AcceleratedWeapon extends Weapon{
-    public float  acceleratedDelay = 120, acceleratedBonus = 1.5f;
-    
+public class AcceleratedWeapon extends Weapon{{
+    public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    public int acceleratedSteps = 1;
+    public float burnoutDelay = 240, cooldownDelay = 120;
+    public boolean burnsOut = true;
+
     public AcceleratedWeapon(String name){
         super(name);
     }
+    
+    public AcceleratedWeapon(){
+    }
 
-    public class AcceleratedWeaponBuild extends WeaponBuild{
-        public float accelTimer, accelBoost;
+    @Override
+    public void update(Unit unit, WeaponMount mount){
+         super.update(unit, mount);
 
-
-        @Override
-        public void draw(Unit unit, WeaponMount mount){
-            super.draw(unit, mount);
-
-            if(isShooting()){
-                accelTimer += edelta();
-                if(accelTimer >= acceleratedDelay) accelBoost = acceleratedBonus;
-            }else{
+        if(accelCount > acceleratedSteps){
+            accelCounter += edelta();
+            if(accelCounter >= cooldownDelay){
+                accelCount = 0;
                 accelBoost = 1;
-                accelTimer = 0;
+                accelCounter %= cooldownDelay;
             }
-        }
-
-        @Override
-        protected void updateReload(){
-            float multiplier = hasAmmo() ? peekAmmo().unit.reloadMultiplier : 1f;
-            reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
-
-            //cap reload for visual reasons
-            reloadCounter = Math.min(reloadCounter, reload);
+        }else if(isShooting()){
+            accelCounter += edelta(); 
+            if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
+                accelBoost += (acceleratedBonus - 1);
+                accelCount++;
+                accelCounter %= acceleratedDelay;
+            }else if(burnsOut && accelCounter >= burnoutDelay){
+                accelBoost = 0;
+                accelCount++;
+                accelCounter %= burnoutDelay;
+            }
+        }else{
+            accelCount = 0;
+            accelCounter = 0;
+            accelBoost = 1;
         }
     }
-}*/
+
+    @Override
+    public void update(Unit unit, WeaponMount mount){
+        float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
+        reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
+
+        reloadCounter = Math.min(reloadCounter, reload);
+    }
+        
+        public float boostf(){
+            if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
+            return Mathf.clamp((float)accelCount / acceleratedSteps);
+        }
+    }
+}
