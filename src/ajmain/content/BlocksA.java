@@ -31,7 +31,7 @@ public class BlocksA {
             size = 2;
             scaledHealth = 420f;
             reload = 10f;
-            range = 180f;
+            range = 360f;
             maxAmmo = 200;
             ammoPerShot = 2;
             consumeAmmoOnce = false;
@@ -41,7 +41,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootSine(){{
+            shoot = new ShootHelix(){{
                 mag = 1f;
                 scl = 2f;
             }};
@@ -76,7 +76,7 @@ public class BlocksA {
             size = 3;
             scaledHealth = 420f;
             reload = 10f;
-            range = 180f;
+            range = 360f;
             maxAmmo = 300;
             ammoPerShot = 2;
             consumeAmmoOnce = false;
@@ -119,7 +119,7 @@ public class BlocksA {
             size = 4;
             scaledHealth = 420f;
             reload = 10f;
-            range = 180f;
+            range = 360f;
             maxAmmo = 400;
             ammoPerShot = 2;
             consumeAmmoOnce = false;
