@@ -48,7 +48,7 @@ public class AcceleratedTurret extends ItemTurret{
                     accelBoost += (acceleratedBonus - 1);
                     accelCount++;
                     accelCounter %= acceleratedDelay;
-                }else if(accelCounter >= burnoutDelay){
+                }else if(burnsOut && accelCounter >= burnoutDelay){
                     accelBoost = 0;
                     accelCount++;
                     accelCounter %= burnoutDelay;
