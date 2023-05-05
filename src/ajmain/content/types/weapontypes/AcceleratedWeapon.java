@@ -1,4 +1,4 @@
-/*package ajmain.content.types.weapontypes;
+package ajmain.content.types.weapontypes;
 
 import arc.*;
 import arc.graphics.*;
@@ -21,7 +21,7 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class AcceleratedWeapon extends Weapon{
-    public Float acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    public Float acceleratedDelay = 120f, acceleratedBonus = 1.5f;
     public Int acceleratedSteps = 1;
     public Float burnoutDelay = 240, cooldownDelay = 120;
     public Boolean burnsOut = true;
@@ -41,6 +41,9 @@ public class AcceleratedWeapon extends Weapon{
         mountType = AcceleratedMount::new;
         recoil = 10f;
     }
+
+    public float accelBoost, accelCounter;
+    public int accelCount;
 
     @Override
     public void update(Unit unit, WeaponMount mount){
@@ -83,4 +86,4 @@ public class AcceleratedWeapon extends Weapon{
         if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
         return Mathf.clamp((float)accelCount / acceleratedSteps);
     }
-}*/
+}
