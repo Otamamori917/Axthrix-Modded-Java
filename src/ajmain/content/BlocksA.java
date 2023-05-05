@@ -20,8 +20,6 @@ public class BlocksA {
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            minWarmup = 30f;
-            warmupMaintainTime = 90f;
             //custom varibles
             acceleratedDelay = 120f;
             acceleratedBonus = 1.5f;
@@ -67,8 +65,6 @@ public class BlocksA {
 
         razdor = new AcceleratedTurret("razdor"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            minWarmup = 30f;
-            warmupMaintainTime = 90f;
             //custom varibles
             acceleratedDelay = 120f;
             acceleratedBonus = 1.5f;
@@ -112,8 +108,6 @@ public class BlocksA {
 
         smuta = new AcceleratedTurret("smuta"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            minWarmup = 30f;
-            warmupMaintainTime = 90f;
             //custom varibles
             acceleratedDelay = 120f;
             acceleratedBonus = 1.5f;
