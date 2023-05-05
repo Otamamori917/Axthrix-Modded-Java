@@ -1,12 +1,24 @@
-package ajmain.content.types.turretypes;
+package ajmain.content.types.weapontypes;
 
 import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.entities.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.draw.*;
+import mindustry.type.*;
+import mindustry.world.blocks.units.*;
+import mindustry.world.meta.*;
+
+import static mindustry.Vars.*;
 
 public class AcceleratedWeapon extends Weapon{{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
