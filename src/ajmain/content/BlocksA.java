@@ -41,7 +41,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootHelix(){{
+            shoot = new ShootSine(){{
                 mag = 1f;
                 scl = 2f;
             }};
@@ -129,7 +129,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootHelix(){{
+            shoot = new ShootSummon(){{
                 mag = 1.75f;
                 scl = 2.75f;
             }};
