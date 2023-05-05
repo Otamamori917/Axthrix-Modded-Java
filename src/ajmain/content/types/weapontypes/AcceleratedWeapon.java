@@ -83,5 +83,12 @@ public class AcceleratedWeapon extends Weapon{{
             if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
             return Mathf.clamp((float)accelCount / acceleratedSteps);
         }
+
+        
+        public static class AcceleratedMount extends WeaponMount{
+            public AcceleratedMount(Weapon weapon){
+               super(weapon);
+            }
+        }
     }
 }
