@@ -1,4 +1,4 @@
-package ajmain.content.types.weapontypes;
+/*package ajmain.content.types.weapontypes;
 
 import arc.*;
 import arc.graphics.*;
@@ -23,7 +23,7 @@ import static mindustry.Vars.*;
 public class AcceleratedWeapon extends Weapon{
     public Float acceleratedDelay = 120f, acceleratedBonus = 1.5f;
     public Int acceleratedSteps = 1;
-    public Float burnoutDelay = 240, cooldownDelay = 120;
+    public Float burnoutDelay = 240f, cooldownDelay = 120f;
     public Boolean burnsOut = true;
 
     public AcceleratedWeapon(String name){
@@ -86,4 +86,4 @@ public class AcceleratedWeapon extends Weapon{
         if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
         return Mathf.clamp((float)accelCount / acceleratedSteps);
     }
-}
+}*/
