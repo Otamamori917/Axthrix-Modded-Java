@@ -10,30 +10,13 @@ import mindustry.world.draw.*;
 
 public class AcceleratedTurret extends ItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
+    public int acceleratedSteps = 1;
     public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
-    public int acceleratedSteps = 1;
 
     public AcceleratedTurret(String name){
         super(name);
     }
-
-        drawer = new DrawTurret(){
-            TextureRegion heatsink, heatsink-heat;
-
-            @Override
-            public void getRegionsToOutline(Block block, Seq<TextureRegion> out){
-                super.getRegionsToOutline(block, out);
-                out.add(heatsink);
-            }
-
-            @Override
-            public void load(Block block){
-                super.load(block);
-
-                heatsink = Core.atlas.find(block.name + "-heatsink");
-                heatsink-heat = Core.atlas.find(block.name + "-heatsink-heat");
-            }
 
 
     @Override
