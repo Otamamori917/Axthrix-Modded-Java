@@ -1,4 +1,4 @@
-package ajmain.content.types.weapontypes;
+/*package ajmain.content.types.weapontypes;
 
 import arc.*;
 import arc.graphics.*;
@@ -83,4 +83,4 @@ public class AcceleratedWeapon extends Weapon{
         if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
         return Mathf.clamp((float)accelCount / acceleratedSteps);
     }
-}
+}*/
