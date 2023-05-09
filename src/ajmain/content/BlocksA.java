@@ -18,6 +18,8 @@ public class BlocksA {
     kramola, razdor, smuta;
 
     public static void load(){
+
+
         kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
@@ -57,9 +59,16 @@ public class BlocksA {
                         lifetime = 100f;
                     }}
             );
+            drawer = new DrawTurret(){{
+                parts.add(new RegionPart("-heatsink"){{
+                    progress = PartProgress.recoil.delay(0.5f); 
+                    under = true;
+                    turretHeatLayer = Layer.turret - 0.0001f;
+                    moveY = -1.5f;
+                }});
+            }};
             inaccuracy = 2f;
         }};
-
 
 
 
