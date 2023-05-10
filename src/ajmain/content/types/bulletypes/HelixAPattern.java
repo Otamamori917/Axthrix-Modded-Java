@@ -16,7 +16,6 @@ public class HelixAPattern extends ShootPattern{
         this.mag = mag;
         offset = scl * Mathf.halfPi;
     }
-    @Override
     public void shoot(int totalShots, BulletHandler handler, @Nullable Runnable barrelIncrementer){
         for(int i = 0; i < shots; i++){
             float off = offset + i * Mathf.PI2 * scl / shots;
