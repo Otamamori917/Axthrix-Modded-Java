@@ -8,7 +8,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
-import mindustry.graphics.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -47,21 +46,16 @@ public class BlocksA {
                 scl = 2f;
             }};
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 15f;
-                    homingPower = 4f;
-                    homingRange = 50;
-                    homingDelay = 20f;
-                    width = 2f;
-                    height = 4f;
-                    hitSize = 2f;
-                    lifetime = 100f;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.techBlue;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
+                    Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 15f;
+                        homingPower = 4f;
+                        homingRange = 50;
+                        homingDelay = 20f;
+                        width = 2f;
+                        height = 4f;
+                        hitSize = 2f;
+                        lifetime = 100f;
+                    }}
             );
             inaccuracy = 2f;
         }};
@@ -98,21 +92,16 @@ public class BlocksA {
                 shots = 3;
             }};
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 30f;
-                    homingPower = 4f;
-                    homingRange = 50;
-                    homingDelay = 20f;
-                    width = 3f;
-                    height = 6f;
-                    hitSize = 3f;
-                    lifetime = 100f;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.techBlue;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
+                    Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 30f;
+                        homingPower = 4f;
+                        homingRange = 50;
+                        homingDelay = 20f;
+                        width = 3f;
+                        height = 6f;
+                        hitSize = 3f;
+                        lifetime = 100f;
+                    }}
             );
             inaccuracy = 2f;
         }};
@@ -147,21 +136,16 @@ public class BlocksA {
                 shots = 4;
             }};
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 60f;
-                    homingPower = 4f;
-                    homingRange = 50;
-                    homingDelay = 20f;
-                    width = 4f;
-                    height = 8f;
-                    hitSize = 4f;
-                    lifetime = 100f;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.techBlue;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
+                    Items.titanium, new BasicBulletType(4f, 100){{
+                        damage = 60f;
+                        homingPower = 4f;
+                        homingRange = 50;
+                        homingDelay = 20f;
+                        width = 4f;
+                        height = 8f;
+                        hitSize = 4f;
+                        lifetime = 100f;
+                    }}
             );
             inaccuracy = 2f;
         }};
