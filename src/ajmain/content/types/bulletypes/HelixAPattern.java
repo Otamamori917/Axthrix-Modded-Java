@@ -3,14 +3,14 @@ package mindustry.entities.pattern;
 import arc.math.*;
 import arc.util.*;
 
-public class ShootHelix extends ShootPattern{
+public class HelixAPattern extends ShootPattern{
     public float scl = 2f, mag = 1.5f, offset = Mathf.PI;
 
-    public ShootHelix(){
+    public HelixAPattern(){
         shots = 2;
     }
 
-    public ShootHelix(float scl, float mag){
+    public HelixAPattern(float scl, float mag){
         this();
         this.scl = scl;
         this.mag = mag;

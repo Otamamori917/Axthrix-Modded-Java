@@ -41,7 +41,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootHelix(){{
+            shoot = new HelixAPattern(){{
                 mag = 1f;
                 scl = 2f;
             }};
@@ -86,9 +86,10 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootHelix(){{
+            shoot = new HelixAPattern(){{
                 mag = 1.5f;
                 scl = 2.5f;
+                shots = 3;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
@@ -129,9 +130,10 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new ShootHelix(){{
+            shoot = new HelixAPattern(){{
                 mag = 1.75f;
                 scl = 2.75f;
+                shots = 4;
             }};
             ammo(
                     Items.titanium, new BasicBulletType(4f, 100){{
