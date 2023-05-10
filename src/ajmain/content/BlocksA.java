@@ -59,7 +59,7 @@ public class BlocksA {
                         lifetime = 100f;
                     }}
             );
-            drawer = new DrawTurret(){{
+            /*drawer = new DrawTurret(){{
                 parts.add(new RegionPart("-heatsink"){{
                     progress = PartProgress.recoil.delay(0.5f); 
                     under = true;
@@ -68,7 +68,7 @@ public class BlocksA {
                 }});
             }};
             inaccuracy = 2f;
-        }};
+        }};*/
 
 
 
