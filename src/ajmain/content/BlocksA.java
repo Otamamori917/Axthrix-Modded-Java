@@ -56,6 +56,7 @@ public class BlocksA {
                     height = 4f;
                     hitSize = 2f;
                     lifetime = 100f;
+                    trailEffect = Fx.artilleryTrail;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.techBlue;
@@ -107,6 +108,7 @@ public class BlocksA {
                     height = 6f;
                     hitSize = 3f;
                     lifetime = 100f;
+                    trailEffect = Fx.artilleryTrail;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.techBlue;
@@ -156,6 +158,7 @@ public class BlocksA {
                     height = 8f;
                     hitSize = 4f;
                     lifetime = 100f;
+                    trailEffect = Fx.artilleryTrail;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.techBlue;
