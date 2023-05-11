@@ -22,8 +22,8 @@ public class AcceleratedTurret extends ItemTurret{
     @Override
     public void setBars(){
         super.setBars();
-        addBar("aj-firerate-bonus", (AcceleratedTurretBuild entity) -> new Bar(
-            () -> Core.bundle.format("bar.aj-firerate-bonus", Strings.autoFixed(entity.accelBoost * 100f, 2)),
+        addBar("aj-phases", (AcceleratedTurretBuild entity) -> new Bar(
+            () -> Core.bundle.format("bar.aj-phases", Strings.autoFixed(entity.accelBoost * 100f, 2)),
             () -> entity.accelCount > acceleratedSteps ? Pal.remove : Pal.techBlue,
             entity::boostf
         ));

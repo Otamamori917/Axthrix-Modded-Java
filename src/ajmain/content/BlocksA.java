@@ -42,7 +42,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new HelixAPattern(){{
+            shoot = new SpiralPattern(){{
                 mag = 1f;
                 scl = 2f;
             }};
@@ -59,12 +59,12 @@ public class BlocksA {
                     trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
-                    trailColor = Pal.techBlue;
+                    trailColor = Pal.tungstenShot;
                     trailLength = 5;
                     trailWidth = 1f;
                 }}
             );
-            inaccuracy = 2f;
+            inaccuracy = 0f;
         }};
 
 
@@ -93,7 +93,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new HelixAPattern(){{
+            shoot = new SpiralPattern(){{
                 mag = 1.5f;
                 scl = 2.5f;
                 shots = 3;
@@ -111,12 +111,12 @@ public class BlocksA {
                     trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
-                    trailColor = Pal.techBlue;
+                    trailColor = Pal.tungstenShot;
                     trailLength = 5;
                     trailWidth = 1f;
                 }}
             );
-            inaccuracy = 2f;
+            inaccuracy = 0f;
         }};
 
 
@@ -143,7 +143,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new HelixAPattern(){{
+            shoot = new SpiralPattern(){{
                 mag = 1.75f;
                 scl = 2.75f;
                 shots = 4;
@@ -161,12 +161,12 @@ public class BlocksA {
                     trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
-                    trailColor = Pal.techBlue;
+                    trailColor = Pal.tungstenShot;
                     trailLength = 5;
                     trailWidth = 1f;
                 }}
             );
-            inaccuracy = 2f;
+            inaccuracy = 0f;
         }};
     }
 }
