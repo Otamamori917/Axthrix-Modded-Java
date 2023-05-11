@@ -187,8 +187,8 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot = new SpiralPattern(){{
-                mag = 3f;
-                scl = 5f;
+                mag = 1f;
+                scl = 3f;
                 shots = 10;
             }};
             ammo(
@@ -201,7 +201,7 @@ public class BlocksA {
                     width = 6f;
                     height = 12f;
                     hitSize = 6f;
-                    lifetime = 400f;
+                    lifetime = 200f;
                     trailEffect = Fx.fire;
                     hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
