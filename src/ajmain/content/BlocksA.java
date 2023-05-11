@@ -195,9 +195,9 @@ public class BlocksA {
                 Items.pyratite, new MissileBulletType(4f, 100){{
                     damage = 300f;
                     makeFire = true;
-                    homingPower = 2f;
-                    homingRange = 40;
-                    homingDelay = 50f;
+                    homingPower = 3f;
+                    homingRange = 80;
+                    homingDelay = 60f;
                     width = 6f;
                     height = 12f;
                     hitSize = 6f;
