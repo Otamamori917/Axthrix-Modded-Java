@@ -4,7 +4,6 @@ import arc.audio.*;
 import arc.files.*;
 import mindustry.*;
 import mindustry.gen.*;
-import mindustry.world.blocks.power.*;
 
 import static mindustry.Vars.*;
 
