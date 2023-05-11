@@ -178,8 +178,8 @@ public class BlocksA {
             scaledHealth = 320f;
             reload = 300f;
             range = 560f;
-            maxAmmo = 40;
-            ammoPerShot = 20;
+            maxAmmo = 20;
+            ammoPerShot = 10;
             recoil = 3f;
             rotateSpeed = 2f;
             targetAir = true;
@@ -189,18 +189,18 @@ public class BlocksA {
             shoot = new SpiralPattern(){{
                 mag = 3f;
                 scl = 5f;
-                shots = 20;
+                shots = 10;
             }};
             ammo(
                 Items.pyratite, new MissileBulletType(4f, 100){{
-                    damage = 150f;
+                    damage = 300f;
                     scaleLife = true;
                     makeFire = true;
                     width = 6f;
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 400f;
-                    trailEffect = Fx.shootSmallFlame;
+                    trailEffect = Fx.hitFlameSmall;
                     hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
                     trailParam = 4f;
