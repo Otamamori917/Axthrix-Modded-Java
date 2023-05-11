@@ -187,26 +187,26 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.shootBig;
             shoot = new SpiralPattern(){{
-                mag = 1f;
-                scl = 2f;
+                mag = 3f;
+                scl = 5f;
                 shots = 20;
             }};
             ammo(
-                Items.titanium, new MissileBulletType(4f, 100){{
+                Items.pyratite, new MissileBulletType(4f, 100){{
                     damage = 150f;
                     scaleLife = true;
                     makeFire = true;
-                    width = 2f;
-                    height = 4f;
-                    hitSize = 2f;
-                    lifetime = 200f;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 6f;
+                    lifetime = 400f;
                     trailEffect = Fx.shootSmallFlame;
                     hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
                     trailParam = 4f;
-                    trailColor = Pal.tungstenShot;
-                    trailLength = 5;
-                    trailWidth = 1f;
+                    trailColor = Pal.remove;
+                    trailLength = 20;
+                    trailWidth = 4f;
                 }}
             );
             inaccuracy = 0f;
