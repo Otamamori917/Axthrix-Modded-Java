@@ -11,7 +11,6 @@ import mindustry.entities.pattern.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 
-import ajmain.content.SoundsA;
 import static mindustry.type.ItemStack.*;
 
 public class BlocksA {
@@ -186,7 +185,7 @@ public class BlocksA {
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shootSound = SoundsA.ClusterMissileFire;
+            shootSound = Sounds.shootBig;
             shoot = new SpiralPattern(){{
                 mag = 3f;
                 scl = 5f;
