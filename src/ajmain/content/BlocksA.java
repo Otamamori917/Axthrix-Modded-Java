@@ -200,13 +200,13 @@ public class BlocksA {
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 400f;
-                    trailEffect = Fx.hitFlameSmall;
+                    trailEffect = Fx.fire;
                     hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
                     trailParam = 4f;
-                    trailColor = Pal.remove;
-                    trailLength = 20;
-                    trailWidth = 4f;
+                    trailColor = Pal.darkFlame;
+                    trailLength = 8;
+                    trailWidth = 2f;
                 }}
             );
             inaccuracy = 0f;
