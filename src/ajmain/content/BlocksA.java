@@ -205,7 +205,7 @@ public class BlocksA {
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
             buildCostMultiplier = 0.1f;
-            size = 3;
+            size = 4;
             scaledHealth = 320f;
             reload = 300f;
             range = 560f;
@@ -218,8 +218,8 @@ public class BlocksA {
             shootY = -2f;
             shootSound = Sounds.mediumCannon;
             shoot = new SpiralPattern(){{
-                mag = 1.5f;
-                scl = 3.5f;
+                mag = 2f;
+                scl = 4f;
                 shots = 10;
             }};
             ammo(
@@ -245,7 +245,7 @@ public class BlocksA {
             );
             inaccuracy = 0f;
 
-            drawer = new DrawTurret("reinforced-"){{
+            drawer = new DrawTurret("block-"){{
                 parts.add(new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
