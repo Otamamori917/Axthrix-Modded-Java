@@ -18,3 +18,4 @@ public class SoundsA{
 
         clusterLaunch = Vars.tree.loadSound("cluster-launch");
     }
+}    
