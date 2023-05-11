@@ -261,7 +261,7 @@ public class BlocksA {
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.techBlue;
                         mirror = true;
-                        under = false;
+                        under = true;
                         moveY = 0.5f;
                         moveX = 1f;
 
