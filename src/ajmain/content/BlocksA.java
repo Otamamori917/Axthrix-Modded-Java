@@ -256,16 +256,16 @@ public class BlocksA {
                     moveX = 0f;
                     moveY = -5f;
                     mirror = true;
-                    children.add(new RegionPart("-side"){{
+                    children.add(new RegionPart("-wing"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.techBlue;
                         mirror = true;
                         under = false;
-                        moveY = -4f;
-                        moveX = 0.5f;
+                        moveY = 0.5f;
+                        moveX = 1f;
 
-                        moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -40f));
+                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
                     }});
                 }},
                 new RegionPart("-mid"){{
