@@ -185,10 +185,10 @@ public class BlocksA {
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shootSound = Sounds.shootBig;
+            shootSound = SoundsA.clusterLaunch;
             shoot = new SpiralPattern(){{
-                mag = 1f;
-                scl = 3f;
+                mag = 1.5f;
+                scl = 3.5f;
                 shots = 10;
             }};
             ammo(
