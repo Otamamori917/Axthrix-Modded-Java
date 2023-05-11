@@ -200,7 +200,7 @@ public class BlocksA {
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 400f;
-                    trailEffect = Fx.hitFlameSmall;
+                    trailEffect = new MultiEffect (Fx.hitFlameSmall, Fx.missileTrail);
                     hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
                     trailParam = 4f;
