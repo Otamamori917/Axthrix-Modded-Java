@@ -250,7 +250,7 @@ public class BlocksA {
                 parts.add(new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
-                    heatColor = Color.techBlue;
+                    heatColor = Pal.techBlue;
                     moveRot = -22f;
                     moveX = 0f;
                     moveY = -5f;
@@ -258,7 +258,7 @@ public class BlocksA {
                     children.add(new RegionPart("-side"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
-                        heatColor = Color.techBlue;
+                        heatColor = Pal.techBlue;
                         mirror = true;
                         under = false;
                         moveY = -3f;
