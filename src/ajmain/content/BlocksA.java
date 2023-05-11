@@ -265,12 +265,13 @@ public class BlocksA {
                         moveY = -4f;
                         moveX = 0.5f;
 
-                        moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -50f));
+                        moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -40f));
                     }});
                 }},
                 new RegionPart("-mid"){{
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                    heatColor = Pal.techBlue;
                     mirror = false;
                     under = true;
                     moveY = -5f;
@@ -278,8 +279,8 @@ public class BlocksA {
                     progress = PartProgress.reload.curve(Interp.pow2In);
 
                     colorTo = new Color(1f, 1f, 1f, 0f);
-                    color = Pal.techBlue;
-                    mixColorTo = Pal.sap;
+                    color = Color.white;
+                    mixColorTo = Pal.accent;
                     mixColor = new Color(1f, 1f, 1f, 0f);
                     outline = false;
                     under = true;
