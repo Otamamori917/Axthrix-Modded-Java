@@ -262,10 +262,10 @@ public class BlocksA {
                         heatColor = Pal.techBlue;
                         mirror = true;
                         under = false;
-                        moveY = -3f;
-                        moveX = 1f;
+                        moveY = -4f;
+                        moveX = 0.5f;
 
-                        moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -40f));
+                        moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -50f));
                     }});
                 }},
                 new RegionPart("-mid"){{
