@@ -217,6 +217,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.mediumCannon;
+            shoot.firstShotDelay = 60;
             shoot = new SpiralPattern(){{
                 mag = 2f;
                 scl = 4f;
@@ -245,11 +246,11 @@ public class BlocksA {
             );
             inaccuracy = 0f;
 
-            drawer = new DrawTurret("block-"){{
+            drawer = new DrawTurret("reinforced-"){{
                 parts.add(new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
-                    heatColor = Color.red;
+                    heatColor = Color.techBlue;
                     moveRot = -22f;
                     moveX = 0f;
                     moveY = -5f;
@@ -257,10 +258,10 @@ public class BlocksA {
                     children.add(new RegionPart("-side"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
-                        heatColor = Color.red;
+                        heatColor = Color.techBlue;
                         mirror = true;
                         under = false;
-                        moveY = -4f;
+                        moveY = -3f;
                         moveX = 1f;
 
                         moves.add(new PartMove(PartProgress.recoil, 1f, 6f, -40f));
