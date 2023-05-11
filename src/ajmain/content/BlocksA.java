@@ -194,8 +194,10 @@ public class BlocksA {
             ammo(
                 Items.pyratite, new MissileBulletType(4f, 100){{
                     damage = 300f;
-                    scaleLife = true;
                     makeFire = true;
+                    homingPower = 2f;
+                    homingRange = 40;
+                    homingDelay = 50f;
                     width = 6f;
                     height = 12f;
                     hitSize = 6f;
@@ -205,7 +207,8 @@ public class BlocksA {
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.darkFlame;
-                    trailLength = 8;
+                    status = StatusEffects.burning;
+                    trailLength = 16;
                     trailWidth = 2f;
                 }}
             );
