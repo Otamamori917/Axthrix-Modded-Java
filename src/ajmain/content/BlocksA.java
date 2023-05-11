@@ -217,7 +217,8 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.mediumCannon;
-            shoot.firstShotDelay = 60;
+            minWarmup = 0.94f;
+            shootWarmupSpeed = 0.03f;
             shoot = new SpiralPattern(){{
                 mag = 2f;
                 scl = 4f;
@@ -277,8 +278,8 @@ public class BlocksA {
                     progress = PartProgress.reload.curve(Interp.pow2In);
 
                     colorTo = new Color(1f, 1f, 1f, 0f);
-                    color = Color.white;
-                    mixColorTo = Pal.accent;
+                    color = Pal.techBlue;
+                    mixColorTo = Pal.sap;
                     mixColor = new Color(1f, 1f, 1f, 0f);
                     outline = false;
                     under = true;
