@@ -15,8 +15,10 @@ import static mindustry.type.ItemStack.*;
 public class BlocksA {
     public static Block
 
-    //turrets
+    //Bendy miniguns
     kramola, razdor, smuta;
+    //Rocket Artilery
+    kisten, bulvala;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
@@ -159,6 +161,48 @@ public class BlocksA {
                     hitSize = 4f;
                     lifetime = 100f;
                     trailEffect = Fx.none;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.tungstenShot;
+                    trailLength = 5;
+                    trailWidth = 1f;
+                }}
+            );
+            inaccuracy = 0f;
+        }};
+
+        kisten = new ItemTurret("kisten"){{
+            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+
+            buildCostMultiplier = 0.1f;
+            size = 3;
+            scaledHealth = 320f;
+            reload = 300f;
+            range = 560f;
+            maxAmmo = 40;
+            ammoPerShot = 20;
+            recoil = 3f;
+            rotateSpeed = 2f;
+            targetAir = true;
+            targetGround = true;
+            shootY = -2f;
+            shootSound = Sounds.shootBig;
+            shoot = new SpiralPattern(){{
+                mag = 1f;
+                scl = 2f;
+                shots = 20;
+            }};
+            ammo(
+                Items.titanium, new MissileBulletType(4f, 100){{
+                    damage = 150f;
+                    scaleLife = true;
+                    makeFire = true;
+                    width = 2f;
+                    height = 4f;
+                    hitSize = 2f;
+                    lifetime = 200f;
+                    trailEffect = Fx.shootSmallFlame;
+                    hitEffect = Fx.hitFlameSmall;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.tungstenShot;
