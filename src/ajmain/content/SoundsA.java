@@ -11,7 +11,7 @@ import static mindustry.Vars.*;
 public class SoundsA{
     public static Sound
 
-    clusterLaunch = new Sound(),
+    clusterLaunch = new Sound();
 
     public static void load() {
         if(Vars.headless) return;
