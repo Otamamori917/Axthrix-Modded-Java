@@ -16,7 +16,7 @@ public class BlocksA {
     public static Block
 
     //Bendy miniguns        Rocket Artilery
-    kramola, razdor, smuta, kisten, bulvala;
+    kramola, razdor, smuta, kisten;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
