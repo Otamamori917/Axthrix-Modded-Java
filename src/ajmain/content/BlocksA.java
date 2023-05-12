@@ -355,11 +355,11 @@ public class BlocksA {
                         heatColor = Pal.techBlue;
                         mirror = true;
                         under = true;
-                        moveRot = -4f;
+                        moveRot = 6f;
                         moveY = 1f;
                         moveX = 2f;
 
-                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, 30f));
+                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -10f));
                         children.add(new RegionPart("-plate"){{
                             progress = PartProgress.warmup.delay(0.6f);
                             heatProgress = PartProgress.recoil;
