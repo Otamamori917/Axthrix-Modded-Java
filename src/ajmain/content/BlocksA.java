@@ -220,8 +220,8 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.mediumCannon;
-            minWarmup = 0.99f;
-            shootWarmupSpeed = 0.02f;
+            minWarmup = 0.94f;
+            shootWarmupSpeed = 0.05f;
             shoot = new SpiralPattern(){{
                 mag = 2f;
                 scl = 4f;
@@ -381,8 +381,7 @@ public class BlocksA {
                                 x = 8f;
                                 moveY = 3f;
                                 moveX = 9.5f;
-
-                                moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 80f));      
+      
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
@@ -395,8 +394,7 @@ public class BlocksA {
                                 x = 8f;
                                 moveY = -2f;
                                 moveX = 5f;
-
-                                moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 70f));      
+     
                             }});     
                         }});
                     }});
