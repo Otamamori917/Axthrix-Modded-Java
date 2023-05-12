@@ -239,7 +239,7 @@ public class BlocksA {
                     hitSize = 6f;
                     lifetime = 200f;
                     trailEffect = Fx.burning;
-                    trailInterval = 5f;
+                    trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.darkFlame;
                     status = StatusEffects.burning;
