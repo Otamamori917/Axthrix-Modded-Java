@@ -210,7 +210,7 @@ public class BlocksA {
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 320f;
-            reload = 400f;
+            reload = 480f;
             range = 760f;
             maxAmmo = 20;
             ammoPerShot = 10;
