@@ -235,8 +235,8 @@ public class BlocksA {
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 200f;
-                    trailEffect = Fx.fire;
-                    hitEffect = Fx.hitFlameSmall;
+                    trailEffect = Fx.burning;
+                    hitEffect = Fx.instHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.darkFlame;
@@ -271,8 +271,9 @@ public class BlocksA {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.techBlue;
-                    moveRot = -22f;
-                    moveX = 0f;
+                    rot = 2f;
+                    moveRot = -24f;
+                    moveX = -2f;
                     moveY = -5f;
                     mirror = true;
                     children.add(new RegionPart("-wing"){{
@@ -301,7 +302,7 @@ public class BlocksA {
                     color = Color.white;
                     mixColorTo = Pal.accent;
                     mixColor = new Color(1f, 1f, 1f, 0f);
-                    outline = false;
+                    outline = true;
                     under = true;
 
                     layerOffset = -0.01f;
