@@ -210,7 +210,7 @@ public class BlocksA {
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 320f;
-            reload = 480f;
+            reload = 600f;
             range = 760f;
             maxAmmo = 20;
             ammoPerShot = 10;
@@ -311,7 +311,7 @@ public class BlocksA {
                     trailColor = Pal.tungstenShot;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 1.6f;
+                    reloadMultiplier = 1.8f;
                     backColor = Pal.tungstenShot;
                     frontColor = Pal.techBlue;
                 }},
@@ -332,7 +332,7 @@ public class BlocksA {
                     status = StatusEffects.sapped;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 0.4f;
+                    reloadMultiplier = 0.6f;
                     backColor = Pal.sap;
                     frontColor = Pal.techBlue;
                 }}
