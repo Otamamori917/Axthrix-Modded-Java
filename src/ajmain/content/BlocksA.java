@@ -340,7 +340,7 @@ public class BlocksA {
             inaccuracy = 0f;
             coolant = consumeCoolant(0.1f);
 
-            drawer = new DrawTurret("reinforced-"){{
+            drawer = new DrawTurret("crystalized-"){{
                 parts.add(new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
