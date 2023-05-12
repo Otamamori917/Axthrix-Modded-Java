@@ -243,7 +243,7 @@ public class BlocksA {
                     status = StatusEffects.burning;
                     trailLength = 16;
                     trailWidth = 2f;
-                }}
+                }},
 
                 Items.titanium, new MissileBulletType(4f, 100){{
                     damage = 300f;
