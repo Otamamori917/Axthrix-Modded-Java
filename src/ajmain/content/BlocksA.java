@@ -244,6 +244,25 @@ public class BlocksA {
                     trailLength = 16;
                     trailWidth = 2f;
                 }}
+
+                Items.titanium, new MissileBulletType(4f, 100){{
+                    damage = 300f;
+                    homingPower = 3f;
+                    homingRange = 80;
+                    homingDelay = 60f;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 6f;
+                    lifetime = 200f;
+                    trailEffect = Fx.freezing;
+                    hitEffect = Fx.instHit;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.techBlue;
+                    status = StatusEffects.freezing;
+                    trailLength = 16;
+                    trailWidth = 2f;
+                }}
             );
             inaccuracy = 0f;
 
