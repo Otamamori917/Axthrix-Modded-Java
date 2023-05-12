@@ -304,6 +304,7 @@ public class BlocksA {
                                 mirror = true;
                                 under = true;
                                 moveRot = 10f;
+                                x = 6f;
                                 moveY = 1f;
                                 moveX = 1f;
 
@@ -317,6 +318,7 @@ public class BlocksA {
                                 mirror = true;
                                 under = true;
                                 moveRot = 10f;
+                                x = 6f;
                                 moveY = 1f;
                                 moveX = 1f;
 
