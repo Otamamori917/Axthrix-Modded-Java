@@ -210,7 +210,7 @@ public class BlocksA {
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 320f;
-            reload = 600f;
+            reload = 1200f;
             range = 760f;
             maxAmmo = 20;
             ammoPerShot = 10;
@@ -229,7 +229,7 @@ public class BlocksA {
             }};
             ammo(
                 Items.pyratite, new MissileBulletType(4f, 100){{
-                    damage = 200f;
+                    damage = 400f;
                     makeFire = true;
                     homingPower = 3f;
                     homingRange = 80;
@@ -250,7 +250,7 @@ public class BlocksA {
                 }},
 
                 Items.titanium, new MissileBulletType(4f, 100){{
-                    damage = 250f;
+                    damage = 500f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -271,13 +271,13 @@ public class BlocksA {
                 }},
 
                 Items.surgeAlloy, new MissileBulletType(4f, 100){{
-                    damage = 300f;
+                    damage = 600f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
-                    lightning = 1;
-                    lightningLength = 5;
-                    lightningLengthRand = 3;
+                    lightning = 2;
+                    lightningLength = 15;
+                    lightningLengthRand = 10;
                     lightningDamage = 50;
                     lightningColor = Pal.surge;
                     width = 6f;
@@ -296,7 +296,7 @@ public class BlocksA {
                 }},
 
                 Items.metaglass, new MissileBulletType(4f, 100){{
-                    damage = 150f;
+                    damage = 300f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -317,7 +317,7 @@ public class BlocksA {
                 }},
 
                 Items.thorium, new MissileBulletType(4f, 100){{
-                    damage = 600f;
+                    damage = 1200f;
                     homingPower = 1.5f;
                     homingRange = 40;
                     homingDelay = 120f;
