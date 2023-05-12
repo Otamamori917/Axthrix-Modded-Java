@@ -303,26 +303,26 @@ public class BlocksA {
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = 30f;
+                                moveRot = 40f;
                                 x = 8f;
-                                moveY = 2f;
+                                moveY = 3f;
                                 moveX = 10f;
 
-                                moves.add(new PartMove(PartProgress.recoil, -3f, 4f, 20f));      
+                                moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 60f));      
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
                                 progress = PartProgress.warmup;
                                 heatProgress = PartProgress.recoil;
-                                heatColor = Pal.remove;
+                                heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = 30f;
+                                moveRot = 40f;
                                 x = 8f;
-                                moveY = -3f;
+                                moveY = -2f;
                                 moveX = 5f;
 
-                                moves.add(new PartMove(PartProgress.recoil, -3f, 4f, 20f));      
+                                moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 60f));      
                             }});     
                         }});
                     }});
