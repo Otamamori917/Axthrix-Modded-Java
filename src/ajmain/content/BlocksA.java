@@ -271,7 +271,6 @@ public class BlocksA {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.techBlue;
-                    rot = 2f;
                     moveRot = -24f;
                     moveX = -2f;
                     moveY = -5f;
@@ -282,6 +281,7 @@ public class BlocksA {
                         heatColor = Pal.techBlue;
                         mirror = true;
                         under = true;
+                        moveRot = -1f;
                         moveY = 0.5f;
                         moveX = 1f;
 
