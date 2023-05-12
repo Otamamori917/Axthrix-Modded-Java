@@ -265,7 +265,7 @@ public class BlocksA {
                     status = StatusEffects.freezing;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 1.4f
+                    reloadMultiplier = 1.4f;
                 }},
 
                 Items.surge-alloy, new MissileBulletType(4f, 100){{
@@ -273,10 +273,10 @@ public class BlocksA {
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
-                    lightning = 10
-                    lightningLength = 5
-                    lightningLengthRand = 3
-                    lightningDamage = 100
+                    lightning = 10;
+                    lightningLength = 5;
+                    lightningLengthRand = 3;
+                    lightningDamage = 100;
                     lightningColor = Pal.surge;
                     width = 6f;
                     height = 12f;
@@ -309,7 +309,7 @@ public class BlocksA {
                     trailColor = Pal.tungstenShot;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 1.6f
+                    reloadMultiplier = 1.6f;
                 }},
 
                 Items.thorium, new MissileBulletType(4f, 100){{
@@ -329,7 +329,7 @@ public class BlocksA {
                     status = StatusEffects.sapped;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 0.4f
+                    reloadMultiplier = 0.4f;
                 }}
             );
             inaccuracy = 0f;
