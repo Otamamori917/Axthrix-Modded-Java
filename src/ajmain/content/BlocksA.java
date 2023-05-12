@@ -306,7 +306,7 @@ public class BlocksA {
                                 moveRot = 40f;
                                 x = 8f;
                                 moveY = 3f;
-                                moveX = 10f;
+                                moveX = 9.5f;
 
                                 moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 60f));      
                             }}); 
@@ -322,7 +322,7 @@ public class BlocksA {
                                 moveY = -2f;
                                 moveX = 5f;
 
-                                moves.add(new PartMove(PartProgress.recoil, -6f, 4f, 60f));      
+                                moves.add(new PartMove(PartProgress.recoil, -6f, -3f, 60f));      
                             }});     
                         }});
                     }});
