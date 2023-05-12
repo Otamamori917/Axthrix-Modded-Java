@@ -303,7 +303,7 @@ public class BlocksA {
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = 20f;
+                                moveRot = -20f;
                                 moveY = 1.5f;
                                 moveX = 4f;
 
@@ -313,10 +313,10 @@ public class BlocksA {
                             children.add(new RegionPart("-wing"){{
                                 progress = PartProgress.warmup.delay(0.6f);
                                 heatProgress = PartProgress.recoil;
-                                heatColor = Pal.techBlue;
+                                heatColor = Pal.remove;
                                 mirror = true;
                                 under = true;
-                                moveRot = -24f;
+                                moveRot = 24f;
                                 moveY = 3f;
                                 moveX = 6f;
 
