@@ -268,7 +268,7 @@ public class BlocksA {
                     reloadMultiplier = 1.4f;
                 }},
 
-                Items.surge-alloy, new MissileBulletType(4f, 100){{
+                Items.surgeAlloy, new MissileBulletType(4f, 100){{
                     damage = 400f;
                     homingPower = 3f;
                     homingRange = 80;
