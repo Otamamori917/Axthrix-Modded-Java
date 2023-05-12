@@ -296,7 +296,32 @@ public class BlocksA {
                             moveY = 1.5f;
                             moveX = 2.5f;
 
-                            moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
+                            moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
+                            children.add(new RegionPart("-wing"){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.techBlue;
+                                mirror = true;
+                                under = true;
+                                moveRot = -6f;
+                                moveY = 1.5f;
+                                moveX = 2.5f;
+
+                                moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
+                            }}); 
+
+                            children.add(new RegionPart("-wing"){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.techBlue;
+                                mirror = true;
+                                under = true;
+                                moveRot = -6f;
+                                moveY = 1.5f;
+                                moveX = 2.5f;
+
+                                moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
+                            }});     
                         }});
                     }});
                 }}, 
