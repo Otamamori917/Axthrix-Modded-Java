@@ -303,9 +303,9 @@ public class BlocksA {
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = -6f;
+                                moveRot = 20f;
                                 moveY = 1.5f;
-                                moveX = 2.5f;
+                                moveX = 4f;
 
                                 moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
                             }}); 
@@ -316,9 +316,9 @@ public class BlocksA {
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = -6f;
-                                moveY = 1.5f;
-                                moveX = 2.5f;
+                                moveRot = -24f;
+                                moveY = 3f;
+                                moveX = 6f;
 
                                 moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
                             }});     
