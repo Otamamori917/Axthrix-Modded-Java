@@ -303,7 +303,7 @@ public class BlocksA {
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = -20f;
+                                moveRot = 4f;
                                 moveY = 1.5f;
                                 moveX = 4f;
 
@@ -316,7 +316,7 @@ public class BlocksA {
                                 heatColor = Pal.remove;
                                 mirror = true;
                                 under = true;
-                                moveRot = 24f;
+                                moveRot = 1f;
                                 moveY = 3f;
                                 moveX = 6f;
 
