@@ -275,7 +275,7 @@ public class BlocksA {
                     moveX = 4f;
                     moveY = 5f;
                     mirror = true;
-                    children.add(new RegionPart("-wing"){{
+                    children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.techBlue;
@@ -286,19 +286,18 @@ public class BlocksA {
                         moveX = 2f;
 
                         moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
-                        children.add(new RegionPart("-wing"){{
+                        children.add(new RegionPart("-plate"){{
                             progress = PartProgress.warmup.delay(0.6f);
                             heatProgress = PartProgress.recoil;
                             heatColor = Pal.techBlue;
                             mirror = true;
                             under = true;
-                            moveRot = -4f;
-                            moveY = 1f;
-                            moveX = 2f;
+                            moveRot = -6f;
+                            moveY = 1.5f;
+                            moveX = 2.5f;
 
-                            moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
-                        
-                    }});
+                            moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
+                        }});
                     }});
                 }}, 
                 new RegionPart("-mid"){{
