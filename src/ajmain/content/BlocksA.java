@@ -220,7 +220,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.mediumCannon;
-            minWarmup = 1.2f;
+            minWarmup = 0.84f;
             shootWarmupSpeed = 0.02f;
             shoot = new SpiralPattern(){{
                 mag = 2f;
