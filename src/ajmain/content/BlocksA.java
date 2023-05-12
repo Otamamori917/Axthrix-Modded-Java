@@ -239,13 +239,14 @@ public class BlocksA {
                     hitSize = 6f;
                     lifetime = 200f;
                     trailEffect = Fx.burning;
-                    hitEffect = Fx.instHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.darkFlame;
                     status = StatusEffects.burning;
                     trailLength = 16;
                     trailWidth = 2f;
+                    backColor = Pal.darkFlame;
+                    frontColor = Pal.techBlue;
                 }},
 
                 Items.titanium, new MissileBulletType(4f, 100){{
@@ -258,7 +259,6 @@ public class BlocksA {
                     hitSize = 6f;
                     lifetime = 200f;
                     trailEffect = Fx.freezing;
-                    hitEffect = Fx.instHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.techBlue;
@@ -266,30 +266,33 @@ public class BlocksA {
                     trailLength = 16;
                     trailWidth = 2f;
                     reloadMultiplier = 1.4f;
+                    backColor = Pal.techBlue;
+                    frontColor = Pal.techBlue;
                 }},
 
                 Items.surgeAlloy, new MissileBulletType(4f, 100){{
-                    damage = 400f;
+                    damage = 300f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
-                    lightning = 10;
+                    lightning = 1;
                     lightningLength = 5;
                     lightningLengthRand = 3;
-                    lightningDamage = 100;
+                    lightningDamage = 50;
                     lightningColor = Pal.surge;
                     width = 6f;
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 200f;
                     trailEffect = Fx.lightning;
-                    hitEffect = Fx.fireHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.surge;
                     status = StatusEffects.shocked;
                     trailLength = 16;
                     trailWidth = 2f;
+                    backColor = Pal.surge;
+                    frontColor = Pal.techBlue;
                 }},
 
                 Items.metaglass, new MissileBulletType(4f, 100){{
@@ -301,15 +304,16 @@ public class BlocksA {
                     height = 12f;
                     hitSize = 6f;
                     lifetime = 200f;
-                    knockback = 5f;
+                    knockback = 20f;
                     trailEffect = Fx.unitDust;
-                    hitEffect = Fx.fireHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.tungstenShot;
                     trailLength = 16;
                     trailWidth = 2f;
                     reloadMultiplier = 1.6f;
+                    backColor = Pal.tungstenShot;
+                    frontColor = Pal.techBlue;
                 }},
 
                 Items.thorium, new MissileBulletType(4f, 100){{
@@ -322,7 +326,6 @@ public class BlocksA {
                     hitSize = 6f;
                     lifetime = 200f;
                     trailEffect = Fx.sapped;
-                    hitEffect = Fx.fireHit;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.sap;
@@ -330,6 +333,8 @@ public class BlocksA {
                     trailLength = 16;
                     trailWidth = 2f;
                     reloadMultiplier = 0.4f;
+                    backColor = Pal.sap;
+                    frontColor = Pal.techBlue;
                 }}
             );
             inaccuracy = 0f;
