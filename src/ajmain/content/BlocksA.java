@@ -271,9 +271,9 @@ public class BlocksA {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.techBlue;
-                    moveRot = -24f;
-                    moveX = -2f;
-                    moveY = -5f;
+                    moveRot = -18f;
+                    moveX = 4f;
+                    moveY = 5f;
                     mirror = true;
                     children.add(new RegionPart("-wing"){{
                         progress = PartProgress.warmup.delay(0.6f);
@@ -281,13 +281,26 @@ public class BlocksA {
                         heatColor = Pal.techBlue;
                         mirror = true;
                         under = true;
-                        moveRot = -1f;
-                        moveY = 0.5f;
-                        moveX = 1f;
+                        moveRot = -4f;
+                        moveY = 1f;
+                        moveX = 2f;
 
                         moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
+                        children.add(new RegionPart("-wing"){{
+                            progress = PartProgress.warmup.delay(0.6f);
+                            heatProgress = PartProgress.recoil;
+                            heatColor = Pal.techBlue;
+                            mirror = true;
+                            under = true;
+                            moveRot = -4f;
+                            moveY = 1f;
+                            moveX = 2f;
+
+                            moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
+                        
                     }});
-                }},
+                    }});
+                }}, 
                 new RegionPart("-mid"){{
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
