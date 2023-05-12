@@ -359,7 +359,7 @@ public class BlocksA {
                         moveY = 1f;
                         moveX = 2f;
 
-                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -40f));
+                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, 30f));
                         children.add(new RegionPart("-plate"){{
                             progress = PartProgress.warmup.delay(0.6f);
                             heatProgress = PartProgress.recoil;
