@@ -298,27 +298,27 @@ public class BlocksA {
 
                             moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
                             children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup.delay(0.6f);
+                                progress = PartProgress.warmup;
                                 heatProgress = PartProgress.recoil;
                                 heatColor = Pal.techBlue;
                                 mirror = true;
                                 under = true;
-                                moveRot = -40f;
-                                moveY = 3f;
-                                moveX = 5f;
+                                moveRot = 40f;
+                                moveY = 4f;
+                                moveX = 7f;
 
                                 moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup.delay(0.6f);
+                                progress = PartProgress.warmup;
                                 heatProgress = PartProgress.recoil;
                                 heatColor = Pal.remove;
                                 mirror = true;
                                 under = true;
                                 moveRot = 40f;
                                 moveY = 7f;
-                                moveX = 7f;
+                                moveX = 6f;
 
                                 moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));      
                             }});     
