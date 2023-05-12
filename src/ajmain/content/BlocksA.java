@@ -97,6 +97,7 @@ public class BlocksA {
                 }}
             );
             inaccuracy = 0f;
+            coolant = consumeCoolant(0.1f);
         }};
 
 
@@ -149,6 +150,7 @@ public class BlocksA {
                 }}
             );
             inaccuracy = 0f;
+            coolant = consumeCoolant(0.1f);
         }};
 
 
@@ -199,6 +201,7 @@ public class BlocksA {
                 }}
             );
             inaccuracy = 0f;
+            coolant = consumeCoolant(0.1f);
         }};
 
         kisten = new ItemTurret("kisten"){{
@@ -207,8 +210,8 @@ public class BlocksA {
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 320f;
-            reload = 300f;
-            range = 560f;
+            reload = 400f;
+            range = 760f;
             maxAmmo = 20;
             ammoPerShot = 10;
             recoil = 3f;
@@ -226,7 +229,7 @@ public class BlocksA {
             }};
             ammo(
                 Items.pyratite, new MissileBulletType(4f, 100){{
-                    damage = 300f;
+                    damage = 200f;
                     makeFire = true;
                     homingPower = 3f;
                     homingRange = 80;
@@ -246,7 +249,7 @@ public class BlocksA {
                 }},
 
                 Items.titanium, new MissileBulletType(4f, 100){{
-                    damage = 300f;
+                    damage = 250f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -262,9 +265,75 @@ public class BlocksA {
                     status = StatusEffects.freezing;
                     trailLength = 16;
                     trailWidth = 2f;
+                    reloadMultiplier = 1.4f
+                }},
+
+                Items.surge-alloy, new MissileBulletType(4f, 100){{
+                    damage = 400f;
+                    homingPower = 3f;
+                    homingRange = 80;
+                    homingDelay = 60f;
+                    lightning = 10
+                    lightningLength = 5
+                    lightningLengthRand = 3
+                    lightningDamage = 100
+                    lightningColor = Pal.surge;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 6f;
+                    lifetime = 200f;
+                    trailEffect = Fx.lightning;
+                    hitEffect = Fx.fireHit;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.surge;
+                    status = StatusEffects.shocked;
+                    trailLength = 16;
+                    trailWidth = 2f;
+                }},
+
+                Items.metaglass, new MissileBulletType(4f, 100){{
+                    damage = 150f;
+                    homingPower = 3f;
+                    homingRange = 80;
+                    homingDelay = 60f;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 6f;
+                    lifetime = 200f;
+                    knockback = 5f;
+                    trailEffect = Fx.unitDust;
+                    hitEffect = Fx.fireHit;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.tungstenShot;
+                    trailLength = 16;
+                    trailWidth = 2f;
+                    reloadMultiplier = 1.6f
+                }},
+
+                Items.thorium, new MissileBulletType(4f, 100){{
+                    damage = 600f;
+                    homingPower = 1.5f;
+                    homingRange = 40;
+                    homingDelay = 120f;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 6f;
+                    lifetime = 200f;
+                    trailEffect = Fx.sapped;
+                    hitEffect = Fx.fireHit;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.sap;
+                    status = StatusEffects.sapped;
+                    trailLength = 16;
+                    trailWidth = 2f;
+                    reloadMultiplier = 0.4f
                 }}
             );
             inaccuracy = 0f;
+            coolant = consumeCoolant(0.1f);
 
             drawer = new DrawTurret("reinforced-"){{
                 parts.add(new RegionPart("-blade"){{
