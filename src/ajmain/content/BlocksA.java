@@ -382,7 +382,7 @@ public class BlocksA {
                                 moveY = 3f;
                                 moveX = 9.5f;
 
-                                moves.add(new PartMove(PartProgress.recoil, 0f, -5f, 80f));      
+                                moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 80f));      
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
@@ -396,7 +396,7 @@ public class BlocksA {
                                 moveY = -2f;
                                 moveX = 5f;
 
-                                moves.add(new PartMove(PartProgress.recoil, 0f, -5f, 70f));      
+                                moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 70f));      
                             }});     
                         }});
                     }});
