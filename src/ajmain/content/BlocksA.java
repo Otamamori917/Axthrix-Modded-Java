@@ -339,6 +339,7 @@ public class BlocksA {
             );
             inaccuracy = 0f;
             coolant = consumeCoolant(0.1f);
+            recoilTime =
 
             drawer = new DrawTurret("crystalized-"){{
                 parts.add(new RegionPart("-blade"){{
@@ -382,7 +383,7 @@ public class BlocksA {
                                 moveY = 3f;
                                 moveX = 9.5f;
 
-                                moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 80f));      
+                                moves.add(new PartMove(PartProgress.recoil, 1f, 9f, 90f));      
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
