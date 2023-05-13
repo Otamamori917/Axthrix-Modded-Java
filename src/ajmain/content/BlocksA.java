@@ -339,7 +339,7 @@ public class BlocksA {
             );
             inaccuracy = 0f;
             coolant = consumeCoolant(0.1f);
-            recoilTime =
+            recoilTime = 600f;
 
             drawer = new DrawTurret("crystalized-"){{
                 parts.add(new RegionPart("-blade"){{
