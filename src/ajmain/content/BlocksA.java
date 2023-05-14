@@ -526,19 +526,19 @@ public class BlocksA {
                         moveY = 1.5f;
                         moveX = 2.5f;  
                     }});
-                }}), 
-                new RegionPart("-axel"){{
-                    progress = PartProgress.recoil;
-                    mirror = false;
-                    under = true;
-                    children.add(new RegionPart("-plate"){{
+                    children.add(new RegionPart("-blade"){{
                         progress = PartProgress.recoil;
-                        mirror = true;
-                        under = false;
-                        moveY = 1f;
-                        moveX = 2f;
+                        mirror = false;
+                        under = true;
+                        children.add(new RegionPart("-plate"){{
+                           progress = PartProgress.recoil;
+                           mirror = true;
+                           under = false;
+                           moveY = 1f;
+                           moveX = 2f;
+                        }});
                     }});
-                }};
+                }});     
             }};
         }};
 
