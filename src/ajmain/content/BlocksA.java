@@ -517,7 +517,7 @@ public class BlocksA {
                         progress = PartProgress.recoil;
                         heatProgress = PartProgress.recoil;
                         under = true;
-                        moveY = -6f;
+                        moveY = -5f;
                         moveX = 0f;
                     }});
                     children.add(new RegionPart("-blade"){{
@@ -530,12 +530,11 @@ public class BlocksA {
                         progress = PartProgress.recoil;
                         mirror = false;
                         under = true;
-                        moveY = -2f;
+                        moveY = -3f;
                         children.add(new RegionPart("-plate"){{
                            progress = PartProgress.recoil;
                            under = true;
-                           moveRot = -30f;
-                           moveY = -2f;
+                           moveY = -4f;
                            moveX = 0f;
                         }});
                     }});
