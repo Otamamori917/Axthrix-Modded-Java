@@ -490,7 +490,7 @@ public class BlocksA {
             rotateSpeed = 2f;
             reload = 200f;
             ammoUseEffect = Fx.casing3Double;
-            recoil = 5f;
+            recoil = 0f;
             cooldownTime = reload;
             shake = 4f;
             size = 4;
@@ -508,25 +508,26 @@ public class BlocksA {
                 parts.add(new RegionPart("-barrel"){{
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.recoil;
-                    moveX = 4f;
+                    moveX = 0f;
+                    moveY = 5f;
                     mirror = false;
                     children.add(new RegionPart("-heatsink"){{
                         progress = PartProgress.recoil;
                         heatProgress = PartProgress.recoil;
                         mirror = true;
                         under = true;
-                        moveRot = -4f;
+                        moveRot = -45f;
                         moveY = 1f;
-                        moveX = 2f;
+                        moveX = 0f;
                     }});
                     children.add(new RegionPart("-blade"){{
                         progress = PartProgress.recoil;
                         mirror = true;
                         under = true;
-                        moveY = 1.5f;
-                        moveX = 2.5f;  
+                        moveY = 5f;
+                        moveX = 0f;  
                     }});
-                    children.add(new RegionPart("-blade"){{
+                    children.add(new RegionPart("-axel"){{
                         progress = PartProgress.recoil;
                         mirror = false;
                         under = true;
@@ -534,8 +535,8 @@ public class BlocksA {
                            progress = PartProgress.recoil;
                            mirror = true;
                            under = false;
-                           moveY = 1f;
-                           moveX = 2f;
+                           moveY = 7f;
+                           moveX = 0f;
                         }});
                     }});
                 }});     
