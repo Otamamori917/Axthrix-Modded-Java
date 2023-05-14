@@ -341,11 +341,10 @@ public class BlocksA {
             coolant = consumeCoolant(0.1f);
             recoilTime = 400f;
 
-            drawer = new DrawTurret("crystalized-"){{
+            drawer = new DrawTurret(){{
                 parts.add(new RegionPart("-blade"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.techBlue;
+                    progress = PartProgress.recoil;
+                    heatProgress = PartProgress.recoil;
                     moveRot = -18f;
                     moveX = 4f;
                     moveY = 5f;
@@ -353,7 +352,7 @@ public class BlocksA {
                     children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
-                        heatColor = Pal.techBlue;
+
                         mirror = true;
                         under = true;
                         moveRot = -4f;
@@ -364,7 +363,7 @@ public class BlocksA {
                         children.add(new RegionPart("-plate"){{
                             progress = PartProgress.warmup.delay(0.6f);
                             heatProgress = PartProgress.recoil;
-                            heatColor = Pal.techBlue;
+    
                             mirror = true;
                             under = true;
                             moveRot = -6f;
@@ -373,9 +372,9 @@ public class BlocksA {
 
                             moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
                             children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup;
+                                progress = PartProgress.recoil;
                                 heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
-                                heatColor = Pal.techBlue;
+        
                                 mirror = true;
                                 under = true;
                                 moveRot = 40f;
@@ -387,9 +386,9 @@ public class BlocksA {
                             }}); 
 
                             children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup;
+                                progress = PartProgress.recoil;
                                 heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
-                                heatColor = Pal.techBlue;
+        
                                 mirror = true;
                                 under = true;
                                 moveRot = 40f;
@@ -405,7 +404,6 @@ public class BlocksA {
                 new RegionPart("-mid"){{
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.recoil;
-                    heatColor = Pal.techBlue;
                     mirror = false;
                     under = true;
                     moveY = -5f;
@@ -425,5 +423,124 @@ public class BlocksA {
                 }});
             }};
         }};
+
+        foreshadowresprite = new ItemTurret("foreshadowresprite"){{
+            float brange = range = 500f;
+
+            requirements(Category.turret, with(Items.copper, 1000, Items.metaglass, 600, Items.surgeAlloy, 300, Items.plastanium, 200, Items.silicon, 600));
+            ammo(
+                Items.surgeAlloy, new PointBulletType(){{
+                    shootEffect = Fx.instShoot;
+                    hitEffect = Fx.instHit;
+                    smokeEffect = Fx.smokeCloud;
+                    trailEffect = Fx.instTrail;
+                    despawnEffect = Fx.instBomb;
+                    trailSpacing = 20f;
+                    damage = 1350;
+                    buildingDamageMultiplier = 0.2f;
+                    speed = brange;
+                    hitShake = 6f;
+                    ammoMultiplier = 1f;
+                }}
+            );
+
+            maxAmmo = 40;
+            ammoPerShot = 5;
+            rotateSpeed = 2f;
+            reload = 200f;
+            ammoUseEffect = Fx.casing3Double;
+            recoil = 5f;
+            cooldownTime = reload;
+            shake = 4f;
+            size = 4;
+            shootCone = 2f;
+            shootSound = Sounds.railgun;
+            unitSort = UnitSorts.strongest;
+            envEnabled |= Env.space;
+
+            coolantMultiplier = 0.4f;
+            scaledHealth = 150;
+
+            coolant = consumeCoolant(1f);
+            consumePower(10f);
+        }};
+
+        foreshadowanimated = new ItemTurret("foreshadowanimated"){{
+            float brange = range = 500f;
+
+            requirements(Category.turret, with(Items.copper, 1000, Items.metaglass, 600, Items.surgeAlloy, 300, Items.plastanium, 200, Items.silicon, 600));
+            ammo(
+                Items.surgeAlloy, new PointBulletType(){{
+                    shootEffect = Fx.instShoot;
+                    hitEffect = Fx.instHit;
+                    smokeEffect = Fx.smokeCloud;
+                    trailEffect = Fx.instTrail;
+                    despawnEffect = Fx.instBomb;
+                    trailSpacing = 20f;
+                    damage = 1350;
+                    buildingDamageMultiplier = 0.2f;
+                    speed = brange;
+                    hitShake = 6f;
+                    ammoMultiplier = 1f;
+                }}
+            );
+
+            maxAmmo = 40;
+            ammoPerShot = 5;
+            rotateSpeed = 2f;
+            reload = 200f;
+            ammoUseEffect = Fx.casing3Double;
+            recoil = 5f;
+            cooldownTime = reload;
+            shake = 4f;
+            size = 4;
+            shootCone = 2f;
+            shootSound = Sounds.railgun;
+            unitSort = UnitSorts.strongest;
+            envEnabled |= Env.space;
+
+            coolantMultiplier = 0.4f;
+            scaledHealth = 150;
+
+            coolant = consumeCoolant(1f);
+            consumePower(10f);
+            drawer = new DrawTurret(){{
+                parts.add(new RegionPart("-barrel"){{
+                    progress = PartProgress.recoil;
+                    heatProgress = PartProgress.recoil;
+                    moveX = 4f;
+                    mirror = false;
+                    children.add(new RegionPart("-heatsink"){{
+                        progress = PartProgress.recoil;
+                        heatProgress = PartProgress.recoil;
+                        mirror = true;
+                        under = true;
+                        moveRot = -4f;
+                        moveY = 1f;
+                        moveX = 2f;
+                    }});
+                    children.add(new RegionPart("-blade"){{
+                        progress = PartProgress.recoil;
+                        mirror = true;
+                        under = true;
+                        moveY = 1.5f;
+                        moveX = 2.5f;  
+                    }});
+                }}), 
+                new RegionPart("-axel"){{
+                    progress = PartProgress.recoil;
+                    mirror = false;
+                    under = true;
+                    children.add(new RegionPart("-plate"){{
+                        progress = PartProgress.recoil;
+                        mirror = true;
+                        under = false;
+                        moveY = 1f;
+                        moveX = 2f;
+                    }});
+                }};
+            }};
+        }};
+
     }
 }
