@@ -514,10 +514,10 @@ public class BlocksA {
                     moveY = -6f;
                     mirror = false;
                     children.add(new RegionPart("-heatsink"){{
-                        progress = PartProgress.recoil;
-                        heatProgress = PartProgress.recoil;
+                        progress = PartProgress.recoil.delay(0.3f);
+                        heatProgress = PartProgress.recoil.delay(0.6f);
                         under = true;
-                        moveY = -2f;
+                        moveY = -1f;
                         moveX = 0f;
                     }});
                     children.add(new RegionPart("-blade"){{
@@ -530,11 +530,11 @@ public class BlocksA {
                         progress = PartProgress.recoil;
                         mirror = false;
                         under = true;
-                        moveY = -2.5f;
+                        moveY = -2f;
                         children.add(new RegionPart("-plate"){{
                            progress = PartProgress.recoil;
                            under = false;
-                           moveY = -5f;
+                           moveY = -6f;
                            moveX = 0f;
                         }});
                     }});
