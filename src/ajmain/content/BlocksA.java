@@ -509,22 +509,22 @@ public class BlocksA {
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.recoil;
                     moveX = 0f;
-                    moveY = 5f;
+                    moveY = -5f;
                     mirror = false;
                     children.add(new RegionPart("-heatsink"){{
                         progress = PartProgress.recoil;
                         heatProgress = PartProgress.recoil;
                         mirror = true;
                         under = true;
-                        moveRot = -45f;
-                        moveY = 1f;
+                        moveRot = 45f;
+                        moveY = -1f;
                         moveX = 0f;
                     }});
                     children.add(new RegionPart("-blade"){{
                         progress = PartProgress.recoil;
                         mirror = true;
                         under = true;
-                        moveY = 5f;
+                        moveY = -5f;
                         moveX = 0f;  
                     }});
                     children.add(new RegionPart("-axel"){{
@@ -535,7 +535,7 @@ public class BlocksA {
                            progress = PartProgress.recoil;
                            mirror = true;
                            under = false;
-                           moveY = 7f;
+                           moveY = -7f;
                            moveX = 0f;
                         }});
                     }});
