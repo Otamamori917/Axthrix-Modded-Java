@@ -516,26 +516,26 @@ public class BlocksA {
                     children.add(new RegionPart("-heatsink"){{
                         progress = PartProgress.recoil;
                         heatProgress = PartProgress.recoil;
-                        mirror = true;
                         under = true;
-                        moveRot = 45f;
-                        moveY = -4f;
+                        moveY = -6f;
                         moveX = 0f;
                     }});
                     children.add(new RegionPart("-blade"){{
                         progress = PartProgress.recoil;
                         under = true;
-                        moveY = -6f;
+                        moveY = 6f;
                         moveX = 0f;  
                     }});
                     children.add(new RegionPart("-axel"){{
                         progress = PartProgress.recoil;
                         mirror = false;
                         under = true;
+                        moveY = -2f;
                         children.add(new RegionPart("-plate"){{
                            progress = PartProgress.recoil;
-                           under = false;
-                           moveY = -7f;
+                           under = true;
+                           moveRot = -30f;
+                           moveY = -2f;
                            moveX = 0f;
                         }});
                     }});
