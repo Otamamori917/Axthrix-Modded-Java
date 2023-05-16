@@ -2,14 +2,11 @@ package ajmain.content;
 
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.content.*;
 
 public class StatusA {
     public static StatusEffect vindicationI, vindicationII, vindicationIII, precludedX, precludedA;
 
     public static void load(){
-
-
         vindicationI = new StatusEffect("vindicationI"){{
             color = Pal.heal;
             healthMultiplier = 1.25f;

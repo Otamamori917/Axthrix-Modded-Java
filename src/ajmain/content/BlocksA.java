@@ -25,7 +25,7 @@ public class BlocksA {
 
             //Rocket Artilery
 
-            kisten, foreshadowresprite, foreshadowa;
+            kisten;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{

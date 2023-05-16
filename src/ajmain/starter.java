@@ -6,9 +6,7 @@ import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
-import ajmain.content.BlocksA;
-import ajmain.content.UnitsAJava;
-import ajmain.content.StatusA;
+import ajmain.content.*;
 
 public class starter extends Mod{
 
@@ -28,10 +26,9 @@ public class starter extends Mod{
                 BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-menu.title"));
                 dialog.cont.add(Core.bundle.get("menu.aj-menu.message")).row();
                 dialog.cont.image(Core.atlas.find("aj-icon")).pad(20f).row();
-                dialog.cont.button("okay", dialog::hide).size(100f, 50f);
+                dialog.cont.button("@okay", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
         });
     }
-
 }
