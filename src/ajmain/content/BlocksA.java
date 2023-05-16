@@ -19,13 +19,21 @@ import static mindustry.type.ItemStack.*;
 public class BlocksA {
     public static Block
 
-            //Bendy miniguns
+    //Bendy miniguns
 
-            kramola, razdor, smuta,
+    kramola, razdor, smuta,
 
-            //Rocket Artilery
+    //Rocket Artilery
 
-            kisten;
+    kisten,
+
+    //shotguns
+
+    fragmentation,
+
+    //special
+
+    nado;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
