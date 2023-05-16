@@ -1,54 +1,31 @@
 package ajmain.content;
 
+import ajmain.content.types.bulletypes.*;
 import ajmain.content.types.turretypes.*;
 import mindustry.content.*;
-import mindustry.gen.Sounds;
-import ajmain.content.*;
+import mindustry.gen.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.struct.*;
-import mindustry.*;
-import mindustry.entities.*;
-import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
-import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.part.*;
-import mindustry.entities.pattern.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.unit.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.campaign.*;
-import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.heat.*;
-import mindustry.world.blocks.legacy.*;
-import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.*;
-import mindustry.world.blocks.payloads.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.sandbox.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
-
-import static mindustry.Vars.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class BlocksA {
     public static Block
 
-    //Bendy miniguns        Rocket Artilery
-    kramola, razdor, smuta, kisten, foreshadowresprite, foreshadowa;
+            //Bendy miniguns
+
+            kramola, razdor, smuta,
+
+            //Rocket Artilery
+
+            kisten, foreshadowresprite, foreshadowa;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
@@ -74,10 +51,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new SpiralPattern(){{
-                mag = 1f;
-                scl = 2f;
-            }};
+            shoot = new SpiralPattern(2, 1);
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 15f;
@@ -126,9 +100,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new SpiralPattern(){{
-                mag = 1.5f;
-                scl = 2.5f;
+            shoot = new SpiralPattern(1.5f, 2.5f){{
                 shots = 3;
             }};
             ammo(
@@ -177,9 +149,7 @@ public class BlocksA {
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
-            shoot = new SpiralPattern(){{
-                mag = 1.75f;
-                scl = 2.75f;
+            shoot = new SpiralPattern(1.75f, 2.75f){{
                 shots = 4;
             }};
             ammo(
@@ -222,9 +192,7 @@ public class BlocksA {
             shootSound = Sounds.mediumCannon;
             minWarmup = 0.94f;
             shootWarmupSpeed = 0.05f;
-            shoot = new SpiralPattern(){{
-                mag = 2f;
-                scl = 4f;
+            shoot = new SpiralPattern(2f, 4f){{
                 shots = 10;
             }};
             ammo(

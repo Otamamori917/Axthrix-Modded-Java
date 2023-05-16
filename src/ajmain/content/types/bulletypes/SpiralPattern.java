@@ -1,9 +1,10 @@
-package mindustry.entities.pattern;
+package ajmain.content.types.bulletypes;
 
 import arc.math.*;
 import arc.util.*;
+import mindustry.entities.pattern.ShootPattern;
 
-public class SpiralPattern extends ShootPattern{
+public class SpiralPattern extends ShootPattern {
     public float scl = 2f, mag = 1.5f, offset = Mathf.PI;
 
     public SpiralPattern(){
