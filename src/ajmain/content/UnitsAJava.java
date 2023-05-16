@@ -15,7 +15,7 @@ public class UnitsAJava {
     public static UnitType barrier, blockade, palisade, parapet, impediment;
     
     public static void load(){
-        UnitType barrier = new UnitType("barrier"){{
+        barrier = new UnitType("barrier"){{
            speed = 0.55f;
            hitSize = 6f;
            health = 140;
@@ -42,10 +42,7 @@ public class UnitsAJava {
             }});
         }};
 
-
-
-
-        UnitType blockade = new UnitType("blockade"){{
+        blockade = new UnitType("blockade"){{
            speed = 0.7f;
            hitSize = 11f;
            health = 350;
@@ -104,10 +101,7 @@ public class UnitsAJava {
             }});
         }}; 
 
-
-
-
-        UnitType palisade = new UnitType("palisade"){{
+        palisade = new UnitType("palisade"){{
            hitSize = 13;
            health = 750;
            buildSpeed = 3f;
@@ -168,10 +162,7 @@ public class UnitsAJava {
             }});
         }}; 
 
-
-
-
-        UnitType parapet = new UnitType("parapet"){{
+        parapet = new UnitType("parapet"){{
            speed = 0.44f;
            hitSize = 24f;
            health = 8600;
