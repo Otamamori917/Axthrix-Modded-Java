@@ -1,4 +1,4 @@
-package ajmain.content;
+package axthrix.content;
 
 import arc.graphics.*;
 import arc.math.*;
@@ -11,7 +11,7 @@ import mindustry.type.*;
 import mindustry.type.weapons.*;
 import mindustry.content.*;
 
-public class UnitsAJava {
+public class AxthrixUnits {
     public static UnitType barrier, blockade, palisade, parapet, impediment;
     
     public static void load(){

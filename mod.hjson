@@ -1,5 +1,5 @@
 #the mod name as displayed in-game
-displayName: "Axthrix Modded Java"
+displayName: "Axthrix Java"
 
 #the internal name of your mod
 name: "aj"
@@ -8,10 +8,10 @@ name: "aj"
 author: "Otamamori"
 
 #the fully qualified main class of the mod
-main: "ajmain.starter"
+main: "axthrix.AxthrixLoader"
 
 #the mod description as seen in the mod dialog
-description: "A java version of Axthrix Modded."
+description: "A java version of Axthrix."
 
 #the mod version
 version: 1.0

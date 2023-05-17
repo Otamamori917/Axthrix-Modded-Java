@@ -1,9 +1,9 @@
-package ajmain.content;
+package axthrix.content;
 
 import mindustry.graphics.*;
 import mindustry.type.*;
 
-public class StatusA {
+public class AxthrixStatus {
     public static StatusEffect vindicationI, vindicationII, vindicationIII, precludedX, precludedA;
 
     public static void load(){

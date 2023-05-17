@@ -1,4 +1,4 @@
-/*package ajmain.content.types.weapontypes;
+/*package axthrix.content.types.weapontypes;
 
 import arc.*;
 import arc.graphics.*;

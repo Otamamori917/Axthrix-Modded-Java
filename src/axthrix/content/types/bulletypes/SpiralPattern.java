@@ -1,4 +1,4 @@
-package ajmain.content.types.bulletypes;
+package axthrix.content.types.bulletypes;
 
 import arc.math.*;
 import arc.util.*;
