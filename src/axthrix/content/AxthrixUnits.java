@@ -17,7 +17,7 @@ public class AxthrixUnits {
     //barrier tree
     barrier, blockade, palisade, parapet, impediment,
     //barrier tree turrets
-    repair-turret, assault-turret;
+    repairturret, assaulturret;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -232,7 +232,7 @@ public class AxthrixUnits {
 
         //turrets for barrier tree
         
-        repair-turret = new UnitType("repair-turret"){{
+        repairturret = new UnitType("repairturret"){{
             speed = 0f;
             hitSize = 6f;
             health = 400;
@@ -249,7 +249,7 @@ public class AxthrixUnits {
         }}; 
 
         
-        assault-turret = new UnitType("assault-turret"){{
+        assaulturret = new UnitType("assaulturret"){{
             speed = 0.7f;
             hitSize = 11f;
             health = 350;
