@@ -286,7 +286,7 @@ public class AxthrixUnits {
                     spin = 20f;
                     shrinkY = -0.6f;
                     shrinkX = -0.6f;
-                    knockback = -2f
+                    knockback = -2f;
                     width = 4f;
                     height = 4f;
                     damage = 40;
