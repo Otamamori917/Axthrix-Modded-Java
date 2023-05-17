@@ -241,11 +241,7 @@ public class AxthrixUnits {
             health = 400;
             constructor = MechUnit::create;
 
-            abilities.add(new EnergyFieldAbility(){{
-                damage = 40f;
-                reload = 400f;
-                range = 100f;
-                healPercent = 5f;
+            abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
                 statusDuration = 60f * 6f;
                 maxTargets = 15;
             }});
@@ -253,12 +249,9 @@ public class AxthrixUnits {
 
         
         assaulturret = new UnitType("assaulturret"){{
-            speed = 0.7f;
-            hitSize = 11f;
-            health = 350;
-            buildSpeed = 2f;
-            canBoost = true;
-            boostMultiplier = 1.5f;
+            speed = 0f;
+            hitSize = 4f;
+            health = 650;
             constructor = MechUnit::create;
 
              weapons.add(new Weapon("aj-energy-cannon"){{
