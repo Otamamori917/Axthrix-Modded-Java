@@ -287,15 +287,13 @@ public class AxthrixUnits {
                     shrinkY = -0.6f;
                     shrinkX = -0.6f;
                     knockback = -2f;
-                    width = 4f;
+                    width = 6f;
                     height = 4f;
                     damage = 40;
                     lifetime = 150f;
                     speed = 1.5f;
                     healPercent = 4f;
                     collidesTeam = true;
-                    sprite = aj-orb-bullet;
-                    backSprite = aj-orb-bullet-back;
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};
