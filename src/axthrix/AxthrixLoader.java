@@ -16,9 +16,9 @@ public class starter extends Mod{
 
     @Override
     public void loadContent(){
-        StatusA.load();
-        UnitsAJava.load();
-        BlocksA.load();
+        AxthrixStatus.load();
+        AxthrixUnits.load();
+        AxthrixBlocks.load();
         Log.info("Axthrix Content Loaded. :)");
 
         Events.on(ClientLoadEvent.class, e -> {

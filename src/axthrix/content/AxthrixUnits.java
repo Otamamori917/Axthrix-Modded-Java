@@ -120,7 +120,7 @@ public class AxthrixUnits {
             }});
 
              weapons.add(new Weapon("aj-repeater"){{
-                shootStatus = StatusA.vindicationI;
+                shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
                 x = 7;
@@ -183,7 +183,7 @@ public class AxthrixUnits {
 
              weapons.add(new Weapon("aj-obilvion"){{
                 shootSound = Sounds.blaster;
-                shootStatus = StatusA.vindicationII;
+                shootStatus = AxthrixStatus.vindicationII;
                 shootStatusDuration = 120f;
                 x = 7;
                 y = 1;
