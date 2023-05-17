@@ -256,15 +256,11 @@ public class AxthrixUnits {
 
              weapons.add(new Weapon("aj-energy-cannon"){{
                 shootSound = Sounds.missile;
-                x = 6;
-                y = 1;
-                mirror = true;
+                x = 0;
+                y = 0;
+                mirror = false;
                 top = false;
                 reload = 40;
-                inaccuracy = 20;
-                shoot.shots = 3;
-                shoot.shotDelay = 5; 
-
                 parts.add(
                 new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
@@ -273,16 +269,33 @@ public class AxthrixUnits {
                     mirror = true;
                     under = true;
                     moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, 15f)); 
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -15f)); 
                 }});
                     
 
-                bullet = new MissileBulletType(2f, 9){{
-                    damage = 8;
-                    lifetime = 100;
-                    speed = 3;
-                    healPercent = 1;
+                bullet = new BasicBulletType(2f, 9){{
+                    shootEffect = Fx.none;
+                    smokeEffect = Fx.shootBigSmoke2;
+                    impact = true;
+                    hittable = false;
+                    reflectable = false;
+                    absorbable = false;
+                    homingRange = 80f;
+                    homingPower = 4f;
+                    homingDelay = 20f;
+                    spin = 20f;
+                    shrinkY = -0.6f;
+                    shrinkX = -0.6f;
+                    knockback = -2f
+                    width = 4f;
+                    height = 4f;
+                    damage = 40;
+                    lifetime = 150f;
+                    speed = 1.5f;
+                    healPercent = 4f;
                     collidesTeam = true;
+                    sprite = aj-orb-bullet;
+                    backSprite = aj-orb-bullet-back;
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};
