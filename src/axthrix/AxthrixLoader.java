@@ -8,10 +8,10 @@ import mindustry.ui.dialogs.*;
 
 import axthrix.content.*;
 
-public class starter extends Mod{
+public class AxthrixLoader extends Mod{
 
-    public starter(){
-        Log.info("Loaded  constructor.");
+    public AxthrixLoader(){
+        Log.info("Loaded constructor.");
     }
 
     @Override
