@@ -252,6 +252,7 @@ public class AxthrixUnits {
             speed = 0f;
             hitSize = 4f;
             health = 650;
+            faceTarget = false;
             constructor = MechUnit::create;
 
              weapons.add(new Weapon("aj-energy-cannon"){{
@@ -261,6 +262,8 @@ public class AxthrixUnits {
                 mirror = false;
                 top = false;
                 reload = 40;
+                rotate = true;
+                rotateSpeed = 1.6f;
                 parts.add(
                 new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
@@ -268,8 +271,8 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = true;
                     under = true;
-                    moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -15f)); 
+                    moveX = 1f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f)); 
                 }});
                     
 
