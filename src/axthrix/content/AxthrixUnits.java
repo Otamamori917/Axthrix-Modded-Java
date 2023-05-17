@@ -17,7 +17,7 @@ public class AxthrixUnits {
     //barrier tree
     barrier, blockade, palisade, parapet, impediment,
     //barrier tree turrets
-    repair-turret, assault-turret
+    repair-turret, assault-turret;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -270,17 +270,16 @@ public class AxthrixUnits {
                 shoot.shotDelay = 5; 
 
                 parts.add(
-                    new RegionPart("-arm"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.recoil;
-                        heatColor = Pal.heal;
-                        mirror = true;
-                        under = true;
-                        moveX = 2
-
-                        moves.add(new PartMove(PartProgress.recoil, -1f, 1f, 15f)); 
-                    }};
-                );    
+                new RegionPart("-arm"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = true;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, 15f)); 
+                }});
+                    
 
                 bullet = new MissileBulletType(2f, 9){{
                     damage = 8;
