@@ -12,7 +12,12 @@ import mindustry.type.weapons.*;
 import mindustry.content.*;
 
 public class AxthrixUnits {
-    public static UnitType barrier, blockade, palisade, parapet, impediment;
+    public static UnitType 
+    
+    //barrier tree
+    barrier, blockade, palisade, parapet, impediment,
+    //barrier tree turrets
+    repair-turret, assault-turret
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -219,6 +224,72 @@ public class AxthrixUnits {
                     hitEffect = Fx.pointHit;
                     maxRange = 100f;
                     damage = 17f;
+                }};
+            }});
+        }}; 
+
+
+
+        //turrets for barrier tree
+        
+        repair-turret = new UnitType("repair-turret"){{
+            speed = 0f;
+            hitSize = 6f;
+            health = 400;
+            constructor = MechUnit::create;
+
+            abilities.add(new EnergyFieldAbility(){{
+                damage = 40f;
+                reload = 400f;
+                range = 100f;
+                healPercent = 5f;
+                statusDuration = 60f * 6f;
+                maxTargets = 15;
+            }});
+        }}; 
+
+        
+        assault-turret = new UnitType("assault-turret"){{
+            speed = 0.7f;
+            hitSize = 11f;
+            health = 350;
+            buildSpeed = 2f;
+            canBoost = true;
+            boostMultiplier = 1.5f;
+            constructor = MechUnit::create;
+
+             weapons.add(new Weapon("aj-energy-cannon"){{
+                shootSound = Sounds.missile;
+                x = 6;
+                y = 1;
+                mirror = true;
+                top = false;
+                reload = 40;
+                inaccuracy = 20;
+                shoot.shots = 3;
+                shoot.shotDelay = 5; 
+
+                parts.add(
+                    new RegionPart("-arm"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Pal.heal;
+                        mirror = true;
+                        under = true;
+                        moveX = 2
+
+                        moves.add(new PartMove(PartProgress.recoil, -1f, 1f, 15f)); 
+                    }};
+                );    
+
+                bullet = new MissileBulletType(2f, 9){{
+                    damage = 8;
+                    lifetime = 100;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
                 }};
             }});
         }}; 
