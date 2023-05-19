@@ -352,6 +352,8 @@ public class AxthrixBlocks {
                                 progress = PartProgress.warmup;
                                 heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                                 heatColor = Pal.techBlue;
+                                layerOffset = -0.3f;
+                                turretHeatLayer = Layer.turret - 0.2f;
                                 mirror = true;
                                 under = true;
                                 moveRot = 40f;
@@ -366,6 +368,8 @@ public class AxthrixBlocks {
                                 progress = PartProgress.warmup;
                                 heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                                 heatColor = Pal.techBlue;
+                                layerOffset = -0.3f;
+                                turretHeatLayer = Layer.turret - 0.2f;
                                 mirror = true;
                                 under = true;
                                 moveRot = 40f;
@@ -382,6 +386,8 @@ public class AxthrixBlocks {
                     progress = PartProgress.recoil;
                     heatProgress = PartProgress.recoil;
                     heatColor = Pal.techBlue;
+                    layerOffset = -0.3f;
+                    turretHeatLayer = Layer.turret - 0.2f;
                     mirror = false;
                     under = true;
                     moveY = -5f;

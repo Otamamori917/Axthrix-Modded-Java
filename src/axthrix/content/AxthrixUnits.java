@@ -79,6 +79,8 @@ public class AxthrixUnits {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
+                    layerOffset = -0.3f;
+                    turretHeatLayer = Layer.turret - 0.2f;
                     mirror = false;
                     under = true;
                     moveX = 2f;
