@@ -31,23 +31,7 @@ public class AxthrixUnits {
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
-            abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
-
-             weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
-                mirror = false;
-                x = 0f;
-                y = 0f;
-                reload = 9f;
-                targetInterval = 10f;
-                targetSwitchInterval = 15f;
-
-                bullet = new BulletType(){{
-                    shootEffect = Fx.sparkShoot;
-                    hitEffect = Fx.pointHit;
-                    maxRange = 100f;
-                   damage = 17f;
-                }};
-            }});
+            abilities.add(new ForceFieldAbility(20f, 0.2f, 600f, 20f * 6));
         }};
 
         blockade = new UnitType("blockade"){{
@@ -70,20 +54,44 @@ public class AxthrixUnits {
                 whenShooting = false;
             }});
 
-             weapons.add(new Weapon("aj-blockade-grs"){{
-                shootSound = Sounds.missile;
+             weapons.add(new Weapon("aj-nano-shotgun"){{
+                shootSound = Sounds.shockBlast;
                 x = 6;
-                y = 1;
+                y = 0;
                 mirror = true;
                 top = false;
                 reload = 40;
-                inaccuracy = 20;
-                shoot.shots = 3;
-                shoot.shotDelay = 5;  
+                inaccuracy = 40;
+                shoot.shots = Mathf.random(20,40);
+                shoot.shotDelay = 0f;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-shell"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f)); 
+                }},
+                new RegionPart("-bar"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = true;
+                    moveX = 2f;
+                }});
 
-                bullet = new MissileBulletType(2f, 9){{
+                bullet = new BasicBulletType(){{
+                    homingRange = 40f;
+                    homingPower = 4f;
+                    homingDelay = 5f;
+                    width = 0.5f;
+                    height = 0.5f;
                     damage = 8;
-                    lifetime = 100;
+                    lifetime = 20;
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
@@ -256,7 +264,7 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
 
              weapons.add(new Weapon("aj-energy-cannon"){{
-                shootSound = Sounds.missile;
+                shootSound = Sounds.shockBlast;
                 x = 0;
                 y = 0;
                 mirror = false;
