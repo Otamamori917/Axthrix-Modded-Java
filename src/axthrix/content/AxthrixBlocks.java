@@ -343,6 +343,7 @@ public class AxthrixBlocks {
                             heatColor = Pal.techBlue;
                             mirror = true;
                             under = true;
+                            layerOffset = -0.31f;
                             moveRot = -6f;
                             moveY = 1.5f;
                             moveX = 2.5f;
@@ -401,7 +402,7 @@ public class AxthrixBlocks {
                     outline = true;
                     under = true;
 
-                    layerOffset = -0.01f;
+                    layerOffset = -0.31f;
 
                     moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
                 }});
