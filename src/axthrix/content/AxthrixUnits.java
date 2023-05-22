@@ -99,6 +99,7 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};

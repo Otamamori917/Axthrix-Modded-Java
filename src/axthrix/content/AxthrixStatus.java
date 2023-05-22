@@ -4,31 +4,54 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, precludedX, precludedA;
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA;
 
     public static void load(){
         vindicationI = new StatusEffect("vindicationI"){{
             color = Pal.heal;
             healthMultiplier = 1.25f;
             speedMultiplier = 0.80f;
+            init(() -> {
+                opposite(nanodiverge);
+            });
         }};
 
         vindicationII = new StatusEffect("vindicationII"){{
             color = Pal.heal;
             healthMultiplier = 2.50f;
             speedMultiplier = 0.40f;
+            init(() -> {
+                opposite(nanodiverge);
+            });
         }}; 
 
         vindicationIII = new StatusEffect("vindicationIII"){{
             color = Pal.heal;
             healthMultiplier = 5f;
             speedMultiplier = 0.20f;
+            init(() -> {
+                opposite(nanodiverge);
+            });
+        }};
+
+        nanodiverge = new StatusEffect("nanodiverge"){{
+            color = Pal.heal;
+            speedMultiplier = 0.80f;
+            reloadMultiplier = 0.80f;
+            damage = 0.4f;
+            effect = Fx.heal;
+            transitionDamage = 8f;
+            init(() -> {
+                opposite(vindicationI);
+                opposite(vindicationII);
+                opposite(vindicationIII);   
+            });
         }};
 
 
         
         precludedX = new StatusEffect("precludedX"){{
-            color = Pal.heal;
+            color = Pal.remove;
             speedMultiplier = 0.01f;
             buildSpeedMultiplier = 0f;
             reloadMultiplier = 4f;
@@ -39,7 +62,7 @@ public class AxthrixStatus {
         }};
 
         precludedA = new StatusEffect("precludedA"){{
-            color = Pal.heal;
+            color = Pal.remove;
             speedMultiplier = 4f;
             buildSpeedMultiplier = 4f;
             disarm = true;
