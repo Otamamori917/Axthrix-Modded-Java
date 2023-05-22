@@ -45,7 +45,9 @@ public class AxthrixUnits {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 40f;
+                radius = 36f;
+                angle = 82f;
+                y = -20f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
