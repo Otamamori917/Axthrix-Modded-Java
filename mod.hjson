@@ -4,6 +4,6 @@ author: "Otamamori"
 main: "axthrix.AxthrixLoader"
 description: "A java version of Axthrix."
 version: 1.0
-minGameVersion: 140
+minGameVersion: 144.2
 dependencies: ["multi-crafter"]
 java: true
