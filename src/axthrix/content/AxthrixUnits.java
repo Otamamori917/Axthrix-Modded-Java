@@ -129,6 +129,8 @@ public class AxthrixUnits {
                 shootSound = Sounds.blaster;
                 x = 8f;
                 y = 0f;
+                shootX = 4f;
+                shootY = -2f;
                 mirror = true;
                 recoil = 5f;
                 alternate = false;
