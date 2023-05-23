@@ -11,6 +11,7 @@ import mindustry.world.draw.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.unit.*;
 import mindustry.type.weapons.*;
 import mindustry.content.*;
 
