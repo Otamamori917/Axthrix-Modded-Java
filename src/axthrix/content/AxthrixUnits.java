@@ -67,8 +67,8 @@ public class AxthrixUnits {
                 top = false;
                 reload = 40;
                 inaccuracy = 40;
-                shoot.shots = Mathf.random(20,30);
-                shoot.shotDelay = 3f;
+                shoot.shots = Mathf.random(20,40);
+                shoot.shotDelay = 0f;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
@@ -150,8 +150,8 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
-                shoot.shots = Mathf.random(20,30);
-                shoot.shotDelay = 2;
+                shoot.shots = Mathf.random(20,60);
+                shoot.shotDelay = 1;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-pin"){{
