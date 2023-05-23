@@ -1,8 +1,8 @@
 displayName: "Axthrix Java"
 name: "aj"
-author: "Otamamori"
+author: "Otamamori#4716|Contributers (MEEP of Faith#7277(The entire AccelratedTurret script)), (nullevoy#77(spriting tips))"
 main: "axthrix.AxthrixLoader"
-description: "A java version of Axthrix."
+description: "vast array of content"
 version: 1.0
 minGameVersion: 144.2
 dependencies: ["multi-crafter"]
