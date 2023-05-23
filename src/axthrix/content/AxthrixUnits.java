@@ -21,8 +21,6 @@ public class AxthrixUnits {
     
     //barrier tree
     barrier, blockade, palisade, parapet, impediment,
-    //barrier tree turrets
-    repairturret, assaulturret;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -69,8 +67,8 @@ public class AxthrixUnits {
                 top = false;
                 reload = 40;
                 inaccuracy = 40;
-                shoot.shots = Mathf.random(20,40);
-                shoot.shotDelay = 0f;
+                shoot.shots = Mathf.random(20,30);
+                shoot.shotDelay = 3f;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
@@ -135,108 +133,6 @@ public class AxthrixUnits {
                 width = 6f;
                 whenShooting = false;
             }});
-
-             weapons.add(new Weapon("aj-recursor"){{
-                shootStatus = AxthrixStatus.vindicationI;
-                shootStatusDuration = 420f;
-                shootSound = Sounds.shockBlast;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                x = 8f;
-                y = 0.5f;
-                shootX = 4f;
-                shootY = -2f;
-                mirror = true;
-                recoil = 5f;
-                alternate = false;
-                top = false;
-                reload = 120;
-                inaccuracy = 50;
-                shoot.shots = Mathf.random(20,40);
-                shoot.shotDelay = 4;
-                heatColor = Pal.heal;
-                parts.add(
-                new RegionPart("-pin"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.recoil;
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = true;
-                    moveX = 0f; 
-                }},
-                new RegionPart("-barrel"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.recoil;
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    moveX = 3f;
-                    moveY = -1f;
-                    moveRot = -15f;
-                    children.add(new RegionPart("-mount"){{
-                        progress = PartProgress.warmup;
-                        mirror = false;
-                        under = true;
-                        layerOffset = -2f;
-                        moveY = 0f;
-                        moveX = 0f;
-                    }});
-                }});
-
-                bullet = new BasicBulletType(2f, 9){{
-                    homingRange = 40f;
-                    homingPower = 4f;
-                    homingDelay = 5f;
-                    width = 0.5f;
-                    height = 0.5f;
-                    damage = 8;
-                    lifetime = 20;
-                    speed = 3;
-                    healPercent = 1;
-                    collidesTeam = true;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.heal;
-                    trailLength = 4;
-                    trailWidth = 0.5f;
-                    status = AxthrixStatus.nanodiverge;
-                    backColor = Pal.heal;
-                    frontColor = Color.white;
-                }};
-            }});
-
-            weapons.add(new Weapon(){{
-                reload = 800f;
-                rotate = true;
-                mirror = false;
-                x = 0f;
-                y = 0f;
-                heatColor = Pal.heal;
-                controllable = false;
-                autoTarget = true;
-                recoil = 0.5f;
-                bullet = new BasicBulletType(){{
-                    damage = 0f;
-                    scaleLife = true;
-                    fragBullets = 1;
-                    fragBullet = new BasicBulletType(5.5f, 50){{
-                        spawnUnit = new MissileUnitType("repairturret"){{
-                            speed = 0f;
-                            hitSize = 6f;
-                            health = 400;
-                            playerControllable = false;
-                            useUnitCap = false;
-                            lifetime = 500;
-                            constructor = MechUnit::create;
-                            abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
-                                statusDuration = 60f * 6f;
-                                maxTargets = 15;
-                            }});
-                        }};    
-                    }}; 
-                }};
-            }});
         }}; 
 
         parapet = new UnitType("parapet"){{
@@ -297,67 +193,6 @@ public class AxthrixUnits {
                     hitEffect = Fx.pointHit;
                     maxRange = 100f;
                     damage = 17f;
-                }};
-            }});
-        }}; 
-
-
-
-        //turrets for barrier tree
-        
-        assaulturret = new UnitType("assaulturret"){{
-            speed = 0f;
-            hitSize = 4f;
-            health = 650;
-            faceTarget = false;
-            constructor = MechUnit::create;
-
-             weapons.add(new Weapon("aj-energy-cannon"){{
-                shootSound = Sounds.shockBlast;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                x = 0;
-                y = 0;
-                mirror = false;
-                top = false;
-                reload = 40;
-                rotate = true;
-                rotateSpeed = 1.6f;
-                                parts.add(
-                new RegionPart("-arm"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.recoil;
-                    heatColor = Pal.heal;
-                    mirror = true;
-                    under = true;
-                    moveX = 1f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f)); 
-                }});
-                    
-
-                bullet = new BasicBulletType(2f, 9){{
-                    shootEffect = Fx.none;
-                    smokeEffect = Fx.shootBigSmoke2;
-                    impact = true;
-                    hittable = false;
-                    reflectable = false;
-                    absorbable = false;
-                    homingRange = 80f;
-                    homingPower = 4f;
-                    homingDelay = 20f;
-                    spin = 20f;
-                    shrinkY = -0.6f;
-                    shrinkX = -0.6f;
-                    knockback = -2f;
-                    width = 6f;
-                    height = 4f;
-                    damage = 40;
-                    lifetime = 150f;
-                    speed = 1.5f;
-                    healPercent = 4f;
-                    collidesTeam = true;
-                    backColor = Pal.heal;
-                    frontColor = Color.white;
                 }};
             }});
         }}; 
