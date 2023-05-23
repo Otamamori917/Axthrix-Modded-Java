@@ -136,8 +136,9 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 10;
-                shoot.shots = Mathf.random(30,60);
-                shoot.shotDelay = Mathf.random(5,20);;
+                shoot.shots = Mathf.random(10,30);
+                shoot.shotDelay = Mathf.random(0,2);;
+                heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-pin"){{
                     progress = PartProgress.warmup;
@@ -146,7 +147,7 @@ public class AxthrixUnits {
                     mirror = false;
                     under = true;
                     moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -2f, 0f, 0f)); 
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f)); 
                 }},
                 new RegionPart("-barrel"){{
                     progress = PartProgress.warmup;
@@ -177,6 +178,9 @@ public class AxthrixUnits {
             weapons.add(new Weapon("aj-dispatch"){{
                 reload = 800f;
                 rotate = true;
+                mirror = false;
+                x = 0f;
+                y = 0f;
                 heatColor = Pal.heal;
                 controllable = false;
                 autoTarget = true;
@@ -186,9 +190,10 @@ public class AxthrixUnits {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.recoil;
                     heatColor = Pal.heal;
-                    mirror = false;
+                    mirror = true;
                     under = true;
                     moveX = 2f;
+                    x = 1f;
                     moveY = 1f;
                     moves.add(new PartMove(PartProgress.recoil, -2f, 0f, 0f)); 
                 }},new RegionPart("-pro"){{
