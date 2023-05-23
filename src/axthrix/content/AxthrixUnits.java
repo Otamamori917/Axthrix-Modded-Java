@@ -59,6 +59,8 @@ public class AxthrixUnits {
 
              weapons.add(new Weapon("aj-nano-shotgun"){{
                 shootSound = Sounds.blaster;
+                linearWarmup = true;
+                minWarmup = 2f;
                 x = 6;
                 y = 0;
                 mirror = true;
@@ -130,6 +132,8 @@ public class AxthrixUnits {
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 420f;
                 shootSound = Sounds.shockBlast;
+                linearWarmup = true;
+                minWarmup = 2f;
                 x = 8f;
                 y = 0f;
                 shootX = 4f;
@@ -294,6 +298,8 @@ public class AxthrixUnits {
 
              weapons.add(new Weapon("aj-energy-cannon"){{
                 shootSound = Sounds.shockBlast;
+                linearWarmup = true;
+                minWarmup = 2f;
                 x = 0;
                 y = 0;
                 mirror = false;
