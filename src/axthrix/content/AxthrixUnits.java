@@ -81,8 +81,8 @@ public class AxthrixUnits {
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
-                    layerOffset = -0.3f;
-                    turretHeatLayer = Layer.turret - 0.2f;
+                    layerOffset = -0.5f;
+                    turretHeatLayer = -0.49f;
                     mirror = false;
                     under = true;
                     moveX = 2f;
@@ -129,36 +129,97 @@ public class AxthrixUnits {
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
-                x = 7;
-                y = 1;
+                x = 8;
                 mirror = true;
+                recoil = 0f;
                 alternate = false;
                 top = false;
-                reload = 20;
-                inaccuracy = 1;
-                shoot.shots = 4;
-                shoot.shotDelay = 10;
+                reload = 120;
+                inaccuracy = 10;
+                shoot.shots = Mathf.random(30,60);
+                shoot.shotDelay = Mathf.random(5,20);;
+                parts.add(
+                new RegionPart("-pin"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = true;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -2f, 0f, 0f)); 
+                }},
+                new RegionPart("-barrel"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 3f;
+                }});
 
-                bullet = new LaserBoltBulletType(2f, 9){{
-                    damage = 20;
-                    lifetime = 60;
+                bullet = new BasicBulletType(2f, 9){{
+                    homingRange = 40f;
+                    homingPower = 4f;
+                    homingDelay = 5f;
+                    width = 0.5f;
+                    height = 0.5f;
+                    damage = 8;
+                    lifetime = 20;
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};
             }});
 
-                weapons.add(new Weapon("aj-dispatch"){{
-                x = 2f;
-                y = -1f;
-                reload = 8f;
-                targetInterval = 10f;
-                targetSwitchInterval = 15f;
+            weapons.add(new Weapon("aj-dispatch"){{
+                reload = 800f;
+                rotate = true;
+                heatColor = Pal.heal;
+                controllable = false;
+                autoTarget = true;
+                recoil = 0.5f;
+                parts.add(
+                new RegionPart("-rifle"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = true;
+                    moveX = 2f;
+                    moveY = 1f;
+                    moves.add(new PartMove(PartProgress.recoil, -2f, 0f, 0f)); 
+                }},new RegionPart("-pro"){{
+                    progress = PartProgress.reload.curve(Interp.pow2In);
 
-                bullet = new BulletType(){{
-                    damage = 17f;
+                    colorTo = new Color(1f, 1f, 1f, 0f);
+                    color = Color.white;
+                    mixColorTo = Pal.accent;
+                    mixColor = new Color(1f, 1f, 1f, 0f);
+                    outline = true;
+                    under = true;
+
+                    layerOffset = -0.01f;
+
+                    moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                }});
+                bullet = new BasicBulletType(){{
+                    damage = 0f;
+                    scaleLife = true;
+                    fragBullet = new BasicBulletType(5.5f, 50){{
+                        spawnUnit = new UnitType("repairturret"){{
+                            speed = 0f;
+                            hitSize = 6f;
+                            health = 400;
+                            constructor = MechUnit::create;
+                            abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
+                                statusDuration = 60f * 6f;
+                                maxTargets = 15;
+                            }});
+                        }};    
+                    }}; 
                 }};
             }});
         }}; 
@@ -227,19 +288,6 @@ public class AxthrixUnits {
 
 
         //turrets for barrier tree
-        
-        repairturret = new UnitType("repairturret"){{
-            speed = 0f;
-            hitSize = 6f;
-            health = 400;
-            constructor = MechUnit::create;
-
-            abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
-                statusDuration = 60f * 6f;
-                maxTargets = 15;
-            }});
-        }}; 
-
         
         assaulturret = new UnitType("assaulturret"){{
             speed = 0f;
