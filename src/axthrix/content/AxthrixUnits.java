@@ -48,7 +48,6 @@ public class AxthrixUnits {
                 radius = 36f;
                 angle = 82f;
                 y = -24f;
-                angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
@@ -79,10 +78,8 @@ public class AxthrixUnits {
                 }},
                 new RegionPart("-bar"){{
                     progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
                     layerOffset = -0.5f;
-                    turretHeatLayer = -0.49f;
                     mirror = false;
                     under = true;
                     moveX = 2f;
@@ -116,18 +113,19 @@ public class AxthrixUnits {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
-                radius = 60f;
+                radius = 40f;
                 y = -24f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 4f;
+                width = 6f;
+                whenShooting = false;
             }});
 
              weapons.add(new Weapon("aj-recursor"){{
                 shootStatus = AxthrixStatus.vindicationI;
-                shootStatusDuration = 120f;
+                shootStatusDuration = 420f;
                 shootSound = Sounds.blaster;
                 x = 8f;
                 y = 0f;
@@ -137,7 +135,7 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
-                shoot.shots = Mathf.random(10,30);
+                shoot.shots = Mathf.random(20,60);
                 shoot.shotDelay = Mathf.random(0,2);;
                 heatColor = Pal.heal;
                 parts.add(
@@ -158,6 +156,14 @@ public class AxthrixUnits {
                     moveX = 3f;
                     moveY = -1f;
                     moveRot = -15f;
+                    children.add(new RegionPart("-mount"){{
+                        progress = PartProgress.warmup;
+                        mirror = false;
+                        under = true;
+                        layerOffset = -2f;
+                        moveY = 0f;
+                        moveX = 0f;
+                    }});
                 }});
 
                 bullet = new BasicBulletType(2f, 9){{
