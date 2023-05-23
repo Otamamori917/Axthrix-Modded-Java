@@ -152,7 +152,7 @@ public class AxthrixUnits {
                 reload = 120;
                 inaccuracy = 50;
                 shoot.shots = Mathf.random(20,40);
-                shoot.shotDelay = Mathf.random(0,8);;
+                shoot.shotDelay = Mathf.random(0,5);;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-pin"){{
