@@ -39,7 +39,7 @@ public class AxthrixUnits {
            outlineColor = Pal.darkOutline;
            speed = 0.7f;
            hitSize = 11f;
-           health = 350;
+           health = 450;
            buildSpeed = 2f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -97,7 +97,7 @@ public class AxthrixUnits {
                     homingDelay = 5f;
                     width = 0.5f;
                     height = 0.5f;
-                    damage = 8;
+                    damage = 4;
                     lifetime = 20;
                     speed = 3;
                     healPercent = 1;
@@ -118,7 +118,7 @@ public class AxthrixUnits {
         palisade = new UnitType("palisade"){{
            outlineColor = Pal.darkOutline;
            hitSize = 13;
-           health = 750;
+           health = 850;
            buildSpeed = 3f;
            canBoost = true;
            boostMultiplier = 1.5f;
