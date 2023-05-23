@@ -133,6 +133,76 @@ public class AxthrixUnits {
                 width = 6f;
                 whenShooting = false;
             }});
+
+            weapons.add(new Weapon("aj-recursor"){{
+                shootStatus = AxthrixStatus.vindicationI;
+                shootStatusDuration = 420f;
+                shootSound = Sounds.shockBlast;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                x = 8f;
+                y = 0.5f;
+                shootX = 4f;
+                shootY = -2f;
+                mirror = true;
+                recoil = 5f;
+                alternate = false;
+                top = false;
+                reload = 120;
+                inaccuracy = 50;
+                shoot.shots = Mathf.random(20,30);
+                shoot.shotDelay = 2;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-pin"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = true;
+                    moveX = 0f; 
+                }},
+                new RegionPart("-barrel"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.recoil;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 3f;
+                    moveY = -1f;
+                    moveRot = -15f;
+                    children.add(new RegionPart("-mount"){{
+                        progress = PartProgress.warmup;
+                        mirror = false;
+                        under = true;
+                        layerOffset = -2f;
+                        moveY = 0f;
+                        moveX = 0f;
+                    }});
+                }});
+
+                bullet = new BasicBulletType(2f, 9){{
+                    homingRange = 40f;
+                    homingPower = 4f;
+                    homingDelay = 5f;
+                    width = 0.5f;
+                    height = 0.5f;
+                    damage = 8;
+                    lifetime = 20;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    trailEffect = Fx.none;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.heal;
+                    trailLength = 4;
+                    trailWidth = 0.5f;
+                    status = AxthrixStatus.nanodiverge;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
+                }};
+            }});
         }}; 
 
         parapet = new UnitType("parapet"){{
