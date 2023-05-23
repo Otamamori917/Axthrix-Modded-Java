@@ -59,7 +59,7 @@ public class AxthrixUnits {
             }});
 
              weapons.add(new Weapon("aj-nano-shotgun"){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.blaster;
                 minWarmup = 30f;
                 x = 6;
                 y = 0;
@@ -131,7 +131,7 @@ public class AxthrixUnits {
              weapons.add(new Weapon("aj-recursor"){{
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 420f;
-                shootSound = Sounds.blaster;
+                shootSound = Sounds.shockBlast;
                 minWarmup =  40f;
                 x = 8f;
                 y = 0f;
