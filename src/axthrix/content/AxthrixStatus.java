@@ -39,6 +39,7 @@ public class AxthrixStatus {
             speedMultiplier = 0.80f;
             reloadMultiplier = 0.80f;
             damage = 0.4f;
+            effect = Fx.electrified;
             transitionDamage = 8f;
             init(() -> {
                 opposite(vindicationI);

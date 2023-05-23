@@ -100,6 +100,12 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    trailEffect = Fx.electrified;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.heal;
+                    trailLength = 4;
+                    trailWidth = 0.5f;
                     status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
@@ -186,6 +192,12 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    trailEffect = Fx.electrified;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.heal;
+                    trailLength = 4;
+                    trailWidth = 0.5f;
                     status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
