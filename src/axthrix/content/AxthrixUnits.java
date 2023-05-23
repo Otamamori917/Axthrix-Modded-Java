@@ -195,7 +195,7 @@ public class AxthrixUnits {
                             speed = 0f;
                             hitSize = 6f;
                             health = 400;
-                            lifetime = 500
+                            lifetime = 500f;
                             constructor = MechUnit::create;
                             abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
                                 statusDuration = 60f * 6f;
