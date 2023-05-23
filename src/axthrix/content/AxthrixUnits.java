@@ -130,7 +130,7 @@ public class AxthrixUnits {
                 shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
                 x = 8f;
-                y = -2f;
+                y = 0f;
                 mirror = true;
                 recoil = 5f;
                 alternate = false;
@@ -157,7 +157,7 @@ public class AxthrixUnits {
                     under = false;
                     moveX = 3f;
                     moveY = -1f;
-                    moveRot = 15f;
+                    moveRot = -15f;
                 }});
 
                 bullet = new BasicBulletType(2f, 9){{
