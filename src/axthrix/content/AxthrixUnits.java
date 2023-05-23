@@ -17,13 +17,15 @@ import mindustry.content.*;
 public class AxthrixUnits {
     public static UnitType 
     
-    //barrier tree
+    //b
+    outlineColor = new Color(43f, 43f, 51f, 0f);arrier tree
     barrier, blockade, palisade, parapet, impediment,
     //barrier tree turrets
     repairturret, assaulturret;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
+           outlineColor = new Color(43f, 43f, 51f, 0f);           
            speed = 0.55f;
            hitSize = 6f;
            health = 140;
@@ -35,6 +37,7 @@ public class AxthrixUnits {
         }};
 
         blockade = new UnitType("blockade"){{
+           outlineColor = new Color(43f, 43f, 51f, 0f);
            speed = 0.7f;
            hitSize = 11f;
            health = 350;
@@ -104,6 +107,7 @@ public class AxthrixUnits {
         }}; 
 
         palisade = new UnitType("palisade"){{
+           outlineColor = new Color(43f, 43f, 51f, 0f);
            hitSize = 13;
            health = 750;
            buildSpeed = 3f;
@@ -217,6 +221,7 @@ public class AxthrixUnits {
         }}; 
 
         parapet = new UnitType("parapet"){{
+           outlineColor = new Color(43f, 43f, 51f, 0f);           
            speed = 0.44f;
            hitSize = 24f;
            health = 8600;
