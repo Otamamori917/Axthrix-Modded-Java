@@ -20,7 +20,7 @@ public class AxthrixUnits {
      
     
     //barrier tree
-    barrier, blockade, palisade, parapet, impediment,
+    barrier, blockade, palisade, parapet, impediment;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
