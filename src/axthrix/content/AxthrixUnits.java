@@ -152,7 +152,7 @@ public class AxthrixUnits {
                 reload = 120;
                 inaccuracy = 50;
                 shoot.shots = Mathf.random(20,40);
-                shoot.shotDelay = Mathf.random(0,5);;
+                shoot.shotDelay = 4
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-pin"){{
@@ -220,11 +220,13 @@ public class AxthrixUnits {
                     scaleLife = true;
                     fragBullets = 1;
                     fragBullet = new BasicBulletType(5.5f, 50){{
-                        spawnUnit = new UnitType("repairturret"){{
+                        spawnUnit = new MissileUnitType("repairturret"){{
                             speed = 0f;
                             hitSize = 6f;
                             health = 400;
-                            lifetime = 500f;
+                            playerControllable = false;
+                            useUnitCap = false;
+                            lifetime = 500;
                             constructor = MechUnit::create;
                             abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
                                 statusDuration = 60f * 6f;
