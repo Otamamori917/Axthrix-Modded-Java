@@ -32,7 +32,7 @@ public class AxthrixUnits {
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
-            abilities.add(new ForceFieldAbility(20f, 0.2f, 600f, 20f * 6));
+            abilities.add(new ForceFieldAbility(20f, 0.2f, 400f, 20f * 6));
         }};
 
         blockade = new UnitType("blockade"){{
@@ -47,13 +47,13 @@ public class AxthrixUnits {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
-                radius = 36f;
-                angle = 82f;
+                radius = 20f;
+                angle = 45f;
                 y = -24f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 4f;
+                width = 6f;
                 whenShooting = false;
             }});
 
@@ -124,13 +124,13 @@ public class AxthrixUnits {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
-                radius = 40f;
+                radius = 250f;
                 y = -24f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
-                max = 600f;
-                width = 6f;
+                max = 800f;
+                width = 8f;
                 whenShooting = false;
             }});
 
