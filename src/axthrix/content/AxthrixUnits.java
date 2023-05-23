@@ -100,7 +100,6 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
-                    trailEffect = Fx.electrified;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.heal;
@@ -192,7 +191,6 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
-                    trailEffect = Fx.electrified;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.heal;
