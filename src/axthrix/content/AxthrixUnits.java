@@ -129,13 +129,14 @@ public class AxthrixUnits {
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
-                x = 8;
+                x = 8f;
+                y = -2f;
                 mirror = true;
-                recoil = 0f;
+                recoil = 5f;
                 alternate = false;
                 top = false;
                 reload = 120;
-                inaccuracy = 10;
+                inaccuracy = 50;
                 shoot.shots = Mathf.random(10,30);
                 shoot.shotDelay = Mathf.random(0,2);;
                 heatColor = Pal.heal;
@@ -146,8 +147,7 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = false;
                     under = true;
-                    moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f)); 
+                    moveX = 0f; 
                 }},
                 new RegionPart("-barrel"){{
                     progress = PartProgress.warmup;
@@ -156,6 +156,8 @@ public class AxthrixUnits {
                     mirror = false;
                     under = false;
                     moveX = 3f;
+                    moveY = -1f;
+                    moveRot = 15f;
                 }});
 
                 bullet = new BasicBulletType(2f, 9){{
@@ -175,7 +177,7 @@ public class AxthrixUnits {
                 }};
             }});
 
-            weapons.add(new Weapon("aj-dispatch"){{
+            weapons.add(new Weapon(){{
                 reload = 800f;
                 rotate = true;
                 mirror = false;
@@ -185,31 +187,6 @@ public class AxthrixUnits {
                 controllable = false;
                 autoTarget = true;
                 recoil = 0.5f;
-                parts.add(
-                new RegionPart("-rifle"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.recoil;
-                    heatColor = Pal.heal;
-                    mirror = true;
-                    under = true;
-                    moveX = 2f;
-                    x = 1f;
-                    moveY = 1f;
-                    moves.add(new PartMove(PartProgress.recoil, -2f, 0f, 0f)); 
-                }},new RegionPart("-pro"){{
-                    progress = PartProgress.reload.curve(Interp.pow2In);
-
-                    colorTo = new Color(1f, 1f, 1f, 0f);
-                    color = Color.white;
-                    mixColorTo = Pal.accent;
-                    mixColor = new Color(1f, 1f, 1f, 0f);
-                    outline = true;
-                    under = true;
-
-                    layerOffset = -0.01f;
-
-                    moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
-                }});
                 bullet = new BasicBulletType(){{
                     damage = 0f;
                     scaleLife = true;
@@ -218,6 +195,7 @@ public class AxthrixUnits {
                             speed = 0f;
                             hitSize = 6f;
                             health = 400;
+                            lifetime = 500
                             constructor = MechUnit::create;
                             abilities.add(new EnergyFieldAbility(40f, 65f, 180f){{
                                 statusDuration = 60f * 6f;
