@@ -17,8 +17,7 @@ import mindustry.content.*;
 public class AxthrixUnits {
     public static UnitType 
     
-    //b
-    outlineColor = new Color(43f, 43f, 51f, 0f);arrier tree
+    //barrier tree
     barrier, blockade, palisade, parapet, impediment,
     //barrier tree turrets
     repairturret, assaulturret;
