@@ -190,6 +190,7 @@ public class AxthrixUnits {
                 bullet = new BasicBulletType(){{
                     damage = 0f;
                     scaleLife = true;
+                    fragBullets = 1;
                     fragBullet = new BasicBulletType(5.5f, 50){{
                         spawnUnit = new UnitType("repairturret"){{
                             speed = 0f;
