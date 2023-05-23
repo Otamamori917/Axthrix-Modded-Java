@@ -47,12 +47,12 @@ public class AxthrixUnits {
                 region = "aj-blockade-shield";
                 radius = 36f;
                 angle = 82f;
-                y = -20f;
+                y = -24f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 600f;
-                width = 2f;
+                width = 4f;
                 whenShooting = false;
             }});
 
@@ -117,6 +117,7 @@ public class AxthrixUnits {
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
                 radius = 60f;
+                y = -24f;
                 angle = 50f;
                 regen = 0.6f;
                 cooldown = 200f;
@@ -124,7 +125,7 @@ public class AxthrixUnits {
                 width = 4f;
             }});
 
-             weapons.add(new Weapon("aj-repeater"){{
+             weapons.add(new Weapon("aj-recursor"){{
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 120f;
                 shootSound = Sounds.blaster;
@@ -149,9 +150,7 @@ public class AxthrixUnits {
                 }};
             }});
 
-                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
-                mirror = true;
-                alternate = false;
+                weapons.add(new Weapon("aj-dispatch"){{
                 x = 2f;
                 y = -1f;
                 reload = 8f;
@@ -159,9 +158,6 @@ public class AxthrixUnits {
                 targetSwitchInterval = 15f;
 
                 bullet = new BulletType(){{
-                    shootEffect = Fx.sparkShoot;
-                    hitEffect = Fx.pointHit;
-                    maxRange = 100f;
                     damage = 17f;
                 }};
             }});
