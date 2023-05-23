@@ -101,6 +101,7 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.heal;
@@ -141,7 +142,7 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 x = 8f;
-                y = 0f;
+                y = 0.3f;
                 shootX = 4f;
                 shootY = -2f;
                 mirror = true;
@@ -192,6 +193,7 @@ public class AxthrixUnits {
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.heal;
