@@ -63,6 +63,8 @@ public class AxthrixUnits {
                 minWarmup = 0.9f;
                 x = 6;
                 y = 0;
+                shootX = 2f;
+                shootY = -1f;
                 mirror = true;
                 top = false;
                 reload = 40;
