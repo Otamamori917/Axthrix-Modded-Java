@@ -24,7 +24,7 @@ public class AxthrixUnits {
     
     public static void load(){
         barrier = new UnitType("barrier"){{
-           outlineColor = new Color(43f, 43f, 51f, 0f);           
+           outlineColor = Pal.darkOutline;           
            speed = 0.55f;
            hitSize = 6f;
            health = 140;
@@ -36,7 +36,7 @@ public class AxthrixUnits {
         }};
 
         blockade = new UnitType("blockade"){{
-           outlineColor = new Color(43f, 43f, 51f, 0f);
+           outlineColor = Pal.darkOutline;
            speed = 0.7f;
            hitSize = 11f;
            health = 350;
@@ -59,7 +59,6 @@ public class AxthrixUnits {
 
              weapons.add(new Weapon("aj-nano-shotgun"){{
                 shootSound = Sounds.blaster;
-                minWarmup = 30f;
                 x = 6;
                 y = 0;
                 mirror = true;
@@ -107,7 +106,7 @@ public class AxthrixUnits {
         }}; 
 
         palisade = new UnitType("palisade"){{
-           outlineColor = new Color(43f, 43f, 51f, 0f);
+           outlineColor = Pal.darkOutline;
            hitSize = 13;
            health = 750;
            buildSpeed = 3f;
@@ -131,7 +130,6 @@ public class AxthrixUnits {
                 shootStatus = AxthrixStatus.vindicationI;
                 shootStatusDuration = 420f;
                 shootSound = Sounds.shockBlast;
-                minWarmup =  40f;
                 x = 8f;
                 y = 0f;
                 shootX = 4f;
@@ -222,7 +220,7 @@ public class AxthrixUnits {
         }}; 
 
         parapet = new UnitType("parapet"){{
-           outlineColor = new Color(43f, 43f, 51f, 0f);           
+           outlineColor = Pal.darkOutline;           
            speed = 0.44f;
            hitSize = 24f;
            health = 8600;
@@ -303,8 +301,7 @@ public class AxthrixUnits {
                 reload = 40;
                 rotate = true;
                 rotateSpeed = 1.6f;
-                minWarmup = 10f;
-                parts.add(
+                                parts.add(
                 new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.recoil;
