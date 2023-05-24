@@ -163,7 +163,7 @@ public class AxthrixUnits {
 
             weapons.add(new Weapon("aj-recursor"){{
                 shootStatus = AxthrixStatus.vindicationI;
-                shootStatusDuration = 420f;
+                shootStatusDuration = 140f;
                 shootSound = Sounds.shockBlast;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -255,69 +255,40 @@ public class AxthrixUnits {
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.blaster;
                 shootStatus = AxthrixStatus.vindicationII;
-                shootStatusDuration = 120f;
+                shootStatusDuration = 240f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
+                top = false;
                 x = 10;
                 y = 0;
                 mirror = true;
                 alternate = false;
-                reload = 40;
-                inaccuracy = 1;
-                shoot.shots = 4;
-                shoot.shotDelay = Mathf.random(50,80);
+                reload = 220;
+                inaccuracy = 50;
+                shoot.shots = Mathf.random(20,80);
+                shoot.shotDelay = 1;
+                heatColor = Pal.heal;
 
-                bullet = new LaserBoltBulletType(2f, 9){{
-                    damage = 40;
-                    lifetime = 80;
+                bullet = new BasicBulletType(2f, 9){{
+                    homingRange = 40f;
+                    homingPower = 4f;
+                    homingDelay = 5f;
+                    width = 0.5f;
+                    height = 0.5f;
+                    damage = 8;
+                    lifetime = 40;
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;
+                    trailEffect = Fx.none;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.heal;
+                    trailLength = 4;
+                    trailWidth = 0.5f;
+                    status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
-                }};
-            }});
-
-                weapons.add(new Weapon("pull"){{
-                mirror = true;
-                alternate = false;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                x = 4f;
-                y = -2f;
-                reload = 2f;
-                alwaysContinuous = true;
-                controllable = false;
-                autoTarget = true; 
-                targetInterval = 10f;
-                targetSwitchInterval = 15f;
-                parts.add(new RegionPart("-side"){{
-                    progress = PartProgress.warmup;
-                    moveX = 4f;
-                    moveY = 0f;
-                    mirror = true;
-                    under = true;
-                    children.add(new RegionPart("-barrel"){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        mirror = true;
-                        under = true;
-                        moveY = 2f;
-                        moveX = 0f;
-
-                    }});
-                }}, 
-                new RegionPart("-mid"){{
-                    progress = PartProgress.warmup;
-                    mirror = false;
-                    under = false;
-                    moveY = -0f;
-                }});
-
-                bullet = new PointLaserBulletType(){{
-                    shootEffect = Fx.sparkShoot;
-                    hitEffect = Fx.pointHit;
-                    damage = 20f;
-                    knockback = -2f;
                 }};
             }});
         }}; 
