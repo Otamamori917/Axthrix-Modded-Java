@@ -245,21 +245,23 @@ public class AxthrixUnits {
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
                 radius = 30f;
-                angle = 60f;
+                angle = 100f;
+                y = -24f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 1000f;
-                width = 10f;            
+                width = 10f; 
+                whenShooting = false;           
             }});
 
              weapons.add(new Weapon("aj-hammer-shotgun"){{
-                shootSound = Sounds.blaster;
+                shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
                 shootStatusDuration = 240f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
-                x = 10;
+                x = 14;
                 y = 0;
                 mirror = true;
                 alternate = false;
@@ -268,6 +270,26 @@ public class AxthrixUnits {
                 shoot.shots = Mathf.random(20,80);
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-blade"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-piston"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, -4f, 0f, 45f));
+                    }}); 
+                }});
 
                 bullet = new BasicBulletType(2f, 9){{
                     homingRange = 40f;
@@ -275,7 +297,7 @@ public class AxthrixUnits {
                     homingDelay = 5f;
                     width = 0.5f;
                     height = 0.5f;
-                    damage = 8;
+                    damage = 12;
                     lifetime = 40;
                     speed = 3;
                     healPercent = 1;
