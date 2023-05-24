@@ -69,8 +69,6 @@ public class AxthrixUnits {
                 top = false;
                 reload = 40;
                 inaccuracy = 40;
-                shoot.shots = 2f;
-                shoot.shotDelay = 20f;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
