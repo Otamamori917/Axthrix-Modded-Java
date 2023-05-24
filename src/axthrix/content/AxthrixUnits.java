@@ -316,8 +316,6 @@ public class AxthrixUnits {
                 bullet = new PointBulletType(){{
                     shootEffect = Fx.sparkShoot;
                     hitEffect = Fx.pointHit;
-                    length = 200f;
-                    width = 4f;
                     damage = 20f;
                     knockback = -2f;
                 }};
