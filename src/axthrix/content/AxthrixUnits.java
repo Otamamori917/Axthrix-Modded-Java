@@ -244,12 +244,12 @@ public class AxthrixUnits {
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
-                radius = 80f;
-                angle = 50f;
+                radius = 30f;
+                angle = 60f;
                 regen = 0.6f;
                 cooldown = 200f;
-                max = 600f;
-                width = 1f;            
+                max = 1000f;
+                width = 10f;            
             }});
 
              weapons.add(new Weapon("aj-hammer-shotgun"){{
