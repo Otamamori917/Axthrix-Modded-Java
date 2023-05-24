@@ -258,8 +258,8 @@ public class AxthrixUnits {
                 shootStatusDuration = 120f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
-                x = 7;
-                y = 1;
+                x = 10;
+                y = 0;
                 mirror = true;
                 alternate = false;
                 reload = 40;
@@ -316,6 +316,7 @@ public class AxthrixUnits {
                 bullet = new PointBulletType(){{
                     shootEffect = Fx.sparkShoot;
                     hitEffect = Fx.pointHit;
+                    drawSize: 20
                     damage = 20f;
                     knockback = -2f;
                 }};
