@@ -57,7 +57,7 @@ public class AxthrixUnits {
                 whenShooting = false;
             }});
 
-             weapons.add(new Weapon("aj-nano-shotgun"){{
+             weapons.add(new Weapon("aj-nano-launcher"){{
                 shootSound = Sounds.blaster;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -69,8 +69,8 @@ public class AxthrixUnits {
                 top = false;
                 reload = 40;
                 inaccuracy = 40;
-                shoot.shots = Mathf.random(20,40);
-                shoot.shotDelay = 0f;
+                shoot.shots = 2f;
+                shoot.shotDelay = 20f;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
@@ -92,25 +92,52 @@ public class AxthrixUnits {
                 }});
 
                 bullet = new BasicBulletType(){{
-                    homingRange = 40f;
-                    homingPower = 4f;
-                    homingDelay = 5f;
-                    width = 0.5f;
-                    height = 0.5f;
-                    damage = 4;
-                    lifetime = 20;
-                    speed = 3;
-                    healPercent = 1;
-                    collidesTeam = true;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.heal;
-                    trailLength = 4;
-                    trailWidth = 0.5f;
-                    status = AxthrixStatus.nanodiverge;
-                    backColor = Pal.heal;
-                    frontColor = Color.white;
+                    speed = 0f;
+                    keepVelocity = false;
+                    collidesAir = false;
+                    spawnUnit = new MissileUnitType("nano-missile"){{
+                        targetAir = false;
+                        speed = 4.3f;
+                        maxRange = 6f;
+                        lifetime = 60f * 1.4f;
+                        outlineColor = Pal.darkOutline;
+                        engineColor = trailColor = Pal.heal;
+                        engineLayer = Layer.effect;
+                        health = 45;
+                        loopSoundVolume = 0.1f;
+
+                        weapons.add(new Weapon(){{
+                            shootCone = 360f;
+                            mirror = false;
+                            reload = 1f;
+                            shootOnDeath = true;
+                            bullet = new ExplosionBulletType(110f, 25f){{
+                                shootEffect = Fx.massiveExplosion;
+                            }};
+                        }});
+                    }};
+                    fragBullets = 40;
+                    fragBullet = new BasicBulletType(5.5f, 50){{
+                        homingRange = 40f;
+                        homingPower = 4f;
+                        homingDelay = 5f;
+                        width = 0.5f;
+                        height = 0.5f;
+                        damage = 1;
+                        lifetime = 40;
+                        speed = 1;
+                        healPercent = 1;
+                        collidesTeam = true;
+                        trailEffect = Fx.none;
+                        trailInterval = 3f;
+                        trailParam = 4f;
+                        trailColor = Pal.heal;
+                        trailLength = 4;
+                        trailWidth = 0.5f;
+                        status = AxthrixStatus.nanodiverge;
+                        backColor = Pal.heal;
+                        frontColor = Color.white;
+                    }};    
                 }};
             }});
         }}; 
