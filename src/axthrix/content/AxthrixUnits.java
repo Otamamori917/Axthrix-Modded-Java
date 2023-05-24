@@ -246,7 +246,7 @@ public class AxthrixUnits {
                 region = "aj-parapet-shield";
                 radius = 30f;
                 angle = 100f;
-                y = -24f;
+                y = -22f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 1000f;
@@ -261,7 +261,7 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
-                x = 14;
+                x = 12;
                 y = 0;
                 mirror = true;
                 alternate = false;
@@ -287,7 +287,7 @@ public class AxthrixUnits {
                         under = false;
                         moveY = 2f;
                         moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, -4f, 0f, 45f));
+                        moves.add(new PartMove(PartProgress.recoil, -4f, 0f, 0f));
                     }}); 
                 }});
 
