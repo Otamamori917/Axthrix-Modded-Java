@@ -401,43 +401,5 @@ public class AxthrixBlocks {
                 }});
             }};
         }};
-
-        parallax = new TractorBeamTurret("parallax"){{
-            requirements(Category.turret, with(Items.silicon, 120, Items.titanium, 90, Items.graphite, 30));
-
-            hasPower = true;
-            size = 2;
-            force = 12f;
-            scaledForce = 6f;
-            range = 240f;
-            damage = 0.3f;
-            scaledHealth = 160;
-            rotateSpeed = 10;
-
-            consumePower(3f);
-            drawer = new DrawTurret(){{
-                parts.add(new RegionPart("-side"){{
-                    progress = PartProgress.warmup;
-                    moveX = 4f;
-                    moveY = 0f;
-                    mirror = true;
-                    under = true;
-                    children.add(new RegionPart("-barrel"){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        mirror = true;
-                        under = true;
-                        moveY = 2f;
-                        moveX = 0f;
-
-                    }});
-                }}, 
-                new RegionPart("-mid"){{
-                    progress = PartProgress.warmup;
-                    mirror = false;
-                    under = false;
-                    moveY = -0f;
-                }});
-            }};
-        }};
     }
 }
