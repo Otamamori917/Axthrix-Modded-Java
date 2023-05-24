@@ -313,10 +313,10 @@ public class AxthrixUnits {
                     moveY = -0f;
                 }});
 
-                bullet = new PointBulletType(){{
+                bullet = new PointLaserBulletType(){{
                     shootEffect = Fx.sparkShoot;
                     hitEffect = Fx.pointHit;
-                    drawSize: 20
+                    drawSize: 20;
                     damage = 20f;
                     knockback = -2f;
                 }};
