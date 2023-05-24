@@ -413,8 +413,6 @@ public class AxthrixBlocks {
             damage = 0.3f;
             scaledHealth = 160;
             rotateSpeed = 10;
-            minWarmup = 0.94f;
-            shootWarmupSpeed = 0.06f;
 
             consumePower(3f);
             drawer = new DrawTurret(){{
