@@ -285,7 +285,7 @@ public class AxthrixUnits {
                         heatColor = Pal.heal;
                         mirror = false;
                         under = false;
-                        moveY = f;
+                        moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, -4f, 0f, 45f));
                     }}); 
