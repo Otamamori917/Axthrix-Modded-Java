@@ -252,10 +252,12 @@ public class AxthrixUnits {
                 width = 1f;            
             }});
 
-             weapons.add(new Weapon("aj-obilvion"){{
+             weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.blaster;
                 shootStatus = AxthrixStatus.vindicationII;
                 shootStatusDuration = 120f;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
                 x = 7;
                 y = 1;
                 mirror = true;
@@ -276,20 +278,48 @@ public class AxthrixUnits {
                 }};
             }});
 
-                weapons.add(new PointDefenseWeapon("aj-1-point-def"){{
+                weapons.add(new Weapon("pull"){{
                 mirror = true;
                 alternate = false;
-                x = 2f;
-                y = -1f;
-                reload = 8f;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                x = 4f;
+                y = -2f;
+                reload = 2f;
+                alwaysContinuous = true;
+                controllable = false;
+                autoTarget = true; 
                 targetInterval = 10f;
                 targetSwitchInterval = 15f;
+                parts.add(new RegionPart("-side"){{
+                    progress = PartProgress.warmup;
+                    moveX = 4f;
+                    moveY = 0f;
+                    mirror = true;
+                    under = true;
+                    children.add(new RegionPart("-barrel"){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        mirror = true;
+                        under = true;
+                        moveY = 2f;
+                        moveX = 0f;
 
-                bullet = new BulletType(){{
+                    }});
+                }}, 
+                new RegionPart("-mid"){{
+                    progress = PartProgress.warmup;
+                    mirror = false;
+                    under = false;
+                    moveY = -0f;
+                }});
+
+                bullet = new PointBulletType(){{
                     shootEffect = Fx.sparkShoot;
                     hitEffect = Fx.pointHit;
-                    maxRange = 100f;
-                    damage = 17f;
+                    length = 200f;
+                    width = 4f;
+                    damage = 20f;
+                    knockback = -2f;
                 }};
             }});
         }}; 
