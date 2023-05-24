@@ -287,7 +287,7 @@ public class AxthrixUnits {
                         under = false;
                         moveY = 2f;
                         moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, -4f, 0f, 0f));
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }});
 
@@ -297,7 +297,7 @@ public class AxthrixUnits {
                     homingDelay = 5f;
                     width = 0.5f;
                     height = 0.5f;
-                    damage = 12;
+                    damage = 18;
                     lifetime = 40;
                     speed = 3;
                     healPercent = 1;
