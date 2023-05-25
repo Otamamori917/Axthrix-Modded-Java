@@ -163,7 +163,7 @@ public class AxthrixUnits {
 
             weapons.add(new Weapon("aj-recursor"){{
                 shootStatus = AxthrixStatus.vindicationI;
-                shootStatusDuration = 200f;
+                shootStatusDuration = 240f;
                 shootSound = Sounds.shockBlast;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -257,7 +257,7 @@ public class AxthrixUnits {
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
-                shootStatusDuration = 320f;
+                shootStatusDuration = 400f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
