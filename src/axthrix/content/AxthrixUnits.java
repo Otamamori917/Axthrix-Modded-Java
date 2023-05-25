@@ -177,7 +177,7 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
-                shoot.shots = 60
+                shoot.shots = 60;
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
                 parts.add(
@@ -267,7 +267,7 @@ public class AxthrixUnits {
                 alternate = false;
                 reload = 220;
                 inaccuracy = 50;
-                shoot.shots = 80
+                shoot.shots = 80;
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
                 parts.add(
