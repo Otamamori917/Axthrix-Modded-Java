@@ -257,7 +257,7 @@ public class AxthrixUnits {
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
-                shootStatusDuration = 420f;
+                shootStatusDuration = 450f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
