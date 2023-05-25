@@ -177,7 +177,7 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
-                shoot.shots = Mathf.random(20,60);
+                shoot.shots = 60
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
                 parts.add(
@@ -257,7 +257,7 @@ public class AxthrixUnits {
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
-                shootStatusDuration = 300f;
+                shootStatusDuration = 320f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
@@ -267,7 +267,7 @@ public class AxthrixUnits {
                 alternate = false;
                 reload = 220;
                 inaccuracy = 50;
-                shoot.shots = Mathf.random(20,80);
+                shoot.shots = 80
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
                 parts.add(
