@@ -3,6 +3,7 @@ package axthrix.content;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.entities.abilities.*;
+import axthrix.types.abilltytypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.world.*;
@@ -178,7 +179,7 @@ public class AxthrixUnits {
                 reload = 120;
                 inaccuracy = 50;
                 shoot.shots = 60;
-                shoot.shotDelay = 1;
+                shoot.shotDelay = 0;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-pin"){{
@@ -254,6 +255,8 @@ public class AxthrixUnits {
                 whenShooting = false;           
             }});
 
+            abilltytypes.add(new NanobotStormAbility())
+
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
@@ -264,7 +267,6 @@ public class AxthrixUnits {
                 x = 12;
                 y = 0;
                 mirror = true;
-                alternate = false;
                 reload = 220;
                 inaccuracy = 50;
                 shoot.shots = 80;
