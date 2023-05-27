@@ -3,7 +3,7 @@ package axthrix.content;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.entities.abilities.*;
-import axthrix.types.abilltytypes.*;
+import axthrix.content.types.abilitytypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.world.*;
@@ -255,7 +255,7 @@ public class AxthrixUnits {
                 whenShooting = false;           
             }});
 
-            abilltytypes.add(new NanobotStormAbility());
+            abilitytypes.add(new NanobotStormAbility());
 
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
