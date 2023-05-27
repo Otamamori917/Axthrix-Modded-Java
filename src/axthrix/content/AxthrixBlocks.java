@@ -1,7 +1,7 @@
 package axthrix.content;
 
-import axthrix.content.types.bulletypes.*;
-import axthrix.content.types.turretypes.*;
+import axthrix.types.bulletypes.*;
+import axthrix.types.turretypes.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import arc.graphics.*;

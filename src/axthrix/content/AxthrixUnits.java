@@ -3,7 +3,7 @@ package axthrix.content;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.entities.abilities.*;
-import axthrix.content.types.abilitytypes.*;
+import axthrix.types.abilitytypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.world.*;

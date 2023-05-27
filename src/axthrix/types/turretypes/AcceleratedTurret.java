@@ -1,4 +1,4 @@
-package axthrix.content.types.turretypes;
+package axthrix.types.turretypes;
 
 import arc.*;
 import arc.math.*;
