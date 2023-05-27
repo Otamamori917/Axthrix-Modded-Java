@@ -1,4 +1,4 @@
-package axthrix.types.abilltytypes;
+package axthrix.types.abilitytypes;
 
 import arc.*;
 import arc.audio.*;
