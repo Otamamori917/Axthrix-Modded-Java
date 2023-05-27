@@ -38,9 +38,9 @@ public class NanobotStormAbility extends Ability{
     protected float timer, curStroke;
     protected boolean anyNearby = false;
 
-    NanobotStormAbillty(){}
+    NanobotStormAbility(){}
 
-    public NanobotStormAbillty(float damage, float range){
+    public NanobotStormAbility(float damage, float range){
         this.damage = damage;
         this.reload = 1;
         this.range = range;
