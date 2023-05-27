@@ -1,4 +1,4 @@
-package axthrix.types.abilitytypes;
+package mindustry.entities.abilities;
 
 import arc.*;
 import arc.audio.*;
