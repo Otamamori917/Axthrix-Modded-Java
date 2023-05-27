@@ -255,7 +255,7 @@ public class AxthrixUnits {
                 whenShooting = false;           
             }});
 
-            abilitytypes.add(new NanobotStormAbility());
+            abilities.add(new NanobotStormAbility());
 
              weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
