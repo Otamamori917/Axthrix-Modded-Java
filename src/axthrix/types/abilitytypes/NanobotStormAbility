@@ -17,7 +17,7 @@ import mindustry.type.*;
 
 import static mindustry.Vars.*;
 
-public class NanobotStormAbillty extends Ability{
+public class NanobotStormAbility extends Ability{
     private static final Seq<Healthc> all = new Seq<>();
 
     public float damage = 10, range = 60;
