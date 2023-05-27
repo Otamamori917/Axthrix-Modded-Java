@@ -1,4 +1,4 @@
-package mindustry.entities.abilities;
+package axthrix.types.abilitytypes;
 
 import arc.*;
 import arc.audio.*;
@@ -48,7 +48,7 @@ public class NanobotStormAbility extends Ability{
 
     @Override
     public String localized(){
-        return Core.bundle.format("axthrixAbillty.nanobotstorm", damage, range / Vars.tilesize, 1000);
+        return Core.bundle.format("axthrixAbility.nanobotstorm", damage, range / Vars.tilesize, 1000);
     }
 
     @Override
