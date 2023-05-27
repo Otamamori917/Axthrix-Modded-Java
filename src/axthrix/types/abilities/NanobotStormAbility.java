@@ -22,7 +22,7 @@ import static mindustry.Vars.*;
 public class NanobotStormAbility extends Ability {
     private static final Seq<Healthc> all = new Seq<>();
 
-    public float damage = 10, range = 60, reload;
+    public float damage = 10, range = 60, reload = 1;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
     public StatusEffect status = nanodiverge;
     public Sound shootSound = Sounds.flux;
@@ -39,6 +39,8 @@ public class NanobotStormAbility extends Ability {
 
     protected float timer, curStroke;
     protected boolean anyNearby = false;
+
+    public NanobotStormAbility(){}
 
     public NanobotStormAbility(float damage, float range){
         this.damage = damage;
