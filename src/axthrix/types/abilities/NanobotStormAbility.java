@@ -1,4 +1,4 @@
-package axthrix.types.abilitytypes;
+package axthrix.types.abilities;
 
 import arc.*;
 import arc.audio.*;
@@ -10,19 +10,21 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
+import static axthrix.content.AxthrixStatus.*;
 import static mindustry.Vars.*;
 
-public class NanobotStormAbility extends Ability{
+public class NanobotStormAbility extends Ability {
     private static final Seq<Healthc> all = new Seq<>();
 
-    public float damage = 10, range = 60;
+    public float damage = 10, range = 60, reload;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
-    public StatusEffect status = AxthrixStatus.nanodiverge;
+    public StatusEffect status = nanodiverge;
     public Sound shootSound = Sounds.flux;
     public float statusDuration = 60f * 6f;
     public float x, y;
@@ -38,8 +40,6 @@ public class NanobotStormAbility extends Ability{
     protected float timer, curStroke;
     protected boolean anyNearby = false;
 
-    NanobotStormAbility(){}
-
     public NanobotStormAbility(float damage, float range){
         this.damage = damage;
         this.reload = 1;
@@ -48,7 +48,7 @@ public class NanobotStormAbility extends Ability{
 
     @Override
     public String localized(){
-        return Core.bundle.format("axthrixAbility.nanobotstorm", damage, range / Vars.tilesize, 1000);
+        return Core.bundle.format("ability.nanobot-storm", damage, range / Vars.tilesize);
     }
 
     @Override
