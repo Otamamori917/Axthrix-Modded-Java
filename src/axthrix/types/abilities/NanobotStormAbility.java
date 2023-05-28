@@ -22,14 +22,14 @@ import static mindustry.Vars.*;
 public class NanobotStormAbility extends Ability {
     private static final Seq<Healthc> all = new Seq<>();
 
-    public float damage = 10, range = 60, reload = 1;
+    public float damage = 40, range = 60, reload = 1;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
     public StatusEffect status = nanodiverge;
     public Sound shootSound = Sounds.flux;
     public float statusDuration = 60f * 6f;
     public float x, y;
-    public boolean targetGround = true, targetAir = false, hitBuildings = true, hitUnits = true;
-    public float healPercent = 3f;
+    public boolean targetGround = true, targetAir = true, hitBuildings = false, hitUnits = true;
+    public float healPercent = 0.43f;
 
     public float layer = Layer.bullet - 0.001f, blinkScl = 20f, blinkSize = 0.1f;
     public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 0.5f;

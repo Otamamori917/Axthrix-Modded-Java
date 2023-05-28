@@ -174,7 +174,6 @@ public class AxthrixUnits {
                 shootY = -2f;
                 mirror = true;
                 recoil = 5f;
-                alternate = false;
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
@@ -267,6 +266,7 @@ public class AxthrixUnits {
                 x = 12;
                 y = 0;
                 mirror = true;
+                alternate = false;
                 reload = 220;
                 inaccuracy = 50;
                 shoot.shots = 80;
