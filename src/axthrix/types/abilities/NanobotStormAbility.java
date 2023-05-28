@@ -31,9 +31,9 @@ public class NanobotStormAbility extends Ability {
     public boolean targetGround = true, targetAir = true, hitBuildings = false, hitUnits = true;
     public float healPercent = 0.43f;
 
-    public float layer = Layer.bullet - 0.001f, blinkScl = 20f, blinkSize = 0.1f;
-    public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 0.5f;
-    public int sectors = 6;
+    public float layer = Layer.bullet - 4f, blinkScl = 20f, blinkSize = 0.1f;
+    public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 10f;
+    public int sectors = 20;
     public Color color = Pal.heal;
     public boolean useAmmo = true;
 
