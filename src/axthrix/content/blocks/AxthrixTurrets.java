@@ -1,4 +1,4 @@
-package axthrix.content;
+package axthrix.content.blocks;
 
 import axthrix.types.bulletypes.*;
 import axthrix.types.turretypes.*;
@@ -16,7 +16,7 @@ import mindustry.world.draw.*;
 
 import static mindustry.type.ItemStack.*;
 
-public class AxthrixBlocks {
+public class AxthrixTurrets{
     public static Block
 
     //Bendy miniguns
