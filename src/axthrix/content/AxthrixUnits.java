@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.math.*;
 import mindustry.entities.abilities.*;
 import axthrix.types.abilities.*;
+import axthrix.types.bulletypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.world.*;
@@ -21,7 +22,9 @@ public class AxthrixUnits {
      
     
     //barrier tree
-    barrier, blockade, palisade, parapet, impediment;
+    barrier, blockade, palisade, parapet, impediment,
+    //bolt tree
+    t5testweapon;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -58,7 +61,7 @@ public class AxthrixUnits {
                 whenShooting = false;
             }});
 
-             weapons.add(new Weapon("aj-nano-launcher"){{
+            weapons.add(new Weapon("aj-nano-launcher"){{
                 shootSound = Sounds.blaster;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -316,5 +319,27 @@ public class AxthrixUnits {
                 }};
             }});
         }}; 
+
+        t5testweapon = new UnitType("t5testweapon"){{
+           outlineColor = Pal.darkOutline;           
+           speed = 0.55f;
+           hitSize = 6f;
+           health = 140;
+           canBoost = true;
+           boostMultiplier = 1.5f;
+           constructor = MechUnit::create;
+
+           weapons.add(new Weapon(){{
+                shootSound = Sounds.shockBlast;
+                reload = 220;
+                inaccuracy = 0;
+                shoot.firstShotDelay = 200
+                bullet = new ThickLightningBulletType(3048, Pal.lancerLaser){{
+                    buildingDamageMultiplier = 1.4f;
+                }};
+            }});
+
+           
+        }};
     }
 }    
