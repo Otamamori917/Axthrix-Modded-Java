@@ -117,5 +117,6 @@ public class AxthrixFx {
         circle(e.x, e.y, r);
         if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f);
+}
 
     

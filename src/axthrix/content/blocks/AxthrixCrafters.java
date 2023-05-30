@@ -19,7 +19,7 @@ public class UAWBlocksProduction {
 	public static Block placeholder,
 
     //multicrafters
-    centrifugal-accelerator
+    centrifugal-accelerator;
 
     public static void load() {
 
@@ -33,9 +33,6 @@ public class UAWBlocksProduction {
 
 			hasItems = true;
 			hasLiquids = true;
-
-			craftEffect = UAWFx.effectHit(0.3f, UAWPal.cryoFront, UAWPal.cryoBack);
-			updateEffect = UAWFx.effectHit(0.2f, Color.valueOf("f7cba4"), Color.valueOf("d3ae8d"));
 			updateEffectChance = 0.02f;
 
 			menu = detailed;
@@ -49,7 +46,7 @@ public class UAWBlocksProduction {
 						0.45f
 					);
 					output = new IOEntry(
-						Seq.with(ItemStack.with(UAWItems.cryogel, 1)),
+						Seq.with(ItemStack.with(Items.titanium, 1)),
 						Seq.with()
 					);
 					craftTime = 45f;
@@ -57,7 +54,7 @@ public class UAWBlocksProduction {
 				// Gel to fluid
 				new Recipe() {{
 					input = new IOEntry(
-						Seq.with(ItemStack.with(UAWItems.cryogel, 1)),
+						Seq.with(ItemStack.with(Items.titanium, 1)),
 						Seq.with(),
 						0.45f
 					);
