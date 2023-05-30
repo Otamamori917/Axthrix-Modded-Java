@@ -334,7 +334,7 @@ public class AxthrixUnits {
                 reload = 220;
                 inaccuracy = 0;
                 shoot.firstShotDelay = 200;
-                bullet = new ThickLightningBulletType(3048, Pal.lancerLaser){{
+                bullet = new MindyThickLightningBulletType(3048, Pal.lancerLaser){{
                     buildingDamageMultiplier = 1.4f;
                 }};
             }});
