@@ -116,7 +116,7 @@ public class MindyThickLightning {
 
             if(!headless){
                 Effect.shake(6f, 5.5f, finalX, finalY);
-                Sounds.pulseBlast.at(finalX, finalY, 1f + Mathf.range(0.1f), 3f);
+                AxthrixSounds.lightningStrike.at(finalX, finalY, 1f + Mathf.range(0.1f), 3f);
             }
         });
     }

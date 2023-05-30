@@ -7,6 +7,7 @@ import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 
 import axthrix.content.*;
+import axthrix.content.blocks.*;
 
 public class AxthrixLoader extends Mod{
 

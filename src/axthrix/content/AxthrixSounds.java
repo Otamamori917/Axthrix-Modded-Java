@@ -16,11 +16,6 @@ public class AxthrixSounds {
 
     }
 
-    protected static Sound l() {
-        return loadSound(soundFiles[num++]);
-    }
-
-
     protected static Sound loadSound(String soundName) {
         if(!Vars.headless) {
             String name = "sounds/" + soundName;
