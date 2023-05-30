@@ -1,6 +1,6 @@
 displayName: "Axthrix Java"
 name: "aj"
-author: "Otamamori#4716|Contributers (MEEP of Faith#7277(The entire AccelratedTurret script)), (nullevoy#7763(spriting tips)), (Monika#6030(Code clean up & starting blocks & bundles))"
+author: "Otamamori#4716|Contributers (BetaMindy mod(The entire ThickLightning scripts)), (MEEP of Faith#7277(The entire AccelratedTurret script)), (nullevoy#7763(spriting tips)), (Monika#6030(Code clean up & starting blocks & bundles))"
 main: "axthrix.AxthrixLoader"
 description: "vast array of content"
 version: 1.0
