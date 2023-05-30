@@ -21,7 +21,7 @@ public class AxthrixLoader extends Mod{
         AxthrixStatus.load();
         AxthrixUnits.load();
         AxthrixTurrets.load();
-        AxthrixCrafters.load();
+        //AxthrixCrafters.load();
         Log.info("Axthrix Content Loaded. :)");
 
         Events.on(ClientLoadEvent.class, e -> {

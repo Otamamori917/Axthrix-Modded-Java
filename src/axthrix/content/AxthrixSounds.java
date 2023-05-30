@@ -12,7 +12,7 @@ public class AxthrixSounds {
     public static void load() {
 
         //credits to Betamindy mod
-        lightningStrike = l();
+        lightningStrike = load("lstrike");
 
     }
 
