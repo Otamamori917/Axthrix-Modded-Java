@@ -17,7 +17,6 @@ public class AxthrixLoader extends Mod{
 
     @Override
     public void loadContent(){
-        AxthrixSounds.load();
         AxthrixStatus.load();
         AxthrixUnits.load();
         AxthrixTurrets.load();
