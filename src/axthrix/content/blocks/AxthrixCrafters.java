@@ -1,4 +1,4 @@
-package axthrix.content.blocks; 
+/*package axthrix.content.blocks; 
 
 import arc.graphics.Color;
 import arc.struct.Seq;
@@ -82,5 +82,5 @@ public class AxthixCrafters {
 
     }
 }        
-
+*/
 

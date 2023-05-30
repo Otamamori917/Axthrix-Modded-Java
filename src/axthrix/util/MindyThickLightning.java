@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import axthrix.content.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;
@@ -115,7 +116,7 @@ public class MindyThickLightning {
 
             if(!headless){
                 Effect.shake(6f, 5.5f, finalX, finalY);
-                AxthrixSounds.LightningStrike.at(finalX, finalY, 1f + Mathf.range(0.1f), 3f);
+                Sounds.pulseBlast.at(finalX, finalY, 1f + Mathf.range(0.1f), 3f);
             }
         });
     }
