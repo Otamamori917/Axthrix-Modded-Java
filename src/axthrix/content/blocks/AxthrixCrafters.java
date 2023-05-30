@@ -15,21 +15,21 @@ import multicraft.*;
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.with;
 
-public class UAWBlocksProduction {
+public class AxthixCrafters {
 	public static Block placeholder,
 
     //multicrafters
-    centrifugal-accelerator;
+    centrifugalaccelerator;
 
     public static void load() {
 
-        centrifugal-accelerator = new MultiCrafter("centrifugal-accelerator") {{
+        centrifugalaccelerator = new MultiCrafter("centrifugalaccelerator") {{
 			requirements(Category.crafting, with(
 				Items.lead, 45,
 				Items.graphite, 30,
 				Items.thorium, 20
 			));
-			size = 2;
+			size = 4;
 
 			hasItems = true;
 			hasLiquids = true;
@@ -73,7 +73,7 @@ public class UAWBlocksProduction {
 					padding = 8 * px;
 				}},
 				new DrawBubbles() {{
-					color = UAWPal.cryoFront;
+					color = Pal.techBlue;
 				}},
 				new DrawDefault()
 			);
