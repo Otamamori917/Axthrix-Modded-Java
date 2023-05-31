@@ -2,29 +2,16 @@ displayName: "Axthrix"
 repo : Otamamori917/Axthrix-Modded-Java
 name: "aj"
 author: 
-    '''
-    Author: Otamamori#4716|
+'''
+    Author: Otamamori#4716
     Contributers:
-        '''
-            BetaMindy/sk7725#6110: 
-            '''
-                MindyThickLightningBulletType.
-            '''
-            MEEP of Faith#7277:
-            '''
-                AccelratedTurret.
-            '''    
-            nullevoy#7763:
-            '''
-                Spriting tips.
-            '''
-            Monika#6030:
-            '''
-                Code clean up. 
-                starting blocks & bundles
-            '''
-        '''
     '''
+        BetaMindy/sk7725#6110: MindyThickLightningBulletType.
+        MEEPofFaith#7277: AccelratedTurret.   
+        ullevoy#7763: Spriting Tips.
+        Monika#6030: Code clean up & starting blocks & bundles
+    '''
+'''
 main: "axthrix.AxthrixLoader"
 description: "vast array of content"
 version: 1.0
