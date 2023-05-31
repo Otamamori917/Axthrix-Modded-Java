@@ -414,8 +414,8 @@ public class AxthrixTurrets{
             buildCostMultiplier = 0.1f;
             size = 5;
             scaledHealth = 820f;
-            reload = 500f;
-            range = 360f;
+            reload = 600f;
+            range = 500f;
             maxAmmo = 800;
             ammoPerShot = 10;
             consumeAmmoOnce = false;
@@ -425,12 +425,12 @@ public class AxthrixTurrets{
             targetGround = true;
             shootY = -2f;
             shoot.shots = 8;
-            shoot.shotDelay = 20;
+            shoot.shotDelay = 4;
             shootSound = Sounds.shootBig;
             ammo(
-                Items.surgeAlloy, new BoltBulletType(3000, Pal.surge){{
-                    boltLength = 25;
-                    boltLengthRand = 15;    
+                Items.surgeAlloy, new BoltBulletType(200, Pal.surge){{
+                    boltLength = 30;
+                    boltLengthRand = 20;    
                 }}
             );
             inaccuracy = 360f;
