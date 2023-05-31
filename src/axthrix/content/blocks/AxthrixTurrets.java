@@ -426,21 +426,21 @@ public class AxthrixTurrets{
             shootY = -2f;
             shootSound = Sounds.shootBig;
             ammo(
-                Items.surgeAlloy, new MindyThickLightningBulletType(3000, Pal.surge;){{
+                Items.surgeAlloy, new MindyThickLightningBulletType(3000, Pal.surge){{
                     lightning = 20;
                     lightningLength = 15;
                     lightningLengthRand = 10;
                     lightningDamage = 200;
                     lightningColor = Pal.surge;
                     fragBullets = 1;
-                    fragBullet = new MindyThickLightningBulletType(1500, Pal.surge;){{
+                    fragBullet = new MindyThickLightningBulletType(1500, Pal.surge){{
                         lightning = 20;
                         lightningLength = 15;
                         lightningLengthRand = 10;
                         lightningDamage = 100;
                         lightningColor = Pal.surge;
                         fragBullets = 1;
-                        fragBullet = new MindyThickLightningBulletType(750, Pal.surge;){{
+                        fragBullet = new MindyThickLightningBulletType(750, Pal.surge){{
                             lightning = 20;
                             lightningLength = 15;
                             lightningLengthRand = 10;
