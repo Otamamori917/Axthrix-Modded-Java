@@ -424,21 +424,16 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shoot.shots = 4;
-            shoot.shotDelay = 1;
+            shoot.shots = 8;
+            shoot.shotDelay = 20;
             shootSound = Sounds.shootBig;
             ammo(
-                Items.surgeAlloy, new BoltBulletType(4000, Pal.surge){{
-                    boltLength = 55;
-                    boltLengthRand = 25;
-                    lightning = 20;
-                    lightningLength = 15;
-                    lightningLengthRand = 10;
-                    lightningDamage = 200;
-                    lightningColor = Pal.surge;     
+                Items.surgeAlloy, new BoltBulletType(3000, Pal.surge){{
+                    boltLength = 25;
+                    boltLengthRand = 15;    
                 }}
             );
-            inaccuracy = 80f;
+            inaccuracy = 360f;
             coolant = consumeCoolant(0.5f);
         }};
     }
