@@ -448,7 +448,7 @@ public class AxthrixTurrets{
                             lightningColor = Pal.surge;
                         }};
                     }};      
-                }};
+                }}
             );
             inaccuracy = 0f;
             coolant = consumeCoolant(0.5f);
