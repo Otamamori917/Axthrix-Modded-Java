@@ -21,7 +21,7 @@ import static mindustry.Vars.*;
  */
 
 
-public class MindyThickLightning {
+public class Bolt {
     private static final Rand random = new Rand();
     private static final Rect rect = new Rect();
     private static final Seq<Unitc> entities = new Seq<>();
@@ -97,21 +97,21 @@ public class MindyThickLightning {
             }
         }
 
-        AxthrixFx.mindyThickLightning.at(x, y, rotation, color, lines);
+        AxthrixFx.bolt.at(x, y, rotation, color, lines);
         // fInaL OR effECtiVElY fINAL
         float finalRotation = rotation;
         float finalX = x;
         float finalY = y;
-        Time.run(AxthrixFx.mindyThickLightning.lifetime, () -> {
-            AxthrixFx.mindyThickLightningFade.at(finalX, finalY, finalRotation, color, lines);
+        Time.run(AxthrixFx.bolt.lifetime, () -> {
+            AxthrixFx.boltFade.at(finalX, finalY, finalRotation, color, lines);
             int n = Mathf.random(5);
             if(bhit){
                 for(int j = 0; j < n; j++) Lightning.create(team, color, damage * 0.2f, lines.peek().x, lines.peek().y, finalRotation + Mathf.range(30f), length / 3);
-                AxthrixFx.mindyThickLightningStrike.at(lines.peek().x, lines.peek().y, finalRotation, color);
+                AxthrixFx.boltStrike.at(lines.peek().x, lines.peek().y, finalRotation, color);
             }
             else{
                 for(int j = 0; j < n; j++) Lightning.create(team, color, damage * 0.2f, lines.peek().x, lines.peek().y, Mathf.random(360f), length / 3);
-                AxthrixFx.mindyThickLightningHit.at(lines.peek().x, lines.peek().y, finalRotation, color);
+                AxthrixFx.boltHit.at(lines.peek().x, lines.peek().y, finalRotation, color);
             }
 
             if(!headless){

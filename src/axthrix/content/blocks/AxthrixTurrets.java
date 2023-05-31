@@ -405,16 +405,16 @@ public class AxthrixTurrets{
         aratiri = new AcceleratedTurret("aratiri"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 50f;
-            acceleratedBonus = 2f;
+            acceleratedDelay = 40f;
+            acceleratedBonus = 3f;
             acceleratedSteps = 10;
-            burnoutDelay = 1200f;
+            burnoutDelay = 1600f;
             cooldownDelay = 400f;
 
             buildCostMultiplier = 0.1f;
             size = 5;
             scaledHealth = 820f;
-            reload = 400f;
+            reload = 500f;
             range = 360f;
             maxAmmo = 800;
             ammoPerShot = 10;
@@ -424,33 +424,21 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootY = -2f;
+            shoot.shots = 4;
+            shoot.shotDelay = 1;
             shootSound = Sounds.shootBig;
             ammo(
-                Items.surgeAlloy, new MindyThickLightningBulletType(3000, Pal.surge){{
+                Items.surgeAlloy, new BoltBulletType(4000, Pal.surge){{
+                    boltLength = 55;
+                    boltLengthRand = 25;
                     lightning = 20;
                     lightningLength = 15;
                     lightningLengthRand = 10;
                     lightningDamage = 200;
-                    lightningColor = Pal.surge;
-                    fragBullets = 1;
-                    fragBullet = new MindyThickLightningBulletType(1500, Pal.surge){{
-                        lightning = 20;
-                        lightningLength = 15;
-                        lightningLengthRand = 10;
-                        lightningDamage = 100;
-                        lightningColor = Pal.surge;
-                        fragBullets = 1;
-                        fragBullet = new MindyThickLightningBulletType(750, Pal.surge){{
-                            lightning = 20;
-                            lightningLength = 15;
-                            lightningLengthRand = 10;
-                            lightningDamage = 50;
-                            lightningColor = Pal.surge;
-                        }};
-                    }};      
+                    lightningColor = Pal.surge;     
                 }}
             );
-            inaccuracy = 0f;
+            inaccuracy = 80f;
             coolant = consumeCoolant(0.5f);
         }};
     }

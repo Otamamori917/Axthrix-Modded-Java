@@ -7,13 +7,13 @@ import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 
-public class MindyThickLightningBulletType extends BulletType {
+public class BoltBulletType extends BulletType {
     public Color color1;
-    public int lightningLength = 40;
-    public int lightningLengthRand = 0;
+    public int boltLength = 40;
+    public int boltLengthRand = 0;
     public float orbRadius = 11f;
 
-    public MindyThickLightningBulletType(float damage, Color c1){
+    public BoltBulletType(float damage, Color c1){
         super(0.0001f, damage);
         this.damage = damage;
         color1 = c1;
@@ -29,12 +29,12 @@ public class MindyThickLightningBulletType extends BulletType {
 
     @Override
     public float calculateRange(){
-        return (lightningLength + lightningLengthRand/2f) * 15f;
+        return (boltLength + boltLengthRand/2f) * 15f;
     }
 
     @Override
     public float estimateDPS(){
-        return super.estimateDPS() * Math.max(lightningLength / 10f, 1);
+        return super.estimateDPS() * Math.max(boltLength / 10f, 1);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class MindyThickLightningBulletType extends BulletType {
 
     @Override
     public void init(Bullet b){
-        MindyThickLightning.create(b.team, color1, damage, b.x, b.y, b.rotation(), lightningLength + Mathf.random(lightningLengthRand));
+        Bolt.create(b.team, color1, damage, b.x, b.y, b.rotation(), boltLength + Mathf.random(boltLengthRand));
     }
 }

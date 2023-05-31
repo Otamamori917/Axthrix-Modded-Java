@@ -33,7 +33,7 @@ public class AxthrixFx {
 
     public static final Effect
 
-    mindyThickLightning = new Effect(12f, 1300f, e -> {
+    bolt = new Effect(12f, 1300f, e -> {
         if(!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
         int n = Mathf.clamp(1 + (int)(e.fin() * lines.size), 1, lines.size);
@@ -56,7 +56,7 @@ public class AxthrixFx {
         }
     }),
 
-    mindyThickLightningFade = new Effect(80f, 1300f, e -> {
+    boltFade = new Effect(80f, 1300f, e -> {
         if(!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
         for(int i = 2; i >= 0; i--){
@@ -78,7 +78,7 @@ public class AxthrixFx {
         }
     }),
 
-    mindyThickLightningStrike = new Effect(80f, 100f, e -> {
+    boltStrike = new Effect(80f, 100f, e -> {
         color(Color.white, e.color, e.fin());
 
         for(int i = 2; i >= 0; i--){
@@ -98,7 +98,7 @@ public class AxthrixFx {
         if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f),
 
-    mindyThickLightningHit = new Effect(80f, 100f, e -> {
+    boltHit = new Effect(80f, 100f, e -> {
         color(Color.white, e.color, e.fin());
 
         for(int i = 2; i >= 0; i--){
