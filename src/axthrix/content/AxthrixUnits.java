@@ -24,7 +24,7 @@ public class AxthrixUnits {
     //barrier tree
     barrier, blockade, palisade, parapet, impediment,
     //bolt tree
-    t5testweapon;
+    bolt;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -319,27 +319,5 @@ public class AxthrixUnits {
                 }};
             }});
         }}; 
-
-        t5testweapon = new UnitType("t5testweapon"){{
-           outlineColor = Pal.darkOutline;           
-           speed = 0.55f;
-           hitSize = 6f;
-           health = 140;
-           canBoost = true;
-           boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
-
-           weapons.add(new Weapon(){{
-                shootSound = Sounds.shockBlast;
-                reload = 220;
-                inaccuracy = 0;
-                shoot.firstShotDelay = 200;
-                bullet = new MindyThickLightningBulletType(3048, Pal.lancerLaser){{
-                    buildingDamageMultiplier = 1.4f;
-                }};
-            }});
-
-           
-        }};
     }
 }    

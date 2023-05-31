@@ -33,7 +33,7 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, parallax;
+    nado, aratiri;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
@@ -400,6 +400,58 @@ public class AxthrixTurrets{
                     moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
                 }});
             }};
+        }};
+
+        aratiri = new AcceleratedTurret("aratiri"){{
+            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+            //custom varibles
+            acceleratedDelay = 50f;
+            acceleratedBonus = 2f;
+            acceleratedSteps = 10;
+            burnoutDelay = 1200f;
+            cooldownDelay = 400f;
+
+            buildCostMultiplier = 0.1f;
+            size = 5;
+            scaledHealth = 820f;
+            reload = 400f;
+            range = 360f;
+            maxAmmo = 800;
+            ammoPerShot = 10;
+            consumeAmmoOnce = false;
+            recoil = 3f;
+            rotateSpeed = 2f;
+            targetAir = true;
+            targetGround = true;
+            shootY = -2f;
+            shootSound = Sounds.shootBig;
+            ammo(
+                Items.surgeAlloy, new MindyThickLightningBulletType(3000, Pal.surge;){{
+                    lightning = 20
+                    lightningLength = 15;
+                    lightningLengthRand = 10;
+                    lightningDamage = 200;
+                    lightningColor = Pal.surge;
+                    fragBullets = 1
+                    fragBullet = new MindyThickLightningBulletType(1500, Pal.surge;){{
+                        lightning = 20
+                        lightningLength = 15;
+                        lightningLengthRand = 10;
+                        lightningDamage = 100;
+                        lightningColor = Pal.surge;
+                        fragBullets = 1
+                        fragBullet = new MindyThickLightningBulletType(750, Pal.surge;){{
+                            lightning = 20
+                            lightningLength = 15;
+                            lightningLengthRand = 10;
+                            lightningDamage = 50;
+                            lightningColor = Pal.surge;
+                        }};
+                    }};      
+                }};
+            );
+            inaccuracy = 0f;
+            coolant = consumeCoolant(0.5f);
         }};
     }
 }
