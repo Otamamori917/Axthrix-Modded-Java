@@ -405,9 +405,9 @@ public class AxthrixTurrets{
         aratiri = new AcceleratedTurret("aratiri"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 40f;
+            acceleratedDelay = 20f;
             acceleratedBonus = 3f;
-            acceleratedSteps = 10;
+            acceleratedSteps = 20;
             burnoutDelay = 1600f;
             cooldownDelay = 400f;
 
@@ -427,11 +427,11 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             ammo(
                 Items.surgeAlloy, new BoltBulletType(50, Pal.surge){{
-                    boltLength = 20;
-                    boltLengthRand = 10;    
+                    boltLength = 30;
+                    boltLengthRand = 20;    
                 }}
             );
-            inaccuracy = 6f;
+            inaccuracy = 0f;
             coolant = consumeCoolant(0.5f);
         }};
     }
