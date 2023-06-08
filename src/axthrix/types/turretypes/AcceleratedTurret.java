@@ -10,8 +10,10 @@ import mindustry.world.blocks.defense.turrets.*;
 public class AcceleratedTurret extends ItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
-    public float burnoutDelay = 240, cooldownDelay = 120;
+
+    public float burnoutDelay = 240, cooldownDelay = 120, maxBurnEffectChance = 0.3f;
     public boolean burnsOut = true;
+    public Effect burnsOutEffect = Fx.reactorsmoke;
 
     public AcceleratedTurret(String name){
         super(name);
@@ -22,6 +24,7 @@ public class AcceleratedTurret extends ItemTurret{
     public void setBars(){
         super.setBars();
         addBar("aj-phases", (AcceleratedTurretBuild entity) -> new Bar(
+            () -> "Status",
             () -> Core.bundle.format("bar.aj-phases", Strings.autoFixed(entity.accelBoost * 100f, 2)),
             () -> entity.accelCount > acceleratedSteps ? Pal.remove : Pal.techBlue,
             entity::boostf
@@ -50,6 +53,9 @@ public class AcceleratedTurret extends ItemTurret{
                     accelCount++;
                     accelCounter %= acceleratedDelay;
                 }else if(burnsOut && accelCounter >= burnoutDelay){
+                    if(Mathf.chanceDelta(maxBurnEffectChance * (requireCompleteCooling ? 1 : accelCounter / burnoutDelay))){
+					    burnsOutEffect.at(x + Mathf.range(Vars.tilesize * size / 2), y + Mathf.range(Vars.tilesize * size / 2), rotation, heatColor);
+				    }
                     accelBoost = 0;
                     accelCount++;
                     accelCounter %= burnoutDelay;
