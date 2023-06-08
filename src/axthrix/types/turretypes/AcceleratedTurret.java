@@ -11,9 +11,8 @@ public class AcceleratedTurret extends ItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
 
-    public float burnoutDelay = 240, cooldownDelay = 120, maxBurnEffectChance = 0.3f;
+    public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
-    public Effect burnsOutEffect = Fx.reactorsmoke;
 
     public AcceleratedTurret(String name){
         super(name);
@@ -53,9 +52,6 @@ public class AcceleratedTurret extends ItemTurret{
                     accelCount++;
                     accelCounter %= acceleratedDelay;
                 }else if(burnsOut && accelCounter >= burnoutDelay){
-                    if(Mathf.chanceDelta(maxBurnEffectChance * (requireCompleteCooling ? 1 : accelCounter / burnoutDelay))){
-					    burnsOutEffect.at(x + Mathf.range(Vars.tilesize * size / 2), y + Mathf.range(Vars.tilesize * size / 2), rotation, heatColor);
-				    }
                     accelBoost = 0;
                     accelCount++;
                     accelCounter %= burnoutDelay;
