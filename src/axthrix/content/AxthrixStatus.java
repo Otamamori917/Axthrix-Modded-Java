@@ -2,6 +2,7 @@ package axthrix.content;
 
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.content.*;
 
 public class AxthrixStatus {
     public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration;
@@ -54,7 +55,7 @@ public class AxthrixStatus {
             damage = 0.2f;
             transitionDamage = 20f;
             init(() -> {
-                opposite(Status.unmoving); 
+                opposite(StatusEffects.unmoving); 
             });
         }};
 
