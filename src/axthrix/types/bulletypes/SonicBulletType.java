@@ -15,7 +15,7 @@ public class SonicBulletType extends BasicBulletType{
         super(damage, bulletSprite);
         pierceBuilding = true;
         pierce = true;
-        laserAbsorb - false;
+        laserAbsorb = false;
         backColor = Pal.darkishGray;
         frontColor = Pal.lightishGray;
         shrinkY = -0.2f;
