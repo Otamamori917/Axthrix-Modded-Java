@@ -659,7 +659,7 @@ public class AxthrixUnits {
                             moveY = 2f;
                             moveX = 0f;
                             moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                        }})
+                        }});
                     }}); 
                 }});
 
