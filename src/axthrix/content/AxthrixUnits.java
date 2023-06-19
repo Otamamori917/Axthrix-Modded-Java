@@ -503,6 +503,8 @@ public class AxthrixUnits {
 
             weapons.add(new Weapon("aj-tuba"){{
                 shootSound = Sounds.plasmaboom;
+                shootStatus = AxthrixStatus.vindicationII;
+                shootStatusDuration = 450f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
@@ -616,6 +618,100 @@ public class AxthrixUnits {
                     lifetime = 10f;
                  }};
             }});
+            weapons.add(new Weapon("aj-titan-missile-pod"){{
+                shootSound = Sounds.shockBlast;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                top = false;
+                x = 12;
+                y = 0;
+                mirror = true;
+                alternate = false;
+                reload = 220;
+                inaccuracy = 50;
+                shoot.shots = 60;
+                shoot.shotDelay = 1;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-blade"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-wing"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                        children.add(new RegionPart("-wing"){{
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveY = 2f;
+                            moveX = 0f;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                        }})
+                    }}); 
+                }});
+
+                bullet = new BasicBulletType(){{
+                    speed = 0f;
+                    keepVelocity = false;
+                    collidesAir = false;
+                    spawnUnit = new MissileUnitType("nano-swarmer"){{
+                        targetAir = true;
+                        speed = 4f;
+                        maxRange = 14f;
+                        lifetime = 120f * 1.6f;
+                        outlineColor = Pal.darkOutline;
+                        engineColor = trailColor = Pal.heal;
+                        engineLayer = Layer.effect;
+                        health = 45;
+                        loopSoundVolume = 0.1f;
+
+                        weapons.add(new Weapon(){{
+                            shootCone = 360f;
+                            mirror = false;
+                            reload = 1f;
+                            shootOnDeath = true;
+                            bullet = new ExplosionBulletType(80f, 25f){{
+                                shootEffect = Fx.massiveExplosion;
+                                fragBullets = 40;
+                                fragBullet = new BasicBulletType(5.5f, 50){{
+                                    homingRange = 40f;
+                                    homingPower = 4f;
+                                    homingDelay = 5f;
+                                    width = 0.5f;
+                                    height = 0.5f;
+                                    damage = 1;
+                                    lifetime = 80;
+                                    speed = 2;
+                                    healPercent = 1;
+                                    collidesTeam = true;
+                                    trailEffect = Fx.none;
+                                    trailInterval = 3f;
+                                    trailParam = 4f;
+                                    trailColor = Pal.heal;
+                                    trailLength = 4;
+                                    trailWidth = 0.5f;
+                                    status = AxthrixStatus.nanodiverge;
+                                    backColor = Pal.heal;
+                                    frontColor = Color.white;
+                                }};
+                            }};
+                        }});
+                    }};    
+                }};
+            }});    
         }};
     }
 }    
