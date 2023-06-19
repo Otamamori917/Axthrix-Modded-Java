@@ -619,6 +619,7 @@ public class AxthrixUnits {
                  }};
             }});
             weapons.add(new Weapon("aj-titan-missile-pod"){{
+                shootCone = 360f;
                 shootSound = Sounds.shockBlast;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
