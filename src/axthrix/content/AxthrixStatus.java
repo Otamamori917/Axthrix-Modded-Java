@@ -4,7 +4,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA;
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration;
 
     public static void load(){
         vindicationI = new StatusEffect("vindicationI"){{
