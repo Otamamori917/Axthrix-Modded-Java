@@ -7,6 +7,16 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.entities.abilities.*;
+import axthrix.content.AxthrixStatus.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
+import mindustry.world.*;
+import mindustry.world.draw.*;
+import mindustry.type.*;
+import mindustry.type.unit.*;
+import mindustry.type.weapons.*;
+import mindustry.content.*;
 
 /** sonic themed bullet*/
 public class SonicBulletType extends BasicBulletType{
