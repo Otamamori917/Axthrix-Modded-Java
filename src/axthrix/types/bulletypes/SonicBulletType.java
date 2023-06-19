@@ -36,7 +36,7 @@ public class SonicBulletType extends BasicBulletType{
         despawnEffect = Fx.none;
         shootEffect = Fx.none;
         hitEffect = Fx.none;
-        smokeEffect  Fx.none;
+        smokeEffect = Fx.none;
         knockback = 4;
         impact = true;
         status = AxthrixStatus.vibration;
