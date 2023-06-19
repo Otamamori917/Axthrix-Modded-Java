@@ -288,8 +288,8 @@ public class AxthrixUnits {
                     frontColor = Pal.lightishGray;
                     shrinkY = -0.2f;
                     shrinkX = -0.6f;
-                    width = 3f;
-                    height = 1.5f;
+                    width = 6f;
+                    height = 3f;
                     hitSound = Sounds.shield;
                     despawnEffect = Fx.none;
                     shootEffect = Fx.none;
@@ -304,8 +304,8 @@ public class AxthrixUnits {
                     absorbable = false;
                     pierceArmor = true;
                     removeAfterPierce = false;
-                    speed = 5f;
-                    lifetime = 10f;
+                    speed = 8f;
+                    lifetime = 20f;
                 }};
             }}); 
         }}; 
@@ -456,8 +456,8 @@ public class AxthrixUnits {
                     frontColor = Pal.lightishGray;
                     shrinkY = -0.2f;
                     shrinkX = -0.6f;
-                    width = 6f;
-                    height = 3f;
+                    width = 12f;
+                    height = 6f;
                     hitSound = Sounds.shield;
                     despawnEffect = Fx.none;
                     shootEffect = Fx.none;
@@ -472,8 +472,8 @@ public class AxthrixUnits {
                     absorbable = false;
                     pierceArmor = true;
                     removeAfterPierce = false;
-                    speed = 5f;
-                    lifetime = 10f;
+                    speed = 8f;
+                    lifetime = 20f;
                 }};
             }});        
         }}; 
@@ -598,8 +598,8 @@ public class AxthrixUnits {
                     frontColor = Pal.lightishGray;
                     shrinkY = -0.2f;
                     shrinkX = -0.6f;
-                    width = 9f;
-                    height = 4.5f;
+                    width = 18f;
+                    height = 9f;
                     hitSound = Sounds.shield;
                     despawnEffect = Fx.none;
                     shootEffect = Fx.none;
@@ -614,11 +614,11 @@ public class AxthrixUnits {
                     absorbable = false;
                     pierceArmor = true;
                     removeAfterPierce = false;
-                    speed = 5f;
-                    lifetime = 10f;
+                    speed = 8f;
+                    lifetime = 20f;
                  }};
             }});
-            weapons.add(new Weapon("aj-titan-missile-pod"){{
+            weapons.add(new Weapon("aj-lotus"){{
                 shootCone = 360f;
                 shootSound = Sounds.shockBlast;
                 shootWarmupSpeed = 0.06f;
@@ -628,10 +628,10 @@ public class AxthrixUnits {
                 x = 0;
                 y = -2;
                 mirror = false;
-                reload = 620;
-                inaccuracy = 20;
+                reload = 1020;
+                inaccuracy = 60;
                 shoot.shots = 60;
-                shoot.shotDelay = 1;
+                shoot.shotDelay = 2;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-blade"){{
@@ -684,16 +684,16 @@ public class AxthrixUnits {
                             mirror = false;
                             reload = 1f;
                             shootOnDeath = true;
-                            bullet = new ExplosionBulletType(80f, 25f){{
+                            bullet = new ExplosionBulletType(60f, 45f){{
                                 shootEffect = Fx.massiveExplosion;
-                                fragBullets = 40;
+                                fragBullets = 10;
                                 fragBullet = new BasicBulletType(5.5f, 50){{
                                     homingRange = 40f;
                                     homingPower = 4f;
                                     homingDelay = 5f;
                                     width = 0.5f;
                                     height = 0.5f;
-                                    damage = 1;
+                                    damage = 4;
                                     lifetime = 80;
                                     speed = 2;
                                     healPercent = 1;
