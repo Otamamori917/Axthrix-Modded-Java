@@ -233,81 +233,6 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
-            weapons.add(new Weapon("aj-trombone"){{
-                shootSound = Sounds.plasmaboom;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                top = true;
-                x = 4;
-                y = 0;
-                mirror = true;
-                reload = 160;
-                inaccuracy = 10;
-                shoot.shots = 2;
-                shoot.shotDelay = 20;
-                heatColor = Pal.heal;
-                parts.add(
-                new RegionPart("-shell"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.heal;
-                    mirror = true;
-                    under = false;
-                    moveX = 2f;
-                    moveY = -2f;
-                    moveRot = 45f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    }});
-                new RegionPart("-cone"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-cap"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }}); 
-                }};
-                bullet = new BasicBulletType(){{
-                    damage = 200;
-                    sprite = "aj-sonic";
-                    backSprite = "aj-sonic-back";
-                    pierceBuilding = true;
-                    pierce = true;
-                    laserAbsorb = false;
-                    backColor = Pal.darkishGray;
-                    frontColor = Pal.lightishGray;
-                    shrinkY = -0.2f;
-                    shrinkX = -0.6f;
-                    width = 6f;
-                    height = 3f;
-                    hitSound = Sounds.shield;
-                    despawnEffect = Fx.none;
-                    shootEffect = Fx.none;
-                    hitEffect = Fx.none;
-                    smokeEffect = Fx.none;
-                    knockback = 4;
-                    impact = true;
-                    status = AxthrixStatus.vibration;
-                    statusDuration = 120;
-                    keepVelocity = false;
-                    reflectable = false;
-                    absorbable = false;
-                    pierceArmor = true;
-                    removeAfterPierce = false;
-                    speed = 8f;
-                    lifetime = 20f;
-                }};
-            }}); 
         }}; 
 
         parapet = new UnitType("parapet"){{
@@ -402,7 +327,7 @@ public class AxthrixUnits {
                 reload = 160;
                 inaccuracy = 10;
                 shoot.shots = 3;
-                shoot.shotDelay = 20;
+                shoot.shotDelay = 5;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
@@ -514,7 +439,7 @@ public class AxthrixUnits {
                 reload = 160;
                 inaccuracy = 10;
                 shoot.shots = 4;
-                shoot.shotDelay = 20;
+                shoot.shotDelay = 5;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
@@ -620,7 +545,7 @@ public class AxthrixUnits {
             }});
             weapons.add(new Weapon("aj-lotus"){{
                 shootCone = 360f;
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.blaster;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 baseRotation = 180f;
@@ -642,7 +567,7 @@ public class AxthrixUnits {
                     under = false;
                     moveX = 2f;
                     moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-wing"){{
+                    children.add(new RegionPart("-pedal"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.warmup;
                         heatColor = Pal.heal;
@@ -651,7 +576,7 @@ public class AxthrixUnits {
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                        children.add(new RegionPart("-wing"){{
+                        children.add(new RegionPart("-pedal"){{
                             progress = PartProgress.warmup;
                             heatProgress = PartProgress.warmup;
                             heatColor = Pal.heal;
@@ -684,30 +609,8 @@ public class AxthrixUnits {
                             mirror = false;
                             reload = 1f;
                             shootOnDeath = true;
-                            bullet = new ExplosionBulletType(60f, 45f){{
+                            bullet = new ExplosionBulletType(120f, 85f){{
                                 shootEffect = Fx.massiveExplosion;
-                                fragBullets = 10;
-                                fragBullet = new BasicBulletType(5.5f, 50){{
-                                    homingRange = 40f;
-                                    homingPower = 4f;
-                                    homingDelay = 5f;
-                                    width = 0.5f;
-                                    height = 0.5f;
-                                    damage = 4;
-                                    lifetime = 80;
-                                    speed = 2;
-                                    healPercent = 1;
-                                    collidesTeam = true;
-                                    trailEffect = Fx.none;
-                                    trailInterval = 3f;
-                                    trailParam = 4f;
-                                    trailColor = Pal.heal;
-                                    trailLength = 4;
-                                    trailWidth = 0.5f;
-                                    status = AxthrixStatus.nanodiverge;
-                                    backColor = Pal.heal;
-                                    frontColor = Color.white;
-                                }};
                             }};
                         }});
                     }};    
