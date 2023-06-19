@@ -279,7 +279,8 @@ public class AxthrixUnits {
                 }};
                 bullet = new BasicBulletType(){{
                     damage = 200;
-                    bulletSprite = "aj-sonic";
+                    sprite = "aj-sonic";
+                    backSprite = "aj-sonic-back";
                     pierceBuilding = true;
                     pierce = true;
                     laserAbsorb = false;
@@ -446,7 +447,8 @@ public class AxthrixUnits {
                 }};
                 bullet = new BasicBulletType(){{
                     damage = 300;
-                    bulletSprite = "aj-sonic";
+                    sprite = "aj-sonic";
+                    backSprite = "aj-sonic-back";
                     pierceBuilding = true;
                     pierce = true;
                     laserAbsorb = false;
@@ -585,7 +587,8 @@ public class AxthrixUnits {
                 }};
                 bullet = new BasicBulletType(){{
                     damage = 400;
-                    bulletSprite = "aj-sonic";
+                    sprite = "aj-sonic";
+                    backSprite = "aj-sonic-back";
                     pierceBuilding = true;
                     pierce = true;
                     laserAbsorb = false;
