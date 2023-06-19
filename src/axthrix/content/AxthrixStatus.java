@@ -54,7 +54,7 @@ public class AxthrixStatus {
             damage = 0.2f;
             transitionDamage = 20f;
             init(() -> {
-                opposite(unmoving); 
+                opposite(Status.unmoving); 
             });
         }};
 

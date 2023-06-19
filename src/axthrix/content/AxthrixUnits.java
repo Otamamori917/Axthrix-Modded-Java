@@ -277,7 +277,7 @@ public class AxthrixUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }};
-                bullet = new SonicBulletType(200f){{
+                bullet = new SonicBulletType(){{
                     width = 3f;
                     height = 1.5f;
                 }};
@@ -419,7 +419,9 @@ public class AxthrixUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }};
-                bullet = new SonicBulletType(300f);
+                bullet = new SonicBulletType(){{
+                    damage = 300f;
+                }};
             }});        
         }}; 
         impediment = new UnitType("impediment"){{
@@ -530,9 +532,10 @@ public class AxthrixUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }};
-                bullet = new SonicBulletType(400f){{
-                    width = 3f;
-                    height = 1.5f;
+                bullet = new SonicBulletType(){{
+                    damage = 400f;
+                    width = 9f;
+                    height = 4.5f;
                 }};
             }});
         }};
