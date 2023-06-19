@@ -21,8 +21,9 @@ import mindustry.content.*;
 /** sonic themed bullet*/
 public class SonicBulletType extends BasicBulletType{
 
-    public SonicBulletType(float damage, String bulletSprite){
-        super(damage, bulletSprite);
+    public SonicBulletType(float damage){
+        super(damage);
+        bulletSprite = "sonic";
         pierceBuilding = true;
         pierce = true;
         laserAbsorb = false;
@@ -51,10 +52,10 @@ public class SonicBulletType extends BasicBulletType{
     }
 
     public SonicBulletType(float damage){
-        this(damage, "sonic");
+        this(damage);
     }
 
     public SonicBulletType(){
-        this(200f, "sonic");
+        this(200f);
     }
 }
