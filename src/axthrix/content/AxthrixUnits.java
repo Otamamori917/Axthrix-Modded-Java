@@ -233,6 +233,55 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
+            weapons.add(new Weapon("aj-trombone"){{
+                shootSound = Sounds.plasmaboom;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                top = true;
+                x = 4;
+                y = 0;
+                mirror = true;
+                reload = 160;
+                inaccuracy = 10;
+                shoot.shots = 2;
+                shoot.shotDelay = 20;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-shell"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = false;
+                    moveX = 2f;
+                    moveY = -2f;
+                    moveRot = 45f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    }});
+                new RegionPart("-cone"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-cap"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                }};
+                bullet = new SonicBulletType(200f){{
+                    width = 3f;
+                    height = 1.5f;
+                }};
+            }}); 
         }}; 
 
         parapet = new UnitType("parapet"){{
@@ -257,9 +306,7 @@ public class AxthrixUnits {
                 whenShooting = false;           
             }});
 
-            abilities.add(new NanobotStormAbility());
-
-             weapons.add(new Weapon("aj-hammer-shotgun"){{
+            weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
                 shootStatus = AxthrixStatus.vindicationII;
                 shootStatusDuration = 450f;
@@ -318,6 +365,176 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
+            weapons.add(new Weapon("aj-trombone"){{
+                shootSound = Sounds.plasmaboom;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                top = true;
+                x = 4;
+                y = 0;
+                mirror = true;
+                reload = 160;
+                inaccuracy = 10;
+                shoot.shots = 3;
+                shoot.shotDelay = 20;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-shell"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = false;
+                    moveX = 2f;
+                    moveY = -2f;
+                    moveRot = 45f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-beater"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                }});
+                new RegionPart("-cone"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-cap"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                }};
+                bullet = new SonicBulletType(300f);
+            }});        
         }}; 
+        impediment = new UnitType("impediment"){{
+           outlineColor = Pal.darkOutline;           
+           speed = 0.44f;
+           hitSize = 24f;
+           health = 8600;
+           buildSpeed = 4f;
+           canBoost = true;
+           boostMultiplier = 1.5f;
+           constructor = MechUnit::create;
+
+            abilities.add(new ShieldArcAbility(){{
+                region = "aj-impediment-shield";
+                radius = 30f;
+                angle = 100f;
+                y = -22f;
+                regen = 0.6f;
+                cooldown = 200f;
+                max = 1000f;
+                width = 10f; 
+                whenShooting = false;           
+            }});
+
+            abilities.add(new NanobotStormAbility());
+
+            weapons.add(new Weapon("aj-tuba"){{
+                shootSound = Sounds.plasmaboom;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                top = true;
+                x = 4;
+                y = 0;
+                mirror = true;
+                reload = 160;
+                inaccuracy = 10;
+                shoot.shots = 4;
+                shoot.shotDelay = 20;
+                heatColor = Pal.heal;
+                parts.add(
+                new RegionPart("-shell"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moveY = -2f;
+                    moveRot = 45f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-beater"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }});
+                    children.add(new RegionPart("-wings"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }});  
+                    children.add(new RegionPart("-wings"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }});
+                    children.add(new RegionPart("-wings"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }});
+                }});
+                new RegionPart("-cone"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    moveX = 2f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    children.add(new RegionPart("-cap"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                }};
+                bullet = new SonicBulletType(400f){{
+                    width = 3f;
+                    height = 1.5f;
+                }};
+            }});
+        }};
     }
 }    

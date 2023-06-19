@@ -47,6 +47,17 @@ public class AxthrixStatus {
             });
         }};
 
+        vibration = new StatusEffect("vibration"){{
+            color = Pal.heal;
+            speedMultiplier = 0.90f;
+            reloadMultiplier = 0.80f;
+            damage = 0.2f;
+            transitionDamage = 20f;
+            init(() -> {
+                opposite(unmoving); 
+            });
+        }};
+
 
         
         precludedX = new StatusEffect("precludedX"){{
