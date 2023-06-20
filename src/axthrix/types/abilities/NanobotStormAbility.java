@@ -42,8 +42,7 @@ public class NanobotStormAbility extends Ability {
 
     public NanobotStormAbility(){}
 
-    public NanobotStormAbility(float damage, float range, float healPercent){
-        this.healPercent = healPercent;
+    public NanobotStormAbility(float damage, float range){
         this.damage = damage;
         this.reload = 1;
         this.range = range;
@@ -51,7 +50,7 @@ public class NanobotStormAbility extends Ability {
 
     @Override
     public String localized(){
-        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize, healPercent);
+        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize);
     }
 
     @Override

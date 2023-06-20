@@ -326,29 +326,30 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 x = 8;
-                y = -3;
+                y = -3.5;
                 mirror = true;
                 reload = 80;
                 inaccuracy = 10;
                 shoot.shots = 3;
                 shoot.shotDelay = 5;
+                layerOffset = 1f;
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
                     mirror = true;
-                    under = true;
+                    under = false;
                     moveX = 2f;
                     moveY = -1f;
-                    moveRot = -25f;
-                    moves.add(new PartMove(PartProgress.recoil, 1f, -1f, -15f));
+                    moveRot = -10f;
+                    moves.add(new PartMove(PartProgress.recoil, 1f, -1f, -5f));
                     children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
                         mirror = false;
-                        under = true;
+                        under = false;
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
