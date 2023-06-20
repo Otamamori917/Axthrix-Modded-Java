@@ -50,7 +50,7 @@ public class NanobotStormAbility extends Ability {
 
     @Override
     public String localized(){
-        return Core.bundle.format("ability.nanobot-storm", damage, range / Vars.tilesize);
+        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize);
     }
 
     @Override
