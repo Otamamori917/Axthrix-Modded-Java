@@ -325,8 +325,7 @@ public class AxthrixUnits {
                 shootSound = Sounds.plasmaboom;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
-                top = true;
-                x = 6;
+                x = 8;
                 y = -3;
                 mirror = true;
                 reload = 80;
@@ -339,17 +338,17 @@ public class AxthrixUnits {
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
                     mirror = true;
-                    under = false;
+                    under = true;
                     moveX = 2f;
                     moveY = -1f;
                     moveRot = -25f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -15f));
+                    moves.add(new PartMove(PartProgress.recoil, 1f, -1f, -15f));
                     children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
                         mirror = false;
-                        under = false;
+                        under = true;
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
