@@ -370,8 +370,8 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = true;
                     under = false;
-                    moveX = -4f;
-                    moveY = -4f;
+                    moveX = -1f;
+                    moveY = -2f;
                     moveRot = -10f;
                     moves.add(new PartMove(PartProgress.recoil, 1f, -2f, -5f));
                     children.add(new RegionPart("-piston"){{
