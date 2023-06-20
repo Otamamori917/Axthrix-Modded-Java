@@ -36,6 +36,37 @@ public class AxthrixUnits {
            canBoost = true;
            boostMultiplier = 2.5f;
            constructor = MechUnit::create;
+           weapons.add(new Weapon("puw"){{
+                shootStatus = AxthrixStatus.vindicationI;
+                shootStatusDuration = 250f;
+                shootSound = Sounds.swish;
+                shootY = 2f;
+                mirror = false;
+                top = false;
+                reload = 200;
+                heatColor = Pal.heal;
+                bullet = new BasicBulletType(){{
+                    homingRange = 40f;
+                    homingPower = 4f;
+                    homingDelay = 5f;
+                    width = 0.5f;
+                    height = 0.5f;
+                    damage = 2;
+                    lifetime = 40;
+                    speed = 3;
+                    healPercent = 1;
+                    collidesTeam = true;
+                    trailEffect = Fx.none;
+                    trailInterval = 3f;
+                    trailParam = 4f;
+                    trailColor = Pal.heal;
+                    trailLength = 4;
+                    trailWidth = 0.5f;
+                    status = AxthrixStatus.nanodiverge;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
+                }};
+            }});    
 
             abilities.add(new ForceFieldAbility(20f, 0.8f, 400f, 20f * 6));
         }};
