@@ -37,10 +37,10 @@ public class AxthrixUnits {
            boostMultiplier = 2.5f;
            constructor = MechUnit::create;
            weapons.add(new Weapon("puw"){{
-                shootStatus = AxthrixStatus.vindicationI;
-                shootStatusDuration = 250f;
                 shootSound = Sounds.swish;
                 shootY = 2f;
+                x = 0f;
+                y = 0f;
                 mirror = false;
                 top = false;
                 reload = 200;
