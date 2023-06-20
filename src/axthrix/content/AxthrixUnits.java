@@ -332,7 +332,6 @@ public class AxthrixUnits {
                 inaccuracy = 10;
                 shoot.shots = 3;
                 shoot.shotDelay = 5;
-                layerOffset = 1f;
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
@@ -340,7 +339,7 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = true;
                     under = false;
-                    moveX = 2f;
+                    moveX = -2f;
                     moveY = -1f;
                     moveRot = -10f;
                     moves.add(new PartMove(PartProgress.recoil, 1f, -1f, -5f));
