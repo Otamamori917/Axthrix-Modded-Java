@@ -327,9 +327,9 @@ public class AxthrixUnits {
                 minWarmup = 0.9f;
                 top = true;
                 x = 6;
-                y = -2;
+                y = -3;
                 mirror = true;
-                reload = 160;
+                reload = 80;
                 inaccuracy = 10;
                 shoot.shots = 3;
                 shoot.shotDelay = 5;
@@ -342,7 +342,7 @@ public class AxthrixUnits {
                     under = false;
                     moveX = 2f;
                     moveY = -1f;
-                    moveRot = 25f;
+                    moveRot = -25f;
                     moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -15f));
                     children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
@@ -356,7 +356,7 @@ public class AxthrixUnits {
                     }}); 
                 }});
                 bullet = new BasicBulletType(){{
-                    damage = 300;
+                    damage = 150;
                     sprite = "aj-sonic";
                     backSprite = "aj-sonic-back";
                     pierceBuilding = true;
@@ -420,7 +420,7 @@ public class AxthrixUnits {
                 x = 4;
                 y = 0;
                 mirror = true;
-                reload = 160;
+                reload = 80;
                 inaccuracy = 10;
                 shoot.shots = 4;
                 shoot.shotDelay = 5;
@@ -477,7 +477,7 @@ public class AxthrixUnits {
                     }}); 
                 }});
                 bullet = new BasicBulletType(){{
-                    damage = 400;
+                    damage = 200;
                     sprite = "aj-sonic";
                     backSprite = "aj-sonic-back";
                     pierceBuilding = true;
