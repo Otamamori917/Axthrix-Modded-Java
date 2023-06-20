@@ -340,9 +340,9 @@ public class AxthrixUnits {
                     mirror = true;
                     under = false;
                     moveX = -2f;
-                    moveY = -1f;
+                    moveY = -3f;
                     moveRot = -10f;
-                    moves.add(new PartMove(PartProgress.recoil, 1f, -1f, -5f));
+                    moves.add(new PartMove(PartProgress.recoil, 1f, -2f, -5f));
                     children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.recoil;
