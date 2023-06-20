@@ -29,7 +29,7 @@ public class NanobotStormAbility extends Ability {
     public float statusDuration = 60f * 6f;
     public float x, y;
     public boolean targetGround = true, targetAir = true, hitBuildings = false, hitUnits = true;
-    public float healPercent = 0.23f;
+    public float healPercent = 0.4f;
 
     public float layer = Layer.bullet + 4f, blinkScl = 20f, blinkSize = 0.1f;
     public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 10f;
@@ -42,7 +42,8 @@ public class NanobotStormAbility extends Ability {
 
     public NanobotStormAbility(){}
 
-    public NanobotStormAbility(float damage, float range){
+    public NanobotStormAbility(float damage, float range, float healPercent){
+        this.heal = healPercent;
         this.damage = damage;
         this.reload = 1;
         this.range = range;
@@ -50,7 +51,7 @@ public class NanobotStormAbility extends Ability {
 
     @Override
     public String localized(){
-        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize);
+        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize, healPercent);
     }
 
     @Override
