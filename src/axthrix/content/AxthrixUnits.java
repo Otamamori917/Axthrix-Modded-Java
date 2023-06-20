@@ -31,9 +31,10 @@ public class AxthrixUnits {
            outlineColor = Pal.darkOutline;           
            speed = 0.55f;
            hitSize = 6f;
-           health = 140;
+           health = 340;
+           armor = 2f;
            canBoost = true;
-           boostMultiplier = 1.5f;
+           boostMultiplier = 2.5f;
            constructor = MechUnit::create;
 
             abilities.add(new ForceFieldAbility(20f, 0.8f, 400f, 20f * 6));
@@ -41,9 +42,10 @@ public class AxthrixUnits {
 
         blockade = new UnitType("blockade"){{
            outlineColor = Pal.darkOutline;
+           armor = 5f;
            speed = 0.7f;
            hitSize = 11f;
-           health = 450;
+           health = 650;
            buildSpeed = 2f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -146,8 +148,10 @@ public class AxthrixUnits {
 
         palisade = new UnitType("palisade"){{
            outlineColor = Pal.darkOutline;
+           armor = 12f;
+           speed = 0.6f;
            hitSize = 13;
-           health = 850;
+           health = 2050;
            buildSpeed = 3f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -236,10 +240,11 @@ public class AxthrixUnits {
         }}; 
 
         parapet = new UnitType("parapet"){{
-           outlineColor = Pal.darkOutline;           
-           speed = 0.44f;
+           outlineColor = Pal.darkOutline;
+           armor = 17f;           
+           speed = 0.54f;
            hitSize = 24f;
-           health = 8600;
+           health = 12600;
            buildSpeed = 4f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -328,7 +333,6 @@ public class AxthrixUnits {
                 inaccuracy = 10;
                 shoot.shots = 3;
                 shoot.shotDelay = 5;
-                heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
@@ -337,12 +341,12 @@ public class AxthrixUnits {
                     mirror = true;
                     under = false;
                     moveX = 2f;
-                    moveY = -2f;
-                    moveRot = 45f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-beater"){{
+                    moveY = -1f;
+                    moveRot = 25f;
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -15f));
+                    children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
+                        heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
                         mirror = false;
                         under = false;
@@ -351,25 +355,6 @@ public class AxthrixUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }});
-                new RegionPart("-cone"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-cap"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }}); 
-                }};
                 bullet = new BasicBulletType(){{
                     damage = 300;
                     sprite = "aj-sonic";
@@ -403,13 +388,12 @@ public class AxthrixUnits {
             }});        
         }}; 
         impediment = new UnitType("impediment"){{
-           outlineColor = Pal.darkOutline;           
+           outlineColor = Pal.darkOutline;
+           armor = 25f;           
            speed = 0.44f;
            hitSize = 24f;
-           health = 8600;
+           health = 22460;
            buildSpeed = 4f;
-           canBoost = true;
-           boostMultiplier = 1.5f;
            constructor = MechUnit::create;
 
             abilities.add(new ShieldArcAbility(){{
@@ -428,8 +412,8 @@ public class AxthrixUnits {
 
             weapons.add(new Weapon("aj-tuba"){{
                 shootSound = Sounds.plasmaboom;
-                shootStatus = AxthrixStatus.vindicationII;
-                shootStatusDuration = 450f;
+                shootStatus = AxthrixStatus.vindicationIII;
+                shootStatusDuration = 200f;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
@@ -440,68 +424,28 @@ public class AxthrixUnits {
                 inaccuracy = 10;
                 shoot.shots = 4;
                 shoot.shotDelay = 5;
-                heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
-                    mirror = false;
+                    mirror = true;
                     under = false;
                     moveX = 2f;
                     moveY = -2f;
                     moveRot = 45f;
                     moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-beater"){{
+                    children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.warmup;
                         heatColor = Pal.heal;
                         mirror = false;
                         under = false;
-                        moveY = 2f;
+                        moveY = 5f;
                         moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }});
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -10f, 0f));
+                    }}); 
                     children.add(new RegionPart("-wings"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }});  
-                    children.add(new RegionPart("-wings"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }});
-                    children.add(new RegionPart("-wings"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }});
-                }});
-                new RegionPart("-cone"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-cap"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.warmup;
                         heatColor = Pal.heal;
@@ -511,7 +455,27 @@ public class AxthrixUnits {
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
-                }};
+                    children.add(new RegionPart("-wings"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                    children.add(new RegionPart("-wings"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                }});
                 bullet = new BasicBulletType(){{
                     damage = 400;
                     sprite = "aj-sonic";
@@ -576,16 +540,26 @@ public class AxthrixUnits {
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                        children.add(new RegionPart("-pedal"){{
-                            progress = PartProgress.warmup;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveY = 2f;
-                            moveX = 0f;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                        }});
+                    }});
+                    children.add(new RegionPart("-pedal"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                    }}); 
+                    children.add(new RegionPart("-pedal"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveY = 2f;
+                        moveX = 0f;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
                     }}); 
                 }});
 

@@ -49,7 +49,7 @@ public class AxthrixStatus {
         }};
 
         vibration = new StatusEffect("vibration"){{
-            color = Pal.heal;
+            color = Pal.lightishGray;
             speedMultiplier = 0.90f;
             reloadMultiplier = 0.80f;
             damage = 0.2f;
