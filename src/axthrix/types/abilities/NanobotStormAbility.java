@@ -43,7 +43,7 @@ public class NanobotStormAbility extends Ability {
     public NanobotStormAbility(){}
 
     public NanobotStormAbility(float damage, float range, float healPercent){
-        this.heal = healPercent;
+        this.healPercent = healPercent;
         this.damage = damage;
         this.reload = 1;
         this.range = range;
