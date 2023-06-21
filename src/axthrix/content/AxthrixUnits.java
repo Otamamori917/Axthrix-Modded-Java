@@ -579,7 +579,7 @@ public class AxthrixUnits {
                     under = true;
                     x = 0f;
                     y = 0f;
-                    moveY = -4f;
+                    moveY = -6f;
                     moveX = 2f;
                     moveRot = 15f;
                     moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
@@ -592,7 +592,7 @@ public class AxthrixUnits {
                     under = true;
                     x = 0f;
                     y = 0f;
-                    moveY = -3.5f;
+                    moveY = -5.5f;
                     moveX = 3f;
                     moveRot = 20f;
                     moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
@@ -605,7 +605,7 @@ public class AxthrixUnits {
                     under = true;
                     x = 0f;
                     y = 0f;
-                    moveY = -3f;
+                    moveY = -4f;
                     moveX = 4f;
                     moveRot = 25f;
                     moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
