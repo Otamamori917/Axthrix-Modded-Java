@@ -12,7 +12,7 @@ contributers:
 '''
 main: "axthrix.AxthrixLoader"
 description: "vast array of content"
-version: 1.0
+version: 1.2
 minGameVersion: 144.2
 dependencies: ["multi-crafter"]
 java: true
