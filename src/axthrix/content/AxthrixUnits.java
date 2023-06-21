@@ -571,44 +571,44 @@ public class AxthrixUnits {
                 heatColor = Pal.heal;
                 immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
-                new RegionPart("-blade"){{
+                new RegionPart("-pedal"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
                     mirror = true;
-                    under = false;
+                    under = true;
+                    x = 0f;
+                    y = 0f;
+                    moveY = -4f;
                     moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                    children.add(new RegionPart("-pedal"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }});
-                    children.add(new RegionPart("-pedal"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }}); 
-                    children.add(new RegionPart("-pedal"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveY = 2f;
-                        moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }}); 
+                    moveRot = 15f;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
+                }};
+                new RegionPart("-pedal"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = true;
+                    x = 0f;
+                    y = 0f;
+                    moveY = -3.5f;
+                    moveX = 3f;
+                    moveRot = 20f;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
+                }};
+                new RegionPart("-pedal"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup;
+                    heatColor = Pal.heal;
+                    mirror = true;
+                    under = true;
+                    x = 0f;
+                    y = 0f;
+                    moveY = -3f;
+                    moveX = 4f;
+                    moveRot = 25f;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
                 }});
 
                 bullet = new BasicBulletType(){{
