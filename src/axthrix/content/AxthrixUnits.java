@@ -391,9 +391,9 @@ public class AxthrixUnits {
                         heatColor = Pal.heal;
                         mirror = false;
                         under = true;
-                        moveY = 2f;
+                        moveY = 1.5f;
                         moveX = 0f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
                     }}); 
                 }});
                 bullet = new BasicBulletType(){{
