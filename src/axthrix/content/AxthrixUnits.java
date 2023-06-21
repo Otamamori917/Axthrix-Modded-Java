@@ -379,7 +379,7 @@ public class AxthrixUnits {
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
                         mirror = false;
-                        under = false;
+                        under = true;
                         moveY = 0f;
                         moveX = 0f;
                     }});
@@ -388,7 +388,7 @@ public class AxthrixUnits {
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
                         mirror = false;
-                        under = false;
+                        under = true;
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
