@@ -45,6 +45,7 @@ public class AxthrixUnits {
                 top = false;
                 reload = 200;
                 heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
                 bullet = new BasicBulletType(){{
                     homingRange = 40f;
                     homingPower = 4f;
@@ -107,6 +108,7 @@ public class AxthrixUnits {
                 reload = 40;
                 inaccuracy = 5;
                 heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
@@ -218,6 +220,7 @@ public class AxthrixUnits {
                 shoot.shots = 60;
                 shoot.shotDelay = 0;
                 heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
                 new RegionPart("-pin"){{
                     progress = PartProgress.warmup;
@@ -309,6 +312,7 @@ public class AxthrixUnits {
                 shoot.shots = 80;
                 shoot.shotDelay = 1;
                 heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
                 new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
@@ -364,6 +368,7 @@ public class AxthrixUnits {
                 inaccuracy = 10;
                 shoot.shots = 3;
                 shoot.shotDelay = 5;
+                immunities.add(AxthrixStatus.vibration);
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
@@ -465,6 +470,7 @@ public class AxthrixUnits {
                 inaccuracy = 10;
                 shoot.shots = 4;
                 shoot.shotDelay = 5;
+                immunities.add(AxthrixStatus.vibration);
                 parts.add(
                 new RegionPart("-shell"){{
                     progress = PartProgress.warmup;
@@ -563,6 +569,7 @@ public class AxthrixUnits {
                 shoot.shots = 60;
                 shoot.shotDelay = 2;
                 heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
                 new RegionPart("-blade"){{
                     progress = PartProgress.warmup;
