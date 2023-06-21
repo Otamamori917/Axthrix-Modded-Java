@@ -358,7 +358,7 @@ public class AxthrixUnits {
                 minWarmup = 0.9f;
                 top = true;
                 x = 0;
-                y = 20f;
+                y = 30f;
                 mirror = false;
                 reload = 80;
                 inaccuracy = 10;
@@ -371,9 +371,9 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = true;
                     under = false;
-                    moveX = -1f;
+                    moveX = -1.5f;
                     moveY = -2f;
-                    moveRot = -10f;
+                    moveRot = -15f;
                     moves.add(new PartMove(PartProgress.recoil, 1f, -2f, -5f));
                     children.add(new RegionPart("-bar"){{
                         progress = PartProgress.warmup;
@@ -383,6 +383,7 @@ public class AxthrixUnits {
                         under = true;
                         moveY = 0f;
                         moveX = 0f;
+                        layerOffset = -1f;
                     }});
                     children.add(new RegionPart("-piston"){{
                         progress = PartProgress.warmup;
