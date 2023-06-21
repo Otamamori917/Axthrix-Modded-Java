@@ -357,9 +357,9 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
-                x = 0;
-                y = 30f;
-                mirror = false;
+                x = 8;
+                y = -3f;
+                mirror = true;
                 reload = 80;
                 inaccuracy = 10;
                 shoot.shots = 3;
