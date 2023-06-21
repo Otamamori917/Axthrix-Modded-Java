@@ -356,6 +356,7 @@ public class AxthrixUnits {
                 shootSound = Sounds.plasmaboom;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
+                top = true;
                 x = 0;
                 y = 20f;
                 mirror = false;
