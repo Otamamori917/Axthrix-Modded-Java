@@ -583,7 +583,7 @@ public class AxthrixUnits {
                     moveX = 2f;
                     moveRot = 15f;
                     moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
-                }};
+                }},
                 new RegionPart("-pedal"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
@@ -596,7 +596,7 @@ public class AxthrixUnits {
                     moveX = 3f;
                     moveRot = 20f;
                     moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
-                }};
+                }},
                 new RegionPart("-pedal"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
