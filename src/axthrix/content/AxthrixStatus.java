@@ -52,7 +52,8 @@ public class AxthrixStatus {
             color = Pal.lightishGray;
             speedMultiplier = 0.90f;
             reloadMultiplier = 0.80f;
-            damage = 0.2f;
+            damage = 5f;
+            // vibration only lasts 20 ticks so dmg it quite high to compensate
             transitionDamage = 20f;
             init(() -> {
                 opposite(StatusEffects.unmoving); 
