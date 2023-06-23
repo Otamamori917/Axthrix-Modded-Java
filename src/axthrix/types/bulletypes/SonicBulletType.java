@@ -8,7 +8,7 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.entities.abilities.*;
-import axthrix.content.AxthrixStatus.*;
+import axthrix.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.world.*;
