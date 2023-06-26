@@ -38,7 +38,6 @@ public class AxthixCrafters {
 			menu = detailed;
 
 			resolvedRecipes = Seq.with(
-				// Fluid to Gel
 				new Recipe() {{
 					input = new IOEntry(
 						Seq.with(ItemStack.with(Items.sand, 2)),
@@ -51,7 +50,6 @@ public class AxthixCrafters {
 					);
 					craftTime = 45f;
 				}},
-				// Gel to fluid
 				new Recipe() {{
 					input = new IOEntry(
 						Seq.with(ItemStack.with(Items.titanium, 1)),

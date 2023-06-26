@@ -40,7 +40,7 @@ public class SonicBulletType extends BasicBulletType{
         knockback = 4;
         impact = true;
         status = AxthrixStatus.vibration;
-        statusDuration = 20;
+        statusDuration = 100;
         keepVelocity = false;
         reflectable = false;
         absorbable = false;
