@@ -182,9 +182,9 @@ public class AxthrixUnits {
         palisade = new UnitType("palisade"){{
            outlineColor = Pal.darkOutline;
            armor = 12f;
-           speed = 0.6f;
+           speed = 0.8f;
            hitSize = 13;
-           health = 2050;
+           health = 4050;
            buildSpeed = 3f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -276,9 +276,9 @@ public class AxthrixUnits {
         parapet = new UnitType("parapet"){{
            outlineColor = Pal.darkOutline;
            armor = 17f;           
-           speed = 0.54f;
+           speed = 0.70f;
            hitSize = 24f;
-           health = 12600;
+           health = 8600;
            buildSpeed = 4f;
            canBoost = true;
            boostMultiplier = 1.5f;
@@ -411,9 +411,9 @@ public class AxthrixUnits {
         impediment = new UnitType("impediment"){{
            outlineColor = Pal.darkOutline;
            armor = 25f;           
-           speed = 0.44f;
+           speed = 0.60f;
            hitSize = 24f;
-           health = 22460;
+           health = 14460;
            buildSpeed = 4f;
            constructor = MechUnit::create;
 
