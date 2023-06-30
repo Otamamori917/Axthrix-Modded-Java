@@ -438,7 +438,7 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
-                x = 4;
+                x = 12;
                 y = 0;
                 mirror = true;
                 reload = 80;
@@ -500,6 +500,7 @@ public class AxthrixUnits {
                 shoot.shots = 60;
                 shoot.shotDelay = 2;
                 heatColor = Pal.heal;
+                layerOffset = -2;
                 immunities.add(AxthrixStatus.nanodiverge);
                 
 
