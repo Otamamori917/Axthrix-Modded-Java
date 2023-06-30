@@ -447,7 +447,7 @@ public class AxthrixUnits {
                 shoot.shotDelay = 5;
                 immunities.add(AxthrixStatus.vibration);
                 parts.add(
-                new RegionPart("-shell"){{
+                new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup;
                     heatColor = Pal.heal;
@@ -456,8 +456,8 @@ public class AxthrixUnits {
                     moveX = -1.5f;
                     moveY = -2f;
                     moveRot = -15f;
-                    moves.add(new PartMove(PartProgress.recoil, 1f, -2f, -5f));
-                    children.add(new RegionPart("-bar"){{
+                    moves.add(new PartMove(PartProgress.recoil, 0f,  1f, -5f));
+                    children.add(new RegionPart("-plate"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.recoil;
                         heatColor = Pal.heal;
@@ -466,17 +466,18 @@ public class AxthrixUnits {
                         moveY = 0f;
                         moveX = 0f;
                         layerOffset = -1f;
-                    }});
-                    children.add(new RegionPart("-piston"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.recoil;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = true;
-                        moveY = 1.5f;
-                        moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
-                    }}); 
+                        children.add(new RegionPart("-wing"){{
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.recoil;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = true;
+                            moveY = 1.5f;
+                            moveX = 0f;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
+                        }}); 
+                    }});
                 }});
                 bullet = new SonicBulletType(){{
                     damage = 200;
@@ -484,7 +485,7 @@ public class AxthrixUnits {
                     height = 9f;
                  }};
             }});
-            weapons.add(new Weapon(){{
+            weapons.add(new Weapon("aj-pod"){{
                 shootCone = 360f;
                 shootSound = Sounds.blaster;
                 shootWarmupSpeed = 0.06f;
