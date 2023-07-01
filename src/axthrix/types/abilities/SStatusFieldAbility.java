@@ -21,7 +21,7 @@ import static mindustry.Vars.*;
 public class SStatusFieldAbility extends Ability{
     public StatusEffect effect;
     public float duration = 60, reload = 100, range = 20;
-    public boolean onShoot = true, atNotShoot = false;
+    public boolean onShoot = true, atNotShoot = true;
     public Effect applyEffect = Fx.none;
     public Effect activeEffect = Fx.overdriveWave;
     public float effectX, effectY;
