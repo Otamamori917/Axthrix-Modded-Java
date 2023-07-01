@@ -26,7 +26,7 @@ public class AxthrixUnits {
     //bolt tree
     bolt,
     //yin and yang tree
-    escalate, carillon,
+    escalate, carillon;
     
     public static void load(){
         barrier = new UnitType("barrier"){{

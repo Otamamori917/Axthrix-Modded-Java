@@ -45,14 +45,12 @@ public class SStatusFieldAbility extends Ability{
 
         if(timer >= reload && (atNotShoot)){
             if(onShoot || unit.isShooting){
-                }{
-                else{  
-                Units.nearby(unit.team, unit.x, unit.y, range, other -> {
-                   other.apply(effect, duration);
-                   applyEffect.at(other, parentizeEffects);    
-                });
-            }};
-        };      
+            }else{  
+            Units.nearby(unit.team, unit.x, unit.y, range, other -> {
+                other.apply(effect, duration);
+                applyEffect.at(other, parentizeEffects);    
+            });
+        }};     
 
             float x = unit.x + Angles.trnsx(unit.rotation, effectY, effectX), y = unit.y + Angles.trnsy(unit.rotation, effectY, effectX);
             activeEffect.at(x, y, effectSizeParam ? range : unit.rotation, parentizeEffects ? unit : null);
