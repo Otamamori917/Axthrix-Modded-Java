@@ -542,6 +542,7 @@ public class AxthrixUnits {
            hitSize = 6f;
            health = 340;
            armor = 2f;
+           reload = 10;
            canBoost = true;
            boostMultiplier = 2.5f;
            constructor = EntityMapping.map("alpha");
@@ -552,7 +553,6 @@ public class AxthrixUnits {
                 y = 0f;
                 mirror = true;
                 top = false;
-                reload = 40;
                 heatColor = Pal.heal;
                 bullet = new BasicBulletType(){{
                     damage = 40;
@@ -561,7 +561,7 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 100f, 280f, 100f));
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 200f, 280f, 100f));
         }};
     }
 }    
