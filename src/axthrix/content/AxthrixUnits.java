@@ -542,7 +542,6 @@ public class AxthrixUnits {
            hitSize = 6f;
            health = 340;
            armor = 2f;
-           reload = 10;
            canBoost = true;
            boostMultiplier = 2.5f;
            constructor = EntityMapping.map("alpha");
@@ -552,6 +551,7 @@ public class AxthrixUnits {
                 x = 1f;
                 y = 0f;
                 mirror = true;
+                reload = 10;
                 top = false;
                 heatColor = Pal.heal;
                 bullet = new BasicBulletType(){{
