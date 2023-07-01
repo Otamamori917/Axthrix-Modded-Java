@@ -1,12 +1,22 @@
 package axthrix.types.abilities;
 
 import arc.*;
+import arc.audio.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+
+import static mindustry.Vars.*;
 
 public class SStatusFieldAbility extends Ability{
     public StatusEffect effect;
