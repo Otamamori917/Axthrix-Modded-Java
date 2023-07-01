@@ -1,4 +1,4 @@
-package mindustry.entities.abilities;
+package axthrix.types.abilities;
 
 import arc.*;
 import arc.math.*;
