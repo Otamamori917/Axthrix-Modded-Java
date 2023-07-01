@@ -563,9 +563,7 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 400f, 200f, 100f){
-                atNotShoot = true;
-            });
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 400f, 200f, 100f));
         }};
     }
 }    
