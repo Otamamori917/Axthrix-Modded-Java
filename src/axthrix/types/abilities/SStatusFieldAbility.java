@@ -47,21 +47,14 @@ public class SStatusFieldAbility extends Ability{
     public void update(Unit unit){
         timer += Time.delta;
 
-        if(timer >= reload && (onShoot || unit.isShooting)){
-            Units.nearby(unit.team, unit.x, unit.y, range, other -> {
-                other.apply(effect, duration);
-                applyEffect.at(other, parentizeEffects);
-            });
-
-        if(timer >= reload && (atNotShoot)){
-            if(onShoot || unit.isShooting){
-
-            }else{  
-            Units.nearby(unit.team, unit.x, unit.y, range, other -> {
-                other.apply(effect, duration);
-                applyEffect.at(other, parentizeEffects);    
-            });
-        }};     
+        if(timer >= reload){
+            if(onShoot && unit.isShooting || atNotShoot && !unit.isShooting){
+                Units.nearby(unit.team, unit.x, unit.y, range, other -> {
+                    other.apply(effect, duration);
+                    applyEffect.at(other, parentizeEffects);
+                });        
+            }    
+            timer %= reload;    
 
             float x = unit.x + Angles.trnsx(unit.rotation, effectY, effectX), y = unit.y + Angles.trnsy(unit.rotation, effectY, effectX);
             activeEffect.at(x, y, effectSizeParam ? range : unit.rotation, parentizeEffects ? unit : null);
