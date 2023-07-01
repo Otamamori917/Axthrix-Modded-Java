@@ -9,6 +9,7 @@ contributers:
     MEEPofFaith#7277| AccelratedTurret.   
     nullevoy#7763| Spriting Tips.
     Monika#6030| Code clean up & starting blocks & bundles
+    Siede#6321| Status effect sprites
 '''
 main: "axthrix.AxthrixLoader"
 description: "vast array of content"

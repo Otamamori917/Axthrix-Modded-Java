@@ -26,7 +26,7 @@ public class AxthrixUnits {
     //bolt tree
     bolt,
     //yin and yang tree
-    escalate, carillon, a, b, c, d;
+    escalate, carillon;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -536,14 +536,13 @@ public class AxthrixUnits {
         }};
         //legends
         //yin and yang tree
-        a = new UnitType("a"){{
-           outlineColor = Pal.darkOutline;           
+        escalate = new UnitType("escalate"){{
+           outlineColor = Pal.darkOutline;
+           flying = true;           
            speed = 2f;
            hitSize = 6f;
            health = 340;
            armor = 2f;
-           canBoost = true;
-           boostMultiplier = 2.5f;
            constructor = UnitEntity::create;
            weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.swish;
@@ -561,83 +560,30 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 200f, 280f, 100f));
-        }};
-        b = new UnitType("b"){{
-           outlineColor = Pal.darkOutline;           
-           speed = 2f;
-           hitSize = 6f;
-           health = 340;
-           armor = 2f;
-           canBoost = true;
-           boostMultiplier = 2.5f;
-           constructor = UnitEntity::create;
-           weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.swish;
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = true;
-                reload = 10;
-                top = false;
-                heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }});  
-
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 200f, 280f, 100f){{
-                onShoot = true;
-            }});
-        }};
-        c = new UnitType("c"){{
-           outlineColor = Pal.darkOutline;           
-           speed = 2f;
-           hitSize = 6f;
-           health = 340;
-           armor = 2f;
-           canBoost = true;
-           boostMultiplier = 2.5f;
-           constructor = UnitEntity::create;
-           weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.swish;
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = true;
-                reload = 10;
-                top = false;
-                heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }});  
-
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 200f, 280f, 100f){{
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 30f, 40f, 100f){{
                 atNotShoot = true;
             }});
         }};
-        d = new UnitType("d"){{
-           outlineColor = Pal.darkOutline;           
+        carillon = new UnitType("carillon"){{
+           outlineColor = Pal.darkOutline;
+           flying = true;           
            speed = 2f;
            hitSize = 6f;
            health = 340;
            armor = 2f;
-           canBoost = true;
-           boostMultiplier = 2.5f;
-           constructor = UnitEntity::create;
+           faceTarget = false;
+           crushDamage = 500f;
+           constructor = TankUnit::create;
            weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.swish;
+                rotate = true;
+                rotateSpeed = 3;
                 shootY = 2f;
                 x = 1f;
                 y = 0f;
-                mirror = true;
+                mirror = false;
                 reload = 10;
-                top = false;
+                top = true;
                 heatColor = Pal.heal;
                 bullet = new BasicBulletType(){{
                     damage = 40;
@@ -646,10 +592,9 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 200f, 280f, 100f){{
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedX, 30f, 40f, 100f){{
                 onShoot = true;
-                atNotShoot = true;
             }});
         }};
     }
-}    
+}        
