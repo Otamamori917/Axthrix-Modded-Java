@@ -546,8 +546,6 @@ public class AxthrixUnits {
            boostMultiplier = 2.5f;
            constructor = EntityMapping.map("alpha");
            weapons.add(new Weapon("puw"){{
-                shootStatus = AxthrixStatus.precludedA;
-                shootStatusDuration = 400f;
                 shootSound = Sounds.swish;
                 shootY = 2f;
                 x = 1f;
@@ -563,7 +561,7 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 400f, 200f, 100f));
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 180f, 200f, 100f));
         }};
     }
 }    
