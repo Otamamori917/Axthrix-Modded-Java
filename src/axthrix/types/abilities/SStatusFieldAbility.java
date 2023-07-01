@@ -48,7 +48,7 @@ public class SStatusFieldAbility extends Ability{
         timer += Time.delta;
 
         if(timer >= reload){
-            if(onShoot && unit.isShooting || atNotShoot && !unit.isShooting){
+            if(!atNotShoot && unit.isShooting || !onShoot && !unit.isShooting){
                 Units.nearby(unit.team, unit.x, unit.y, range, other -> {
                     other.apply(effect, duration);
                     applyEffect.at(other, parentizeEffects);
