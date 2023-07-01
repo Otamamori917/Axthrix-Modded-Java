@@ -26,7 +26,7 @@ public class AxthrixUnits {
     //bolt tree
     bolt,
     //yin and yang tree
-    escalate, carillon;
+    spate, influx;
     
     public static void load(){
         barrier = new UnitType("barrier"){{
@@ -536,7 +536,7 @@ public class AxthrixUnits {
         }};
         //legends
         //yin and yang tree
-        escalate = new UnitType("escalate"){{
+        spate = new UnitType("spate"){{
            outlineColor = Pal.darkOutline;
            flying = true;           
            speed = 2f;
@@ -564,9 +564,8 @@ public class AxthrixUnits {
                 atNotShoot = true;
             }});
         }};
-        carillon = new UnitType("carillon"){{
-           outlineColor = Pal.darkOutline;
-           flying = true;           
+        influx = new UnitType("influx"){{
+           outlineColor = Pal.darkOutline;         
            speed = 2f;
            hitSize = 6f;
            health = 340;

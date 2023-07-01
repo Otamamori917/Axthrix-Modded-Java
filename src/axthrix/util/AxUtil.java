@@ -1,0 +1,20 @@
+package axthrix.util;
+
+import arc.math.Mathf;
+import mindustry.gen.Iconc;
+import mindustry.gen.Unit;
+import mindustry.type.UnitType;
+
+public class AxUtil {
+    public static float GetRange(float speed,float DesiredRange)
+    {
+        return (DesiredRange*8)/speed;
+    }
+    public static String GetName(String added)
+    {
+        return "ax-"+added;
+    }
+    public static float GetDamage(float DPS, float fireRate){
+        return DPS/fireRate;
+    }
+}
