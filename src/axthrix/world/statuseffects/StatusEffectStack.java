@@ -1,10 +1,12 @@
 package axthrix.world.statuseffects;
 
+import arc.Events;
 import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Iconc;
 import mindustry.gen.Unit;
@@ -19,11 +21,13 @@ import java.util.Stack;
 
 public class StatusEffectStack extends AxStatusEffect {
     public int charges = 1;
+    public boolean setStatsInfinity = false;
     public HashMap<Unit, Integer> unitCharges = new HashMap<>();
     public HashMap<Unit, Float> unitTime = new HashMap<>();
     public HashMap<Unit, Team> unitTeam = new HashMap<>();
     List<Float> statsStatic = new Stack<>();
     public Team newTeam = null;
+    String localName = "";
 
     public StatusEffectStack(String name)
     {
@@ -48,86 +52,132 @@ public class StatusEffectStack extends AxStatusEffect {
     }
 
     @Override
-    public void setStats(){
-        if(newTeam != null)
-            stats.add(AxStats.newTeam,newTeam.emoji+" "+newTeam.name);
-        if(statsStatic.get(0) != 1) {
-            stats.addPercent(Stat.damageMultiplier, statsStatic.get(0));
-            if (charges != 1)stats.addPercent(AxStats.maxDamageMultiplier, 1+(statsStatic.get(0)-1)*charges);
-        }
-        if(statsStatic.get(1) != 1) {
-            stats.addPercent(Stat.healthMultiplier, statsStatic.get(1));
-            if (charges != 1)stats.addPercent(AxStats.maxHealthMultiplier, 1+(statsStatic.get(1)-1)*charges);
-        }
-        if(statsStatic.get(2) != 1) {
-            stats.addPercent(Stat.speedMultiplier, statsStatic.get(2));
-            if (charges != 1)stats.addPercent(AxStats.maxSpeedMultiplier, 1+(statsStatic.get(2)-1)*charges);
-        }
-        if(statsStatic.get(3) != 1) {
-            stats.addPercent(Stat.reloadMultiplier, statsStatic.get(3));
-            if (charges != 1)stats.addPercent(AxStats.maxReloadSpeedMultiplier, 1+(statsStatic.get(3)-1)*charges);
-        }
-        if(statsStatic.get(4) != 1) {
-            stats.addPercent(Stat.buildSpeedMultiplier, statsStatic.get(4));
-            if (charges != 1)stats.addPercent(AxStats.maxBuildSpeedMultiplier, 1+(statsStatic.get(4)-1)*charges);
-        }
-        if(statsStatic.get(4) != 1) {
-            stats.addPercent(AxStats.dragMultiplier, statsStatic.get(5));
-            if (charges != 1)stats.addPercent(AxStats.maxDragMultiplier, 1+(statsStatic.get(5)-1)*charges);
-        }
-
-        if(damage > 0) {
-            stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
-            if (charges != 1)stats.add(AxStats.maxDamage, damage * 60f * charges, StatUnit.perSecond);
-        }
-        else if(damage < 0) {
-            stats.add(Stat.healing, -damage * 60f, StatUnit.perSecond);
-            if (charges != 1)stats.add(AxStats.maxHealing, -damage * 60f * charges, StatUnit.perSecond);
-        }
-        if (charges != 1)stats.add(AxStats.maxCharges, charges,StatUnit.none);
-
-        boolean reacts = false;
-
-        for(var e : opposites.toSeq().sort()){
-            stats.add(Stat.opposites, e.emoji() + "" + e);
-        }
-
-        if(reactive){
-            var other = Vars.content.statusEffects().find(f -> f.affinities.contains(this));
-            if(other != null && other.transitionDamage > 0){
-                stats.add(Stat.reactive, other.emoji() + other + " / [accent]" + (int)other.transitionDamage + "[lightgray] " + Stat.damage.localized());
-                reacts = true;
+    public void setStats() {
+        if (newTeam != null)
+            stats.add(AxStats.newTeam, newTeam.emoji + " " + newTeam.name);
+        if (setStatsInfinity) {
+            if (statsStatic.get(0) != 1) {
+                stats.addPercent(Stat.damageMultiplier, statsStatic.get(0));
+                if (charges != 1)stats.add(AxStats.maxDamageMultiplier, "Infinity%");
             }
-        }
-
-        //don't list affinities *and* reactions, as that would be redundant
-        if(!reacts){
-            for(var e : affinities.toSeq().sort()){
-                stats.add(Stat.affinities, e.emoji() + "" + e);
+            if(statsStatic.get(1) != 1) {
+                stats.addPercent(Stat.healthMultiplier, statsStatic.get(1));
+                if (charges != 1)stats.add(AxStats.maxHealthMultiplier, "Infinity%");
+            }
+            if(statsStatic.get(2) != 1) {
+                stats.addPercent(Stat.speedMultiplier, statsStatic.get(2));
+                if (charges != 1)stats.add(AxStats.maxSpeedMultiplier, "Infinity%");
+            }
+            if(statsStatic.get(3) != 1) {
+                stats.addPercent(Stat.reloadMultiplier, statsStatic.get(3));
+                if (charges != 1)stats.add(AxStats.maxReloadSpeedMultiplier, "Infinity%");
+            }
+            if(statsStatic.get(4) != 1) {
+                stats.addPercent(Stat.buildSpeedMultiplier, statsStatic.get(4));
+                if (charges != 1)stats.add(AxStats.maxBuildSpeedMultiplier, "Infinity%");
+            }
+            if(statsStatic.get(4) != 1) {
+                stats.addPercent(AxStats.dragMultiplier, statsStatic.get(5));
+                if (charges != 1)stats.add(AxStats.maxDragMultiplier, "Infinity%");
             }
 
-            if(affinities.size > 0 && transitionDamage != 0){
-                stats.add(Stat.affinities, "/ [accent]" + (int)transitionDamage + " " + Stat.damage.localized());
+            if(damage > 0) {
+                stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxDamage, "Infinity", StatUnit.perSecond);
+            }
+            else if(damage < 0) {
+                stats.add(Stat.healing, -damage * 60f, StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxHealing, "Infinity", StatUnit.perSecond);
+            }
+            if (charges != 1)stats.add(AxStats.maxCharges,"Infinity");
+        }else{
+            if (statsStatic.get(0) != 1) {
+                stats.addPercent(Stat.damageMultiplier, statsStatic.get(0));
+                if (charges != 1)stats.addPercent(AxStats.maxDamageMultiplier, Mathf.round(1 + (statsStatic.get(0) - 1) * charges, 0.01f));
+            }
+            if(statsStatic.get(1) != 1) {
+                stats.addPercent(Stat.healthMultiplier, statsStatic.get(1));
+                if (charges != 1)stats.addPercent(AxStats.maxHealthMultiplier, Mathf.round(1+(statsStatic.get(1)-1)*charges,0.01f));
+            }
+            if(statsStatic.get(2) != 1) {
+                stats.addPercent(Stat.speedMultiplier, statsStatic.get(2));
+                if (charges != 1)stats.addPercent(AxStats.maxSpeedMultiplier, Mathf.round(1+(statsStatic.get(2)-1)*charges,0.01f));
+            }
+            if(statsStatic.get(3) != 1) {
+                stats.addPercent(Stat.reloadMultiplier, statsStatic.get(3));
+                if (charges != 1)stats.addPercent(AxStats.maxReloadSpeedMultiplier, Mathf.round(1+(statsStatic.get(3)-1)*charges,0.01f));
+            }
+            if(statsStatic.get(4) != 1) {
+                stats.addPercent(Stat.buildSpeedMultiplier, statsStatic.get(4));
+                if (charges != 1)stats.addPercent(AxStats.maxBuildSpeedMultiplier, Mathf.round(1+(statsStatic.get(4)-1)*charges,0.01f));
+            }
+            if(statsStatic.get(4) != 1) {
+                stats.addPercent(AxStats.dragMultiplier, statsStatic.get(5));
+                if (charges != 1)stats.addPercent(AxStats.maxDragMultiplier, Mathf.round(1+(statsStatic.get(5)-1)*charges,0.01f));
+            }
+
+            if(damage > 0) {
+                stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxDamage, damage * 60f * charges, StatUnit.perSecond);
+            }
+            else if(damage < 0) {
+                stats.add(Stat.healing, -damage * 60f, StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxHealing, -damage * 60f * charges, StatUnit.perSecond);
+            }
+            if (charges != 1)stats.add(AxStats.maxCharges, charges,StatUnit.none);
+
+            boolean reacts = false;
+
+            for(var e : opposites.toSeq().sort()){
+                stats.add(Stat.opposites, e.emoji() + "" + e);
+            }
+
+            if(reactive){
+                var other = Vars.content.statusEffects().find(f -> f.affinities.contains(this));
+                if(other != null && other.transitionDamage > 0){
+                    stats.add(Stat.reactive, other.emoji() + other + " / [accent]" + (int)other.transitionDamage + "[lightgray] " + Stat.damage.localized());
+                    reacts = true;
+                }
+            }
+
+            //don't list affinities *and* reactions, as that would be redundant
+            if(!reacts){
+                for(var e : affinities.toSeq().sort()){
+                    stats.add(Stat.affinities, e.emoji() + "" + e);
+                }
+
+                if(affinities.size > 0 && transitionDamage != 0){
+                    stats.add(Stat.affinities, "/ [accent]" + (int)transitionDamage + " " + Stat.damage.localized());
+                }
             }
         }
-
     }
     @Override
     public void init()
     {
         super.init();
+        localName = localizedName;
+        Events.run(EventType.Trigger.update,()-> {
+            if (unitCharges.containsKey(Vars.player.unit()) && Vars.player.unit().hasEffect(this))
+                if (setStatsInfinity) {
+                    localizedName = localName + " [accent]x" + unitCharges.get(Vars.player.unit()) + " | Infinity";
+                }else{
+                    localizedName = localName + " [accent]x" + unitCharges.get(Vars.player.unit()) + " | " + charges;
+                }
+            else
+                localizedName = localName;
+        });
     }
 
     public void start(Unit unit,float time)
     {
         if (!unitCharges.containsKey(unit))
         {{
-                unitCharges.put(unit, 1);
-                unitTime.put(unit,time);
-                unitTeam.put(unit,unit.team);
-            }}
-        else
-            unitCharges.replace(unit,Mathf.clamp(unitCharges.get(unit)+1,0,charges));
+            unitCharges.put(unit, 0);
+            unitTime.put(unit,time);
+            unitTeam.put(unit,unit.team);
+        }}
+        unitCharges.replace(unit,Mathf.clamp(unitCharges.get(unit)+1,0,charges));
     }
 
     public void end(Unit unit)
@@ -170,7 +220,7 @@ public class StatusEffectStack extends AxStatusEffect {
             effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 0, color, parentizeEffect ? unit : null);
         }
 
-        if (unitCharges.containsKey(unit) && time <= Time.delta * 2f)
+        if (unitCharges.containsKey(unit) && (time <= Time.delta * 2f || !unit.isValid()))
         {{
             end(unit);
         }}

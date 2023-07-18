@@ -2,6 +2,7 @@ package axthrix;
 
 import arc.*;
 import arc.util.*;
+import axthrix.world.util.StackWorldState;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
@@ -20,6 +21,7 @@ public class AxthrixLoader extends Mod{
         AxthrixStatus.load();
         AxthrixUnits.load();
         AxthrixTurrets.load();
+        StackWorldState.load();
         //AxthrixCrafters.load();
         Log.info("Axthrix Content Loaded. :)");
 

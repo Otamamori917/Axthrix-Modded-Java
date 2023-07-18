@@ -17,7 +17,7 @@ import axthrix.util.AxUtil;
 import java.util.HashMap;
 
 public class AxStatusEffect extends StatusEffect {
-    public float shield = 0;
+    public float shield = 0; //Now hold on. aint That PvStatusEffect?
     public float maxShield = 100;
 
     public boolean numbness = false;
