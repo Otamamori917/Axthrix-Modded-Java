@@ -65,8 +65,7 @@ public class AxthrixStatus {
             color = Pal.remove;
             speedMultiplier = 0.01f;
             buildSpeedMultiplier = 0f;
-            reloadMultiplier = 4f;
-            damageMultiplier = 4f;
+            reloadMultiplier = 6f;
             init(() -> {
                 opposite(precludedA);
             });
@@ -74,9 +73,9 @@ public class AxthrixStatus {
 
         precludedA = new StatusEffect("precludedA"){{
             color = Pal.remove;
-            speedMultiplier = 4f;
-            buildSpeedMultiplier = 4f;
-            disarm = true;
+            speedMultiplier = 5f;
+            buildSpeedMultiplier = 5f;
+            reloadMultiplier = 0.01f;
             init(() -> {
                 opposite(precludedX);
             });

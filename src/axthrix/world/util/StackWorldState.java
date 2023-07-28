@@ -1,6 +1,6 @@
 package axthrix.world.util;
 
-import axthrix.world.statuseffects.StatusEffectStack;
+import axthrix.world.types.statuseffects.StatusEffectStack;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Groups;

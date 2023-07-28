@@ -18,12 +18,23 @@ public class AxthrixLoader extends Mod{
 
     @Override
     public void loadContent(){
-        AxthrixStatus.load();
-        AxthrixUnits.load();
-        AxthrixTurrets.load();
+        Log.info("Loading Axthrix content");
         StackWorldState.load();
-        //AxthrixCrafters.load();
+        AxFactions.load();
+        AxStats.load();
+        //AxItems.load();
+        AxthrixStatus.load();
+        //AxLiquids.load();
+        AxthrixUnits.load();
+        //AxthrixBlocks.load();
+        AxthrixCrafters.load();
+        //AxthrixPower.load();
+        AxthrixTurrets.load();
+        AxPlanets.load();
+        //AxSectorPresets.load();
+        AxthrixTechTree.load();
         Log.info("Axthrix Content Loaded. :)");
+
 
         Events.on(ClientLoadEvent.class, e -> {
             Time.runTask(10f, () -> {

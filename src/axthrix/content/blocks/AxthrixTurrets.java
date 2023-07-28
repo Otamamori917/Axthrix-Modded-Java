@@ -1,7 +1,11 @@
 package axthrix.content.blocks;
 
-import axthrix.types.bulletypes.*;
-import axthrix.types.turretypes.*;
+import axthrix.content.AxFactions;
+
+import axthrix.world.types.bulletypes.*;
+import axthrix.world.types.bulletypes.SpiralPattern;
+import axthrix.world.types.block.defense.AcceleratedTurret;
+import axthrix.world.types.block.defense.AxItemTurret;
 import mindustry.content.*;
 import mindustry.gen.*;
 import arc.graphics.*;
@@ -11,7 +15,6 @@ import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
 
 import static mindustry.type.ItemStack.*;
@@ -59,6 +62,7 @@ public class AxthrixTurrets{
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
+            faction.add(AxFactions.axthrix);
             shoot = new SpiralPattern(2, 1);
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
@@ -108,6 +112,7 @@ public class AxthrixTurrets{
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
+            faction.add(AxFactions.axthrix);
             shoot = new SpiralPattern(1.5f, 2.5f){{
                 shots = 3;
             }};
@@ -157,6 +162,7 @@ public class AxthrixTurrets{
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
+            faction.add(AxFactions.axthrix);
             shoot = new SpiralPattern(1.75f, 2.75f){{
                 shots = 4;
             }};
@@ -182,7 +188,7 @@ public class AxthrixTurrets{
             coolant = consumeCoolant(0.1f);
         }};
 
-        kisten = new ItemTurret("kisten"){{
+        kisten = new AxItemTurret("kisten"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
             buildCostMultiplier = 0.1f;
@@ -200,6 +206,7 @@ public class AxthrixTurrets{
             shootSound = Sounds.mediumCannon;
             minWarmup = 0.94f;
             shootWarmupSpeed = 0.05f;
+            faction.add(AxFactions.axthrix);
             shoot = new SpiralPattern(2f, 4f){{
                 shots = 10;
             }};
@@ -314,7 +321,7 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            coolant = consumeCoolant(0.1f);
+            coolant = consumeCoolant(0.2f);
             recoilTime = 400f;
 
             drawer = new DrawTurret("crystalized-"){{
@@ -326,6 +333,10 @@ public class AxthrixTurrets{
                     moveX = 4f;
                     moveY = 5f;
                     mirror = true;
+                    heatLayerOffset = 1.2f;
+                    layerOffset = 1;
+                    outlineLayerOffset = 0.8f;
+
                     children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
                         heatProgress = PartProgress.recoil;
@@ -385,19 +396,20 @@ public class AxthrixTurrets{
                     mirror = false;
                     under = true;
                     moveY = -5f;
-                }}, new RegionPart("-missile"){{
-                    progress = PartProgress.reload.curve(Interp.pow2In);
+                    heatLayerOffset = 1.2f;
+                    layerOffset = 1;
+                    outlineLayerOffset = 0.8f;
+                    children.add(new RegionPart("-missile") {{
+                        progress = PartProgress.reload.curve(Interp.pow2In);
+                        colorTo = new Color(1f, 1f, 1f, 0f);
+                        color = Color.white;
+                        mixColorTo = Pal.accent;
+                        mixColor = new Color(1f, 1f, 1f, 0f);
+                        outline = true;
+                        under = true;
 
-                    colorTo = new Color(1f, 1f, 1f, 0f);
-                    color = Color.white;
-                    mixColorTo = Pal.accent;
-                    mixColor = new Color(1f, 1f, 1f, 0f);
-                    outline = true;
-                    under = true;
-
-                    layerOffset = -0.01f;
-
-                    moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                        moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                    }});
                 }});
             }};
         }};
@@ -425,6 +437,7 @@ public class AxthrixTurrets{
             targetGround = true;
             shootY = -2f;
             shootSound = Sounds.shootBig;
+            faction.add(AxFactions.axthrix);
             ammo(
                 Items.surgeAlloy, new BoltBulletType(50, Pal.surge){{
                     boltLength = 30;

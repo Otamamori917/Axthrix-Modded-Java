@@ -4,9 +4,9 @@ name: "aj"
 author: 
 '''
 Otamamori#4716
-contributers:
+contributors:
     BetaMindy/sk7725#6110| BoltBulletType.
-    MEEPofFaith#7277| AccelratedTurret.   
+    MEEPofFaith#7277| AcceleratedTurret.
     nullevoy#7763| Spriting Tips.
     Monika#6030| Code clean up & starting blocks & bundles
     Siede#6321| Status effect sprites
@@ -15,5 +15,4 @@ main: "axthrix.AxthrixLoader"
 description: "vast array of content"
 version: 1.2
 minGameVersion: 144.2
-dependencies: ["multi-crafter"]
 java: true

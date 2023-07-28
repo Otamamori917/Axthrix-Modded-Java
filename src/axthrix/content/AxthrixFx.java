@@ -1,36 +1,18 @@
 package axthrix.content;
 
-import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.game.Team;
-import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.Block;
-
-import java.util.*;
-
 import static arc.graphics.g2d.Draw.*;
-//I do not want my fills and lines fighting, so no wildcad imports
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.angle;
-import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.renderer;
-import static mindustry.Vars.tilesize;
 
 public class AxthrixFx {
-    private static final int[] vgld = {0}; //VERY_GOOD_LANGUAGE_DESIGN
-    static final Vec2[] vecs = new Vec2[]{new Vec2(), new Vec2(), new Vec2(), new Vec2()};
-    private static final Rand rand = new Rand();
-
     public static final Effect
 
     bolt = new Effect(12f, 1300f, e -> {

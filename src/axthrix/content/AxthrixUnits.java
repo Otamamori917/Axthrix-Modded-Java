@@ -1,35 +1,65 @@
 package axthrix.content;
 
 import arc.graphics.*;
-import arc.math.*;
+import arc.struct.Seq;
+import axthrix.world.types.unittypes.AxUnitType;
+import axthrix.world.types.unittypes.MountUnitType;
 import mindustry.entities.abilities.*;
-import axthrix.types.abilities.*;
-import axthrix.types.bulletypes.*;
+import axthrix.world.types.abilities.*;
+import axthrix.world.types.bulletypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
-import mindustry.world.*;
-import mindustry.world.draw.*;
 
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.unit.*;
-import mindustry.type.weapons.*;
 import mindustry.content.*;
+
+import static mindustry.Vars.tilePayload;
 
 public class AxthrixUnits {
     public static UnitType
-     
-    
-    //barrier tree
-    barrier, blockade, palisade, parapet, impediment,
-    //bolt tree
-    bolt,
-    //yin and yang tree
-    spate, influx;
-    
+    //Axthrix  |6 trees|
+        //Ground
+            //Assault Hovers |SubAtomic|
+                quark, electron, baryon, hadron, photon,
+                /*
+                quark: duo helix 1 red 1 blue
+                electron: bendy homing bullet
+                baryon: Tri Helix, explode on contact
+                hadron: one bullets that explodes into two on contact
+                photon: wip
+                */
+            //Support Walkers |Protect|
+                barrier, blockade, palisade, parapet, impediment,
+            //Specialist Tanks |Energy/Gem|
+               anagh,akshaj,amitojas,agnitejas,ayustejas,
+        //Air
+            //Assault Helicopters |Storm/Thunder|
+                rai,zyran,tufani,styrmir,corentin,
+            //Support Airships |safety|
+                naji,haven,nagiah,abhayad,sosthenes,
+            //Specialist Flying Mounts |carry|
+                amos,aymoss,amalik,anuvaha,ambuvahini,
+    //Raodon |3 trees|
+        //Assault Walker |Power|
+            asta,adira,allura,andrea,athena,
+        //Support Tank  |Wealth|
+            danu,dorit,duarte,dhanya,dhanashri,
+        //Specialist aircraft |Fame|
+            efim,estes,elmena,evdoxia,estanislao,
+    //Ikatusa |undetermined|
+
+    //Core Units |8 units|
+
+    //Legends |undetermined|
+        //yin and yang tree
+            spate, influx
+
+            ;
     public static void load(){
-        barrier = new UnitType("barrier"){{
+        barrier = new AxUnitType("barrier"){{
            outlineColor = Pal.darkOutline;           
            speed = 0.55f;
            hitSize = 6f;
@@ -38,8 +68,9 @@ public class AxthrixUnits {
            canBoost = true;
            boostMultiplier = 2.5f;
            constructor = MechUnit::create;
+           factions.add(AxFactions.axthrix);
            weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.swish;
+                shootSound = Sounds.sap;
                 shootY = 2f;
                 x = 0f;
                 y = 0f;
@@ -74,7 +105,7 @@ public class AxthrixUnits {
             abilities.add(new ForceFieldAbility(20f, 0.8f, 400f, 20f * 6));
         }};
 
-        blockade = new UnitType("blockade"){{
+        blockade = new AxUnitType("blockade"){{
            outlineColor = Pal.darkOutline;
            armor = 5f;
            speed = 0.7f;
@@ -84,6 +115,7 @@ public class AxthrixUnits {
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
+           factions.add(AxFactions.axthrix);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
@@ -181,7 +213,7 @@ public class AxthrixUnits {
             }});
         }}; 
 
-        palisade = new UnitType("palisade"){{
+        palisade = new AxUnitType("palisade"){{
            outlineColor = Pal.darkOutline;
            armor = 12f;
            speed = 0.8f;
@@ -191,6 +223,7 @@ public class AxthrixUnits {
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
+           factions.add(AxFactions.axthrix);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-palisade-shield";
@@ -275,7 +308,7 @@ public class AxthrixUnits {
             }});
         }}; 
 
-        parapet = new UnitType("parapet"){{
+        parapet = new AxUnitType("parapet"){{
            outlineColor = Pal.darkOutline;
            armor = 17f;           
            speed = 0.70f;
@@ -285,6 +318,7 @@ public class AxthrixUnits {
            canBoost = true;
            boostMultiplier = 1.5f;
            constructor = MechUnit::create;
+           factions.add(AxFactions.axthrix);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
@@ -410,24 +444,24 @@ public class AxthrixUnits {
                 }};
             }});        
         }}; 
-        impediment = new UnitType("impediment"){{
+        impediment = new AxUnitType("impediment"){{
            outlineColor = Pal.darkOutline;
            armor = 25f;           
            speed = 0.60f;
-           hitSize = 24f;
            health = 14460;
            buildSpeed = 4f;
            constructor = MechUnit::create;
+           factions.add(AxFactions.axthrix);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-impediment-shield";
-                radius = 30f;
+                radius = 40f;
                 angle = 100f;
                 y = -22f;
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 1000f;
-                width = 10f; 
+                width = 14f;
                 whenShooting = false;           
             }});
 
@@ -440,51 +474,110 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
-                x = 12;
-                y = 0;
+                x = 8;
+                y = 0f;
+                shootX = -12f;
+                shootY = 8f;
                 mirror = true;
                 reload = 80;
                 inaccuracy = 10;
                 shoot.shots = 4;
                 shoot.shotDelay = 5;
                 immunities.add(AxthrixStatus.vibration);
+                layerOffset = 0.2f;
                 parts.add(
                 new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup.delay(0.6f);
                     heatColor = Pal.heal;
-                    mirror = true;
+                    mirror = false;
                     under = false;
+                    x = -17f;
                     moveX = -1.5f;
                     moveY = -2f;
                     moveRot = -15f;
                     moves.add(new PartMove(PartProgress.recoil, 0f,  1f, -5f));
+                    children.add(new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        rotateSpeed = -5;
+                        color = Pal.heal;
+                        sides = 8;
+                        hollow = true;
+                        stroke = 0f;
+                        strokeTo = 1.6f;
+                        radius = 6f;
+                        layer = Layer.effect;
+                        y = -5;
+                        x = -22;
+                    }});
+                    children.add(new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        rotateSpeed = 4;
+                        color = Pal.heal;
+                        sides = 6;
+                        hollow = true;
+                        stroke = 0f;
+                        strokeTo = 1.6f;
+                        radius = 4f;
+                        layer = Layer.effect;
+                        y = -5;
+                        x = -22;
+                    }});
+                    children.add(new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        rotateSpeed = -5;
+                        color = Pal.heal;
+                        sides = 20;
+                        hollow = true;
+                        stroke = 0f;
+                        strokeTo = 1.6f;
+                        radius = 9f;
+                        layer = Layer.effect;
+                        y = -5;
+                        x = -22;
+                    }});
+                    children.add(new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        color = Pal.heal;
+                        sides = 8;
+                        hollow = true;
+                        shapes = 5;
+                        stroke = 0f;
+                        strokeTo = 4f;
+                        radius = 1f;
+                        haloRadius = 7f;
+                        haloRotateSpeed = 1;
+                        layer = Layer.effect;
+                        y = -5;
+                        x = -22;
+                    }});
                     children.add(new RegionPart("-plate"){{
                         progress = PartProgress.warmup;
-                        heatProgress = PartProgress.recoil;
+                        heatProgress = PartProgress.warmup.delay(0.6f);
                         heatColor = Pal.heal;
                         mirror = false;
                         under = true;
-                        moveY = 0f;
-                        moveX = 0f;
-                        layerOffset = -1f;
-                        moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
+                        moveY = 2f;
+                        moveX = -11f;
                         children.add(new RegionPart("-wing"){{
                             progress = PartProgress.warmup;
-                            heatProgress = PartProgress.recoil;
+                            heatProgress = PartProgress.warmup.delay(0.6f);
                             heatColor = Pal.heal;
                             mirror = false;
                             under = true;
-                            moveY = 1.5f;
-                            moveX = 0f;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
-                        }}); 
+                            moveY = -3f;
+                            moveX = -6f;
+                            moveRot = -10f;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -2f, -10f));
+                        }});
                     }});
                 }});
                 bullet = new SonicBulletType(){{
                     damage = 200;
-                    width = 18f;
-                    height = 9f;
+                    width = 9f;
+                    height = 4.5f;
+                    shrinkY = -0.6f;
+                    shrinkX = -1.8f;
                  }};
             }});
             weapons.add(new Weapon("aj-pod"){{
@@ -495,14 +588,15 @@ public class AxthrixUnits {
                 baseRotation = 180f;
                 top = false;
                 x = 0;
-                y = -2;
+                y = -1;
+                shootY = -6f;
                 mirror = false;
                 reload = 1020;
-                inaccuracy = 60;
+                inaccuracy = 40;
                 shoot.shots = 60;
                 shoot.shotDelay = 2;
                 heatColor = Pal.heal;
-                layerOffset = -2;
+                layerOffset = -2f;
                 immunities.add(AxthrixStatus.nanodiverge);
                 
 
@@ -534,6 +628,178 @@ public class AxthrixUnits {
                 }};
             }});    
         }};
+        //Special Flying Mount
+        //amos,aymoss,amalik,anuvaha,ambuvahini,
+        amos = new MountUnitType("amos")
+        {{
+            localizedName = "[#a52ac7]Amos";
+            description = """
+                          [#a52ac7]Can pick up and use any 1x1 Item Turret.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 600;
+            armor = 2;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 2*2;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 300;
+            itemOffsetY = 6;
+            speed = 20f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (1 * 1);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+        }};
+        aymoss = new MountUnitType("aymoss")
+        {{
+            localizedName = "[#a52ac7]Aymoss";
+            description = """
+                          [#a52ac7]Can pick up and use any 2x2 Item Turret or smaller.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 1800;
+            armor = 5;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 4*4;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 600;
+            itemOffsetY = 6;
+            speed = 18f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (2 * 2);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+        }};
+        amalik = new MountUnitType("amalik")
+        {{
+            localizedName = "[#a52ac7]Amalik";
+            description = """
+                          [#a52ac7]Can pick up and use any 3x3 Item Turret or smaller.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 5400;
+            armor = 8;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 6*6;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 1200;
+            itemOffsetY = 6;
+            speed = 16f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (3 * 3);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+        }};
+        anuvaha = new MountUnitType("anuvaha")
+        {{
+            localizedName = "[#a52ac7]Anuvaha";
+            description = """
+                          [#a52ac7]Can pick up and use any 4x4 Item Turret or smaller.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 16200;
+            armor = 11;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 8*8;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 2400;
+            itemOffsetY = 6;
+            speed = 14f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (4 * 4);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+        }};
+        ambuvahini = new MountUnitType("ambuvahini")
+        {{
+            localizedName = "[#a52ac7]Ambuvahini";
+            description = """
+                          [#a52ac7]Can pick up and use any 5x5 Item Turret or smaller.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 32500;
+            armor = 26;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 10*10;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 4800;
+            itemOffsetY = 6;
+            speed = 12f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (5 * 5);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+        }};
         //legends
         //yin and yang tree
         spate = new UnitType("spate"){{
@@ -545,7 +811,6 @@ public class AxthrixUnits {
            armor = 2f;
            constructor = UnitEntity::create;
            weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.swish;
                 shootY = 2f;
                 x = 1f;
                 y = 0f;
@@ -560,7 +825,7 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 30f, 40f, 100f){{
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 160f, 140f, 100f){{
                 atNotShoot = true;
             }});
         }};
@@ -574,7 +839,6 @@ public class AxthrixUnits {
            crushDamage = 500f;
            constructor = TankUnit::create;
            weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.swish;
                 rotate = true;
                 rotateSpeed = 3;
                 shootY = 2f;
@@ -591,9 +855,10 @@ public class AxthrixUnits {
                 }};
             }});  
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedX, 30f, 40f, 100f){{
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedX, 160f, 140f, 100){{
                 onShoot = true;
             }});
         }};
+
     }
 }        
