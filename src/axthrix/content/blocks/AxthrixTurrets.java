@@ -42,11 +42,12 @@ public class AxthrixTurrets{
         kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 120f;
-            acceleratedBonus = 1.5f;
-            acceleratedSteps = 3;
-            burnoutDelay = 600f;
+            acceleratedDelay = 60f;
+            acceleratedBonus = 1.1f;
+            acceleratedSteps = 10;
+            burnoutDelay = 300f;
             cooldownDelay = 300f;
+            cooldownTime = 120f;
 
             buildCostMultiplier = 0.1f;
             size = 2;
@@ -69,7 +70,7 @@ public class AxthrixTurrets{
                     damage = 15f;
                     homingPower = 4f;
                     homingRange = 50;
-                    homingDelay = 20f;
+                    homingDelay = 40f;
                     width = 2f;
                     height = 4f;
                     hitSize = 2f;
@@ -92,11 +93,12 @@ public class AxthrixTurrets{
         razdor = new AcceleratedTurret("razdor"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 120f;
-            acceleratedBonus = 1.5f;
-            acceleratedSteps = 3;
-            burnoutDelay = 700f;
-            cooldownDelay = 400f;
+            acceleratedDelay = 60f;
+            acceleratedBonus = 1.1f;
+            acceleratedSteps = 10;
+            burnoutDelay = 300f;
+            cooldownDelay = 300f;
+            cooldownTime = 120f;
 
             buildCostMultiplier = 0.1f;
             size = 3;
@@ -121,7 +123,7 @@ public class AxthrixTurrets{
                     damage = 30f;
                     homingPower = 4f;
                     homingRange = 50;
-                    homingDelay = 20f;
+                    homingDelay = 40f;
                     width = 3f;
                     height = 6f;
                     hitSize = 3f;
@@ -142,11 +144,12 @@ public class AxthrixTurrets{
         smuta = new AcceleratedTurret("smuta"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 120f;
-            acceleratedBonus = 1.5f;
-            acceleratedSteps = 3;
-            burnoutDelay = 800f;
-            cooldownDelay = 500f;
+            acceleratedDelay = 60f;
+            acceleratedBonus = 1.1f;
+            acceleratedSteps = 10;
+            burnoutDelay = 300f;
+            cooldownDelay = 300f;
+            cooldownTime = 120f;
 
             buildCostMultiplier = 0.1f;
             size = 4;
@@ -171,7 +174,7 @@ public class AxthrixTurrets{
                     damage = 60f;
                     homingPower = 4f;
                     homingRange = 50;
-                    homingDelay = 20f;
+                    homingDelay = 40f;
                     width = 4f;
                     height = 8f;
                     hitSize = 4f;
@@ -194,11 +197,12 @@ public class AxthrixTurrets{
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 320f;
-            reload = 1200f;
+            reload = 600f;
             range = 760f;
             maxAmmo = 20;
             ammoPerShot = 10;
             recoil = 3f;
+            shootCone = 45;
             rotateSpeed = 2f;
             targetAir = true;
             targetGround = true;
@@ -212,7 +216,7 @@ public class AxthrixTurrets{
             }};
             ammo(
                 Items.pyratite, new MissileBulletType(4f, 100){{
-                    damage = 400f;
+                    damage = 200f;
                     makeFire = true;
                     homingPower = 3f;
                     homingRange = 80;
@@ -233,7 +237,7 @@ public class AxthrixTurrets{
                 }},
 
                 Items.titanium, new MissileBulletType(4f, 100){{
-                    damage = 500f;
+                    damage = 250f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -254,7 +258,7 @@ public class AxthrixTurrets{
                 }},
 
                 Items.surgeAlloy, new MissileBulletType(4f, 100){{
-                    damage = 600f;
+                    damage = 300f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -279,7 +283,7 @@ public class AxthrixTurrets{
                 }},
 
                 Items.metaglass, new MissileBulletType(4f, 100){{
-                    damage = 300f;
+                    damage = 150f;
                     homingPower = 3f;
                     homingRange = 80;
                     homingDelay = 60f;
@@ -300,9 +304,9 @@ public class AxthrixTurrets{
                 }},
 
                 Items.thorium, new MissileBulletType(4f, 100){{
-                    damage = 1200f;
-                    homingPower = 1.5f;
-                    homingRange = 40;
+                    damage = 600f;
+                    homingPower = 0.01f;
+                    homingRange = 20;
                     homingDelay = 120f;
                     width = 6f;
                     height = 12f;
@@ -315,7 +319,7 @@ public class AxthrixTurrets{
                     status = StatusEffects.sapped;
                     trailLength = 16;
                     trailWidth = 2f;
-                    reloadMultiplier = 0.6f;
+                    reloadMultiplier = 0.9f;
                     backColor = Pal.sap;
                     frontColor = Pal.techBlue;
                 }}

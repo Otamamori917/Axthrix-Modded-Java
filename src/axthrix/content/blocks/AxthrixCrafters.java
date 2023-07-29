@@ -1,9 +1,12 @@
 package axthrix.content.blocks;
 
-import axthrix.world.types.block.production.MultiCrafter;
+import arc.struct.Seq;
+import axthrix.content.AxFactions;
+import axthrix.world.types.block.production.AxMulticrafter;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.Block;
+import multicraft.*;
 
 import static mindustry.type.ItemStack.with;
 
@@ -14,18 +17,48 @@ public class AxthrixCrafters {
     centrifugalAccelerator;
 
     public static void load() {
-		centrifugalAccelerator = new MultiCrafter("centrifugal-accelerator")
+		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
 		{{
+			faction = Seq.with(AxFactions.ikatusa).with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
 			localizedName = "Centrifugal Accelerator";
 			size = 4;
-			newConsumer(Liquids.nitrogen);
-			outputLiquid(Liquids.nitrogen,10f/60f);
-			consumeLiquid(Liquids.water,20f/60f);
-			newConsumer(Liquids.slag);
-			consumeLiquid(Liquids.water,10f/60f);
-			consumeLiquid(Liquids.nitrogen,10f/60f);
-			outputLiquid(Liquids.slag,10f/60f);
+			resolvedRecipes = Seq.with(
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(),
+									//Liquid input
+									Seq.with(LiquidStack.with(Liquids.water, 0.33f))
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(),
+									//output fluids, again, it can be empty
+									Seq.with(LiquidStack.with(Liquids.nitrogen, 0.165))
+							),
+							//float craftTime in ticks
+							60f
+					),
+			new Recipe(
+					//IOEntry input
+					new IOEntry(
+							//item input
+							Seq.with(),
+							//Liquid input
+							Seq.with(LiquidStack.with(Liquids.nitrogen, 0.165f,  Liquids.water, 0.165f))
+					),
+					//IOEntry output
+					new IOEntry(
+							Seq.with(),
+							//output fluids, again, it can be empty
+							Seq.with(LiquidStack.with(Liquids.slag, 0.165))
+					),
+					//float craftTime in ticks
+					60f
+			)
+					);
 			craftEffect = Fx.bubble;
 		}};
 

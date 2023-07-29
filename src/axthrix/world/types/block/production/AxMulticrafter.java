@@ -1,20 +1,20 @@
 package axthrix.world.types.block.production;
 
 import arc.struct.Seq;
-import mindustry.Vars;
-import mindustry.world.blocks.production.GenericCrafter;
 import axthrix.world.types.AxFaction;
+import mindustry.Vars;
+import multicraft.MultiCrafter;
 
 import static mindustry.Vars.state;
 
-public class AxGenericCrafter extends GenericCrafter {
+public class AxMulticrafter extends MultiCrafter {
     public Seq<AxFaction> faction = new Seq<>();
-
-    public AxGenericCrafter(String name) {
-        super(name);
-    }
+    public boolean blackListFactions = false;
+    public AxMulticrafter(String name) {super(name);}
     public boolean partOfPlayerFaction()
     {
+        if (blackListFactions)
+            return faction.count(f -> f.partOf(Vars.player.team())) == 0;
         return faction.size == 0 || faction.count(f -> f.partOf(Vars.player.team())) > 0;
     }
 
