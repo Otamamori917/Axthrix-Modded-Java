@@ -171,7 +171,7 @@ public class AxthrixTurrets{
             }};
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 60f;
+                    damage = 45f;
                     homingPower = 4f;
                     homingRange = 50;
                     homingDelay = 40f;
