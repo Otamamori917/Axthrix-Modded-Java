@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
+
 public class AcceleratedTurret extends AxItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
@@ -51,6 +52,7 @@ public class AcceleratedTurret extends AxItemTurret{
                     accelCounter %= acceleratedDelay;
                 }else if(burnsOut && accelCounter >= burnoutDelay){
                     accelBoost = 0;
+                    coolantMultiplier = 0;
                     accelCount++;
                     accelCounter %= burnoutDelay;
                 }
@@ -59,6 +61,10 @@ public class AcceleratedTurret extends AxItemTurret{
                 accelCounter = 0;
                 accelBoost = 1;
             }
+        }
+
+        protected void updateCooling(){
+            if(accelCounter < burnoutDelay) super.updateCooling();
         }
 
         @Override
