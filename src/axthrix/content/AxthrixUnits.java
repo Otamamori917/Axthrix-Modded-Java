@@ -1,7 +1,10 @@
 package axthrix.content;
 
 import arc.graphics.*;
+import arc.math.Mathf;
+import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import axthrix.world.types.ai.AttackDroneAI;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import mindustry.entities.abilities.*;
@@ -16,6 +19,9 @@ import mindustry.type.*;
 import mindustry.type.unit.*;
 import mindustry.content.*;
 
+import java.util.ArrayList;
+
+import static mindustry.Vars.content;
 import static mindustry.Vars.tilePayload;
 
 public class AxthrixUnits {
@@ -55,8 +61,9 @@ public class AxthrixUnits {
 
     //Legends |undetermined|
         //yin and yang tree
-            spate, influx
-
+            spate, influx,
+//testing
+    test1, testDrone
             ;
     public static void load(){
         barrier = new AxUnitType("barrier"){{
@@ -859,6 +866,118 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
         }};
+        testDrone = new UnitType("testdrone")
+        {{
+            localizedName = "[#a52ac7]TEST DRONE";
 
+            constructor = PayloadUnit::create;
+            health = 2000;
+            playerControllable = false;
+            logicControllable = false;
+            allowedInPayloads = false;
+            armor = 2;
+            faceTarget = true;
+            flying = true;
+            hitSize = 2*2;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 300;
+            itemOffsetY = 6;
+            speed = 20f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (1 * 1);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+            weapons.add(new Weapon("aj-nano-launcher"){{
+                shootSound = Sounds.blaster;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                x = 6;
+                y = 0;
+                shootX = 2f;
+                shootY = -1f;
+                mirror = true;
+                top = false;
+                reload = 40;
+                inaccuracy = 5;
+                heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
+                parts.add(
+                        new RegionPart("-shell"){{
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveX = 2f;
+                            moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                        }},
+                        new RegionPart("-bar"){{
+                            progress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            layerOffset = -0.5f;
+                            mirror = false;
+                            under = true;
+                            moveX = 2f;
+                        }});
+
+                bullet = new BasicBulletType(){{
+                    speed = 0f;
+                    keepVelocity = false;
+                    collidesAir = false;
+                    spawnUnit = content.unit("aj-nano-missile");
+                }};
+            }});
+        }};
+        test1 = new UnitType("test1")
+        {{
+            localizedName = "[#a52ac7]TEST";
+
+            constructor = PayloadUnit::create;
+            health = 6000;
+            armor = 2;
+            faceTarget = true;
+            flying = true;
+            hitSize = 2*2;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 300;
+            itemOffsetY = 6;
+            speed = 20f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (1 * 1);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(0,-14,6,-90),
+                    new UnitEngine(-10,-10,6,180+45),
+                    new UnitEngine(10,-10,6,270+45)
+            );
+            for(float i : Mathf.signs) {
+                abilities.add(
+                        new DroneControlAbility() {{
+
+                    rallyPos.add(new Vec2(38f *i, 8f));
+                    rallyPos.add(new Vec2(20f * i, 20f));
+                    spawnX = 48 / 4f * i;
+                    spawnY = 7 / -4f;
+                    unitSpawn = testDrone;
+                    constructTime = 60 * 5f;
+                    setController(returnOwner());
+                }}
+                    );
+            }
+        }};
     }
 }        
