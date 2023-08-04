@@ -5,12 +5,14 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import axthrix.world.types.ai.AttackDroneAI;
+import axthrix.world.types.bulletypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.*;
 
 import mindustry.gen.*;
@@ -66,6 +68,79 @@ public class AxthrixUnits {
     test1, testDrone
             ;
     public static void load(){
+        quark = new AxUnitType("quark") {{
+            localizedName = "Quark";
+            constructor = UnitEntity::create;
+            flying = false;
+            speed = 8.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 10f;
+            health = 275;
+            armor = 3;
+            range = 8 * 26;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = true;
+            hovering = true;
+            parts.add(
+            new RegionPart("-blade"){{
+                mirror = under = true;
+                weaponIndex = 0;
+                moveY = -2;
+                moveX = -2;
+            }},
+            new HoverPart(){{
+                x = 0f;
+                y = 0f;
+                mirror = false;
+                radius = 18f;
+                phase = 60f;
+                stroke = 5f;
+                layerOffset = -0.05f;
+                color = Color.valueOf("de9458");
+            }},
+            new HaloPart(){{
+                progress = PartProgress.warmup.delay(0.6f);
+                weaponIndex = 0;
+                color = Color.valueOf("de9458");
+                sides = 10;
+                hollow = true;
+                shapes = 2;
+                stroke = 0.2f;
+                strokeTo = 0.8f;
+                radius = 2f;
+                haloRadius = 9f;
+                haloRotateSpeed = 4;
+                layer = Layer.effect;
+                y = 0;
+                x = 0;
+            }});
+
+            weapons.add(new Weapon(){{
+                mirror = false;
+                minWarmup = 0.8f;
+                x = 0;
+                y = 0;
+                reload = 60f/0.8f;
+                shootY = 2f;
+                shoot = new SpiralPattern(1f, 2){{
+                    shots = 3;
+                }};
+                bullet = new BasicBulletType(3.5f, 30){{
+                    width = 1;
+                    height = 1;
+                    lifetime = 80;
+                    keepVelocity = false;
+                    trailColor = backColor = lightColor = Color.valueOf("683b3d");
+                    frontColor = Color.valueOf("de9458");
+                    trailLength = 12;
+                    trailChance = 0f;
+                    trailWidth = 0.7f;
+                    despawnEffect = hitEffect = Fx.none;
+                }};
+            }});
+        }};
+        //support walkers
         barrier = new AxUnitType("barrier"){{
            outlineColor = Pal.darkOutline;           
            speed = 0.55f;
@@ -109,7 +184,7 @@ public class AxthrixUnits {
                 }};
             }});    
 
-            abilities.add(new ForceFieldAbility(20f, 0.8f, 400f, 20f * 6));
+            abilities.add(new ForceFieldAbility(20f, 0.1f, 100f, 40f * 6));
         }};
 
         blockade = new AxUnitType("blockade"){{
@@ -481,10 +556,10 @@ public class AxthrixUnits {
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
-                x = 8;
+                x = 16;
                 y = 0f;
-                shootX = -12f;
-                shootY = 8f;
+                shootX = -24f;
+                shootY = 12f;
                 mirror = true;
                 reload = 80;
                 inaccuracy = 10;

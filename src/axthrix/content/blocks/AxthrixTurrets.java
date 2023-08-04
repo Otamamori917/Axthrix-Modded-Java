@@ -26,7 +26,7 @@ public class AxthrixTurrets{
 
     kramola, razdor, smuta,
 
-    //Rocket Artilery
+    //Rocket Artillery
 
     kisten,
 
@@ -41,7 +41,7 @@ public class AxthrixTurrets{
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            //custom varibles
+            //custom variables
             acceleratedDelay = 60f;
             acceleratedBonus = 1.1f;
             acceleratedSteps = 10;
@@ -64,6 +64,7 @@ public class AxthrixTurrets{
             shootY = -2f;
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(0.2f);
             shoot = new SpiralPattern(2, 1);
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
@@ -84,7 +85,6 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            coolant = consumeCoolant(0.1f);
         }};
 
 
@@ -92,7 +92,7 @@ public class AxthrixTurrets{
 
         razdor = new AcceleratedTurret("razdor"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            //custom varibles
+            //custom variables
             acceleratedDelay = 60f;
             acceleratedBonus = 1.1f;
             acceleratedSteps = 10;
@@ -115,6 +115,7 @@ public class AxthrixTurrets{
             shootY = -2f;
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(0.2f);
             shoot = new SpiralPattern(1.5f, 2.5f){{
                 shots = 3;
             }};
@@ -137,13 +138,12 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            coolant = consumeCoolant(0.1f);
         }};
 
 
         smuta = new AcceleratedTurret("smuta"){{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            //custom varibles
+            //custom variables
             acceleratedDelay = 60f;
             acceleratedBonus = 1.1f;
             acceleratedSteps = 10;
@@ -166,6 +166,7 @@ public class AxthrixTurrets{
             shootY = -2f;
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(0.2f);
             shoot = new SpiralPattern(1.75f, 2.75f){{
                 shots = 4;
             }};
@@ -188,7 +189,7 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            coolant = consumeCoolant(0.1f);
+
         }};
 
         kisten = new AxItemTurret("kisten"){{
@@ -339,7 +340,7 @@ public class AxthrixTurrets{
                     mirror = true;
                     heatLayerOffset = 1.2f;
                     layerOffset = 1;
-                    outlineLayerOffset = 0.8f;
+                    outlineLayerOffset = 0.6f;
 
                     children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
@@ -412,6 +413,9 @@ public class AxthrixTurrets{
                         outline = true;
                         under = true;
 
+                        layerOffset = 1;
+                        outlineLayerOffset = 0.8f;
+
                         moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
                     }});
                 }});
@@ -442,6 +446,7 @@ public class AxthrixTurrets{
             shootY = -2f;
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(0.2f);
             ammo(
                 Items.surgeAlloy, new BoltBulletType(50, Pal.surge){{
                     boltLength = 30;
@@ -449,7 +454,6 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            coolant = consumeCoolant(0.5f);
         }};
     }
 }
