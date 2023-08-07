@@ -14,12 +14,14 @@ import mindustry.content.UnitTypes;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.units.AIController;
+import mindustry.game.EventType;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.UnitType;
 import mindustry.game.EventType.UnitCreateEvent;
 
+import java.nio.channels.spi.AbstractInterruptibleChannel;
 import java.util.ArrayList;
 
 public class DroneControlAbility extends Ability {
@@ -35,7 +37,7 @@ public class DroneControlAbility extends Ability {
         public boolean autoRelease = true;
         public int droneCount = 2;
         protected float timer = 0f;
-        ArrayList<Unit> units;
+        ArrayList<Unit> units = new ArrayList<Unit>();
 
         public Ability copy(){
         ArrayList<Unit> units;
@@ -43,17 +45,17 @@ public class DroneControlAbility extends Ability {
         }
         //todo find a better method.
         Unit returnableUnit;
-        public void setController(Unit owner){
+        public void setController(Unit owner, String controller){
+                if (controller == "AttackDroneAI"){
         AIController ai = new AttackDroneAI(owner);
-        }
+        }else{AIController ai = new ControlledDroneAI(owner);}}
         @Override
         public void update(Unit unit) {
-                if (this.units != null) {
-                        for (int i = 0; i < this.units.size(); i++) {
-                                if (!this.units.get(i).isValid()) {
+                        for (int i = 0; i < units.size(); i++) {
+                                if (!units.get(i).isValid()) {
                                         units.remove(i);
                                 }
-                                if (this.units.size() < droneCount) {
+                                if (units.size() < droneCount) {
                                         if (timer > constructTime) {
                                                 if (autoRelease || unit.isShooting) {
                                                         float x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX);
@@ -79,7 +81,7 @@ public class DroneControlAbility extends Ability {
 
 
         {
-        if (this.units.size() < droneCount) Draw.draw(layer, () -> {
+        if (units.size() < droneCount) Draw.draw(layer, () -> {
         float x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX);
         float y = unit.y + Angles.trnsy(unit.rotation, spawnY, spawnX);
 
@@ -92,14 +94,6 @@ public class DroneControlAbility extends Ability {
         else Draw.rect(unitSpawn.fullIcon, x, y, unit.rotation - 90 + rotation);
         });
         }
-        }
-                else {float x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX);
-                        float y = unit.y + Angles.trnsy(unit.rotation, spawnY, spawnX);
-                        Unit unitSpawned = unitSpawn.create(unit.team);
-                        unitSpawned.set(x, y);
-                        unitSpawned.rotation = unit.rotation + rotation;
-                        this.units.add(0, unitSpawned);
-                        unitSpawned.controller(new AttackDroneAI(unit));}
         }
         public Unit returnOwner(){
                 return returnableUnit;

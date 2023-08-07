@@ -1049,7 +1049,8 @@ public class AxthrixUnits {
                     spawnY = 7 / -4f;
                     unitSpawn = testDrone;
                     constructTime = 60 * 5f;
-                    setController(returnOwner());
+                    setController(returnOwner(), "AttackDroneAI");
+                    autoRelease = true;
                 }}
                     );
             }
