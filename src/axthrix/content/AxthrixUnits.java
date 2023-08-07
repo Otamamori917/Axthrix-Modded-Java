@@ -50,6 +50,8 @@ public class AxthrixUnits {
                 naji,haven,nagiah,abhayad,sosthenes,
             //Specialist Flying Mounts |carry|
                 amos,aymoss,amalik,anuvaha,ambuvahini,
+                //TX
+                arcalishion,
     //Raodon |3 trees|
         //Assault Walker |Power|
             asta,adira,allura,andrea,athena,
@@ -882,6 +884,48 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,6,270+45)
             );
         }};
+        arcalishion = new MountUnitType("arcalishion")//Todo Might have weapons or abilities
+        {{
+            localizedName = "[#a52ac7]Arcalishion";
+            description = """
+                          [orange]|Teir Xalibur Unit|
+                          (This Means This Is A Boss)[]
+                          --------------------------------------------------
+                          [#a52ac7]Can pick up and use any 6x6 Item Turret or smaller.
+                          Unit Item Storage will restock current attached turret.[]
+                          [#800000]Only the first turret picked up will be operational.
+                          """;
+
+            constructor = PayloadUnit::create;
+            health = 65000;
+            armor = 39;
+            faceTarget = true;
+            factions.add(AxFactions.axthrix);
+            flying = true;
+            hitSize = 12*12;
+            engineColor = Color.valueOf("a52ac7");
+            itemCapacity = 10000;
+            itemOffsetY = 20;
+            speed = 8f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            pickupUnits = false;
+            omniMovement = false;
+            payloadCapacity = tilePayload * (6 * 6);
+            range = 12*8;
+            engineSize = 0;
+            engines = Seq.with(
+                    new UnitEngine(-30,-70,14,-90),
+                    new UnitEngine(30,-70,14,-90),
+
+                    new UnitEngine(-70,-35,8,180+45),
+                    new UnitEngine(70,-35,8,270+45),
+
+                    new UnitEngine(-60,29,10,180+45),
+                    new UnitEngine(60,29,10,270+45)
+            );
+        }};
         //legends
         //yin and yang tree
         spate = new UnitType("spate"){{
@@ -945,7 +989,7 @@ public class AxthrixUnits {
         {{
             localizedName = "[#a52ac7]TEST DRONE";
 
-            constructor = PayloadUnit::create;
+            constructor = UnitEntity::create;
             health = 2000;
             playerControllable = false;
             logicControllable = false;
@@ -961,9 +1005,7 @@ public class AxthrixUnits {
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
-            pickupUnits = false;
             omniMovement = false;
-            payloadCapacity = tilePayload * (1 * 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -1016,7 +1058,7 @@ public class AxthrixUnits {
         {{
             localizedName = "[#a52ac7]TEST";
 
-            constructor = PayloadUnit::create;
+            constructor = UnitEntity::create;
             health = 6000;
             armor = 2;
             faceTarget = true;
@@ -1029,9 +1071,7 @@ public class AxthrixUnits {
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
-            pickupUnits = false;
             omniMovement = false;
-            payloadCapacity = tilePayload * (1 * 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
