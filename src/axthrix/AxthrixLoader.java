@@ -25,6 +25,7 @@ public class AxthrixLoader extends Mod{
         //AxItems.load();
         AxthrixStatus.load();
         //AxLiquids.load();
+        AxthrixDrones.load();
         AxthrixUnits.load();
         //AxthrixBlocks.load();
         AxthrixCrafters.load();

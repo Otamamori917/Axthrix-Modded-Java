@@ -67,7 +67,7 @@ public class AxthrixUnits {
         //yin and yang tree
             spate, influx,
 //testing
-    test1, testDrone
+    test1
             ;
     public static void load(){
         quark = new AxUnitType("quark") {{
@@ -734,6 +734,7 @@ public class AxthrixUnits {
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;
+            rotateSpeed = 7 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -768,6 +769,7 @@ public class AxthrixUnits {
             itemCapacity = 600;
             itemOffsetY = 6;
             speed = 18f / 7.5f;
+            rotateSpeed = 6 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -802,6 +804,7 @@ public class AxthrixUnits {
             itemCapacity = 1200;
             itemOffsetY = 6;
             speed = 16f / 7.5f;
+            rotateSpeed = 5 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -836,6 +839,7 @@ public class AxthrixUnits {
             itemCapacity = 2400;
             itemOffsetY = 6;
             speed = 14f / 7.5f;
+            rotateSpeed = 4 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -870,6 +874,7 @@ public class AxthrixUnits {
             itemCapacity = 4800;
             itemOffsetY = 6;
             speed = 12f / 7.5f;
+            rotateSpeed = 3 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -907,6 +912,7 @@ public class AxthrixUnits {
             itemCapacity = 10000;
             itemOffsetY = 20;
             speed = 8f / 7.5f;
+            rotateSpeed = 2 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
@@ -928,7 +934,7 @@ public class AxthrixUnits {
         }};
         //legends
         //yin and yang tree
-        spate = new UnitType("spate"){{
+        spate = new UnitType("spate"){{//Todo Missile weapon
            outlineColor = Pal.darkOutline;
            flying = true;           
            speed = 2f;
@@ -955,7 +961,7 @@ public class AxthrixUnits {
                 atNotShoot = true;
             }});
         }};
-        influx = new UnitType("influx"){{
+        influx = new UnitType("influx"){{//Todo Cannon weapon
            outlineColor = Pal.darkOutline;         
            speed = 2f;
            hitSize = 6f;
@@ -985,78 +991,9 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
         }};
-        testDrone = new UnitType("testdrone")
-        {{
-            localizedName = "[#a52ac7]TEST DRONE";
-
-            constructor = UnitEntity::create;
-            health = 2000;
-            playerControllable = false;
-            logicControllable = false;
-            allowedInPayloads = false;
-            armor = 2;
-            faceTarget = true;
-            flying = true;
-            hitSize = 2*2;
-            engineColor = Color.valueOf("a52ac7");
-            itemCapacity = 300;
-            itemOffsetY = 6;
-            speed = 20f / 7.5f;
-            strafePenalty = 1;
-            drag = 0.8f;
-            lowAltitude = true;
-            omniMovement = false;
-            range = 12*8;
-            engineSize = 0;
-            engines = Seq.with(
-                    new UnitEngine(0,-14,6,-90),
-                    new UnitEngine(-10,-10,6,180+45),
-                    new UnitEngine(10,-10,6,270+45)
-            );
-            weapons.add(new Weapon("aj-nano-launcher"){{
-                shootSound = Sounds.blaster;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                x = 6;
-                y = 0;
-                shootX = 2f;
-                shootY = -1f;
-                mirror = true;
-                top = false;
-                reload = 40;
-                inaccuracy = 5;
-                heatColor = Pal.heal;
-                immunities.add(AxthrixStatus.nanodiverge);
-                parts.add(
-                        new RegionPart("-shell"){{
-                            progress = PartProgress.warmup;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveX = 2f;
-                            moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
-                        }},
-                        new RegionPart("-bar"){{
-                            progress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            layerOffset = -0.5f;
-                            mirror = false;
-                            under = true;
-                            moveX = 2f;
-                        }});
-
-                bullet = new BasicBulletType(){{
-                    speed = 0f;
-                    keepVelocity = false;
-                    collidesAir = false;
-                    spawnUnit = content.unit("aj-nano-missile");
-                }};
-            }});
-        }};
         test1 = new UnitType("test1")
         {{
-            localizedName = "[#a52ac7]TEST";
+            localizedName = "[#800000]TEST";
 
             constructor = UnitEntity::create;
             health = 6000;
@@ -1064,7 +1001,7 @@ public class AxthrixUnits {
             faceTarget = true;
             flying = true;
             hitSize = 2*2;
-            engineColor = Color.valueOf("a52ac7");
+            engineColor = Color.valueOf("95abd9");
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;
@@ -1079,21 +1016,34 @@ public class AxthrixUnits {
                     new UnitEngine(-10,-10,6,180+45),
                     new UnitEngine(10,-10,6,270+45)
             );
+            weapons.add(new Weapon(){{
+                shootY = 2f;
+                x = 1f;
+                y = 0f;
+                mirror = false;
+                reload = 200;
+                top = true;
+                bullet = new BasicBulletType(){{
+                    damage = 400;
+                    lifetime = 1200;
+                    speed = 5;
+                }};
+            }});
             for(float i : Mathf.signs) {
                 abilities.add(
-                        new DroneControlAbility() {{
+                    new DroneControlAbility() {{
 
-                    rallyPos.add(new Vec2(38f *i, 8f));
-                    rallyPos.add(new Vec2(20f * i, 20f));
-                    spawnX = 48 / 4f * i;
-                    spawnY = 7 / -4f;
-                    unitSpawn = testDrone;
-                    constructTime = 60 * 5f;
-                    setController(returnOwner(), "AttackDroneAI");
-                    autoRelease = true;
-                }}
-                    );
+                        rallyPos.add(new Vec2(38f * i, 8f));
+                        rallyPos.add(new Vec2(20f * i, 20f));
+                        spawnX = 48 / 4f * i;
+                        spawnY = 7 / -4f;;
+                        unitSpawn = AxthrixDrones.basicFlame;
+                        constructTime = 60 * 5f;
+                        setController(returnOwner(), "AttackDroneAI");
+                        autoRelease = true;
+                    }});
+                }
             }
-        }};
+        };
     }
 }        
