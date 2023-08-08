@@ -72,7 +72,7 @@ public class AxthrixUnits {
     public static void load(){
         quark = new AxUnitType("quark") {{
             localizedName = "Quark";
-            constructor = UnitEntity::create;
+            constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 8.3f/7.5f;
             drag = 0.13f;
@@ -734,9 +734,10 @@ public class AxthrixUnits {
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;
-            rotateSpeed = 7 / 7.5f;
+            rotateSpeed = 9 / 7.5f;
+            accel = 0.08f;
+            drag = 0.014f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
@@ -769,9 +770,10 @@ public class AxthrixUnits {
             itemCapacity = 600;
             itemOffsetY = 6;
             speed = 18f / 7.5f;
-            rotateSpeed = 6 / 7.5f;
+            rotateSpeed = 8 / 7.5f;
+            accel = 0.07f;
+            drag = 0.015f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
@@ -804,9 +806,10 @@ public class AxthrixUnits {
             itemCapacity = 1200;
             itemOffsetY = 6;
             speed = 16f / 7.5f;
-            rotateSpeed = 5 / 7.5f;
+            rotateSpeed = 7 / 7.5f;
+            accel = 0.06f;
+            drag = 0.016f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
@@ -839,9 +842,10 @@ public class AxthrixUnits {
             itemCapacity = 2400;
             itemOffsetY = 6;
             speed = 14f / 7.5f;
-            rotateSpeed = 4 / 7.5f;
+            rotateSpeed = 6 / 7.5f;
+            accel = 0.05f;
+            drag = 0.017f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
@@ -874,9 +878,10 @@ public class AxthrixUnits {
             itemCapacity = 4800;
             itemOffsetY = 6;
             speed = 12f / 7.5f;
-            rotateSpeed = 3 / 7.5f;
+            rotateSpeed = 5 / 7.5f;
+            accel = 0.04f;
+            drag = 0.018f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
@@ -912,9 +917,10 @@ public class AxthrixUnits {
             itemCapacity = 10000;
             itemOffsetY = 20;
             speed = 8f / 7.5f;
-            rotateSpeed = 2 / 7.5f;
+            rotateSpeed = 4 / 7.5f;
+            accel = 0.03f;
+            drag = 0.019f;
             strafePenalty = 1;
-            drag = 0.8f;
             lowAltitude = true;
             pickupUnits = false;
             omniMovement = false;
