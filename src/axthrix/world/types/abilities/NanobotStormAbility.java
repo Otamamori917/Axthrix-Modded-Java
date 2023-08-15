@@ -22,14 +22,14 @@ import static mindustry.Vars.*;
 public class NanobotStormAbility extends Ability {
     private static final Seq<Healthc> all = new Seq<>();
 
-    public float damage = 40, range = 60, reload = 1;
+    public float damage = 8f, range = 90, reload = 1, buildingDamageReduction = 15;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
     public StatusEffect status = nanodiverge;
     public Sound shootSound = Sounds.flux;
     public float statusDuration = 60f * 6f;
     public float x, y = 7f;
-    public boolean targetGround = true, targetAir = true, hitBuildings = false, hitUnits = true;
-    public float healPercent = 0.4f;
+    public boolean targetGround = true, targetAir = true, hitBuildings = true, hitUnits = true;
+    public float healPercent = 0.08f;
 
     public float layer = Layer.bullet + 4f, blinkScl = 20f, blinkSize = 0.1f;
     public float effectRadius = 5f, sectorRad = 0.14f, rotateSpeed = 10f;
@@ -44,7 +44,6 @@ public class NanobotStormAbility extends Ability {
 
     public NanobotStormAbility(float damage, float range){
         this.damage = damage;
-        this.reload = 1;
         this.range = range;
     }
 
@@ -137,7 +136,7 @@ public class NanobotStormAbility extends Ability {
                 }else{
                     anyNearby = true;
                     if(other instanceof Building b){
-                        b.damage(unit.team, damage * state.rules.unitDamage(unit.team));
+                        b.damage(unit.team, damage / buildingDamageReduction * state.rules.unitDamage(unit.team));
                     }else{
                         other.damage(damage * state.rules.unitDamage(unit.team));
                     }

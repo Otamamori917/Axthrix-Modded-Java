@@ -1,11 +1,12 @@
 package axthrix.content;
 
+import axthrix.world.types.statuseffects.StatusEffectStack;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration;
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent;
 
     public static void load(){
         vindicationI = new StatusEffect("vindicationI"){{
@@ -79,6 +80,14 @@ public class AxthrixStatus {
             init(() -> {
                 opposite(precludedX);
             });
-        }};        
+        }};
+
+        repent = new StatusEffectStack("repent"){{
+            color = color.yellow;
+            reloadMultiplier = 1.5f;
+            charges = 15;
+            show = false;
+            staticStat();
+        }};
     }
 }        
