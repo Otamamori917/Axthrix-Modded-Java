@@ -19,7 +19,7 @@ public class AxthrixDrones {
         basicFlame = new AmmoLifeTimeUnitType("flame-1")
         {{
             localizedName = "[orange]TEST DRONE";
-            ammoCapacity = 100;
+            ammoCapacity = 1000;
 
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;

@@ -1158,9 +1158,11 @@ public class AxthrixUnits {
             );
             weapons.add(new Weapon() {{
                 reload = 60*10;
+                rotate = true;
+                rotateSpeed = 10;
                 x = y = shootX = shootY = 0;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
+                shoot.shots = 4;
+                shoot.shotDelay = 15;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
