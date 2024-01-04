@@ -68,6 +68,10 @@ public class AxthrixUnits {
                 amos,aymoss,amalik,anuvaha,ambuvahini,
                 //TX
                 arcalishion,
+            //Elemental Shuttles | leader |
+                aza,enzo,ashur,alaric,aldrich,
+                //TX
+                enrique,
     //Raodon |3 trees|
         //Assault Walker |Power|
             asta,adira,allura,andrea,athena,
@@ -81,9 +85,7 @@ public class AxthrixUnits {
 
     //Legends |undetermined|
         //yin and yang tree
-            spate, influx,
-//testing
-    test1
+            spate, influx
             ;
     public static void load(){
         quark = new AxUnitType("quark") {{
@@ -1131,9 +1133,9 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
         }};
-        test1 = new UnitType("test1")
+        aza = new UnitType("aza")
         {{
-            localizedName = "[#800000]TEST";
+            localizedName = "Aza";
 
             constructor = UnitEntity::create;
             health = 6000;
@@ -1157,16 +1159,42 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,6,270+45)
             );
             weapons.add(new Weapon() {{
-                reload = 60*10;
-                rotate = true;
-                rotateSpeed = 10;
+                reload = 120*10;
                 x = y = shootX = shootY = 0;
-                shoot.shots = 4;
-                shoot.shotDelay = 15;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
-                    spawnUnit = AxthrixDrones.basicFlame;
+                    spawnUnit = AxthrixDrones.wattFlame;
+                }};
+            }});
+            weapons.add(new Weapon() {{
+                reload = 120*10;
+                x = y = shootX = shootY = 0;
+                baseRotation = -90f;
+                bullet = new SpawnHelperBulletType(){{
+                    hasParent = true;
+                    shootEffect = Fx.shootBig;
+                    spawnUnit = AxthrixDrones.wattIce;
+                }};
+            }});
+            weapons.add(new Weapon() {{
+                reload = 120*10;
+                x = y = shootX = shootY = 0;
+                baseRotation = 90f;
+                bullet = new SpawnHelperBulletType(){{
+                    hasParent = true;
+                    shootEffect = Fx.shootBig;
+                    spawnUnit = AxthrixDrones.wattFlame;
+                }};
+            }});
+            weapons.add(new Weapon() {{
+                reload = 120*10;
+                x = y = shootX = shootY = 0;
+                baseRotation = 180f;
+                bullet = new SpawnHelperBulletType(){{
+                    hasParent = true;
+                    shootEffect = Fx.shootBig;
+                    spawnUnit = AxthrixDrones.wattIce;
                 }};
             }});
         }};
