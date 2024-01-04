@@ -50,7 +50,7 @@ public class AxthrixUnits {
             //Assault Hovers |SubAtomic|
                 quark, electron, baryon, hadron, photon,
                 /*
-                quark: duo helix 1 red 1 blue
+                quark: tri helix
                 electron: bendy homing bullet
                 baryon: Tri Helix, explode on contact
                 hadron: one bullets that explodes into two on contact
@@ -657,62 +657,37 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
 
-
-            weapons.add(new Weapon("aj-megalith"){{
-                shootSound = Sounds.laserblast;
-                shootWarmupSpeed = 0.06f;
-                minWarmup = 0.9f;
-                top = false;
-                x = 0;
-                y = 0f;
-                shootX = 8f;
-                shootY = 8f;
+            parts.add(
+            new RegionPart("-mount"){{
+                progress = PartProgress.warmup;
+                heatProgress = PartProgress.warmup.delay(0.6f);
+                heatColor = Pal.heal;
                 mirror = true;
-                alternate = false;
-                reload = 800;
-                recoil = 0;
-                inaccuracy = 6;
-                parts.addAll(
-                new RegionPart("-1"){{
+                under = true;
+                children.add(new RegionPart("-arm"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup.delay(0.6f);
                     heatColor = Pal.heal;
-                    mirror = false;
+                    mirror = true;
                     under = false;
                     x = 0f;
                     moveX = 0;
                     moveY = -0.5f;
                     moveRot = 5f;
                     moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
-                    children.add(new RegionPart("-missile") {{
-                        progress = PartProgress.reload.curve(Interp.pow2In);
-                        colorTo = new Color(1f, 1f, 1f, 0f);
-                        color = Color.white;
-                        mixColorTo = Pal.accent;
-                        mixColor = new Color(1f, 1f, 1f, 0f);
-                        outline = true;
-                        under = true;
-                        y = 3;
-                        x = 6;
-
-                        layerOffset = -0.2f;
-                        outlineLayerOffset = 0.1f;
-
-                        moves.add(new PartMove(PartProgress.warmup.inv(), 4f, -2f, 20f));
-                    }});
-                    children.add(new RegionPart("-2"){{
+                    children.add(new RegionPart("-plate"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.warmup.delay(0.6f);
                         heatColor = Pal.heal;
-                        mirror = false;
+                        mirror = true;
                         under = true;
                         moveY = 0f;
                         moveX = -6f;
-                        children.add(new RegionPart("-3"){{
+                        children.add(new RegionPart("-shell"){{
                             progress = PartProgress.warmup;
                             heatProgress = PartProgress.warmup.delay(0.6f);
                             heatColor = Pal.heal;
-                            mirror = false;
+                            mirror = true;
                             under = true;
                             moveY = -1f;
                             moveX = 0f;
@@ -721,11 +696,48 @@ public class AxthrixUnits {
                         }});
                     }});
                 }});
+            }});
+
+
+            weapons.add(new Weapon("aj-bruh"){{
+                shootSound = Sounds.laserblast;
+                shootWarmupSpeed = 0.06f;
+                minWarmup = 0.9f;
+                top = false;
+                x = 0;
+                y = 0f;
+                shootX = 14f;
+                shootY = 8;
+                mirror = true;
+                alternate = false;
+                reload = 800;
+                recoil = 0;
+                inaccuracy = 6;
+                parts.add(
+                    new RegionPart("-missile") {{
+                        progress = PartProgress.reload.curve(Interp.pow2In);
+                        colorTo = new Color(1f, 1f, 1f, 0f);
+                        color = Color.white;
+                        mixColorTo = Pal.accent;
+                        mixColor = new Color(1f, 1f, 1f, 0f);
+                        outline = true;
+                        under = true;
+                        y = -4;
+                        x = 2;
+                        layerOffset = 9.02f;
+                        outlineLayerOffset = 9.01f;
+                        moves.add(
+                                new PartMove(PartProgress.warmup.inv(), -3f, 0f, -90f),
+                                new PartMove(PartProgress.warmup.inv().delay(0.3f), 4f, 1f, 45f),
+                                new PartMove(PartProgress.warmup.inv().delay(0.5f), 1f, 1f, 45f)
+                        );
+                    }}
+                );
                 bullet = new BasicBulletType(){{
                     speed = 0f;
                     keepVelocity = false;
                     collidesAir = false;
-                    spawnUnit = new MissileUnitType("megalith-missile"){{
+                    spawnUnit = new MissileUnitType("bruh-missile"){{
                         speed = 4.6f;
                         maxRange = 6f;
                         lifetime = 60f * 5.5f;
