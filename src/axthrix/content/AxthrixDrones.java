@@ -1,58 +1,39 @@
 package axthrix.content;
 
 import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.struct.Seq;
-import axthrix.world.types.abilities.DroneControlAbility;
-import axthrix.world.types.abilities.NanobotStormAbility;
-import axthrix.world.types.abilities.SStatusFieldAbility;
-import axthrix.world.types.bulletypes.SonicBulletType;
-import axthrix.world.types.bulletypes.SpiralPattern;
-import axthrix.world.types.unittypes.AxUnitType;
-import axthrix.world.types.unittypes.DroneUnitType;
-import axthrix.world.types.unittypes.MountUnitType;
+import axthrix.world.types.ai.AgressiveFlyingAi;
+import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
-import mindustry.entities.abilities.ForceFieldAbility;
-import mindustry.entities.abilities.ShieldArcAbility;
-import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.ExplosionBulletType;
 import mindustry.entities.bullet.FireBulletType;
-import mindustry.entities.part.HaloPart;
-import mindustry.entities.part.HoverPart;
-import mindustry.entities.part.RegionPart;
-import mindustry.entities.part.ShapePart;
 import mindustry.gen.*;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.unit.MissileUnitType;
-
-import static mindustry.Vars.content;
-import static mindustry.Vars.tilePayload;
 
 public class AxthrixDrones {
     public static UnitType
     basicFlame
             ;
     public static void load(){
-        basicFlame = new DroneUnitType("flame-1")
+        basicFlame = new AmmoLifeTimeUnitType("flame-1")
         {{
             localizedName = "[orange]TEST DRONE";
+            ammoCapacity = 100;
+
+            flying = alwaysShootWhenMoving = drawAmmo = true;
+            playerControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new AgressiveFlyingAi(true);
             health = 2000;
             armor = 2;
             faceTarget = true;
-            flying = true;
             hitSize = 2*2;
             engineColor = Color.orange;
             itemCapacity = 0;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;
-            omniMovement = true;
             range = 12*8;
             engineSize = 2;
             weapons.add(new Weapon(){{

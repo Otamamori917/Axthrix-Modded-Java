@@ -11,7 +11,6 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Tmp;
-import axthrix.world.types.ai.AttackDroneAI;
 import axthrix.world.types.bulletypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
@@ -1157,34 +1156,17 @@ public class AxthrixUnits {
                     new UnitEngine(-10,-10,6,180+45),
                     new UnitEngine(10,-10,6,270+45)
             );
-            weapons.add(new Weapon(){{
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = false;
-                reload = 200;
-                top = true;
-                bullet = new BasicBulletType(){{
-                    damage = 400;
-                    lifetime = 1200;
-                    speed = 5;
+            weapons.add(new Weapon() {{
+                reload = 60*10;
+                x = y = shootX = shootY = 0;
+                shootStatus = StatusEffects.unmoving;
+                shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
+                bullet = new SpawnHelperBulletType(){{
+                    hasParent = true;
+                    shootEffect = Fx.shootBig;
+                    spawnUnit = AxthrixDrones.basicFlame;
                 }};
             }});
-            for(float i : Mathf.signs) {
-                abilities.add(
-                    new DroneControlAbility() {{
-
-                        rallyPos.add(new Vec2(38f * i, 8f));
-                        rallyPos.add(new Vec2(20f * i, 20f));
-                        spawnX = 48 / 4f * i;
-                        spawnY = 7 / -4f;
-                        unitSpawn = AxthrixDrones.basicFlame;
-                        constructTime = 60 * 5f;
-                        setController(returnOwner(), "AttackDroneAI");
-                        autoRelease = true;
-                    }});
-                }
-            }
-        };
+        }};
     }
 }        

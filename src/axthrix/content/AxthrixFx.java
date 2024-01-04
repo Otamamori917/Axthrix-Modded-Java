@@ -7,13 +7,46 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.*;
+import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.randLenVectors;
 import static mindustry.Vars.renderer;
 
 public class AxthrixFx {
     public static final Effect
+
+    unitBreakdown = new Effect(100f, e -> {
+        if(!(e.data instanceof Unit select) || select.type == null) return;
+
+        float scl = e.fout(Interp.pow2Out);
+        float p = Draw.scl;
+        Draw.scl *= scl;
+
+        mixcol(Pal.darkMetal, 1f);
+        rect(select.type.fullIcon, select.x, select.y, select.rotation - 90f);
+        Lines.stroke(e.fslope());
+        Lines.square(select.x, select.y, (e.fout() * 0.9f) * select.hitSize * 1.5f, 45);
+        reset();
+
+        Draw.scl = p;
+    }),
+
+    failedMake =  new Effect(30f, e -> {
+        color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
+        alpha(e.fout(0.5f));
+        e.scaled(7f, s -> {
+            stroke(0.5f + s.fout());
+            Lines.circle(e.x, e.y, s.fin() * 7f);
+        });
+        randLenVectors(e.id, 5, e.finpow() * 17f, (x, y) -> Fill.rect(
+                e.x + x + Mathf.randomSeedRange((long) (e.id + e.rotation + 7), 3f * e.fin()),
+                e.y + y + Mathf.randomSeedRange((long) (e.id + e.rotation + 8), 3f * e.fin()),
+                1f, 2f, e.rotation + e.fin() * 50f * e.rotation
+        ));
+        Drawf.light(e.x, e.y, 20f, Pal.lightOrange, 0.6f * e.fout());
+    }).layer(Layer.bullet),
 
     bolt = new Effect(12f, 1300f, e -> {
         if(!(e.data instanceof Seq)) return;
