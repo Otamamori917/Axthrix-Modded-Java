@@ -1161,6 +1161,7 @@ public class AxthrixUnits {
             weapons.add(new Weapon() {{
                 reload = 120*10;
                 x = y = shootX = shootY = 0;
+                shootCone = 360;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
@@ -1171,6 +1172,7 @@ public class AxthrixUnits {
                 reload = 120*10;
                 x = y = shootX = shootY = 0;
                 baseRotation = -90f;
+                shootCone = 360;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
@@ -1181,6 +1183,7 @@ public class AxthrixUnits {
                 reload = 120*10;
                 x = y = shootX = shootY = 0;
                 baseRotation = 90f;
+                shootCone = 360;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
@@ -1191,6 +1194,7 @@ public class AxthrixUnits {
                 reload = 120*10;
                 x = y = shootX = shootY = 0;
                 baseRotation = 180f;
+                shootCone = 360;
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
