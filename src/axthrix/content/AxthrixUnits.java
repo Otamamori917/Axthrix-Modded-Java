@@ -1187,7 +1187,7 @@ public class AxthrixUnits {
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
-                    spawnUnit = AxthrixDrones.wattFlame;
+                    spawnUnit = AxthrixDrones.wattGround;
                 }};
             }});
             weapons.add(new Weapon() {{
@@ -1198,7 +1198,7 @@ public class AxthrixUnits {
                 bullet = new SpawnHelperBulletType(){{
                     hasParent = true;
                     shootEffect = Fx.shootBig;
-                    spawnUnit = AxthrixDrones.wattIce;
+                    spawnUnit = AxthrixDrones.wattAir;
                 }};
             }});
         }};

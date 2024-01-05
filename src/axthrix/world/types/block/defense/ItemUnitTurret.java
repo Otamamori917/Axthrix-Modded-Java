@@ -48,7 +48,7 @@ import java.util.Objects;
 import static mindustry.Vars.*;
 
 /*The cross bread of a Turret and Unit factory, for the sake of being different*/
-public class ItemUnitTurret extends ItemTurret {
+public class ItemUnitTurret extends AxItemTurret {
     /*common required items for all unit types*/
     public ItemStack[] requiredAlternate = ItemStack.with(Items.copper, 20, Items.silicon, 15);
     /*Minimum Items needed*/

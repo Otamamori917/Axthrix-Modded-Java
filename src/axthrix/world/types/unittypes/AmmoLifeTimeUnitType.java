@@ -32,10 +32,10 @@ public class AmmoLifeTimeUnitType extends  DroneUnitType {
     /*Custom logic to kill unit on no ammo*/
     public  boolean killOnAmmoDepletion = true;
     /*Amount to deplete per tick*/
-    public float ammoDepletionAmount = 0.2f;
+    public float ammoDepletionAmount = 1f;
     public float passiveAmmoDepletion = ammoDepletionAmount;
     /*Ammo amount that will trigger death*/
-    public float deathThreshold = 0.1f;
+    public float deathThreshold = 1f;
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
