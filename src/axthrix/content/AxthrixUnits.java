@@ -10,6 +10,7 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.Seq;
+import arc.util.Time;
 import arc.util.Tmp;
 import axthrix.world.types.bulletypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
@@ -41,6 +42,7 @@ import static arc.graphics.g2d.Lines.stroke;
 import static arc.scene.actions.Actions.color;
 import static mindustry.Vars.content;
 import static mindustry.Vars.tilePayload;
+import static mindustry.content.StatusEffects.shocked;
 
 public class AxthrixUnits {
     public static UnitType
@@ -89,7 +91,12 @@ public class AxthrixUnits {
             ;
     public static void load(){
         quark = new AxUnitType("quark") {{
-            localizedName = "Quark";
+            localizedName = "[orange]Quark";
+            description = """
+                          [orange]A little nant, the Quark is an agile hover.
+                          Quark Fires A Atomic Tri-helix.
+                          """;
+            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 8.3f/7.5f;
@@ -157,6 +164,119 @@ public class AxthrixUnits {
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
+                }};
+            }});
+        }};
+        electron = new AxUnitType("electron") {{
+            localizedName = "[orange]Electron";
+            description = """
+                          [orange]A Fast Attacker, Electron always has the first strike.
+                          Electron Fires a burst of super fast charged Particles.
+                          """;
+            outlineColor = Pal.darkOutline;
+            constructor = ElevationMoveUnit::create;
+            flying = false;
+            speed = 7.9f/7.5f;
+            drag = 0.13f;
+            hitSize = 18f;
+            health = 890;
+            armor = 5;
+            range = 8 * 26;
+            accel = 0.8f;
+            rotateSpeed = 3.3f;
+            faceTarget = true;
+            hovering = true;
+            parts.add(
+                    new RegionPart("-arm"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -2;
+                        moveX = -2;
+                        moveRot = 5;
+                    }},
+                    new HoverPart(){{
+                        x = 0f;
+                        y = 0f;
+                        mirror = false;
+                        radius = 22f;
+                        phase = 60f;
+                        stroke = 5f;
+                        layerOffset = -0.05f;
+                        color = Color.valueOf("de9458");
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 20f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new RegionPart("-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 12) / 2 + 0.2f;
+                        mirror = true;
+                        x = -0.03f;
+                        y = -0.03f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }}
+
+            );
+
+            weapons.add(new Weapon(){{
+                mirror = false;
+                minWarmup = 0.8f;
+                reload = 60f/0.4f;
+                x = 0;
+                y = 0;
+                shootY = 2f;
+                inaccuracy = 20;
+                shoot.shots = 5;
+                shoot.shotDelay = 2;
+                immunities.add(shocked);
+                bullet = new BasicBulletType(24f, 30){{
+                    width = 4;
+                    height = 4;
+                    lifetime = 14;
+                    status = shocked;
+                    statusDuration = 180;
+                    keepVelocity = true;
+                    homingRange = 80;
+                    homingPower = 50;
+                    homingDelay = 1;
+                    weaveRandom = true;
+                    weaveMag = 5;
+                    weaveScale = 5;
+                    lightning = 2;
+                    lightningLength = 2;
+                    lightningLengthRand = 8;
+                    lightningDamage = 20;
+                    trailColor = lightningColor = backColor = lightColor = Pal.techBlue;
+                    frontColor = Pal.techBlue;
+                    trailLength = 12;
+                    trailChance = 0f;
+                    trailWidth = 0.7f;
+                    despawnEffect = hitEffect = Fx.none;
+                    parts.add(
+                            new ShapePart(){{
+                                color = Pal.techBlue;
+                                sides = 10;
+                                hollow = true;
+                                stroke = 0.8f;
+                                radius = 2f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }}
+                    );
                 }};
             }});
         }};
