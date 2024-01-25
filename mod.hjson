@@ -12,7 +12,7 @@ contributors:
     Siede#6321| Status effect sprites
 '''
 main: "axthrix.AxthrixLoader"
-description: "vast array of content"
-version: 1.2
+description: "BETA sandbox only"
+version: 2.0
 minGameVersion: 144.2
 java: true
