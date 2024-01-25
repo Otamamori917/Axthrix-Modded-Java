@@ -12,9 +12,10 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
-import axthrix.world.types.bulletypes.SpiralPattern;
+import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
+import axthrix.world.types.weapontypes.WeaponHelix;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.scene.actions.Actions.color;
 import static mindustry.Vars.content;
-import static mindustry.Vars.tilePayload;
+import static mindustry. Vars.tilePayload;
 import static mindustry.content.StatusEffects.shocked;
 
 public class AxthrixUnits {
@@ -143,14 +144,15 @@ public class AxthrixUnits {
                 x = 0;
             }});
 
-            weapons.add(new Weapon(){{
+            weapons.add(new WeaponHelix(){{
                 mirror = false;
                 minWarmup = 0.8f;
                 x = 0;
                 y = 0;
                 reload = 60f/0.8f;
                 shootY = 2f;
-                shoot = new SpiralPattern(1f, 2){{
+                inaccuracy = 0;
+                shoot = new SpiralPattern(2f, 1){{
                     shots = 3;
                 }};
                 bullet = new BasicBulletType(3.5f, 30){{
@@ -242,7 +244,7 @@ public class AxthrixUnits {
                 shoot.shots = 5;
                 shoot.shotDelay = 2;
                 immunities.add(shocked);
-                bullet = new BasicBulletType(24f, 30){{
+                bullet = new BasicBulletType(24f, 60){{
                     width = 4;
                     height = 4;
                     lifetime = 14;
@@ -255,16 +257,32 @@ public class AxthrixUnits {
                     weaveRandom = true;
                     weaveMag = 5;
                     weaveScale = 5;
-                    lightning = 2;
-                    lightningLength = 2;
-                    lightningLengthRand = 8;
-                    lightningDamage = 20;
-                    trailColor = lightningColor = backColor = lightColor = Pal.techBlue;
+                    trailColor = backColor = lightColor = Pal.techBlue;
                     frontColor = Pal.techBlue;
                     trailLength = 12;
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
+                    intervalBullet = new LightningBulletType(){{
+                        damage = 20;
+                        collidesAir = true;
+                        ammoMultiplier = 1f;
+                        lightningColor = Pal.techBlue;
+                        lightningLength = 2;
+                        lightningLengthRand = 8;
+
+                        lightningType = new BulletType(0.0001f, 0f){{
+                            lifetime = Fx.lightning.lifetime;
+                            hitEffect = Fx.hitLancer;
+                            despawnEffect = Fx.none;
+                            status = StatusEffects.shocked;
+                            statusDuration = 10f;
+                            hittable = false;
+                            lightColor = Color.white;
+                        }};
+                    }};
+
+                    bulletInterval = 1f;
                     parts.add(
                             new ShapePart(){{
                                 color = Pal.techBlue;
@@ -272,6 +290,199 @@ public class AxthrixUnits {
                                 hollow = true;
                                 stroke = 0.8f;
                                 radius = 2f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }}
+                    );
+                }};
+            }});
+        }};
+        baryon = new AxUnitType("baryon") {{
+            localizedName = "[orange]Baryon";
+            description = """
+                          [orange]A Large Brawler,Baryon Has 2 pistons on its back that help pump energy and expel heat.
+                          
+                          Baryon Fires A Large Atomic Tri-helix, That Explodes Violently On Contact.
+                          """;
+            outlineColor = Pal.darkOutline;
+            constructor = ElevationMoveUnit::create;
+            flying = false;
+            speed = 6.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 24f;
+            health = 3476;
+            armor = 10;
+            range = 8 * 26;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = true;
+            hovering = true;
+            //hover/mechanical parts
+            parts.add(
+                    new RegionPart("-pin"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -1;
+                        moveX = 1;
+                    }},
+                    new RegionPart("-plate"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -2.2f;
+                        moveX = -2;
+                        moveRot = 10;
+                    }},
+                    new RegionPart("-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
+                        mirror = true;
+                        x = 0.5f;
+                        y = 0.5f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }},
+                    new HoverPart(){{
+                        x = 0f;
+                        y = 0f;
+                        mirror = false;
+                        radius = 28f;
+                        phase = 60f;
+                        stroke = 5f;
+                        layerOffset = -0.05f;
+                        color = Color.valueOf("de9458");
+                    }}
+            );
+            // halo/atomic presence
+            parts.add(
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 8;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 25f;
+                        layer = Layer.effect;
+                        rotateSpeed = 2;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 32f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 6;
+                        hollow = true;
+                        shapes = 8;
+                        stroke = 0.2f;
+                        strokeTo = 0.8f;
+                        radius = 4f;
+                        haloRadius = 28f;
+                        haloRotateSpeed = 2f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }}
+            );
+
+            weapons.add(new WeaponHelix(){{
+                mirror = false;
+                minWarmup = 0.8f;
+                x = 0;
+                y = 0;
+                reload = 180f;
+                shootY = 2f;
+                inaccuracy = 0;
+                shoot = new SpiralPattern(4f, 2){{
+                    shots = 3;
+                }};
+
+                immunities.add(StatusEffects.blasted);
+                bullet = new BasicBulletType(3f, 20){{
+                    width = 4;
+                    height = 4;
+                    lifetime = 160;
+                    keepVelocity = false;
+                    trailColor = backColor = lightColor = Color.valueOf("683b3d");
+                    frontColor = Color.valueOf("de9458");
+                    despawnEffect = hitEffect = Fx.none;
+                    hitEffect = new MultiEffect(Fx.titanExplosion, Fx.titanSmoke);
+                    despawnEffect = Fx.none;
+                    knockback = 2f;
+                    splashDamageRadius = 65f;
+                    splashDamage = 350f;
+                    scaledSplashDamage = true;
+                    backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
+                    frontColor = Color.white;
+                    hitSound = Sounds.titanExplosion;
+
+                    status = StatusEffects.blasted;
+
+                    trailLength = 16;
+                    trailWidth = 3.35f;
+                    trailSinScl = 2.5f;
+                    trailSinMag = 0.5f;
+                    trailEffect = Fx.none;
+                    despawnShake = 7f;
+
+                    shootEffect = Fx.shootTitan;
+                    smokeEffect = Fx.shootSmokeTitan;
+
+                    trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+                    parts.add(
+                            new ShapePart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 8;
+                                hollow = true;
+                                stroke = 1.2f;
+                                radius = 4f;
+                                layer = Layer.effect;
+                                rotateSpeed = 2;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new ShapePart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 40;
+                                hollow = true;
+                                stroke = 1.2f;
+                                radius = 6f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new HaloPart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 6;
+                                hollow = true;
+                                shapes = 4;
+                                stroke = 0.8f;
+                                radius = 1f;
+                                haloRadius = 5f;
+                                haloRotateSpeed = 2.1f;
                                 layer = Layer.effect;
                                 y = 0;
                                 x = 0;
@@ -531,14 +742,13 @@ public class AxthrixUnits {
                     }});
                 }});
 
-                bullet = new BasicBulletType(2f, 9){{
+                bullet = new BasicBulletType(2f, 20){{
                     homingRange = 40f;
                     homingPower = 4f;
                     homingDelay = 5f;
                     width = 0.5f;
                     height = 0.5f;
-                    damage = 8;
-                    lifetime = 20;
+                    lifetime = 15;
                     speed = 3;
                     healPercent = 1;
                     collidesTeam = true;

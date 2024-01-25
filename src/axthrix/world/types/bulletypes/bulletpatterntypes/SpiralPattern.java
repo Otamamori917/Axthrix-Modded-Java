@@ -1,9 +1,9 @@
-package axthrix.world.types.bulletypes;
+package axthrix.world.types.bulletypes.bulletpatterntypes;
 
 import arc.math.*;
 import arc.util.*;
 import mindustry.entities.pattern.ShootPattern;
-
+/** NOTE when using this bullet pattern use "WeaponHelix" as it's weapon type for units also note weapons with this pattern cannot rotate */
 public class SpiralPattern extends ShootPattern {
     public float scl = 2f, mag = 1.5f, offset = Mathf.PI;
 

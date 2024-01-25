@@ -3,7 +3,7 @@ package axthrix.content.blocks;
 import axthrix.content.AxFactions;
 
 import axthrix.world.types.bulletypes.*;
-import axthrix.world.types.bulletypes.SpiralPattern;
+import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.block.defense.AcceleratedTurret;
 import axthrix.world.types.block.defense.AxItemTurret;
 import mindustry.content.*;
@@ -65,7 +65,7 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(2, 1);
+            shoot = new SpiralPattern(1, 2);
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 15f;
@@ -116,7 +116,7 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(1.5f, 2.5f){{
+            shoot = new SpiralPattern(2.5f, 1.5f){{
                 shots = 3;
             }};
             ammo(
@@ -167,7 +167,7 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(1.75f, 2.75f){{
+            shoot = new SpiralPattern(2.75f, 1.75f){{
                 shots = 4;
             }};
             ammo(
@@ -212,7 +212,7 @@ public class AxthrixTurrets{
             minWarmup = 0.94f;
             shootWarmupSpeed = 0.05f;
             faction.add(AxFactions.axthrix);
-            shoot = new SpiralPattern(2f, 4f){{
+            shoot = new SpiralPattern(4f, 2f){{
                 shots = 10;
             }};
             ammo(
