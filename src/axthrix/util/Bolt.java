@@ -5,7 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import axthrix.content.*;
+import axthrix.content.FX.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.entities.*;

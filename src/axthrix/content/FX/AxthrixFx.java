@@ -1,4 +1,4 @@
-package axthrix.content;
+package axthrix.content.FX;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -16,7 +16,7 @@ import static mindustry.Vars.renderer;
 
 public class AxthrixFx {
     public static final Effect
-
+            
     unitBreakdown = new Effect(100f, e -> {
         if(!(e.data instanceof Unit select) || select.type == null) return;
 

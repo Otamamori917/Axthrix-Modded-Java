@@ -38,7 +38,7 @@ import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.UnitPayload;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.Stat;
-import axthrix.content.AxthrixFx;
+import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.bulletypes.SpawnHelperBulletType;
 import axthrix.world.types.unittypes.DroneUnitType;
 

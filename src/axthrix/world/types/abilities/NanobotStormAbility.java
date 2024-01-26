@@ -5,6 +5,7 @@ import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.Table;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -15,6 +16,8 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 import static axthrix.content.AxthrixStatus.*;
 import static mindustry.Vars.*;
@@ -22,7 +25,7 @@ import static mindustry.Vars.*;
 public class NanobotStormAbility extends Ability {
     private static final Seq<Healthc> all = new Seq<>();
 
-    public float damage = 8f, range = 90, reload = 1, buildingDamageReduction = 15;
+    public float damage = 4f, range = 90, reload = 1, buildingDamageReduction = 8;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
     public StatusEffect status = nanodiverge;
     public Sound shootSound = Sounds.flux;
@@ -49,7 +52,17 @@ public class NanobotStormAbility extends Ability {
 
     @Override
     public String localized(){
-        return Core.bundle.format("ability.aj-nanobot-storm", damage, range / Vars.tilesize);
+        return Core.bundle.format("ability.aj-nanobot-storm");
+    }
+
+    @Override
+    public void addStats(Table t){
+        t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + damage);
+        t.row();
+        t.add("[lightgray]" + Stat.damage.localized() + " to buildings: [white]" + damage/buildingDamageReduction);
+        t.row();
+        t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(range / tilesize, 2) + " " + StatUnit.blocks.localized());
+        t.row();
     }
 
     @Override

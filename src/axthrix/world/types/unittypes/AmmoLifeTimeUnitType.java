@@ -20,7 +20,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
-import axthrix.content.AxthrixFx;
+import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.ai.MiningAi;
 
 import static mindustry.Vars.*;
