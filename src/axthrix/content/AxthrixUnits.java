@@ -302,7 +302,7 @@ public class AxthrixUnits {
             localizedName = "[orange]Baryon";
             description = """
                           [orange]A Large Brawler,Baryon Has 2 pistons on its back that help pump energy and expel heat.
-                          Baryon uses this to expel large amounts of heat damaging any foe that came too close
+                          Baryon uses this to expel large amounts of heat damaging any foe that comes too close.
                           Baryon Fires A Large Atomic Tri-helix, That Explodes Violently On Contact.
                           """;
             outlineColor = Pal.darkOutline;
