@@ -492,6 +492,288 @@ public class AxthrixUnits {
                 }};
             }});
         }};
+        hadron = new AxUnitType("hadron") {{
+            localizedName = "[orange]Hadron";
+            description = """
+                          [orange] an Area defender, Hadron can lay mines behind enemy defences.
+                          Hadron stores up heat and releases it at enemy units.
+                          Hadron Fires A Large Artillery HeatMine The mines expel heat at enemy units then decays into 4 homing particles.
+                          """;
+            outlineColor = Pal.darkOutline;
+            constructor = ElevationMoveUnit::create;
+            flying = false;
+            speed = 5.6f/7.5f;
+            drag = 0.13f;
+            hitSize = 34f;
+            health = 13400;
+            armor = 14;
+            range = 8 * 26;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = true;
+            hovering = true;
+            abilities.add(new HeatWaveAbility(600,160,800,Color.valueOf("de9458")));
+            //hover/mechanical parts
+            parts.add(
+                    new RegionPart("-pin"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -1;
+                        moveX = 1;
+                    }},
+                    new RegionPart("-plate"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -2.2f;
+                        moveX = -2;
+                        moveRot = 10;
+                    }},
+                    new RegionPart("-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
+                        mirror = true;
+                        x = 0.5f;
+                        y = 0.5f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }},
+                    new HoverPart(){{
+                        x = 0f;
+                        y = 0f;
+                        mirror = false;
+                        radius = 34f;
+                        phase = 60f;
+                        stroke = 5f;
+                        layerOffset = -0.05f;
+                        color = Color.valueOf("de9458");
+                    }}
+            );
+            // halo/atomic presence
+            parts.add(
+
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 28f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 32f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 36f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }}
+            );
+
+            weapons.add(new Weapon(){{
+                mirror = false;
+                minWarmup = 0.8f;
+                x = 0;
+                y = 0;
+                reload = 180f;
+                shootY = 2f;
+                inaccuracy = 0;
+                bullet = new ArtilleryBulletType(6f, 0){{
+                    width = 8;
+                    height = 8;
+                    lifetime = 100;
+                    scaleLife = true;
+                    keepVelocity = false;
+                    trailColor = backColor = lightColor = Color.valueOf("683b3d");
+                    frontColor = Color.valueOf("de9458");
+                    despawnEffect = hitEffect = Fx.none;
+                    weaveMag = 2;
+                    weaveScale = 4;
+                    knockback = 4f;
+                    backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
+                    frontColor = Color.white;
+                    hitSound = Sounds.none;
+
+                    trailLength = 16;
+                    trailWidth = 5.35f;
+                    trailSinScl = 2.5f;
+                    trailSinMag = 0.5f;
+                    trailEffect = Fx.none;
+                    despawnShake = 7f;
+
+                    shootEffect = Fx.shootTitan;
+                    smokeEffect = Fx.shootSmokeTitan;
+
+                    trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+                    parts.add(
+                            new ShapePart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 40;
+                                hollow = true;
+                                stroke = 1.2f;
+                                radius = 8f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new ShapePart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 40;
+                                hollow = true;
+                                stroke = 1.2f;
+                                radius = 10f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new ShapePart(){{
+                                progress = PartProgress.warmup.delay(0.6f);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 40;
+                                hollow = true;
+                                stroke = 1.2f;
+                                radius = 12f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }}
+
+                    );
+                    fragBullets = 1;
+                    fragAngle = 0;
+                    fragSpread = 0;
+                    fragRandomSpread = 0;
+                    fragBullet = new BasicBulletType(){{
+                        speed = 0f;
+                        keepVelocity = false;
+                        collidesAir = false;
+                        spawnUnit = new MissileUnitType("sub-bullet"){{
+                            abilities.add(new HeatWaveAbility(8,80,80,Color.valueOf("de9458")));
+                            speed = 0.01f;
+                            maxRange = 80f;
+                            lifetime = 80;
+                            outlineColor = Pal.darkOutline;
+                            engineSize = 0;
+                            health = 1;
+                            loopSoundVolume = 0.1f;
+                            deathExplosionEffect = despawnEffect = Fx.none;
+                            deathSound = despawnSound = Sounds.none;
+                            hittable = false;
+                            targetable = false;
+                            parts.add(
+
+                                    new ShapePart(){{
+                                        progress = PartProgress.warmup.delay(0.6f);
+                                        weaponIndex = 0;
+                                        color = Color.valueOf("de9458");
+                                        sides = 40;
+                                        hollow = false;
+                                        stroke = 1.2f;
+                                        radius = 2f;
+                                        layer = Layer.effect;
+                                        y = 0;
+                                        x = 0;
+                                    }},
+                                    new ShapePart(){{
+                                        progress = PartProgress.warmup.delay(0.6f);
+                                        weaponIndex = 0;
+                                        color = Color.valueOf("de9458");
+                                        sides = 40;
+                                        hollow = true;
+                                        stroke = 1.2f;
+                                        radius = 4f;
+                                        layer = Layer.effect;
+                                        y = 0;
+                                        x = 0;
+                                    }},
+                                    new ShapePart(){{
+                                        progress = PartProgress.warmup.delay(0.6f);
+                                        weaponIndex = 0;
+                                        color = Color.valueOf("de9458");
+                                        sides = 40;
+                                        hollow = true;
+                                        stroke = 1.2f;
+                                        radius = 6;
+                                        layer = Layer.effect;
+                                        y = 0;
+                                        x = 0;
+                                    }}
+
+                            );
+
+                            weapons.add(new Weapon(){{
+                                shootCone = 1;
+                                mirror = false;
+                                reload = 1f;
+                                shootOnDeath = true;
+
+                                shoot = new ShootSpread(2, 45f);
+                                bullet = new BasicBulletType(6f, 200){{
+                                    killShooter = true;
+                                    buildingDamageMultiplier = 3;
+                                    width = 8;
+                                    height = 8;
+                                    lifetime = 30;
+                                    keepVelocity = true;
+                                    homingRange = 800;
+                                    homingPower = 50;
+                                    homingDelay = 1;
+                                    weaveMag = 2;
+                                    weaveScale = 4;
+                                    trailColor = backColor = lightColor = Color.valueOf("de9458");
+                                    frontColor = Color.valueOf("de9458");
+                                    trailLength = 12;
+                                    trailChance = 0f;
+                                    trailWidth = 4f;
+                                    despawnEffect = hitEffect = Fx.none;
+                                    parts.add(
+                                            new ShapePart(){{
+                                                color = Color.valueOf("de9458");
+                                                sides = 10;
+                                                hollow = true;
+                                                stroke = 0.8f;
+                                                radius = 2f;
+                                                layer = Layer.effect;
+                                                y = 0;
+                                                x = 0;
+                                            }}
+                                    );
+                                }};
+                            }});
+                        }};
+                    }};
+                }};
+            }});
+        }};
         //support walkers
         barrier = new AxUnitType("barrier"){{
             localizedName = "[green]Barrier";

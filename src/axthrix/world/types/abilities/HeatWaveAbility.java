@@ -63,7 +63,7 @@ public class HeatWaveAbility extends Ability{
         t.row();
         t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(range / tilesize, 2) + " " + StatUnit.blocks.localized());
         t.row();
-        t.add("[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(reload / 60f, 2) + " " + StatUnit.seconds.localized());
+        t.add("[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60f / reload, 2) + " " + StatUnit.perSecond.localized());
         t.row();
     }
 
@@ -99,7 +99,7 @@ public class HeatWaveAbility extends Ability{
 				timer = 0;
 				shootSound.at(rx, ry, 1 + Mathf.range(0.15f), 3);
 
-                AxthrixFfx.circleOut(8,range,damage/40).at(rx, ry, range, hitColor);
+                AxthrixFfx.circleOut(16,range,damage/40).at(rx, ry, range, hitColor);
 				for(Unit u : all){
 					for(ObjectFloatMap.Entry<StatusEffect> s : status.entries()){
 						u.apply(s.key, s.value);
