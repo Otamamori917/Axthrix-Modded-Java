@@ -497,7 +497,8 @@ public class AxthrixUnits {
             description = """
                           [orange]An Area defender, Hadron can lay mines behind enemy defences.
                           Hadron stores up heat and releases it at enemy units.
-                          Hadron Fires A Large Artillery HeatMine The mines expel heat at enemy units then decays into 4 homing particles.
+                          Hadron Fires A Large Artillery HeatMine, The mines expel heat at enemy units then decays into 4 homing particles.
+                          has 2 automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
@@ -514,21 +515,42 @@ public class AxthrixUnits {
             hovering = true;
             abilities.add(new HeatWaveAbility(600,160,800,Color.valueOf("de9458")));
             //hover/mechanical parts
-            parts.add(
+            parts.addAll(
                     new RegionPart("-pin"){{
+                        progress = PartProgress.warmup;
                         mirror = under = true;
                         weaponIndex = 0;
                         moveY = -1;
-                        moveX = 1;
+                        moveX = -1;
                     }},
                     new RegionPart("-plate"){{
+                        progress = PartProgress.warmup.delay(0.3f);
                         mirror = under = true;
                         weaponIndex = 0;
                         moveY = -2.2f;
                         moveX = -2;
                         moveRot = 10;
                     }},
-                    new RegionPart("-piston") {{
+                    new RegionPart("-arm"){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = 2;
+                        moveX = -2;
+                        moveRot = 5;
+                    }},
+                    new RegionPart("-side-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
+                        mirror = true;
+                        x = 0.5f;
+                        y = 0.5f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }},
+                    new RegionPart("-rear-piston") {{
                         progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
                         mirror = true;
                         x = 0.5f;
@@ -539,11 +561,16 @@ public class AxthrixUnits {
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
                     }},
+                    new RegionPart("-glow"){{
+                        color = Color.valueOf("de9458");
+                        blending = Blending.additive;
+                        outline = mirror = false;
+                    }},
                     new HoverPart(){{
                         x = 0f;
                         y = 0f;
                         mirror = false;
-                        radius = 34f;
+                        radius = 38f;
                         phase = 60f;
                         stroke = 5f;
                         layerOffset = -0.05f;
@@ -561,7 +588,7 @@ public class AxthrixUnits {
                         hollow = true;
                         stroke = 0.4f;
                         strokeTo = 1.2f;
-                        radius = 28f;
+                        radius = 30f;
                         layer = Layer.effect;
                         y = 0;
                         x = 0;
@@ -574,7 +601,7 @@ public class AxthrixUnits {
                         hollow = true;
                         stroke = 0.4f;
                         strokeTo = 1.2f;
-                        radius = 32f;
+                        radius = 35f;
                         layer = Layer.effect;
                         y = 0;
                         x = 0;
@@ -587,7 +614,7 @@ public class AxthrixUnits {
                         hollow = true;
                         stroke = 0.4f;
                         strokeTo = 1.2f;
-                        radius = 36f;
+                        radius = 40f;
                         layer = Layer.effect;
                         y = 0;
                         x = 0;
@@ -787,19 +814,20 @@ public class AxthrixUnits {
                     }};
                 }};
             }});
-            weapons.add(new Weapon("assault-railgun"){{
+            weapons.add(new Weapon("aj-assault-railgun"){{
                 float brange = range = 400f;
                 controllable = false;
                 autoTarget = true;
+                ignoreRotation = false;
                 mirror = true;
-                minWarmup = 0.8f;
-                x = 6;
-                y = -2;
+                x = 12;
+                y = 2;
+                layerOffset = 1;
                 shootY = 2f;
                 inaccuracy = 0;
                 rotate = true;
                 rotateSpeed = 2f;
-                reload = 40f;
+                reload = 80f;
                 ejectEffect = Fx.casing3Double;
                 recoil = 5f;
                 cooldownTime = reload;
@@ -813,11 +841,11 @@ public class AxthrixUnits {
                         heatColor = Color.valueOf("de9458");
                         mirror = true;
                         under = false;
-                        moveX = -2f;
+                        moveY = -2f;
                     }}
                 );
                 bullet = new RailBulletType(){{
-                    buildingDamageMultiplier = 4;
+                    buildingDamageMultiplier = 2;
                     shootEffect = Fx.instShoot;
                     hitEffect = Fx.instHit;
                     pierceEffect = Fx.railHit;
@@ -825,7 +853,7 @@ public class AxthrixUnits {
                     pointEffect = Fx.instTrail;
                     despawnEffect = Fx.instBomb;
                     pointEffectSpace = 20f;
-                    damage = 40;
+                    damage = 200;
                     pierceDamageFactor = 1f;
                     length = brange;
                     hitShake = 1;
