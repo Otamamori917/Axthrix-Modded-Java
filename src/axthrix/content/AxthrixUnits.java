@@ -495,7 +495,7 @@ public class AxthrixUnits {
         hadron = new AxUnitType("hadron") {{
             localizedName = "[orange]Hadron";
             description = """
-                          [orange] an Area defender, Hadron can lay mines behind enemy defences.
+                          [orange]An Area defender, Hadron can lay mines behind enemy defences.
                           Hadron stores up heat and releases it at enemy units.
                           Hadron Fires A Large Artillery HeatMine The mines expel heat at enemy units then decays into 4 homing particles.
                           """;
@@ -599,13 +599,13 @@ public class AxthrixUnits {
                 minWarmup = 0.8f;
                 x = 0;
                 y = 0;
-                reload = 180f;
+                reload = 100f;
                 shootY = 2f;
                 inaccuracy = 0;
                 bullet = new ArtilleryBulletType(6f, 0){{
                     width = 8;
                     height = 8;
-                    lifetime = 100;
+                    lifetime = 189;
                     scaleLife = true;
                     keepVelocity = false;
                     trailColor = backColor = lightColor = Color.valueOf("683b3d");
@@ -677,9 +677,10 @@ public class AxthrixUnits {
                         keepVelocity = false;
                         collidesAir = false;
                         spawnUnit = new MissileUnitType("sub-bullet"){{
-                            abilities.add(new HeatWaveAbility(8,80,80,Color.valueOf("de9458")));
+                            abilities.add(new HeatWaveAbility(12,80,120,Color.valueOf("de9458")));
+                            rotateSpeed = 0;
                             speed = 0.01f;
-                            maxRange = 80f;
+                            maxRange = 10000f;
                             lifetime = 80;
                             outlineColor = Pal.darkOutline;
                             engineSize = 0;
@@ -731,46 +732,105 @@ public class AxthrixUnits {
                             );
 
                             weapons.add(new Weapon(){{
-                                shootCone = 1;
+                                shootCone = 360;
                                 mirror = false;
                                 reload = 1f;
                                 shootOnDeath = true;
-
-                                shoot = new ShootSpread(2, 45f);
-                                bullet = new BasicBulletType(6f, 200){{
+                                noAttack = true;
+                                bullet = new BulletType(0f, 0){{
                                     killShooter = true;
-                                    buildingDamageMultiplier = 3;
-                                    width = 8;
-                                    height = 8;
-                                    lifetime = 30;
-                                    keepVelocity = true;
-                                    homingRange = 800;
-                                    homingPower = 50;
-                                    homingDelay = 1;
-                                    weaveMag = 2;
-                                    weaveScale = 4;
-                                    trailColor = backColor = lightColor = Color.valueOf("de9458");
-                                    frontColor = Color.valueOf("de9458");
-                                    trailLength = 12;
-                                    trailChance = 0f;
-                                    trailWidth = 4f;
-                                    despawnEffect = hitEffect = Fx.none;
-                                    parts.add(
+                                    absorbable = false;
+                                    laserAbsorb = false;
+                                    hittable = false;
+                                    reflectable = false;
+                                    collides = false;
+                                    instantDisappear = true;
+                                    hitEffect = despawnEffect = shootEffect = Fx.none;
+                                    lifetime = 1;
+                                    fragBullets = 4;
+                                    fragAngle = 0;
+                                    fragSpread = 45;
+                                    fragRandomSpread = 0;
+                                    fragBullet = new BasicBulletType(6f, 200){{
+                                        buildingDamageMultiplier = 5;
+                                        width = 8;
+                                        height = 8;
+                                        lifetime = 60;
+                                        keepVelocity = true;
+                                        homingRange = 100;
+                                        homingPower = 10;
+                                        homingDelay = 1;
+                                        weaveMag = 2;
+                                        weaveScale = 4;
+                                        trailColor = backColor = lightColor = Color.valueOf("de9458");
+                                        frontColor = Color.valueOf("de9458");
+                                        trailLength = 12;
+                                        trailChance = 0f;
+                                        trailWidth = 4f;
+                                        despawnEffect = hitEffect = Fx.none;
+                                        parts.add(
                                             new ShapePart(){{
                                                 color = Color.valueOf("de9458");
                                                 sides = 10;
                                                 hollow = true;
                                                 stroke = 0.8f;
-                                                radius = 2f;
+                                                radius = 4f;
                                                 layer = Layer.effect;
                                                 y = 0;
                                                 x = 0;
                                             }}
-                                    );
+                                        );
+                                    }};
                                 }};
                             }});
                         }};
                     }};
+                }};
+            }});
+            weapons.add(new Weapon("assault-railgun"){{
+                float brange = range = 400f;
+                controllable = false;
+                autoTarget = true;
+                mirror = true;
+                minWarmup = 0.8f;
+                x = 6;
+                y = -2;
+                shootY = 2f;
+                inaccuracy = 0;
+                rotate = true;
+                rotateSpeed = 2f;
+                reload = 40f;
+                ejectEffect = Fx.casing3Double;
+                recoil = 5f;
+                cooldownTime = reload;
+                shake = 2;
+                shootCone = 2f;
+                shootSound = Sounds.railgun;
+                parts.add(
+                    new RegionPart("-front"){{
+                        progress = PartProgress.recoil;
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                        mirror = true;
+                        under = false;
+                        moveX = -2f;
+                    }}
+                );
+                bullet = new RailBulletType(){{
+                    buildingDamageMultiplier = 4;
+                    shootEffect = Fx.instShoot;
+                    hitEffect = Fx.instHit;
+                    pierceEffect = Fx.railHit;
+                    smokeEffect = Fx.smokeCloud;
+                    pointEffect = Fx.instTrail;
+                    despawnEffect = Fx.instBomb;
+                    pointEffectSpace = 20f;
+                    damage = 40;
+                    pierceDamageFactor = 1f;
+                    length = brange;
+                    hitShake = 1;
+                    status = StatusEffects.slow;
+                    statusDuration = 200;
                 }};
             }});
         }};
@@ -823,7 +883,7 @@ public class AxthrixUnits {
                 }};
             }});    
 
-            abilities.add(new ForceFieldAbility(20f, 0.1f, 100f, 40f * 6));
+            abilities.add(new ForceFieldAbility(20f, 0.1f, 200f, 40f * 6));
         }};
 
         blockade = new AxUnitType("blockade"){{
@@ -1816,4 +1876,4 @@ public class AxthrixUnits {
             }});
         }};
     }
-}        
+}
