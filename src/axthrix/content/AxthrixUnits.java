@@ -12,6 +12,8 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.content.FX.AxthrixFfx;
+import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
@@ -105,7 +107,6 @@ public class AxthrixUnits {
             hitSize = 10f;
             health = 275;
             armor = 3;
-            range = 8 * 26;
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = true;
@@ -183,7 +184,6 @@ public class AxthrixUnits {
             hitSize = 18f;
             health = 890;
             armor = 5;
-            range = 8 * 26;
             accel = 0.8f;
             rotateSpeed = 3.3f;
             faceTarget = true;
@@ -313,7 +313,6 @@ public class AxthrixUnits {
             hitSize = 24f;
             health = 3476;
             armor = 10;
-            range = 8 * 26;
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = true;
@@ -428,7 +427,7 @@ public class AxthrixUnits {
                     despawnEffect = Fx.none;
                     knockback = 2f;
                     splashDamageRadius = 65f;
-                    splashDamage = 350f;
+                    splashDamage = 120f;
                     scaledSplashDamage = true;
                     backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
                     frontColor = Color.white;
@@ -506,9 +505,8 @@ public class AxthrixUnits {
             speed = 5.6f/7.5f;
             drag = 0.13f;
             hitSize = 34f;
-            health = 13400;
-            armor = 14;
-            range = 8 * 26;
+            health = 22400;
+            armor = 24;
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = true;
@@ -704,10 +702,9 @@ public class AxthrixUnits {
                         keepVelocity = false;
                         collidesAir = false;
                         spawnUnit = new MissileUnitType("sub-bullet"){{
-                            abilities.add(new HeatWaveAbility(12,80,120,Color.valueOf("de9458")));
+                            abilities.add(new HeatWaveAbility(12,80,80,Color.valueOf("de9458")));
                             rotateSpeed = 0;
                             speed = 0.01f;
-                            maxRange = 10000f;
                             lifetime = 80;
                             outlineColor = Pal.darkOutline;
                             engineSize = 0;
@@ -779,7 +776,7 @@ public class AxthrixUnits {
                                     fragSpread = 45;
                                     fragRandomSpread = 0;
                                     fragBullet = new BasicBulletType(6f, 200){{
-                                        buildingDamageMultiplier = 5;
+                                        buildingDamageMultiplier = 3;
                                         width = 8;
                                         height = 8;
                                         lifetime = 60;
@@ -859,6 +856,310 @@ public class AxthrixUnits {
                     hitShake = 1;
                     status = StatusEffects.slow;
                     statusDuration = 200;
+                }};
+            }});
+        }};
+        photon = new AxUnitType("photon") {{
+            localizedName = "[orange]Photon";
+            description = """
+                          """;
+            outlineColor = Pal.darkOutline;
+            constructor = ElevationMoveUnit::create;
+            flying = false;
+            speed = 4.9f/7.5f;
+            drag = 0.13f;
+            hitSize = 34f;
+            health = 13400;
+            armor = 14;
+            range = 8 * 26;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = true;
+            hovering = true;
+            abilities.add(new HeatWaveAbility(600,240,1000,Color.valueOf("de9458")));
+            //hover/mechanical parts
+            parts.addAll(
+                    new RegionPart("-pin"){{
+                        progress = PartProgress.warmup;
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -1;
+                        moveX = -1;
+                    }},
+                    new RegionPart("-plate"){{
+                        progress = PartProgress.warmup.delay(0.3f);
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -2.2f;
+                        moveX = -2;
+                        moveRot = 10;
+                    }},
+                    new RegionPart("-arm"){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = 2;
+                        moveX = -2;
+                        moveRot = 5;
+                    }},
+                    new RegionPart("-side-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
+                        mirror = true;
+                        x = 0.5f;
+                        y = 0.5f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }},
+                    new RegionPart("-rear-piston") {{
+                        progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
+                        mirror = true;
+                        x = 0.5f;
+                        y = 0.5f;
+                        moveY = -1f;
+                        moveX = -1f;
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        heatProgress = PartProgress.recoil;
+                        heatColor = Color.valueOf("de9458");
+                    }},
+                    new RegionPart("-glow"){{
+                        color = Color.valueOf("de9458");
+                        blending = Blending.additive;
+                        outline = mirror = false;
+                    }},
+                    new HoverPart(){{
+                        x = 0f;
+                        y = 0f;
+                        mirror = false;
+                        radius = 38f;
+                        phase = 60f;
+                        stroke = 5f;
+                        layerOffset = -0.05f;
+                        color = Color.valueOf("de9458");
+                    }}
+            );
+            // halo/atomic presence
+            parts.add(
+
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 30f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 35f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new ShapePart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 40;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1.2f;
+                        radius = 40f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }}
+            );
+
+            weapons.add(new Weapon(){{
+                mirror = false;
+
+                minWarmup = 0.8f;
+                x = 0;
+                y = 0;
+                reload = 1f;
+                shootY = 2f;
+                inaccuracy = 20;
+                bullet = new BasicBulletType(30, 15f){{
+                    sprite = "missile-large";
+                    lightColor = Color.white;
+                    lightOpacity = 0.6f;
+                    lightRadius = 15;
+
+                    lifetime = 16f;
+                    width = 4f;
+                    height = 14f;
+                    pierce = true;
+                    pierceArmor = true;
+                    pierceBuilding = true;
+                    pierceCap = 20;
+                    pierceDamageFactor = 0.8f;
+                    laserAbsorb = true;
+
+                    hitEffect = despawnEffect = AxthrixFfx.circleOut(4,30,10);
+                    despawnEffect = Fx.none;
+                    knockback = 2f;
+                    splashDamageRadius = 60f;
+                    splashDamage = 50f;
+                    scaledSplashDamage = true;
+
+                    hittable = true;
+                    keepVelocity = false;
+                    reflectable = false;
+                    shootEffect = Fx.shootSmokeSquareBig;
+                    smokeEffect = Fx.shootSmokeDisperse;
+                    hitColor = backColor = trailColor = Color.white;
+                    frontColor = Color.white;
+                    trailWidth = 8f;
+                    trailLength = 40;
+                    trailInterval = 0.01f;
+
+                    trailEffect = AxthrixFfx.circleOut(6,10,5);
+
+                    homingPower = 200f;
+                    homingDelay = 1f;
+                    homingRange = 200;
+                    collidesGround = true;
+                    collidesAir = true;
+                }};
+            }});
+            weapons.add(new Weapon("aj-large-assault-railgun"){{
+                float brange = range = 500f;
+                controllable = false;
+                autoTarget = true;
+                mirror = false;
+                x = 12;
+                y = 2;
+                layerOffset = 1;
+                shootY = 2f;
+                inaccuracy = 0;
+                rotate = true;
+                rotateSpeed = 2f;
+                reload = 40f;
+                ejectEffect = Fx.casing3Double;
+                recoil = 5f;
+                cooldownTime = reload;
+                shake = 2;
+                shootCone = 2f;
+                shootSound = Sounds.railgun;
+                shoot = new ShootAlternate(7f);
+                recoils =2;
+                parts.add(
+                        new RegionPart("-piston") {{
+                            progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
+                            mirror = true;
+                            x = 0.5f;
+                            y = 0.5f;
+                            moveY = -1f;
+                            moveX = -1f;
+                            moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                            heatProgress = PartProgress.recoil;
+                            heatColor = Color.valueOf("de9458");
+                        }}
+
+
+                );
+                for(int i = 0; i < 2; i ++){
+                    int f = i;
+                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
+                        progress = PartProgress.recoil;
+                        recoilIndex = f;
+                        under = true;
+                        moveY = -1.5f;
+                    }});
+                }
+
+                bullet = new RailBulletType(){{
+                    buildingDamageMultiplier = 2;
+                    shootEffect = Fx.instShoot;
+                    hitEffect = Fx.instHit;
+                    pierceEffect = Fx.railHit;
+                    smokeEffect = Fx.smokeCloud;
+                    pointEffect = Fx.instTrail;
+                    despawnEffect = Fx.instBomb;
+                    pointEffectSpace = 20f;
+                    damage = 250;
+                    pierceDamageFactor = 1f;
+                    length = brange;
+                    hitShake = 1;
+                    status = StatusEffects.slow;
+                    statusDuration = 300;
+                }};
+            }});
+            weapons.add(new Weapon("aj-large-assault-railgun"){{
+                float brange = range = 500f;
+                controllable = false;
+                autoTarget = true;
+                mirror = false;
+                x = -12;
+                y = 2;
+                layerOffset = 1;
+                shootY = 2f;
+                inaccuracy = 0;
+                rotate = true;
+                rotateSpeed = 2f;
+                reload = 40f;
+                ejectEffect = Fx.casing3Double;
+                recoil = 5f;
+                cooldownTime = reload;
+                shake = 2;
+                shootCone = 2f;
+                shootSound = Sounds.railgun;
+                shoot = new ShootAlternate(7f);
+                recoils =2;
+                parts.add(
+                        new RegionPart("-piston") {{
+                            progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
+                            mirror = true;
+                            x = 0.5f;
+                            y = 0.5f;
+                            moveY = -1f;
+                            moveX = -1f;
+                            moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                            heatProgress = PartProgress.recoil;
+                            heatColor = Color.valueOf("de9458");
+                        }}
+
+
+                );
+                for(int i = 0; i < 2; i ++){
+                    int f = i;
+                    parts.add(new RegionPart("-barrel-" + (i == 0 ? "l" : "r")){{
+                        progress = PartProgress.recoil;
+                        recoilIndex = f;
+                        under = true;
+                        moveY = -1.5f;
+                    }});
+                }
+
+                bullet = new RailBulletType(){{
+                    buildingDamageMultiplier = 2;
+                    shootEffect = Fx.instShoot;
+                    hitEffect = Fx.instHit;
+                    pierceEffect = Fx.railHit;
+                    smokeEffect = Fx.smokeCloud;
+                    pointEffect = Fx.instTrail;
+                    despawnEffect = Fx.instBomb;
+                    pointEffectSpace = 20f;
+                    damage = 250;
+                    pierceDamageFactor = 1f;
+                    length = brange;
+                    hitShake = 1;
+                    status = StatusEffects.slow;
+                    statusDuration = 300;
                 }};
             }});
         }};
@@ -1429,9 +1730,9 @@ public class AxthrixUnits {
                         layerOffset = 9.02f;
                         outlineLayerOffset = 9.01f;
                         moves.add(
-                                new PartMove(PartProgress.warmup.inv(), -3f, 0f, -90f),
-                                new PartMove(PartProgress.warmup.inv().delay(0.3f), 4f, 1f, 45f),
-                                new PartMove(PartProgress.warmup.inv().delay(0.5f), 1f, 1f, 45f)
+                                new PartMove(PartProgress.warmup.inv(), 4f, -2f, -90f),
+                                new PartMove(PartProgress.warmup.inv().delay(0.3f), 1f, 3f, 18f),
+                                new PartMove(PartProgress.warmup.inv().delay(0.5f), 1f, 1f, 18f)
                         );
                     }}
                 );
@@ -1532,7 +1833,7 @@ public class AxthrixUnits {
                                     splashDamage = 70f;
                                     splashDamageRadius = 30;
                                     hitShake = 4f;
-                                    trailRotation = true;
+                                    trailRotation = false;
                                     status = StatusEffects.electrified;
                                 }};
                             }};
