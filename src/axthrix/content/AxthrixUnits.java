@@ -167,6 +167,9 @@ public class AxthrixUnits {
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
+                    shootSound = Sounds.blaster;
+                    soundPitchMax = soundPitchMin = 6;
+
                 }};
             }});
         }};
@@ -224,8 +227,8 @@ public class AxthrixUnits {
                         mirror = true;
                         x = -0.03f;
                         y = -0.03f;
-                        moveY = -1f;
-                        moveX = -1f;
+                        moveY = 1f;
+                        moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
@@ -263,6 +266,9 @@ public class AxthrixUnits {
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
+                    shootSound = Sounds.cannon;
+                    soundPitchMax = 14;
+                    soundPitchMin = 8;
                     intervalBullet = new LightningBulletType(){{
                         damage = 20;
                         collidesAir = true;
@@ -338,8 +344,8 @@ public class AxthrixUnits {
                         mirror = true;
                         x = 0.5f;
                         y = 0.5f;
-                        moveY = -1f;
-                        moveX = -1f;
+                        moveY = 1f;
+                        moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
@@ -444,6 +450,9 @@ public class AxthrixUnits {
 
                     shootEffect = Fx.shootTitan;
                     smokeEffect = Fx.shootSmokeTitan;
+                    shootSound = Sounds.corexplode;
+                    soundPitchMax = soundPitchMin = 3;
+
 
                     trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
                     parts.add(
@@ -542,8 +551,8 @@ public class AxthrixUnits {
                         mirror = true;
                         x = 0.5f;
                         y = 0.5f;
-                        moveY = -1f;
-                        moveX = -1f;
+                        moveY = 1f;
+                        moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
@@ -553,8 +562,8 @@ public class AxthrixUnits {
                         mirror = true;
                         x = 0.5f;
                         y = 0.5f;
-                        moveY = -1f;
-                        moveX = -1f;
+                        moveY = 1f;
+                        moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
@@ -652,6 +661,8 @@ public class AxthrixUnits {
 
                     shootEffect = Fx.shootTitan;
                     smokeEffect = Fx.shootSmokeTitan;
+                    shootSound = Sounds.largeExplosion;
+                    soundPitchMax = soundPitchMin = 3;
 
                     trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
                     parts.add(
@@ -879,36 +890,38 @@ public class AxthrixUnits {
             abilities.add(new HeatWaveAbility(600,240,1000,Color.valueOf("de9458")));
             //hover/mechanical parts
             parts.addAll(
-                    new RegionPart("-pin"){{
+                    new RegionPart("-bar"){{
                         progress = PartProgress.warmup;
                         mirror = under = true;
                         weaponIndex = 0;
                         moveY = -1;
                         moveX = -1;
-                    }},
-                    new RegionPart("-plate"){{
-                        progress = PartProgress.warmup.delay(0.3f);
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2.2f;
-                        moveX = -2;
                         moveRot = 10;
+                        children.add(new RegionPart("-plate"){{
+                            progress = PartProgress.warmup.delay(0.4f);
+                            mirror = under = true;
+                            weaponIndex = 0;
+                            moveY = -0.6f;
+                            moveX = -0.5f;
+                            moveRot = 2.5f;
+                            children.add(new RegionPart("-shield"){{
+                                progress = PartProgress.warmup.delay(0.8f);
+                                mirror = under = true;
+                                weaponIndex = 0;
+                                moveY = 1.5f;
+                                moveX = -1.5f;
+                            }});
+                        }});
                     }},
-                    new RegionPart("-arm"){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = 2;
-                        moveX = -2;
-                        moveRot = 5;
-                    }},
-                    new RegionPart("-side-piston") {{
+
+
+                    new RegionPart("-front-piston") {{
                         progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
                         mirror = true;
                         x = 0.5f;
                         y = 0.5f;
-                        moveY = -1f;
-                        moveX = -1f;
+                        moveY = 1f;
+                        moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
@@ -918,14 +931,14 @@ public class AxthrixUnits {
                         mirror = true;
                         x = 0.5f;
                         y = 0.5f;
-                        moveY = -1f;
+                        moveY = 1f;
                         moveX = -1f;
-                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
+                        moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, 0.5f, 0f));
                         heatProgress = PartProgress.recoil;
                         heatColor = Color.valueOf("de9458");
                     }},
                     new RegionPart("-glow"){{
-                        color = Color.valueOf("de9458");
+                        color = Color.valueOf("de94580");
                         blending = Blending.additive;
                         outline = mirror = false;
                     }},
@@ -933,7 +946,7 @@ public class AxthrixUnits {
                         x = 0f;
                         y = 0f;
                         mirror = false;
-                        radius = 38f;
+                        radius = 48f;
                         phase = 60f;
                         stroke = 5f;
                         layerOffset = -0.05f;
@@ -991,7 +1004,7 @@ public class AxthrixUnits {
                 x = 0;
                 y = 0;
                 reload = 1f;
-                shootY = 2f;
+                shootY = 10f;
                 inaccuracy = 20;
                 bullet = new BasicBulletType(30, 15f){{
                     sprite = "missile-large";
@@ -1029,11 +1042,16 @@ public class AxthrixUnits {
 
                     trailEffect = AxthrixFfx.circleOut(6,10,5);
 
-                    homingPower = 200f;
-                    homingDelay = 1f;
-                    homingRange = 200;
+                    homingPower = 10f;
+                    homingDelay = 6f;
+                    homingRange = 100;
                     collidesGround = true;
                     collidesAir = true;
+
+                    shootSound = Sounds.plasmadrop;
+                    soundPitchMax = 8;
+                    soundPitchMin = 6;
+
                 }};
             }});
             weapons.add(new Weapon("aj-large-assault-railgun"){{
@@ -1042,7 +1060,7 @@ public class AxthrixUnits {
                 autoTarget = true;
                 mirror = false;
                 x = 12;
-                y = 2;
+                y = -10;
                 layerOffset = 1;
                 shootY = 2f;
                 inaccuracy = 0;
@@ -1063,8 +1081,8 @@ public class AxthrixUnits {
                             mirror = true;
                             x = 0.5f;
                             y = 0.5f;
-                            moveY = -1f;
-                            moveX = -1f;
+                            moveY = 1f;
+                            moveX = 1f;
                             moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                             heatProgress = PartProgress.recoil;
                             heatColor = Color.valueOf("de9458");
@@ -1105,7 +1123,7 @@ public class AxthrixUnits {
                 autoTarget = true;
                 mirror = false;
                 x = -12;
-                y = 2;
+                y = -10;
                 layerOffset = 1;
                 shootY = 2f;
                 inaccuracy = 0;
@@ -1126,8 +1144,8 @@ public class AxthrixUnits {
                             mirror = true;
                             x = 0.5f;
                             y = 0.5f;
-                            moveY = -1f;
-                            moveX = -1f;
+                            moveY = 1f;
+                            moveX = 1f;
                             moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
                             heatProgress = PartProgress.recoil;
                             heatColor = Color.valueOf("de9458");
