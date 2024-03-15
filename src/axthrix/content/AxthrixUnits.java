@@ -873,17 +873,21 @@ public class AxthrixUnits {
         photon = new AxUnitType("photon") {{
             localizedName = "[orange]Photon";
             description = """
+                          [white]The Light of the Gods,[orange] Photon has a Experimental light Cannon,  dubed "[white]Baldur[orange]".
+                          Photon stores up heat and releases it at enemy units.
+                          Photon hits its enemies with the light of the gods themselves, Leaving nothing left of the target.
+                          Has 2 Large automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
-            speed = 4.9f/7.5f;
+            speed = 4f/7.5f;
             drag = 0.13f;
-            hitSize = 34f;
-            health = 13400;
+            hitSize = 44f;
+            health = 21300;
             armor = 14;
             range = 8 * 26;
-            accel = 0.6f;
+            accel = 1f;
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
@@ -894,22 +898,22 @@ public class AxthrixUnits {
                         progress = PartProgress.warmup;
                         mirror = under = true;
                         weaponIndex = 0;
-                        moveY = -1;
-                        moveX = -1;
-                        moveRot = 10;
+                        moveY = 1;
+                        moveX = -0.5f;
+                        moveRot = 6;
                         children.add(new RegionPart("-plate"){{
                             progress = PartProgress.warmup.delay(0.4f);
                             mirror = under = true;
                             weaponIndex = 0;
-                            moveY = -0.6f;
-                            moveX = -0.5f;
-                            moveRot = 2.5f;
+                            moveY = 1;
+                            moveX = 1;
+                            moveRot = 0;
                             children.add(new RegionPart("-shield"){{
                                 progress = PartProgress.warmup.delay(0.8f);
                                 mirror = under = true;
                                 weaponIndex = 0;
-                                moveY = 1.5f;
-                                moveX = -1.5f;
+                                moveY = 2;
+                                moveX = -2f;
                             }});
                         }});
                     }},
@@ -918,8 +922,8 @@ public class AxthrixUnits {
                     new RegionPart("-front-piston") {{
                         progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
                         mirror = true;
-                        x = 0.5f;
-                        y = 0.5f;
+                        x = 0;
+                        y = 0;
                         moveY = 1f;
                         moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
@@ -929,8 +933,8 @@ public class AxthrixUnits {
                     new RegionPart("-rear-piston") {{
                         progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
                         mirror = true;
-                        x = 0.5f;
-                        y = 0.5f;
+                        x = 0;
+                        y = 0;
                         moveY = 1f;
                         moveX = -1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, 0.5f, 0f));
@@ -954,46 +958,172 @@ public class AxthrixUnits {
                     }}
             );
             // halo/atomic presence
-            parts.add(
+            Color haloColor = Color.white;
+            float haloRotSpeed = 1.5f;
+
+            var circleProgress = DrawPart.PartProgress.warmup.delay(0.9f);
+            float circleY = 10f, circleRad = 11f, circleRotSpeed = 3.5f, circleStroke = 0.8f;
+            parts.addAll(
+                    new ShapePart(){{
+                        progress = circleProgress;
+                        color = haloColor;
+                        circle = true;
+                        hollow = true;
+                        stroke = 0.8f;
+                        strokeTo = circleStroke;
+                        radius = circleRad;
+                        layer = Layer.effect;
+                        y = circleY;
+                    }},
 
                     new ShapePart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 40;
+                        progress = circleProgress;
+                        rotateSpeed = -circleRotSpeed;
+                        color = haloColor;
+                        sides = 4;
                         hollow = true;
                         stroke = 0.4f;
-                        strokeTo = 1.2f;
-                        radius = 30f;
+                        strokeTo = circleStroke;
+                        radius = circleRad - 1f;
                         layer = Layer.effect;
-                        y = 0;
-                        x = 0;
+                        y = circleY;
                     }},
+
+                    //outer squares
+
+                    new ShapePart(){{
+                        progress = circleProgress;
+                        rotateSpeed = -circleRotSpeed;
+                        color = haloColor;
+                        sides = 4;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = circleStroke;
+                        radius = circleRad - 1f;
+                        layer = Layer.effect;
+                        y = circleY;
+                    }},
+
+                    //inner square
+                    new ShapePart(){{
+                        progress = circleProgress;
+                        rotateSpeed = -circleRotSpeed/2f;
+                        color = haloColor;
+                        sides = 4;
+                        hollow = true;
+                        stroke = 0.4f;
+                        strokeTo = 1f;
+                        radius = 3f;
+                        layer = Layer.effect;
+                        y = circleY;
+                    }},
+
+                    //spikes on circle
+                    new HaloPart(){{
+                        progress = circleProgress;
+                        color = haloColor;
+                        tri = true;
+                        shapes = 3;
+                        triLength = 2f;
+                        triLengthTo = 5f;
+                        radius = 6.2f;
+                        haloRadius = circleRad;
+                        haloRotateSpeed = haloRotSpeed / 2f;
+                        shapeRotation = 180f;
+                        haloRotation = 180f;
+                        layer = Layer.effect;
+                        y = circleY;
+                    }}
+            );
+            parts.addAll(
                     new ShapePart(){{
                         progress = PartProgress.warmup.delay(0.6f);
                         weaponIndex = 0;
                         color = Color.valueOf("de9458");
                         sides = 40;
                         hollow = true;
-                        stroke = 0.4f;
+                        stroke = 0.8f;                    //Inner line
                         strokeTo = 1.2f;
-                        radius = 35f;
+                        radius = 45f;
                         layer = Layer.effect;
                         y = 0;
                         x = 0;
+                    }},
+                    new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        color = Color.valueOf("de9458");
+                        tri = true;
+                        shapes = 6;
+                        triLength = 2f;
+                        triLengthTo = 5f;
+                        radius = 8f;                     //inner line spikes
+                        haloRadius = 45;
+                        haloRotateSpeed = 2;
+                        shapeRotation = 0f;
+                        haloRotation = 0f;
+                        layer = Layer.effect;
+                        y = 0;
+                    }},
+                    new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        weaponIndex = 0;
+                        color = Color.valueOf("de9458");
+                        sides = 8;
+                        hollow = true;
+                        shapes = 12;
+                        stroke = 0.4f;
+                        strokeTo = 0.8f;           //middle shape
+                        radius = 5.8f;
+                        haloRadius = 49.8f;
+                        haloRotateSpeed = 2f;
+                        shapeRotation = 20f;
+                        haloRotation = 45f;
+                        layer = Layer.effect;
+                        y = 0;
+                        x = 0;
+                    }},
+                    new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        color = Color.valueOf("de9458");
+                        tri = true;
+                        shapes = 6;
+                        triLength = 2;
+                        triLengthTo = 5f;
+                        radius = 8f;                //outside inner facing spikes
+                        haloRadius = 54.5f;
+                        haloRotateSpeed = 2;
+                        shapeRotation = 180f;
+                        haloRotation = 90f;
+                        layer = Layer.effect;
+                        y = 0;
                     }},
                     new ShapePart(){{
                         progress = PartProgress.warmup.delay(0.6f);
                         weaponIndex = 0;
                         color = Color.valueOf("de9458");
-                        sides = 40;
+                        sides = 55;
                         hollow = true;
-                        stroke = 0.4f;
+                        stroke = 0.8f;           //outside line
                         strokeTo = 1.2f;
-                        radius = 40f;
+                        radius = 55f;
                         layer = Layer.effect;
                         y = 0;
                         x = 0;
+                    }},
+                    new HaloPart(){{
+                        progress = PartProgress.warmup.delay(0.6f);
+                        color = Color.valueOf("de9458");
+                        tri = true;
+                        shapes = 6;
+                        triLength = 2f;
+                        triLengthTo = 5f;
+                        radius = 8f;                  //outside outward facing spikes
+                        haloRadius = 55;
+                        haloRotateSpeed = 2;
+                        shapeRotation = 0f;
+                        haloRotation = 90f;
+                        layer = Layer.effect;
+                        y = 0;
                     }}
             );
 
@@ -1023,7 +1153,6 @@ public class AxthrixUnits {
                     laserAbsorb = true;
 
                     hitEffect = despawnEffect = AxthrixFfx.circleOut(4,30,10);
-                    despawnEffect = Fx.none;
                     knockback = 2f;
                     splashDamageRadius = 60f;
                     splashDamage = 50f;
@@ -1042,7 +1171,7 @@ public class AxthrixUnits {
 
                     trailEffect = AxthrixFfx.circleOut(6,10,5);
 
-                    homingPower = 10f;
+                    homingPower = 1f;
                     homingDelay = 6f;
                     homingRange = 100;
                     collidesGround = true;
@@ -1228,7 +1357,7 @@ public class AxthrixUnits {
                     backColor = Pal.heal;
                     frontColor = Color.white;
                 }};
-            }});    
+            }});
 
             abilities.add(new ForceFieldAbility(20f, 0.1f, 200f, 40f * 6));
         }};
@@ -1284,7 +1413,7 @@ public class AxthrixUnits {
                     mirror = false;
                     under = false;
                     moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f)); 
+                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
                 }},
                 new RegionPart("-bar"){{
                     progress = PartProgress.warmup;
@@ -1346,10 +1475,10 @@ public class AxthrixUnits {
                                 }};
                             }};
                         }});
-                    }};    
+                    }};
                 }};
             }});
-        }}; 
+        }};
 
         palisade = new AxUnitType("palisade"){{
             localizedName = "[green]Palisade";
@@ -1411,7 +1540,7 @@ public class AxthrixUnits {
                     heatColor = Pal.heal;
                     mirror = false;
                     under = true;
-                    moveX = 0f; 
+                    moveX = 0f;
                 }},
                 new RegionPart("-barrel"){{
                     progress = PartProgress.warmup;
@@ -1453,7 +1582,7 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
-        }}; 
+        }};
 
         parapet = new AxUnitType("parapet"){{
             localizedName = "[green]Parapet";
@@ -1464,7 +1593,7 @@ public class AxthrixUnits {
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
            outlineColor = Pal.darkOutline;
-           armor = 17f;           
+           armor = 17f;
            speed = 0.70f;
            hitSize = 24f;
            health = 8600;
@@ -1485,8 +1614,8 @@ public class AxthrixUnits {
                 regen = 0.6f;
                 cooldown = 200f;
                 max = 1000f;
-                width = 10f; 
-                whenShooting = false;           
+                width = 10f;
+                whenShooting = false;
             }});
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
                 onShoot = true;
@@ -1524,7 +1653,7 @@ public class AxthrixUnits {
                         moveY = 2f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -4f, 0f));
-                    }}); 
+                    }});
                 }});
 
                 bullet = new BasicBulletType(2f, 9){{
@@ -1593,7 +1722,7 @@ public class AxthrixUnits {
                         moveY = 1.5f;
                         moveX = 0f;
                         moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
-                    }}); 
+                    }});
                 }});
                 bullet = new BasicBulletType(){{
                     speed = 0f;
@@ -1640,8 +1769,8 @@ public class AxthrixUnits {
                         }});
                     }};
                 }};
-            }});        
-        }}; 
+            }});
+        }};
         impediment = new AxUnitType("impediment"){{
             localizedName = "[green]Impediment";
             description = """
@@ -1651,7 +1780,7 @@ public class AxthrixUnits {
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
            outlineColor = Pal.darkOutline;
-           armor = 25f;           
+           armor = 25f;
            speed = 0.60f;
            health = 14460;
            hitSize = 28;
@@ -2098,7 +2227,7 @@ public class AxthrixUnits {
         //yin and yang tree
         spate = new UnitType("spate"){{//Todo Missile weapon
            outlineColor = Pal.darkOutline;
-           flying = true;           
+           flying = true;
            speed = 2f;
            hitSize = 6f;
            health = 340;
@@ -2117,14 +2246,14 @@ public class AxthrixUnits {
                     lifetime = 60;
                     speed = 5;
                 }};
-            }});  
+            }});
 
             abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 160f, 140f, 100f){{
                 atNotShoot = true;
             }});
         }};
         influx = new UnitType("influx"){{//Todo Cannon weapon
-           outlineColor = Pal.darkOutline;         
+           outlineColor = Pal.darkOutline;
            speed = 2f;
            hitSize = 6f;
            health = 340;
@@ -2147,7 +2276,7 @@ public class AxthrixUnits {
                     lifetime = 60;
                     speed = 5;
                 }};
-            }});  
+            }});
 
             abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedX, 160f, 140f, 100){{
                 onShoot = true;
