@@ -18,6 +18,8 @@ import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import axthrix.world.types.weapontypes.WeaponHelix;
+import blackhole.entities.part.BlackHolePart;
+import blackhole.graphics.BlackHoleRenderer;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
@@ -92,6 +94,7 @@ public class AxthrixUnits {
         //yin and yang tree
             spate, influx
             ;
+
     public static void load(){
         quark = new AxUnitType("quark") {{
             localizedName = "[orange]Quark";
@@ -1994,6 +1997,52 @@ public class AxthrixUnits {
                             interval = 7f;
                         }});
                     }};
+                }};
+            }});
+        }};
+        anagh = new AxUnitType("anagh") {{
+            localizedName = "[purple]Anagh";
+            description = """
+                          
+                          """;
+            outlineColor = Pal.darkOutline;
+            constructor = TankUnit::create;
+            flying = false;
+            speed = 5.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 10f;
+            health = 275;
+            armor = 3;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = false;
+            parts.add(
+
+                    new BlackHolePart(){{
+                        growProgress = p -> Mathf.cos(Time.time / 16) / 2 + 0.2f;
+                        x = 0;
+                        y = -10;
+                        size = 0.8f;
+                        sizeTo = 1f;
+                        edge = 3f;
+                        edgeTo = 6f;
+                        color = Color.purple;
+                    }});
+
+            weapons.add(new Weapon("puw"){{
+                rotate = true;
+                rotateSpeed = 3;
+                shootY = 2f;
+                x = 1f;
+                y = 0f;
+                mirror = false;
+                reload = 10;
+                top = true;
+                heatColor = Pal.heal;
+                bullet = new BasicBulletType(){{
+                    damage = 40;
+                    lifetime = 60;
+                    speed = 5;
                 }};
             }});
         }};
