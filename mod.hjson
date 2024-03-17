@@ -14,5 +14,6 @@ contributors:
 main: "axthrix.AxthrixLoader"
 description: "BETA sandbox only"
 version: 2.0
+"dependencies": ["black-hole-renderer"]
 minGameVersion: 144.2
 java: true
