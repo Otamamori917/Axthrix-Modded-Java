@@ -1320,7 +1320,6 @@ public class AxthrixUnits {
                           [green]Protects Allies with small but durable force field.
                           Barrier Fires A single Hostile Nanobot that deals DOT.
                           """;
-            outlineColor = Pal.darkOutline;
            speed = 0.55f;
            hitSize = 6f;
            health = 340;
@@ -1371,7 +1370,6 @@ public class AxthrixUnits {
                           [green]Heals Allies and Deals Great Damage at Medium range.
                           Blockade Fires Missiles containing Nanobots in quick succession.
                           """;
-           outlineColor = Pal.darkOutline;
            armor = 5f;
            speed = 0.7f;
            hitSize = 11f;
@@ -1490,16 +1488,15 @@ public class AxthrixUnits {
                           Palisade Fires A Wave of hostile Nanobots.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
-           outlineColor = Pal.darkOutline;
-           armor = 12f;
-           speed = 0.8f;
-           hitSize = 13;
-           health = 4050;
-           buildSpeed = 3f;
-           canBoost = true;
-           boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
-           factions.add(AxFactions.axthrix);
+            armor = 12f;
+            speed = 0.8f;
+            hitSize = 13;
+            health = 4050;
+            buildSpeed = 3f;
+            canBoost = true;
+            boostMultiplier = 1.5f;
+            constructor = MechUnit::create;
+            factions.add(AxFactions.axthrix);
             immunities.add(AxthrixStatus.nanodiverge);
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationIII);
@@ -1595,19 +1592,18 @@ public class AxthrixUnits {
                           Has two double shot missile launchers.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
-           outlineColor = Pal.darkOutline;
-           armor = 17f;
-           speed = 0.70f;
-           hitSize = 24f;
-           health = 8600;
-           buildSpeed = 4f;
-           canBoost = true;
-           boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
-           factions.add(AxFactions.axthrix);
-           immunities.add(AxthrixStatus.nanodiverge);
-           immunities.add(AxthrixStatus.vindicationIII);
-           immunities.add(AxthrixStatus.vindicationI);
+            armor = 17f;
+            speed = 0.70f;
+            hitSize = 24f;
+            health = 8600;
+            buildSpeed = 4f;
+            canBoost = true;
+            boostMultiplier = 1.5f;
+            constructor = MechUnit::create;
+            factions.add(AxFactions.axthrix);
+            immunities.add(AxthrixStatus.nanodiverge);
+            immunities.add(AxthrixStatus.vindicationIII);
+            immunities.add(AxthrixStatus.vindicationI);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-parapet-shield";
@@ -1782,18 +1778,17 @@ public class AxthrixUnits {
                           Has a Short range Nanobot field for protection.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
-           outlineColor = Pal.darkOutline;
-           armor = 25f;
-           speed = 0.60f;
-           health = 14460;
-           hitSize = 28;
-           buildSpeed = 4f;
-           constructor = MechUnit::create;
-           factions.add(AxFactions.axthrix);
-           immunities.add(AxthrixStatus.nanodiverge);
-           immunities.add(AxthrixStatus.vindicationII);
-           immunities.add(AxthrixStatus.vindicationI);
-           abilities.add(new NanobotStormAbility());
+            armor = 25f;
+            speed = 0.60f;
+            health = 14460;
+            hitSize = 28;
+            buildSpeed = 4f;
+            constructor = MechUnit::create;
+            factions.add(AxFactions.axthrix);
+            immunities.add(AxthrixStatus.nanodiverge);
+            immunities.add(AxthrixStatus.vindicationII);
+            immunities.add(AxthrixStatus.vindicationI);
+            abilities.add(new NanobotStormAbility());
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-impediment-shield";
@@ -2005,7 +2000,7 @@ public class AxthrixUnits {
             description = """
                           
                           """;
-            outlineColor = Pal.darkOutline;
+            factions.add(AxFactions.axthrix);
             constructor = TankUnit::create;
             flying = false;
             speed = 5.3f/7.5f;
@@ -2016,12 +2011,13 @@ public class AxthrixUnits {
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = false;
+            abilities.add(new AttractionFieldAbility(10));
             parts.add(
 
                     new BlackHolePart(){{
                         growProgress = p -> Mathf.cos(Time.time / 16) / 2 + 0.2f;
                         x = 0;
-                        y = -10;
+                        y = -2;
                         size = 0.8f;
                         sizeTo = 1f;
                         edge = 3f;
@@ -2029,22 +2025,6 @@ public class AxthrixUnits {
                         color = Color.purple;
                     }});
 
-            weapons.add(new Weapon("puw"){{
-                rotate = true;
-                rotateSpeed = 3;
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = false;
-                reload = 10;
-                top = true;
-                heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }});
         }};
         //Special Flying Mount
         //amos,aymoss,amalik,anuvaha,ambuvahini,
@@ -2275,7 +2255,6 @@ public class AxthrixUnits {
         //legends
         //yin and yang tree
         spate = new UnitType("spate"){{//Todo Missile weapon
-           outlineColor = Pal.darkOutline;
            flying = true;
            speed = 2f;
            hitSize = 6f;
@@ -2302,7 +2281,6 @@ public class AxthrixUnits {
             }});
         }};
         influx = new UnitType("influx"){{//Todo Cannon weapon
-           outlineColor = Pal.darkOutline;
            speed = 2f;
            hitSize = 6f;
            health = 340;
