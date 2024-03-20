@@ -338,9 +338,10 @@ public class AxthrixTurrets{
                     moveX = 4f;
                     moveY = 5f;
                     mirror = true;
+                    under = true;
                     heatLayerOffset = 1.2f;
                     layerOffset = 1;
-                    outlineLayerOffset = 0.6f;
+                    outlineLayerOffset = 0.8f;
 
                     children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
@@ -402,19 +403,20 @@ public class AxthrixTurrets{
                     under = true;
                     moveY = -5f;
                     heatLayerOffset = 1.2f;
-                    layerOffset = 1;
-                    outlineLayerOffset = 0.8f;
+                    layerOffset = 0.9f;
+                    outlineLayerOffset = 0.7f;
                     children.add(new RegionPart("-missile") {{
                         progress = PartProgress.reload.curve(Interp.pow2In);
+
                         colorTo = new Color(1f, 1f, 1f, 0f);
                         color = Color.white;
                         mixColorTo = Pal.accent;
                         mixColor = new Color(1f, 1f, 1f, 0f);
-                        outline = true;
+                        outline = false;
                         under = true;
 
-                        layerOffset = 1;
-                        outlineLayerOffset = 0.8f;
+                        layerOffset = -0.1f;
+                        outlineLayerOffset = -0.2f;
 
                         moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
                     }});

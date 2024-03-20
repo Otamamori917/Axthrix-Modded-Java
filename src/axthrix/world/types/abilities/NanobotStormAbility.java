@@ -57,9 +57,9 @@ public class NanobotStormAbility extends Ability {
 
     @Override
     public void addStats(Table t){
-        t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + damage);
+        t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed(60f * damage, 2) + " " + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]" + Stat.damage.localized() + " to buildings: [white]" + damage/buildingDamageReduction);
+        t.add("[lightgray]" + Stat.damage.localized() + " to buildings: [white]" + Strings.autoFixed(60f * damage / buildingDamageReduction, 1) + " " + StatUnit.perSecond.localized());
         t.row();
         t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(range / tilesize, 2) + " " + StatUnit.blocks.localized());
         t.row();

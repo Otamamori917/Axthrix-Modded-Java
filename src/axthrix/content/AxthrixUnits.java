@@ -1,25 +1,21 @@
 package axthrix.content;
 
 import arc.graphics.*;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
+import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Time;
-import arc.util.Tmp;
 import axthrix.content.FX.AxthrixFfx;
-import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
-import blackhole.graphics.BlackHoleRenderer;
+import blackhole.entities.abilities.BlackHoleAbility;
 import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
@@ -27,25 +23,17 @@ import axthrix.world.types.bulletypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.*;
 
 import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootHelix;
-import mindustry.entities.pattern.ShootMulti;
-import mindustry.entities.pattern.ShootSpread;
-import mindustry.entities.units.WeaponMount;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.unit.*;
 import mindustry.content.*;
 
-import java.util.ArrayList;
-
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.scene.actions.Actions.color;
-import static mindustry.Vars.content;
 import static mindustry. Vars.tilePayload;
 import static mindustry.content.StatusEffects.shocked;
 
@@ -102,7 +90,6 @@ public class AxthrixUnits {
                           [orange]A little nant, the Quark is an agile hover.
                           Quark Fires A Atomic Tri-helix.
                           """;
-            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 8.3f/7.5f;
@@ -182,7 +169,6 @@ public class AxthrixUnits {
                           [orange]A Fast Attacker, Electron always has the first strike.
                           Electron Fires a burst of super fast charged Particles.
                           """;
-            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 7.9f/7.5f;
@@ -314,7 +300,6 @@ public class AxthrixUnits {
                           Baryon uses this to expel large amounts of heat damaging any foe that comes too close.
                           Baryon Fires A Large Atomic Tri-helix, That Explodes Violently On Contact.
                           """;
-            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 6.3f/7.5f;
@@ -511,7 +496,6 @@ public class AxthrixUnits {
                           Hadron Fires A Large Artillery HeatMine, The mines expel heat at enemy units then decays into 4 homing particles.
                           has 2 automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
-            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 5.6f/7.5f;
@@ -720,7 +704,6 @@ public class AxthrixUnits {
                             rotateSpeed = 0;
                             speed = 0.01f;
                             lifetime = 80;
-                            outlineColor = Pal.darkOutline;
                             engineSize = 0;
                             health = 1;
                             loopSoundVolume = 0.1f;
@@ -881,7 +864,6 @@ public class AxthrixUnits {
                           Photon hits its enemies with the light of the gods themselves, Leaving nothing left of the target.
                           Has 2 Large automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
-            outlineColor = Pal.darkOutline;
             constructor = ElevationMoveUnit::create;
             flying = false;
             speed = 4f/7.5f;
@@ -1434,7 +1416,7 @@ public class AxthrixUnits {
                         speed = 2.3f;
                         maxRange = 6f;
                         lifetime = 60f * 1.4f;
-                        outlineColor = Pal.darkOutline;
+                        outlineColor = Color.valueOf("#181a1b");
                         engineColor = trailColor = Pal.heal;
                         engineLayer = Layer.effect;
                         health = 45;
@@ -1732,7 +1714,7 @@ public class AxthrixUnits {
                         speed = 3f;
                         maxRange = 6f;
                         lifetime = 60f * 1.6f;
-                        outlineColor = Pal.darkOutline;
+                        outlineColor = Color.valueOf("#181a1b");
                         engineColor = trailColor = Pal.heal;
                         engineLayer = Layer.effect;
                         health = 65;
@@ -1806,40 +1788,79 @@ public class AxthrixUnits {
             }});
 
             parts.add(
-            new RegionPart("-mount"){{
+            new RegionPart("-mount-l"){{
                 progress = PartProgress.warmup;
                 heatProgress = PartProgress.warmup.delay(0.6f);
                 heatColor = Pal.heal;
-                mirror = true;
+                mirror = false;
                 under = true;
-                children.add(new RegionPart("-arm"){{
+                children.add(new RegionPart("-arm-l"){{
                     progress = PartProgress.warmup;
                     heatProgress = PartProgress.warmup.delay(0.6f);
                     heatColor = Pal.heal;
-                    mirror = true;
+                    mirror = false;
                     under = false;
                     x = 0f;
                     moveX = 0;
-                    moveY = -0.5f;
+                    moveY = 1f;
                     moveRot = 5f;
                     moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
-                    children.add(new RegionPart("-plate"){{
+                    children.add(new RegionPart("-plate-l"){{
                         progress = PartProgress.warmup;
                         heatProgress = PartProgress.warmup.delay(0.6f);
                         heatColor = Pal.heal;
-                        mirror = true;
+                        mirror = false;
                         under = true;
                         moveY = 0f;
-                        moveX = -6f;
-                        children.add(new RegionPart("-shell"){{
+                        moveX = -6.8f;
+                        children.add(new RegionPart("-shell-l"){{
                             progress = PartProgress.warmup;
                             heatProgress = PartProgress.warmup.delay(0.6f);
                             heatColor = Pal.heal;
-                            mirror = true;
+                            mirror = false;
                             under = true;
                             moveY = -1f;
                             moveX = 0f;
                             moveRot = -10f;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 0f));
+                        }});
+                    }});
+                }});
+            }},
+            new RegionPart("-mount-r"){{
+                progress = PartProgress.warmup;
+                heatProgress = PartProgress.warmup.delay(0.6f);
+                heatColor = Pal.heal;
+                mirror = false;
+                under = true;
+                children.add(new RegionPart("-arm-r"){{
+                    progress = PartProgress.warmup;
+                    heatProgress = PartProgress.warmup.delay(0.6f);
+                    heatColor = Pal.heal;
+                    mirror = false;
+                    under = false;
+                    x = 0f;
+                    moveX = 0;
+                    moveY = 1f;
+                    moveRot = -5f;
+                    moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
+                    children.add(new RegionPart("-plate-r"){{
+                        progress = PartProgress.warmup;
+                        heatProgress = PartProgress.warmup.delay(0.6f);
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = true;
+                        moveY = 0f;
+                        moveX = 6.8f;
+                        children.add(new RegionPart("-shell-r"){{
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup.delay(0.6f);
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = true;
+                            moveY = -1f;
+                            moveX = 0f;
+                            moveRot = 10f;
                             moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 0f));
                         }});
                     }});
@@ -1858,26 +1879,26 @@ public class AxthrixUnits {
                 shootY = 8;
                 mirror = true;
                 alternate = false;
-                reload = 800;
+                reload = 400;
                 recoil = 0;
-                inaccuracy = 6;
+                inaccuracy = 0;
                 parts.add(
                     new RegionPart("-missile") {{
                         progress = PartProgress.reload.curve(Interp.pow2In);
+
                         colorTo = new Color(1f, 1f, 1f, 0f);
                         color = Color.white;
                         mixColorTo = Pal.accent;
                         mixColor = new Color(1f, 1f, 1f, 0f);
-                        outline = true;
+                        outline = false;
                         under = true;
-                        y = -4;
+                        y = 2.5f;
                         x = 2;
-                        layerOffset = 9.02f;
-                        outlineLayerOffset = 9.01f;
+                        layerOffset = -0.1f;
                         moves.add(
-                                new PartMove(PartProgress.warmup.inv(), 4f, -2f, -90f),
-                                new PartMove(PartProgress.warmup.inv().delay(0.3f), 1f, 3f, 18f),
-                                new PartMove(PartProgress.warmup.inv().delay(0.5f), 1f, 1f, 18f)
+                                new PartMove(PartProgress.warmup, 8f, -2.5f, -90f),
+                                new PartMove(PartProgress.warmup.delay(0.4f), 2f, 2f, 24f),
+                                new PartMove(PartProgress.warmup.delay(0.8f), 2f, 1f, 24f)
                         );
                     }}
                 );
@@ -1889,7 +1910,7 @@ public class AxthrixUnits {
                         speed = 4.6f;
                         maxRange = 6f;
                         lifetime = 60f * 5.5f;
-                        outlineColor = Pal.darkOutline;
+                        outlineColor = Color.valueOf("#181a1b");
                         engineColor = trailColor = Pal.heal;
                         engineLayer = Layer.effect;
                         engineSize = 3.1f;
@@ -1914,37 +1935,22 @@ public class AxthrixUnits {
                         immunities.add(AxthrixStatus.vindicationI);
 
                         weapons.add(new Weapon(){{
+                            float rad = 100f;
                             shootCone = 360f;
                             mirror = false;
                             reload = 1f;
                             deathExplosionEffect = Fx.massiveExplosion;
                             shootOnDeath = true;
                             shake = 10f;
-                            bullet = new ExplosionBulletType(800f, 65f){{
-                                hitColor = Pal.heal;
-                                shootEffect = hitEffect = new Effect(50f, 100f, e -> {
-                                    e.scaled(7f, b -> {
-                                        color(Pal.heal, b.fout());
-                                        Fill.circle(e.x, e.y, 65);
-                                    });
+                            bullet = new ExplosionBulletType(600f, rad){{
+                                hitColor = lightColor = Pal.heal;
+                                backColor = Pal.heal;
+                                frontColor = Color.white;
+                                mixColorTo = Color.white;
 
-                                    color(Pal.heal);
-                                    stroke(e.fout() * 3f);
-                                    Lines.circle(e.x, e.y, 65);
+                                despawnEffect = Fx.greenBomb;
+                                hitEffect = Fx.massiveExplosion;
 
-                                    int points = 20;
-                                    float offset = Mathf.randomSeed(e.id, 360f);
-                                    for(int i = 0; i < points; i++){
-                                        float angle = i* 360f / points + offset;
-                                        Drawf.tri(e.x + Angles.trnsx(angle, 65), e.y + Angles.trnsy(angle, 65), 6f, 50f * e.fout(), angle);
-
-                                    }
-
-                                    Fill.circle(e.x, e.y, 12f * e.fout());
-                                    color(Pal.heal);
-                                    Fill.circle(e.x, e.y, 6f * e.fout());
-                                    Drawf.light(e.x, e.y, 65 * 1.6f, Pal.heal, e.fout());
-                                });
 
                                 collidesAir = true;
 
@@ -1954,10 +1960,10 @@ public class AxthrixUnits {
                                 fragBullet = new EmpBulletType(){{
                                     lightOpacity = 0.7f;
                                     unitDamageScl = 0.8f;
-                                    healPercent = 20f;
+                                    healPercent = 1f;
                                     timeIncrease = 3f;
                                     timeDuration = 60f * 20f;
-                                    powerDamageScl = 3f;
+                                    powerDamageScl = 2f;
                                     damage = 60;
                                     hitColor = lightColor = Pal.heal;
                                     lightRadius = 70f;
@@ -1998,23 +2004,45 @@ public class AxthrixUnits {
         anagh = new AxUnitType("anagh") {{
             localizedName = "[purple]Anagh";
             description = """
+                          [purple]Lead Engineers at [#de9458]Axthrix[purple] decided not to make anagh a weapon, but make anagh itself the weapon!
+                          Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
+                          get too close and it will rip nearby bullets, units, and buildings apart.
+                          has a special field around Anagh preventing allies from being effected by its Blackhole.
                           
+                          [#800000]if 2 units on different teams with such ability meet they cancel each other's attraction but will still rip each other apart.
                           """;
+            treadPullOffset = 0;
+            itemCapacity = 0;
+            treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
             factions.add(AxFactions.axthrix);
             constructor = TankUnit::create;
+            outlines = false;
             flying = false;
             speed = 5.3f/7.5f;
             drag = 0.13f;
             hitSize = 10f;
-            health = 275;
-            armor = 3;
+            health = 400;
+            armor = 8;
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = false;
-            abilities.add(new AttractionFieldAbility(10));
+            range = 120;
+            abilities.add(new AttractionFieldAbility(){{
+                damageRadius = 30;
+                suctionRadius = 120;
+                damage = 8f;
+                bulletDamage = 4f;
+
+                scaledBulletForce = 1;
+                bulletForce = 0.5f;
+
+                scaledForce = 300;
+                force = 20;
+
+            }});
             parts.add(
 
-                    new BlackHolePart(){{
+            new BlackHolePart(){{
                         growProgress = p -> Mathf.cos(Time.time / 16) / 2 + 0.2f;
                         x = 0;
                         y = -2;
