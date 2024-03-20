@@ -6,14 +6,14 @@ author:
 Otamamori#4716
 contributors:
     BetaMindy/sk7725#6110| BoltBulletType.
-    MEEPofFaith#7277| AcceleratedTurret.
+    MEEPofFaith#7277| AcceleratedTurret, blackhole related stuff.
     nullevoy#7763| Spriting Tips.
     Monika#6030| Code clean up & starting blocks & bundles
     Siede#6321| Status effect sprites
 '''
 main: "axthrix.AxthrixLoader"
-description: "BETA sandbox only"
-version: 2.0
+description: "BETA sandbox only! requires blackhole render by meep of faith"
+version: 2.1
 "dependencies": ["black-hole-renderer"]
 minGameVersion: 144.2
 java: true
