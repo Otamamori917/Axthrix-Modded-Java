@@ -1,14 +1,34 @@
 package axthrix.content;
 
+import arc.graphics.Color;
+import axthrix.content.FX.AxthrixFfx;
+import axthrix.content.FX.AxthrixFx;
+import axthrix.world.types.abilities.SStatusFieldAbility;
+import axthrix.world.types.statuseffects.AbilityStatusEffect;
 import axthrix.world.types.statuseffects.StatusEffectStack;
+import axthrix.world.types.statuseffects.TriggerStatusEffect;
+import mindustry.entities.abilities.RepairFieldAbility;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent;
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,chainHeal,
+
+    //visual statuses
+    standFx,bFx
+            ;
 
     public static void load(){
+        bFx = new StatusEffect("b-trigger-vfx") {{
+            applyEffect = AxthrixFx.unitBreakdown;
+            show = false;
+        }};
+        standFx = new StatusEffect("stand-trigger-vfx") {{
+            color = Color.blue;
+            applyEffect = AxthrixFfx.circleOut(180, 30, 4);
+            show = false;
+        }};
         vindicationI = new StatusEffect("vindicationI"){{
             color = Pal.heal;
             healthMultiplier = 1.25f;
@@ -88,6 +108,22 @@ public class AxthrixStatus {
             charges = 15;
             show = false;
             staticStat();
+        }};
+
+        finalStand = new TriggerStatusEffect("final-stand"){{
+            localizedName = "[blue]Final Stand";
+            description = "Protects you at low HP\n[orange]Activation Threshold[] \n>|[lightgray]30%[]| HP.\n[orange]Activation Invincibility Duration[] \n>|[lightgray]3[]| Seconds.";
+            activationStatusFx = standFx;
+            activationThreshold = 4f;
+            activationResistanceTime = 180f;
+            permanent = true;
+        }};
+
+        chainHeal = new AbilityStatusEffect("chain-heal") {{
+            localizedName = "[green]Chain Heal";
+            description = "gives the ability to heal others and let them heal also";
+            permanent = false;
+            ability = new RepairFieldAbility(150,10, 60);
         }};
     }
 }        

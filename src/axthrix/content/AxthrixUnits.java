@@ -1,9 +1,6 @@
 package axthrix.content;
 
 import arc.graphics.*;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
@@ -11,12 +8,13 @@ import arc.struct.Seq;
 import arc.util.Time;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
+import axthrix.world.types.entities.CptrUnitEntity;
+import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.unittypes.AxUnitType;
+import axthrix.world.types.unittypes.CopterUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
-import blackhole.entities.abilities.BlackHoleAbility;
-import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
@@ -26,16 +24,24 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.part.*;
 
 import mindustry.entities.pattern.ShootAlternate;
+import axthrix.world.types.ai.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.unit.*;
 import mindustry.content.*;
+import arc.func.Prov;
+import arc.graphics.Color;
+import arc.struct.*;
+import arc.struct.ObjectMap.Entry;
+import mindustry.entities.abilities.MoveEffectAbility;
+import mindustry.graphics.Pal;
+import mindustry.type.ammo.ItemAmmoType;
+import mindustry.world.meta.BlockFlag;
 
-import static arc.graphics.g2d.Lines.stroke;
-import static arc.scene.actions.Actions.color;
+import static mindustry.Vars.tilesize;
 import static mindustry. Vars.tilePayload;
-import static mindustry.content.StatusEffects.shocked;
+import static mindustry.content.StatusEffects.*;
 
 public class AxthrixUnits {
     public static UnitType
@@ -82,8 +88,57 @@ public class AxthrixUnits {
         //yin and yang tree
             spate, influx
             ;
+    // Steal from UAW which stole from Progressed Material which stole from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
+    private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
+            prov(CptrUnitEntity.class, CptrUnitEntity::new),
+    };
+
+    private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
+
+    /**
+     * Internal function to flatmap {@code Class -> Prov} into an {@link Entry}.
+     * @author GlennFolker
+     */
+    private static <T extends Entityc> Entry<Class<T>, Prov<T>> prov(Class<T> type, Prov<T> prov) {
+        Entry<Class<T>, Prov<T>> entry = new Entry<>();
+        entry.key = type;
+        entry.value = prov;
+        return entry;
+    }
+
+    /**
+     * Setups all entity IDs and maps them into {@link EntityMapping}.
+     * <p>
+     * Put this inside load()
+     * </p>
+     * @author GlennFolker
+     */
+    private static void setupID() {
+        for (
+                int i = 0,
+                j = 0,
+                len = EntityMapping.idMap.length;
+                i < len;
+                i++
+        ) {
+            if (EntityMapping.idMap[i] == null) {
+                idMap.put(types[j].key, i);
+                EntityMapping.idMap[i] = types[j].value;
+                if (++j >= types.length) break;
+            }
+        }
+    }
+
+    /**
+     * Retrieves the class ID for a certain entity type.
+     * @author GlennFolker
+     */
+    public static <T extends Entityc> int classID(Class<T> type) {
+        return idMap.get(type, -1);
+    }
 
     public static void load(){
+        setupID();
         quark = new AxUnitType("quark") {{
             localizedName = "[orange]Quark";
             description = """
@@ -2001,6 +2056,8 @@ public class AxthrixUnits {
                 }};
             }});
         }};
+
+        //special black hole tanks
         anagh = new AxUnitType("anagh") {{
             localizedName = "[purple]Anagh";
             description = """
@@ -2053,6 +2110,99 @@ public class AxthrixUnits {
                         color = Color.purple;
                     }});
 
+        }};
+        //assault helicopters
+        rai = new CopterUnitType("rai") {{
+            float unitRange = 28 * tilesize;
+            health = 450;
+            hitSize = 18;
+
+            speed = 2.5f;
+            accel = 0.04f;
+            drag = 0.016f;
+            rotateSpeed = 5.5f;
+
+            ammoType = new ItemAmmoType(Items.graphite);
+
+            circleTarget = true;
+            lowAltitude = true;
+            faceTarget = flying = true;
+            range = unitRange;
+
+            fallSpeed = 0.0015f;
+            spinningFallSpeed = 4;
+            fallSmokeY = -10f;
+            engineSize = 0;
+
+            targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.extinguisher, BlockFlag.repair, null};
+
+            constructor = CptrUnitEntity::new;
+            aiController = DynFlyingAI::new;
+
+            propeller.add(
+                    new Propeller("aj-short-blade") {{
+                        x = y = 0;
+                        rotorSpeed = -30f;
+                        bladeCount = 3;
+                        rotorTopSizeScl = 0.8f;
+                    }}
+            );
+        }};
+        //support airships
+        naji = new CopterUnitType("naji") {{
+            float unitRange = 28 * tilesize;
+            health = 450;
+            hitSize = 18;
+
+            speed = 2.5f;
+            accel = 0.04f;
+            drag = 0.016f;
+            rotateSpeed = 5.5f;
+
+            ammoType = new ItemAmmoType(Items.graphite);
+
+            circleTarget = true;
+            lowAltitude = true;
+            faceTarget = flying = true;
+            range = unitRange;
+
+            fallSpeed = 0.0015f;
+            spinningFallSpeed = 4;
+            fallSmokeY = -10f;
+
+            engineSize = 0;
+            constructor = CptrUnitEntity::new;
+            aiController = UnitHealerAi::new;
+
+            abilities.add(new SStatusFieldAbility(AxthrixStatus.chainHeal, 40f, 400f, 120));
+
+            float rotX = 41 * 0.25f;
+            float rotY = -4 * 0.25f;
+            float rotSpeed = 32f;
+            float layerOffset = -0.00009f;
+            float rotorScaling = 0.6f;
+            propeller.add(
+                    new Propeller("aj-short-blade-repair") {{
+                        topBladeName = "short-blade";
+                        x = -rotX;
+                        y = rotY;
+                        rotorSpeed = rotSpeed;
+                        rotorBlurSpeedMultiplier = 0.08f;
+                        bladeCount = 4;
+                        rotorLayer = layerOffset;
+                        rotorSizeScl = rotorTopSizeScl = rotorScaling;
+                    }},
+                    new Propeller("aj-short-blade-repair") {{
+                        topBladeName = "short-blade";
+                        x = rotX;
+                        y = rotY;
+                        rotorSpeed = rotSpeed;
+                        rotorBlurSpeedMultiplier = 0.08f;
+                        bladeCount = 4;
+                        rotorLayer = layerOffset;
+                        rotorSizeScl = rotorTopSizeScl = rotorScaling;
+                    }}
+            );
         }};
         //Special Flying Mount
         //amos,aymoss,amalik,anuvaha,ambuvahini,

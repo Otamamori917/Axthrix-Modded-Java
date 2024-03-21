@@ -17,7 +17,7 @@ import static mindustry.Vars.tilesize;
 public class SStatusFieldAbility extends Ability{
     public StatusEffect effect;
     public float duration = 60, reload = 100, range = 20;
-    public boolean onShoot = false, atNotShoot = false;
+    public boolean onShoot = false, atNotShoot = false, applyToSelf = true;
     public Effect applyEffect = Fx.none;
     public Effect activeEffect = Fx.overdriveWave;
     public float effectX, effectY;
@@ -54,6 +54,9 @@ public class SStatusFieldAbility extends Ability{
             if(!atNotShoot && unit.isShooting || !onShoot && !unit.isShooting){
                 Units.nearby(unit.team, unit.x, unit.y, range, other -> {
                     other.apply(effect, duration);
+                    if(!applyToSelf){
+                        unit.unapply(effect);
+                    }
                     applyEffect.at(other, parentizeEffects);
                 });  
                 float x = unit.x + Angles.trnsx(unit.rotation, effectY, effectX), y = unit.y + Angles.trnsy(unit.rotation, effectY, effectX);
