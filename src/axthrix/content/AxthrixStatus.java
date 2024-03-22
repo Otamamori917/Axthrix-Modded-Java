@@ -3,17 +3,19 @@ package axthrix.content;
 import arc.graphics.Color;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
+import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.abilities.SStatusFieldAbility;
 import axthrix.world.types.statuseffects.AbilityStatusEffect;
 import axthrix.world.types.statuseffects.StatusEffectStack;
 import axthrix.world.types.statuseffects.TriggerStatusEffect;
 import mindustry.entities.abilities.RepairFieldAbility;
+import mindustry.entities.abilities.StatusFieldAbility;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,chainHeal,
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,excert,chainExcert,
 
     //visual statuses
     standFx,bFx
@@ -119,11 +121,15 @@ public class AxthrixStatus {
             permanent = true;
         }};
 
-        chainHeal = new AbilityStatusEffect("chain-heal") {{
-            localizedName = "[green]Chain Heal";
-            description = "gives the ability to heal others and let them heal also";
+        excert = new AbilityStatusEffect("excert") {{
+            localizedName = "[green]Excert";
             permanent = false;
-            ability = new RepairFieldAbility(150,10, 60);
+        }};
+        chainExcert = new AbilityStatusEffect("chain-excert") {{
+            ability = new ChainHealAbility(excert,60,35,8*8);
+            ((AbilityStatusEffect)excert).ability = new ChainHealAbility(this,60,35,8*8);
+            localizedName = "[green]Chain Excert";
+            permanent = false;
         }};
     }
 }        

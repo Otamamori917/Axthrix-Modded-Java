@@ -72,22 +72,11 @@ public class AxthrixUnits {
             //Elemental Shuttles | leader |
                 aza,enzo,ashur,alaric,aldrich,
                 //TX
-                enrique,
-    //Raodon |3 trees|
-        //Assault Walker |Power|
-            asta,adira,allura,andrea,athena,
-        //Support Tank  |Wealth|
-            danu,dorit,duarte,dhanya,dhanashri,
-        //Specialist aircraft |Fame|
-            efim,estes,elmena,evdoxia,estanislao,
+                enrique;
     //Ikatusa |undetermined|
 
-    //Core Units |8 units|
+    //Core Units |4 units|
 
-    //Legends |undetermined|
-        //yin and yang tree
-            spate, influx
-            ;
     // Steal from UAW which stole from Progressed Material which stole from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(CptrUnitEntity.class, CptrUnitEntity::new),
@@ -2174,7 +2163,7 @@ public class AxthrixUnits {
             constructor = CptrUnitEntity::new;
             aiController = UnitHealerAi::new;
 
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.chainHeal, 40f, 400f, 120));
+            abilities.add(new ChainHealAbility(AxthrixStatus.chainExcert, 100f, 400f, 16*8));
 
             float rotX = 41 * 0.25f;
             float rotY = -4 * 0.25f;
@@ -2429,63 +2418,6 @@ public class AxthrixUnits {
                     new UnitEngine(-60,29,10,180+45),
                     new UnitEngine(60,29,10,270+45)
             );
-        }};
-        //legends
-        //yin and yang tree
-        spate = new UnitType("spate"){{//Todo Missile weapon
-           flying = true;
-           speed = 2f;
-           hitSize = 6f;
-           health = 340;
-           armor = 2f;
-           constructor = UnitEntity::create;
-           weapons.add(new Weapon("puw"){{
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = true;
-                reload = 10;
-                top = false;
-                heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }});
-
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedA, 160f, 140f, 100f){{
-                atNotShoot = true;
-            }});
-        }};
-        influx = new UnitType("influx"){{//Todo Cannon weapon
-           speed = 2f;
-           hitSize = 6f;
-           health = 340;
-           armor = 2f;
-           faceTarget = false;
-           crushDamage = 500f;
-           constructor = TankUnit::create;
-           weapons.add(new Weapon("puw"){{
-                rotate = true;
-                rotateSpeed = 3;
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
-                mirror = false;
-                reload = 10;
-                top = true;
-                heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }});
-
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.precludedX, 160f, 140f, 100){{
-                onShoot = true;
-            }});
         }};
         aza = new UnitType("aza")
         {{
