@@ -49,13 +49,7 @@ public class AxthrixUnits {
         //Ground
             //Assault Hovers |SubAtomic|
                 quark, electron, baryon, hadron, photon,
-                /*
-                quark: tri helix
-                electron: bendy homing bullet
-                baryon: Tri Helix, explode on contact
-                hadron: one bullets that explodes into two on contact
-                photon: wip
-                */
+
             //Support Walkers |Protect|
                 barrier, blockade, palisade, parapet, impediment,
             //Specialist Tanks |Energy/Gem|
@@ -310,7 +304,7 @@ public class AxthrixUnits {
                         lightningLength = 2;
                         lightningLengthRand = 8;
 
-                        lightningType = new BulletType(0.0001f, 0f){{
+                        lightningType = new BulletType(0.0001f, 0f) {{
                             lifetime = Fx.lightning.lifetime;
                             hitEffect = Fx.hitLancer;
                             despawnEffect = Fx.none;
@@ -2102,7 +2096,6 @@ public class AxthrixUnits {
         }};
         //assault helicopters
         rai = new CopterUnitType("rai") {{
-            float unitRange = 28 * tilesize;
             health = 450;
             hitSize = 18;
 
@@ -2116,30 +2109,55 @@ public class AxthrixUnits {
             circleTarget = true;
             lowAltitude = true;
             faceTarget = flying = true;
-            range = unitRange;
 
             fallSpeed = 0.0015f;
             spinningFallSpeed = 4;
             fallSmokeY = -10f;
             engineSize = 0;
 
-            targetFlags = new BlockFlag[]{BlockFlag.turret, BlockFlag.extinguisher, BlockFlag.repair, null};
+            targetFlags = new BlockFlag[]{BlockFlag.extinguisher, BlockFlag.repair, null};
 
             constructor = CptrUnitEntity::new;
             aiController = DynFlyingAI::new;
+
+            weapons.add(new Weapon(name + "-weapon"){{
+                shootY = 5f;
+                x = 1f;
+                y = 0f;
+                mirror = false;
+                reload = 6;
+                top = true;
+                heatColor =  Color.orange;
+                shoot.shotDelay = 18;
+                shoot.shots = 2;
+                bullet = new LightningBulletType(){{
+                    damage = 15;
+                    lightningLength = 15;
+                    lightningColor = Color.orange;
+                    collidesAir = true;
+                }};
+            }});
+            parts.add(new RegionPart("-blade"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        moveY = -2.25f;
+                        moveX = -2;
+                    }});
 
             propeller.add(
                     new Propeller("aj-short-blade") {{
                         x = y = 0;
                         rotorSpeed = -30f;
-                        bladeCount = 3;
+                        bladeCount = 4;
                         rotorTopSizeScl = 0.8f;
+                        rotorSizeScl = 1.4f;
                     }}
             );
         }};
         //support airships
         naji = new CopterUnitType("naji") {{
             float unitRange = 28 * tilesize;
+            outlines = false;
             health = 450;
             hitSize = 18;
 
@@ -2152,24 +2170,48 @@ public class AxthrixUnits {
 
             circleTarget = true;
             lowAltitude = true;
-            faceTarget = flying = true;
+            faceTarget = false;
+            flying = true;
             range = unitRange;
+            engineColor = Color.valueOf("4ea572");
+            engineSize = 0;
+            engines = Seq.with(new UnitEngine(0,-6.5f,2.5f,-90));
 
             fallSpeed = 0.0015f;
             spinningFallSpeed = 4;
             fallSmokeY = -10f;
 
-            engineSize = 0;
             constructor = CptrUnitEntity::new;
             aiController = UnitHealerAi::new;
 
             abilities.add(new ChainHealAbility(AxthrixStatus.chainExcert, 100f, 400f, 16*8));
 
-            float rotX = 41 * 0.25f;
-            float rotY = -4 * 0.25f;
+            weapons.add(new Weapon() {{
+                rotate = false;
+                reload = 120*10;
+                x = y = shootX = 0;
+                shootY = -10;
+                baseRotation = 180f;
+                shootCone = 360;
+                bullet = new BulletType(){{
+                    lifetime = 0;
+                    speed = 0;
+                    shootEffect = Fx.shootBig;
+                    spawnUnit = AxthrixDrones.ivy;
+                }};
+            }});
+
+            float rotX = 19f * 0.25f;
+            float rotY = -10f * 0.25f;
             float rotSpeed = 32f;
             float layerOffset = -0.00009f;
-            float rotorScaling = 0.6f;
+            float rotorScaling = 0.2f;
+            //small rotors
+            float rotXs = 10f * 0.25f;
+            float rotYs = 7f * 0.25f;
+            float rotSpeeds = 32f;
+            float layerOffsets = -0.00009f;
+            float rotorScalings = 0.18f;
             propeller.add(
                     new Propeller("aj-short-blade-repair") {{
                         topBladeName = "short-blade";
@@ -2181,15 +2223,36 @@ public class AxthrixUnits {
                         rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScaling;
                     }},
-                    new Propeller("aj-short-blade-repair") {{
+                    new Propeller("aj-short-turbine-repair") {{
                         topBladeName = "short-blade";
                         x = rotX;
                         y = rotY;
                         rotorSpeed = rotSpeed;
                         rotorBlurSpeedMultiplier = 0.08f;
-                        bladeCount = 4;
+                        bladeCount = 8;
                         rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScaling;
+                    }},
+                    //small rotors
+                    new Propeller("aj-short-blade-repair") {{
+                        topBladeName = "short-blade";
+                        x = -rotXs;
+                        y = rotYs;
+                        rotorSpeed = rotSpeeds;
+                        rotorBlurSpeedMultiplier = 0.08f;
+                        bladeCount = 3;
+                        rotorLayer = layerOffsets;
+                        rotorSizeScl = rotorTopSizeScl = rotorScalings;
+                    }},
+                    new Propeller("aj-short-turbine-repair") {{
+                        topBladeName = "short-blade";
+                        x = rotXs;
+                        y = rotYs;
+                        rotorSpeed = rotSpeeds;
+                        rotorBlurSpeedMultiplier = 0.08f;
+                        bladeCount = 6;
+                        rotorLayer = layerOffsets;
+                        rotorSizeScl = rotorTopSizeScl = rotorScalings;
                     }}
             );
         }};

@@ -11,11 +11,11 @@ import mindustry.world.meta.Stat;
 
 import java.util.HashMap;
 
-public class AbilityStatusEffect extends AxStatusEffect {
+public class StatusEffectAbility extends AxStatusEffect {
     public Ability ability;
     public boolean scaleAbility = false;
     HashMap<Unit,Ability> uAbilitys = new HashMap<>();
-    public AbilityStatusEffect(String name) {
+    public StatusEffectAbility(String name) {
         super(name);
         permanent = true;
         Events.run(EventType.Trigger.update,()->{

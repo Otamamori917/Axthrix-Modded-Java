@@ -4,12 +4,7 @@ import arc.graphics.Color;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
-import axthrix.world.types.abilities.SStatusFieldAbility;
-import axthrix.world.types.statuseffects.AbilityStatusEffect;
-import axthrix.world.types.statuseffects.StatusEffectStack;
-import axthrix.world.types.statuseffects.TriggerStatusEffect;
-import mindustry.entities.abilities.RepairFieldAbility;
-import mindustry.entities.abilities.StatusFieldAbility;
+import axthrix.world.types.statuseffects.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
@@ -104,15 +99,14 @@ public class AxthrixStatus {
             });
         }};
 
-        repent = new StatusEffectStack("repent"){{
-            color = color.yellow;
+        repent = new StackStatusEffect("repent"){{
+            color = Color.yellow;
             reloadMultiplier = 1.5f;
             charges = 15;
             show = false;
-            staticStat();
         }};
 
-        finalStand = new TriggerStatusEffect("final-stand"){{
+        finalStand = new StatusEffectTrigger("final-stand"){{
             localizedName = "[blue]Final Stand";
             description = "Protects you at low HP\n[orange]Activation Threshold[] \n>|[lightgray]30%[]| HP.\n[orange]Activation Invincibility Duration[] \n>|[lightgray]3[]| Seconds.";
             activationStatusFx = standFx;
@@ -121,13 +115,13 @@ public class AxthrixStatus {
             permanent = true;
         }};
 
-        excert = new AbilityStatusEffect("excert") {{
+        excert = new StatusEffectAbility("excert") {{
             localizedName = "[green]Excert";
             permanent = false;
         }};
-        chainExcert = new AbilityStatusEffect("chain-excert") {{
+        chainExcert = new StatusEffectAbility("chain-excert") {{
             ability = new ChainHealAbility(excert,60,35,8*8);
-            ((AbilityStatusEffect)excert).ability = new ChainHealAbility(this,60,35,8*8);
+            ((StatusEffectAbility)excert).ability = new ChainHealAbility(this,60,35,8*8);
             localizedName = "[green]Chain Excert";
             permanent = false;
         }};

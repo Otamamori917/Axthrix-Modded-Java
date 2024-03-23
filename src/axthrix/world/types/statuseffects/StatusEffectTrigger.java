@@ -6,14 +6,14 @@ import mindustry.content.StatusEffects;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 
-public class TriggerStatusEffect extends AxStatusEffect {
+public class StatusEffectTrigger extends AxStatusEffect {
     public boolean activationRepair = false;
     public StatusEffect activationStatusFx = AxthrixStatus.bFx;
     public float activationThreshold = 2, ActivationRepairAmount = 2,
     /*by percentage  1.25/75%  2/50%  3.333333333333/30%  4/25%  5/20%  6.66666666666/15%  10/10%*/
                  activationResistanceTime = 60;
 
-    public TriggerStatusEffect(String name) {super(name);}
+    public StatusEffectTrigger(String name) {super(name);}
 
     @Override
     public void update(Unit unit, float time) {

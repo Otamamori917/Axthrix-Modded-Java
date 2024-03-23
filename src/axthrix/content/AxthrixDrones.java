@@ -1,24 +1,25 @@
 package axthrix.content;
 
 import arc.graphics.Color;
+import arc.math.geom.Geometry;
 import axthrix.world.types.ai.AgressiveFlyingAi;
 import axthrix.world.types.bulletypes.SonicBulletType;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.BulletType;
-import mindustry.entities.bullet.FireBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.*;
+import axthrix.world.types.ai.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 
 public class AxthrixDrones {
     public static UnitType
+    //naji tree sentry
+    ivy,iris,clove,azalea,bramble,
     //watt
     wattFlame,wattIce,wattGround,wattAir,
     //kilowatt
@@ -33,6 +34,70 @@ public class AxthrixDrones {
     petawattFlame,petawattIce,petawattGround,petawattAir
             ;
     public static void load(){
+        ivy = new AmmoLifeTimeUnitType("ivy")
+        {{
+            localizedName = "[green]Ivy";
+            ammoCapacity = 500;
+            engineColor = Color.valueOf("4ea572");
+            aiController = SentriAI::new;
+            constructor = UnitEntity::create;
+
+            speed = accel = 0f;
+            drag = 0.1f;
+            flying = true;
+            isEnemy = false;
+            useUnitCap = false;
+            targetable = vulnerableWithPayloads = hittable = false;
+            itemCapacity = 10;
+            health = 200;
+            engineSize = -1;
+            canMend = true;
+            Weapon gunL = new Weapon(name + "-gun-r"){{
+                top = false;
+                rotate = false;
+                mirror = false;
+                alternate = true;
+                otherSide = 1;
+
+                x = 9.5f / 4f;
+                y = 22f / 4f;
+                shootX = -1f / 4f;
+                shootY = 6f / 4f;
+
+                reload = 6f;
+                recoil = 3f / 4f;
+                ejectEffect = Fx.casing1;
+                layerOffset = -0.1f;
+                bullet = new LaserBoltBulletType(3f, 23f){{
+                    lifetime = 80f;
+                    buildingDamageMultiplier = 0.3f;
+                    recoil = 0.1f;
+                    healPercent = 5f;
+                    collidesTeam = true;
+                    backColor = Pal.heal;
+                    frontColor = Color.white;
+                }};
+            }};
+            Weapon gunR = gunL.copy();
+            gunR.name = name + "-gun-l";
+            gunR.x *= -1;
+            gunR.shootX *= -1;
+            gunR.flipSprite = true;
+            gunR.otherSide = 0;
+
+            weapons.add(gunL, gunR);
+
+            parts.add(
+                    new RegionPart("-gun-rear"){{
+                        mirror = under = true;
+                        weaponIndex = 0;
+                        layerOffset = -0.1f;
+                    }});
+
+            for(int i = 0; i < 4; i++){
+                engines.add(new UnitEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
+            }
+        }};
         wattFlame = new AmmoLifeTimeUnitType("f-w")
         {{
             localizedName = "[orange]Sol[gray]|[]W";

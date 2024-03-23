@@ -1,6 +1,6 @@
 package axthrix.world.util;
 
-import axthrix.world.types.statuseffects.StatusEffectStack;
+import axthrix.world.types.statuseffects.StackStatusEffect;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
@@ -18,10 +18,10 @@ public class StackWorldState {
         SaveVersion.addCustomChunk("stackEffects", new SaveFileReader.CustomChunk() {
             @Override
             public void write(DataOutput stream) throws IOException {
-                int count = Vars.content.statusEffects().count(se -> se instanceof StatusEffectStack);
+                int count = Vars.content.statusEffects().count(se -> se instanceof StackStatusEffect);
                 stream.writeInt(count);
                 Vars.content.statusEffects().each(se -> {
-                    if (se instanceof StatusEffectStack st){
+                    if (se instanceof StackStatusEffect st){
                         try {
                             stream.writeInt(st.id);
                             stream.writeInt(st.unitCharges.size());
@@ -53,7 +53,7 @@ public class StackWorldState {
                     int statusEffId = stream.readInt();
                     int unitsize = stream.readInt();
                     StatusEffect status = Vars.content.statusEffects().find(se -> se.id == statusEffId);
-                    if (status instanceof StatusEffectStack st) {
+                    if (status instanceof StackStatusEffect st) {
                         st.unitTeam.clear();
                         st.unitTime.clear();
                         st.unitCharges.clear();

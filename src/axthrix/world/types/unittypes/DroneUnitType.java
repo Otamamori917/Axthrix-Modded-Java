@@ -52,7 +52,7 @@ public class DroneUnitType extends AxUnitType {
 
     public DroneUnitType(String name){
         super(name);
-        outlineColor = unitOutLine;
+        outlineColor = Color.valueOf("#181a1b");
         ammoType = new ItemAmmoType(Items.phaseFabric);
         researchCostMultiplier = 6f;
         generateIcons = false;

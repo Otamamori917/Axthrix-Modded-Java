@@ -1,5 +1,4 @@
 package axthrix.world.types.statuseffects;
-
 import arc.Events;
 import arc.math.Mathf;
 import arc.util.Time;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-public class StatusEffectStack extends AxStatusEffect {
+public class StackStatusEffect extends AxStatusEffect {
     public int charges = 1;
     public boolean setStatsInfinity = false;
     public HashMap<Unit, Integer> unitCharges = new HashMap<>();
@@ -27,26 +26,9 @@ public class StatusEffectStack extends AxStatusEffect {
     public Team newTeam = null;
     String localName = "";
 
-    public StatusEffectStack(String name)
+    public StackStatusEffect(String name)
     {
         super(name);
-    }
-
-    public void staticStat()
-    {
-        statsStatic.clear();
-        statsStatic.add(damageMultiplier);
-        statsStatic.add(healthMultiplier);
-        statsStatic.add(speedMultiplier);
-        statsStatic.add(reloadMultiplier);
-        statsStatic.add(buildSpeedMultiplier);
-        statsStatic.add(dragMultiplier);
-        damageMultiplier = 1;
-        healthMultiplier = 1;
-        speedMultiplier = 1;
-        reloadMultiplier = 1;
-        buildSpeedMultiplier = 1;
-        dragMultiplier = 1;
     }
 
     @Override
@@ -153,6 +135,20 @@ public class StatusEffectStack extends AxStatusEffect {
     @Override
     public void init()
     {
+        statsStatic.clear();
+        statsStatic.add(damageMultiplier);
+        statsStatic.add(healthMultiplier);
+        statsStatic.add(speedMultiplier);
+        statsStatic.add(reloadMultiplier);
+        statsStatic.add(buildSpeedMultiplier);
+        statsStatic.add(dragMultiplier);
+        damageMultiplier = 1;
+        healthMultiplier = 1;
+        speedMultiplier = 1;
+        reloadMultiplier = 1;
+        buildSpeedMultiplier = 1;
+        dragMultiplier = 1;
+
         super.init();
         localName = localizedName;
         Events.run(EventType.Trigger.update,()-> {
