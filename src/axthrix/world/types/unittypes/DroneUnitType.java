@@ -35,7 +35,7 @@ import axthrix.world.types.bulletypes.SpawnHelperBulletType;
 
 import static mindustry.Vars.*;
 
-public class DroneUnitType extends AxUnitType {
+public class DroneUnitType extends AmmoLifeTimeUnitType {
     /*Custom RTS commands*/
     public boolean canCircleTarget = false, canHealUnits = false, customMineAi = false, canGuardUnits  = false, canMend = false, canDeploy = false, constructHideDefault = false;
     /*Makes (legged) units boost automatically regardless of Ai*/

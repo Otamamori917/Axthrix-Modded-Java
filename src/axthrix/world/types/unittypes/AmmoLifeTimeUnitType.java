@@ -26,7 +26,7 @@ import axthrix.world.types.ai.MiningAi;
 import static mindustry.Vars.*;
 
 /*Unit that dies when it runs out of ammo, ammo Depletes over time*/
-public class AmmoLifeTimeUnitType extends  DroneUnitType {
+public class AmmoLifeTimeUnitType extends  AxUnitType {
     /*Custom logic to remove ammo over time*/
     public  boolean ammoDepletesOverTime = true;
     /*Custom logic to kill unit on no ammo*/
@@ -39,10 +39,10 @@ public class AmmoLifeTimeUnitType extends  DroneUnitType {
     /*mining depletes ammo*/
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
-    public float ammoDepletionOffset = 0f;
+    public float ammoDepletionOffset = 60f;
     float startTime;
     /*Being player controlled depletes ammo*/
-    public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
+    public boolean depleteOnInteraction = false, depleteOnInteractionUsesPassive = false;
     /*Deplete Ammo when over unit cap, Assumes ammoDepletesOverTime = true */
     public boolean overCapacityPenalty = false;
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
@@ -208,7 +208,6 @@ public class AmmoLifeTimeUnitType extends  DroneUnitType {
             u.lifetime(lifetime);
         }
         startTime = Time.time;
-        unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
     }
 

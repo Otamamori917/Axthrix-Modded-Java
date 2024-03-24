@@ -28,6 +28,7 @@ import axthrix.world.types.ai.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.*;
 import mindustry.content.*;
 import arc.func.Prov;
@@ -129,6 +130,7 @@ public class AxthrixUnits {
                           Quark Fires A Atomic Tri-helix.
                           """;
             constructor = ElevationMoveUnit::create;
+            ammoType = new PowerAmmoType(10);
             flying = false;
             speed = 8.3f/7.5f;
             drag = 0.13f;
@@ -208,6 +210,7 @@ public class AxthrixUnits {
                           Electron Fires a burst of super fast charged Particles.
                           """;
             constructor = ElevationMoveUnit::create;
+            ammoType = new PowerAmmoType(15);
             flying = false;
             speed = 7.9f/7.5f;
             drag = 0.13f;
@@ -339,6 +342,7 @@ public class AxthrixUnits {
                           Baryon Fires A Large Atomic Tri-helix, That Explodes Violently On Contact.
                           """;
             constructor = ElevationMoveUnit::create;
+            ammoType = new PowerAmmoType(30);
             flying = false;
             speed = 6.3f/7.5f;
             drag = 0.13f;
@@ -535,6 +539,7 @@ public class AxthrixUnits {
                           has 2 automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             constructor = ElevationMoveUnit::create;
+            ammoType = new ItemAmmoType(Items.silicon);
             flying = false;
             speed = 5.6f/7.5f;
             drag = 0.13f;
@@ -734,6 +739,7 @@ public class AxthrixUnits {
                     fragSpread = 0;
                     fragRandomSpread = 0;
                     fragBullet = new BasicBulletType(){{
+                        ammoMultiplier = 5;
                         speed = 0f;
                         keepVelocity = false;
                         collidesAir = false;
@@ -903,6 +909,7 @@ public class AxthrixUnits {
                           Has 2 Large automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             constructor = ElevationMoveUnit::create;
+            ammoType = new PowerAmmoType(50);
             flying = false;
             speed = 4f/7.5f;
             drag = 0.13f;
@@ -1340,14 +1347,15 @@ public class AxthrixUnits {
                           [green]Protects Allies with small but durable force field.
                           Barrier Fires A single Hostile Nanobot that deals DOT.
                           """;
-           speed = 0.55f;
-           hitSize = 6f;
-           health = 340;
-           armor = 2f;
-           canBoost = true;
-           boostMultiplier = 2.5f;
-           constructor = MechUnit::create;
-           factions.add(AxFactions.axthrix);
+            ammoType = new ItemAmmoType(Items.silicon);
+            speed = 0.55f;
+            hitSize = 6f;
+            health = 340;
+            armor = 2f;
+            canBoost = true;
+            boostMultiplier = 2.5f;
+            constructor = MechUnit::create;
+            factions.add(AxFactions.axthrix);
            weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.sap;
                 shootY = 2f;
@@ -1390,15 +1398,16 @@ public class AxthrixUnits {
                           [green]Heals Allies and Deals Great Damage at Medium range.
                           Blockade Fires Missiles containing Nanobots in quick succession.
                           """;
-           armor = 5f;
-           speed = 0.7f;
-           hitSize = 11f;
-           health = 650;
-           buildSpeed = 2f;
-           canBoost = true;
-           boostMultiplier = 1.5f;
-           constructor = MechUnit::create;
-           factions.add(AxFactions.axthrix);
+            ammoType = new ItemAmmoType(Items.silicon);
+            armor = 5f;
+            speed = 0.7f;
+            hitSize = 11f;
+            health = 650;
+            buildSpeed = 2f;
+            canBoost = true;
+            boostMultiplier = 1.5f;
+            constructor = MechUnit::create;
+            factions.add(AxFactions.axthrix);
 
             abilities.add(new ShieldArcAbility(){{
                 region = "aj-blockade-shield";
@@ -1446,6 +1455,7 @@ public class AxthrixUnits {
                 }});
 
                 bullet = new BasicBulletType(){{
+                    ammoMultiplier = 4;
                     speed = 0f;
                     keepVelocity = false;
                     collidesAir = false;
@@ -1508,6 +1518,7 @@ public class AxthrixUnits {
                           Palisade Fires A Wave of hostile Nanobots.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
+            ammoType = new ItemAmmoType(Items.silicon);
             armor = 12f;
             speed = 0.8f;
             hitSize = 13;
@@ -1612,6 +1623,7 @@ public class AxthrixUnits {
                           Has two double shot missile launchers.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
+            ammoType = new ItemAmmoType(Items.silicon);
             armor = 17f;
             speed = 0.70f;
             hitSize = 24f;
@@ -1744,6 +1756,7 @@ public class AxthrixUnits {
                     }});
                 }});
                 bullet = new BasicBulletType(){{
+                    ammoMultiplier = 6;
                     speed = 0f;
                     keepVelocity = false;
                     collidesAir = false;
@@ -1798,6 +1811,8 @@ public class AxthrixUnits {
                           Has a Short range Nanobot field for protection.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
+            ammoType = new ItemAmmoType(Items.silicon);
+            ammoCapacity = 1000;
             armor = 25f;
             speed = 0.60f;
             health = 14460;
@@ -1941,6 +1956,8 @@ public class AxthrixUnits {
                     }}
                 );
                 bullet = new BasicBulletType(){{
+                    ammoMultiplier = 10;
+                    displayAmmoMultiplier = false;
                     speed = 0f;
                     keepVelocity = false;
                     collidesAir = false;
@@ -2104,7 +2121,7 @@ public class AxthrixUnits {
             drag = 0.016f;
             rotateSpeed = 5.5f;
 
-            ammoType = new ItemAmmoType(Items.graphite);
+            ammoType = new PowerAmmoType(10);
 
             circleTarget = true;
             lowAltitude = true;
@@ -2165,8 +2182,9 @@ public class AxthrixUnits {
             accel = 0.04f;
             drag = 0.016f;
             rotateSpeed = 5.5f;
+            buildSpeed = 2f;
 
-            ammoType = new ItemAmmoType(Items.graphite);
+            ammoType = new ItemAmmoType(Items.silicon, 10);
 
             circleTarget = true;
             lowAltitude = true;
@@ -2190,36 +2208,38 @@ public class AxthrixUnits {
                 rotate = false;
                 reload = 120*10;
                 x = y = shootX = 0;
-                shootY = -10;
+                shootY = 10;
                 baseRotation = 180f;
                 shootCone = 360;
+
                 bullet = new BulletType(){{
                     lifetime = 0;
                     speed = 0;
-                    shootEffect = Fx.shootBig;
+                    shootSound = Sounds.release;
+                    soundPitchMax = soundPitchMin = 1.5f;
+                    shootEffect = Fx.none;
+                    smokeEffect = Fx.none;
                     spawnUnit = AxthrixDrones.ivy;
                 }};
             }});
 
             float rotX = 19f * 0.25f;
             float rotY = -10f * 0.25f;
-            float rotSpeed = 32f;
             float layerOffset = -0.00009f;
             float rotorScaling = 0.2f;
             //small rotors
             float rotXs = 10f * 0.25f;
             float rotYs = 7f * 0.25f;
-            float rotSpeeds = 32f;
             float layerOffsets = -0.00009f;
             float rotorScalings = 0.18f;
             propeller.add(
-                    new Propeller("aj-short-blade-repair") {{
+                    new Propeller("aj-short-turbine-repair") {{
                         topBladeName = "short-blade";
                         x = -rotX;
                         y = rotY;
-                        rotorSpeed = rotSpeed;
+                        rotorSpeed = 32;
                         rotorBlurSpeedMultiplier = 0.08f;
-                        bladeCount = 4;
+                        bladeCount = 8;
                         rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScaling;
                     }},
@@ -2227,20 +2247,20 @@ public class AxthrixUnits {
                         topBladeName = "short-blade";
                         x = rotX;
                         y = rotY;
-                        rotorSpeed = rotSpeed;
+                        rotorSpeed = -32;
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 8;
                         rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScaling;
                     }},
                     //small rotors
-                    new Propeller("aj-short-blade-repair") {{
+                    new Propeller("aj-short-turbine-repair") {{
                         topBladeName = "short-blade";
                         x = -rotXs;
                         y = rotYs;
-                        rotorSpeed = rotSpeeds;
+                        rotorSpeed = 32;
                         rotorBlurSpeedMultiplier = 0.08f;
-                        bladeCount = 3;
+                        bladeCount = 6;
                         rotorLayer = layerOffsets;
                         rotorSizeScl = rotorTopSizeScl = rotorScalings;
                     }},
@@ -2248,7 +2268,7 @@ public class AxthrixUnits {
                         topBladeName = "short-blade";
                         x = rotXs;
                         y = rotYs;
-                        rotorSpeed = rotSpeeds;
+                        rotorSpeed = -32;
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 6;
                         rotorLayer = layerOffsets;
@@ -2493,6 +2513,7 @@ public class AxthrixUnits {
             flying = true;
             hitSize = 2*2;
             engineColor = Color.valueOf("95abd9");
+            ammoType = new ItemAmmoType(Items.silicon, 20);
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;

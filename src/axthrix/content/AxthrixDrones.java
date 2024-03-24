@@ -5,7 +5,9 @@ import arc.math.geom.Geometry;
 import axthrix.world.types.ai.AgressiveFlyingAi;
 import axthrix.world.types.bulletypes.SonicBulletType;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
+import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.content.Fx;
+import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.RegionPart;
@@ -15,6 +17,8 @@ import axthrix.world.types.ai.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.type.ammo.ItemAmmoType;
+import mindustry.type.ammo.PowerAmmoType;
 
 public class AxthrixDrones {
     public static UnitType
@@ -37,7 +41,7 @@ public class AxthrixDrones {
         ivy = new AmmoLifeTimeUnitType("ivy")
         {{
             localizedName = "[green]Ivy";
-            ammoCapacity = 500;
+            ammoCapacity = 1200;
             engineColor = Color.valueOf("4ea572");
             aiController = SentriAI::new;
             constructor = UnitEntity::create;
@@ -47,34 +51,33 @@ public class AxthrixDrones {
             flying = true;
             isEnemy = false;
             useUnitCap = false;
+            ammoType = new PowerAmmoType(10);
             targetable = vulnerableWithPayloads = hittable = false;
-            itemCapacity = 10;
+            itemCapacity = 0;
             health = 200;
             engineSize = -1;
-            canMend = true;
             Weapon gunL = new Weapon(name + "-gun-r"){{
-                top = false;
-                rotate = false;
+                rotate = top = false;
                 mirror = false;
                 alternate = true;
                 otherSide = 1;
 
-                x = 9.5f / 4f;
-                y = 22f / 4f;
-                shootX = -1f / 4f;
-                shootY = 6f / 4f;
+                x = 4.75f / 4f;
+                y = 11f / 4f;
+                shootX = -0.5f / 4f;
+                shootY = 3f / 4f;
 
                 reload = 6f;
-                recoil = 3f / 4f;
+                recoil = 1.5f / 4f;
                 ejectEffect = Fx.casing1;
-                layerOffset = -0.1f;
-                bullet = new LaserBoltBulletType(3f, 23f){{
-                    lifetime = 80f;
-                    buildingDamageMultiplier = 0.3f;
-                    recoil = 0.1f;
-                    healPercent = 5f;
-                    collidesTeam = true;
-                    backColor = Pal.heal;
+                bullet = new LaserBoltBulletType(2f, 25f){{
+                    shootSound = Sounds.pulseBlast;
+                    soundPitchMax = soundPitchMin = 2;
+                    lifetime = 60f;
+                    width = 1f;
+                    height = 3.5f;
+                    recoil = 0.08f;
+                    backColor = Color.valueOf("4ea572");
                     frontColor = Color.white;
                 }};
             }};
@@ -84,21 +87,18 @@ public class AxthrixDrones {
             gunR.shootX *= -1;
             gunR.flipSprite = true;
             gunR.otherSide = 0;
+            parts.add(new RegionPart("-anchor"){{
+                mirror = false;
+                under = true;
+                layerOffset = 1f;
+                outlineLayerOffset = 1f;
+            }});
 
             weapons.add(gunL, gunR);
 
-            parts.add(
-                    new RegionPart("-gun-rear"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        layerOffset = -0.1f;
-                    }});
 
-            for(int i = 0; i < 4; i++){
-                engines.add(new UnitEngine(3f * Geometry.d8edge(i).x, 3f * Geometry.d8edge(i).y, 1.25f, i * 90f + 45f));
-            }
         }};
-        wattFlame = new AmmoLifeTimeUnitType("f-w")
+        wattFlame = new DroneUnitType("f-w")
         {{
             localizedName = "[orange]Sol[gray]|[]W";
             ammoCapacity = 500;
@@ -163,7 +163,7 @@ public class AxthrixDrones {
                 }};
             }});
         }};
-        wattIce = new AmmoLifeTimeUnitType("i-w")
+        wattIce = new DroneUnitType("i-w")
         {{
             localizedName = "[blue]Cyo[gray]|[]W";
             ammoCapacity = 500;
@@ -210,7 +210,7 @@ public class AxthrixDrones {
                 }};
             }});
         }};
-        wattGround = new AmmoLifeTimeUnitType("e-w")
+        wattGround = new DroneUnitType("e-w")
         {{
             localizedName = "[green]Grn[gray]|[]W";
             ammoCapacity = 500;
@@ -265,7 +265,7 @@ public class AxthrixDrones {
                 }};
             }});
         }};
-        wattAir = new AmmoLifeTimeUnitType("a-w")
+        wattAir = new DroneUnitType("a-w")
         {{
             localizedName = "[white]Eir[gray]|[]W";
             ammoCapacity = 500;
