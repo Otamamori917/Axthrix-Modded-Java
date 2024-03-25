@@ -1,7 +1,11 @@
 package axthrix.world.types.unittypes;
 
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.util.Strings;
 import arc.util.Tmp;
+import axthrix.content.AxStats;
+import axthrix.content.FX.AxthrixFfx;
 import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
@@ -11,9 +15,10 @@ import mindustry.ui.ItemImage;
 import mindustry.world.meta.Stat;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.recipes.RecipeGeneric;
+import mindustry.world.meta.StatUnit;
 
-public class CnSUnitType extends UnitType {
-  // Submarine stuff
+public class CnSUnitType extends AxUnitType {
+  // Stealth stuff
   public boolean cloaks = false;
   public float vulnerabilityTime = 60f;
 
@@ -27,6 +32,9 @@ public class CnSUnitType extends UnitType {
   @Override
   public void setStats() {
     super.setStats();
+    if (cloaks){
+      stats.add(AxStats.timeToCloak, vulnerabilityTime / 60f, StatUnit.seconds);
+    }
     if (recipe != null) {
       stats.add(Stat.input, t -> {
         for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack)).pad(3f);

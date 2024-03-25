@@ -23,9 +23,9 @@ public class AxthrixFfx{
 		return or == null ? effect : or;
 	}
 	
-	public static Effect circleOut(float lifetime, float radius, float thick){
+	public static Effect circleOut(float lifetime, float radius, float thick,Color color){
 		return new Effect(lifetime, radius * 2f, e -> {
-			Draw.color(e.color, Color.white, e.fout() * 0.7f);
+			Draw.color(color, Color.white, e.fout() * 0.7f);
 			Lines.stroke(thick * e.fout());
 			Lines.circle(e.x, e.y, radius * e.fin(Interp.pow3Out));
 		});

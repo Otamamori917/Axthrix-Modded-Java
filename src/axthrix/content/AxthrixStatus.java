@@ -23,7 +23,8 @@ public class AxthrixStatus {
         }};
         standFx = new StatusEffect("stand-trigger-vfx") {{
             color = Color.blue;
-            applyEffect = AxthrixFfx.circleOut(180, 30, 4);
+            applyEffect = AxthrixFfx.circleOut(180, 30, 4,Color.blue);
+            parentizeApplyEffect = true;
             show = false;
         }};
         vindicationI = new StatusEffect("vindicationI"){{

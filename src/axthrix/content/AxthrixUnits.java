@@ -1182,7 +1182,7 @@ public class AxthrixUnits {
                     pierceDamageFactor = 0.8f;
                     laserAbsorb = true;
 
-                    hitEffect = despawnEffect = AxthrixFfx.circleOut(4,30,10);
+                    hitEffect = despawnEffect = AxthrixFfx.circleOut(4,30,10,Color.white);
                     knockback = 2f;
                     splashDamageRadius = 60f;
                     splashDamage = 50f;
@@ -1199,7 +1199,7 @@ public class AxthrixUnits {
                     trailLength = 40;
                     trailInterval = 0.01f;
 
-                    trailEffect = AxthrixFfx.circleOut(6,10,5);
+                    trailEffect = AxthrixFfx.circleOut(6,10,5,Color.white);
 
                     homingPower = 1f;
                     homingDelay = 6f;
@@ -2113,10 +2113,17 @@ public class AxthrixUnits {
         }};
         //assault helicopters
         rai = new CopterUnitType("rai") {{
-            health = 450;
+            localizedName = "[orange]Rai";
+            description = """
+                          [orange]A Quick Helicopter, Rai is rather fast compared to other fliers but much less durable.
+                          Rai Has A Coil Up Tesla Weapon Needs to Ramp up to top Firerate and Cooldown to stop firing.
+                          """;
+            itemCapacity = 0;
+            factions.add(AxFactions.axthrix);
+            health = 250;
             hitSize = 18;
 
-            speed = 2.5f;
+            speed = 4.5f;
             accel = 0.04f;
             drag = 0.016f;
             rotateSpeed = 5.5f;
@@ -2138,20 +2145,22 @@ public class AxthrixUnits {
             aiController = DynFlyingAI::new;
 
             weapons.add(new Weapon(name + "-weapon"){{
-                shootY = 5f;
-                x = 1f;
+                shootY = 6f;
+                x = 0f;
                 y = 0f;
                 mirror = false;
                 reload = 6;
                 top = true;
                 heatColor =  Color.orange;
-                shoot.shotDelay = 18;
+                shoot.shotDelay = 30;
                 shoot.shots = 2;
                 bullet = new LightningBulletType(){{
                     damage = 15;
                     lightningLength = 15;
                     lightningColor = Color.orange;
                     collidesAir = true;
+                    shootSound = Sounds.spark;
+                    soundPitchMax = soundPitchMin = 1.2f;
                 }};
             }});
             parts.add(new RegionPart("-blade"){{
@@ -2173,12 +2182,19 @@ public class AxthrixUnits {
         }};
         //support airships
         naji = new CopterUnitType("naji") {{
+            localizedName = "[green]Naji";
+            description = """
+                          [green]A Slow Moving Airship, Naji Supports its allies With its Chain Healing.
+                          Naji Deploys an Ivy Sentry that defends the area its in for a short while.
+                          """;
+            itemCapacity = 40;
+            factions.add(AxFactions.axthrix);
             float unitRange = 28 * tilesize;
             outlines = false;
-            health = 450;
+            health = 300;
             hitSize = 18;
 
-            speed = 2.5f;
+            speed = 2f;
             accel = 0.04f;
             drag = 0.016f;
             rotateSpeed = 5.5f;
@@ -2192,6 +2208,7 @@ public class AxthrixUnits {
             flying = true;
             range = unitRange;
             engineColor = Color.valueOf("4ea572");
+            engineLayer = 0.05f;
             engineSize = 0;
             engines = Seq.with(new UnitEngine(0,-6.5f,2.5f,-90));
 
@@ -2222,15 +2239,14 @@ public class AxthrixUnits {
                     spawnUnit = AxthrixDrones.ivy;
                 }};
             }});
+            float layerOffset = -0.00009f;
 
             float rotX = 19f * 0.25f;
             float rotY = -10f * 0.25f;
-            float layerOffset = -0.00009f;
             float rotorScaling = 0.2f;
             //small rotors
             float rotXs = 10f * 0.25f;
             float rotYs = 7f * 0.25f;
-            float layerOffsets = -0.00009f;
             float rotorScalings = 0.18f;
             propeller.add(
                     new Propeller("aj-short-turbine-repair") {{
@@ -2261,7 +2277,7 @@ public class AxthrixUnits {
                         rotorSpeed = 32;
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 6;
-                        rotorLayer = layerOffsets;
+                        rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScalings;
                     }},
                     new Propeller("aj-short-turbine-repair") {{
@@ -2271,7 +2287,7 @@ public class AxthrixUnits {
                         rotorSpeed = -32;
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 6;
-                        rotorLayer = layerOffsets;
+                        rotorLayer = layerOffset;
                         rotorSizeScl = rotorTopSizeScl = rotorScalings;
                     }}
             );

@@ -99,7 +99,7 @@ public class HeatWaveAbility extends Ability{
 				timer = 0;
 				shootSound.at(rx, ry, 1 + Mathf.range(0.15f), 3);
 
-                AxthrixFfx.circleOut(16,range,damage/40).at(rx, ry, range, hitColor);
+                AxthrixFfx.circleOut(16,range,damage/40,hitColor).at(rx, ry, range);
 				for(Unit u : all){
 					for(ObjectFloatMap.Entry<StatusEffect> s : status.entries()){
 						u.apply(s.key, s.value);

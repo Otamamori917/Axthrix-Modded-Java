@@ -6,7 +6,7 @@ import mindustry.world.meta.StatCat;
 public class AxStats {
     public static Stat
     maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
-    grinderTier,pierceReduction,shield,maxShield
+    grinderTier,pierceReduction,shield,maxShield,timeToCloak
             ;
     public static void load()
     {
@@ -25,5 +25,6 @@ public class AxStats {
         pierceReduction = new Stat("pierceReduction",StatCat.general);
         shield = new Stat("shield",StatCat.function);
         maxShield = new Stat("maxShield",StatCat.function);
+        timeToCloak = new Stat("timeToCloak",StatCat.function);
     }
 }

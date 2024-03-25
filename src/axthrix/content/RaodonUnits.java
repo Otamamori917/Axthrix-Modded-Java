@@ -1,14 +1,19 @@
 package axthrix.content;
 
+import arc.graphics.Color;
+import arc.struct.Seq;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
 import axthrix.world.types.unittypes.CnSUnitType;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.*;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
+import mindustry.world.meta.BlockFlag;
 
 import static mindustry.Vars.tilesize;
 
@@ -28,10 +33,20 @@ public class RaodonUnits {
     public static void load(){
 
         efim = new CnSUnitType("efim") {{
+            localizedName = "[purple]Efim";
+            description = """
+                          [purple]A Stealthy Adversary, Efim Cloaks up and evades enemy defences.
+                          Efim Drops a small burst of 8 bombs.
+                          
+                          Efim due to is modules and compact size is very fragile, But its armor is reinforced.
+                          """;
+            itemCapacity = 0;
+            factions.add(AxFactions.raodon);
             cloaks = true;
-            vulnerabilityTime = 260;
-            float unitRange = 28 * tilesize;
-            health = 450;
+            vulnerabilityTime = 520;
+            outlines = false;
+            health = 80;
+            armor = 20;
             hitSize = 18;
 
             speed = 2.5f;
@@ -39,32 +54,55 @@ public class RaodonUnits {
             drag = 0.016f;
             rotateSpeed = 5.5f;
 
-            ammoType = new ItemAmmoType(Items.graphite);
-
             circleTarget = true;
             lowAltitude = true;
-            faceTarget = flying = true;
-            range = unitRange;
-
+            faceTarget = false;
+            flying = true;
             engineSize = 0;
             constructor = StealthUnit::new;
             aiController = DynFlyingAI::new;
 
+            engineColor = Color.valueOf("2d0827");
+            engineLayer = 0.1f;
+            engineSize = 0;
+            engines = Seq.with(new UnitEngine(0,-3f,2.5f,-90));
 
-            weapons.add(new Weapon("puw"){{
-                rotate = true;
-                rotateSpeed = 3;
-                shootY = 2f;
-                x = 1f;
-                y = 0f;
+            targetFlags = new BlockFlag[]{BlockFlag.unitAssembler,BlockFlag.core, null};
+
+
+            weapons.add(new Weapon(){{
+                x = y = 0f;
+                shootY = -5;
                 mirror = false;
-                reload = 10;
-                top = true;
-                heatColor = Pal.heal;
+                reload = 180f;
+                minShootVelocity = 0.01f;
+                shootSound = Sounds.none;
+                shoot.shots = 8;
+                shoot.shotDelay = 4;
                 bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
+                    sprite = "large-bomb";
+                    width = height = 60/4f;
+                    maxRange = 30f;
+                    ignoreRotation = true;
+                    shootEffect = smokeEffect = Fx.none;
+                    backColor = Color.valueOf("2d0827");
+                    frontColor = Color.white;
+                    hitSound = Sounds.explosion;
+                    shootCone = 180f;
+                    ejectEffect = Fx.none;
+
+                    collidesAir = false;
+
+                    lifetime = 45f;
+                    despawnEffect = Fx.none;
+                    hitEffect = Fx.explosion;
+                    keepVelocity = false;
+                    spin = 2f;
+                    shrinkX = shrinkY = 0.7f;
+                    speed = 0f;
+                    collides = false;
+                    splashDamage = 55f;
+                    splashDamageRadius = 20;
                 }};
             }});
         }};
