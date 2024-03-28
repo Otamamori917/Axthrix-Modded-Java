@@ -5,7 +5,6 @@ import arc.util.*;
 import axthrix.content.blocks.axthrix.AxthrixCrafters;
 import axthrix.content.blocks.axthrix.AxthrixTurrets;
 import axthrix.content.units.*;
-import axthrix.world.util.stats.AxStats;
 import axthrix.world.util.StackWorldState;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;

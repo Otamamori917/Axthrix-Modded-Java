@@ -3,22 +3,19 @@ package axthrix.content.blocks.axthrix;
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
 import axthrix.world.types.block.production.AxMulticrafter;
-import axthrix.world.types.block.production.PayloadProducer;
 import mindustry.content.*;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
 import mindustry.world.Block;
 import multicraft.*;
 
-import static axthrix.content.blocks.BlocksPayload.basic1mCaliber;
-import static axthrix.content.blocks.BlocksPayload.empty1mCaliber;
 import static mindustry.type.ItemStack.with;
 
 public class AxthrixCrafters {
 	public static Block placeholder,
 
     //multicrafters
-    centrifugalAccelerator,caliberPress,caliberCrafter;
+    centrifugalAccelerator;
 
     public static void load() {
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
@@ -65,44 +62,6 @@ public class AxthrixCrafters {
 					);
 			craftEffect = Fx.bubble;
 		}};
-
-		caliberPress = new PayloadProducer("shell-press"){{
-			requirements(Category.crafting, with(
-					Items.copper, 75,
-					Items.lead, 100,
-					Items.titanium, 100,
-					Items.silicon, 80
-			));
-
-			size = 5;
-			ambientSound = Sounds.machine;
-			recipes(
-					empty1mCaliber
-			);
-			recipes.each(r -> r.centerBuild = true);
-			setRecipeProductionStats();
-		}};
-
-		caliberCrafter = new PayloadProducer("caliber-crafter"){{
-			requirements(Category.crafting, with(
-					Items.copper, 350,
-					Items.lead, 250,
-					Items.silicon, 220,
-					Items.plastanium, 160,
-					Items.thorium, 110
-			));
-
-			size = 5;
-			hideDetails = false;
-			ambientSound = Sounds.machine;
-			liquidCapacity = 80f;
-			recipes(
-					basic1mCaliber
-			);
-			recipes.get(1).liquidRequirements = new LiquidStack(Liquids.slag, 40f);
-			setRecipeProductionStats();
-		}};
-
     }
 }
 
