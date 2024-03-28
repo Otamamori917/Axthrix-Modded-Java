@@ -3,7 +3,6 @@ package axthrix.content.blocks.axthrix;
 import axthrix.content.AxFactions;
 
 import axthrix.content.AxthrixStatus;
-import axthrix.world.types.block.defense.SingularPayloadAmmoTurret;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.block.defense.AcceleratedTurret;
@@ -21,7 +20,6 @@ import mindustry.type.unit.MissileUnitType;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 
-import static axthrix.content.blocks.BlocksPayload.basic1mCaliber;
 import static mindustry.type.ItemStack.*;
 
 public class AxthrixTurrets{
@@ -41,11 +39,7 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, aratiri,
-
-    //payload
-
-    apexus;
+    nado, aratiri;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
