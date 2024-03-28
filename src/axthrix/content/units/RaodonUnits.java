@@ -1,7 +1,8 @@
-package axthrix.content;
+package axthrix.content.units;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
+import axthrix.content.AxFactions;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
 import axthrix.world.types.unittypes.CnSUnitType;

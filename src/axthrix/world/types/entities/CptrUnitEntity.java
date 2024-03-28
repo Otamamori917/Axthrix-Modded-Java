@@ -1,6 +1,6 @@
 package axthrix.world.types.entities;
 
-import axthrix.content.AxthrixUnits;
+import axthrix.content.units.AxthrixUnits;
 import axthrix.world.types.unittypes.*;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.parts.Propeller.PropellerMount;

@@ -1,7 +1,8 @@
-package axthrix.content;
+package axthrix.content.units;
 
 import arc.graphics.Color;
 import arc.math.geom.Geometry;
+import axthrix.content.AxthrixStatus;
 import axthrix.world.types.ai.AgressiveFlyingAi;
 import axthrix.world.types.bulletypes.SonicBulletType;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;

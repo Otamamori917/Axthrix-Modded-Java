@@ -1,12 +1,15 @@
-package axthrix.content.blocks;
+package axthrix.content.blocks.axthrix;
 
 import axthrix.content.AxFactions;
 
+import axthrix.content.AxthrixStatus;
+import axthrix.world.types.block.defense.SingularPayloadAmmoTurret;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.block.defense.AcceleratedTurret;
 import axthrix.world.types.block.defense.AxItemTurret;
 import mindustry.content.*;
+import mindustry.entities.UnitSorts;
 import mindustry.gen.*;
 import arc.graphics.*;
 import arc.math.*;
@@ -14,9 +17,11 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.unit.MissileUnitType;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 
+import static axthrix.content.blocks.BlocksPayload.basic1mCaliber;
 import static mindustry.type.ItemStack.*;
 
 public class AxthrixTurrets{
@@ -36,10 +41,18 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, aratiri;
+    nado, aratiri,
+
+    //payload
+
+    apexus;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{
+            localizedName = "Kramola";
+            description = """
+                          Homing Minigun MK1
+                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 60f;
@@ -70,7 +83,7 @@ public class AxthrixTurrets{
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 15f;
                     homingPower = 4f;
-                    homingRange = 50;
+                    homingRange = 200;
                     homingDelay = 40f;
                     width = 2f;
                     height = 4f;
@@ -91,6 +104,10 @@ public class AxthrixTurrets{
 
 
         razdor = new AcceleratedTurret("razdor"){{
+            localizedName = "Kramola";
+            description = """
+                          Homing Minigun MK2
+                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 60f;
@@ -123,7 +140,7 @@ public class AxthrixTurrets{
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 30f;
                     homingPower = 4f;
-                    homingRange = 50;
+                    homingRange = 200;
                     homingDelay = 40f;
                     width = 3f;
                     height = 6f;
@@ -142,6 +159,10 @@ public class AxthrixTurrets{
 
 
         smuta = new AcceleratedTurret("smuta"){{
+            localizedName = "Kramola";
+            description = """
+                          Homing Minigun MK3
+                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 60f;
@@ -174,7 +195,7 @@ public class AxthrixTurrets{
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 45f;
                     homingPower = 4f;
-                    homingRange = 50;
+                    homingRange = 200;
                     homingDelay = 40f;
                     width = 4f;
                     height = 8f;
@@ -193,6 +214,10 @@ public class AxthrixTurrets{
         }};
 
         kisten = new AxItemTurret("kisten"){{
+            localizedName = "Kisten";
+            description = """
+                          Biblically Accurate Rocket Launcher
+                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
             buildCostMultiplier = 0.1f;
@@ -425,6 +450,10 @@ public class AxthrixTurrets{
         }};
 
         aratiri = new AcceleratedTurret("aratiri"){{
+            localizedName = "Aratiri";
+            description = """ 
+                          ThunderBolt Minigun 
+                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
             acceleratedDelay = 20f;
@@ -450,12 +479,63 @@ public class AxthrixTurrets{
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
             ammo(
-                Items.surgeAlloy, new BoltBulletType(50, Pal.surge){{
+                Items.surgeAlloy, new BoltBulletType(500, Pal.surge){{
                     boltLength = 30;
                     boltLengthRand = 20;    
                 }}
             );
             inaccuracy = 0f;
         }};
+        /*apexus = new SingularPayloadAmmoTurret("apexus"){{
+            localizedName = "Apexus";
+            description = """ 
+                          Engineered by Axthrix, Apexus is a large Payload cannon. 
+                          Has a variety of Payload ammunition types, this formidable weapon unleashes devastating high velocity 1m rounds. 
+                          Axthrix's precision craftsmanship shines through in every aspect of Apexus.
+                          """;
+            requirements(Category.turret, with(
+                    Items.copper, 150,
+                    Items.graphite, 300,
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            ammo(
+                    basic1mCaliber, new BasicBulletType(){{
+                        speed = 20f;
+                        drag = 0.5f;
+                        knockback = pierceCap = 4;
+                        damage = 600;
+                        splashDamageRadius = 40;
+                        splashDamage = 400;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        laserAbsorb = false;
+                        shootEffect = Fx.shootPayloadDriver;
+                        smokeEffect = Fx.shootBigSmoke2;
+                        hitEffect = despawnEffect = Fx.bigShockwave;
+                        destroyEffect = Fx.blockExplosionSmoke;
+                    }}
+            );
+
+            size = 5;
+            hideDetails = false;
+            scaledHealth = 180;
+            reload = 2f * 60f;
+            setWarmupTime(1.5f);
+            shootCone = 1f;
+            shootY = 0f;
+            range = 800f;
+            recoil = 0.5f;
+            rotateSpeed = 0.9f;
+            shootSound = Sounds.missileLaunch;
+            shootEffect = Fx.shootBig;
+            smokeEffect = Fx.shootSmokeMissile;
+
+            unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
+            limitRange();
+            setUsers();
+        }};*/
     }
 }

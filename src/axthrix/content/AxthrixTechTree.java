@@ -1,6 +1,7 @@
 package axthrix.content;
 
 import arc.Events;
+import axthrix.content.units.AxthrixUnits;
 import mindustry.Vars;
 import mindustry.game.EventType;
 import axthrix.world.teamResearch;
@@ -13,7 +14,7 @@ import static mindustry.content.TechTree.nodeRoot;
 public class AxthrixTechTree {
     public static void load()
     {
-        AxPlanets.Tharaxia.techTree = nodeRoot("Vercilus",AxPlanets.Tharaxia,() -> {
+        AxPlanets.Tharaxia.techTree = nodeRoot("Tharaxia",AxPlanets.Tharaxia,() -> {
             node(AxFactions.axthrix.icon);
             node(AxFactions.raodon.icon);
             node(AxFactions.ikatusa.icon);

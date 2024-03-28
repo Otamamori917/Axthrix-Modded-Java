@@ -1,54 +1,16 @@
-package axthrix.content;
+package axthrix.content.units;
 
 import arc.func.Prov;
-import arc.graphics.Blending;
-import arc.graphics.Color;
-import arc.math.Interp;
-import arc.math.Mathf;
-import arc.math.geom.Rect;
 import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap.Entry;
-import arc.struct.Seq;
-import arc.util.Time;
-import axthrix.content.FX.AxthrixFfx;
-import axthrix.world.types.abilities.AttractionFieldAbility;
-import axthrix.world.types.abilities.HeatWaveAbility;
-import axthrix.world.types.abilities.NanobotStormAbility;
 import axthrix.world.types.abilities.SStatusFieldAbility;
-import axthrix.world.types.ai.DynFlyingAI;
-import axthrix.world.types.ai.UnitHealerAi;
-import axthrix.world.types.bulletypes.SpawnHelperBulletType;
-import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
-import axthrix.world.types.parts.Propeller;
-import axthrix.world.types.unittypes.AxUnitType;
-import axthrix.world.types.unittypes.CopterUnitType;
-import axthrix.world.types.unittypes.MountUnitType;
-import axthrix.world.types.weapontypes.WeaponHelix;
-import blackhole.entities.part.BlackHolePart;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.StatusEffects;
-import mindustry.entities.abilities.ForceFieldAbility;
-import mindustry.entities.abilities.MoveEffectAbility;
-import mindustry.entities.abilities.ShieldArcAbility;
+import axthrix.content.AxthrixStatus;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.ExplosionEffect;
-import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.part.*;
-import mindustry.entities.pattern.ShootAlternate;
 import mindustry.gen.*;
-import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
-import mindustry.type.unit.MissileUnitType;
-import mindustry.world.meta.BlockFlag;
-
-import static mindustry.Vars.tilePayload;
-import static mindustry.Vars.tilesize;
-import static mindustry.content.StatusEffects.shocked;
 
 public class LegendUnits {
     public static UnitType
