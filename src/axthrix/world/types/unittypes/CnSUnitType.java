@@ -4,7 +4,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.util.Strings;
 import arc.util.Tmp;
-import axthrix.content.AxStats;
+import axthrix.world.util.AxStats;
 import axthrix.content.FX.AxthrixFfx;
 import mindustry.Vars;
 import mindustry.game.Team;

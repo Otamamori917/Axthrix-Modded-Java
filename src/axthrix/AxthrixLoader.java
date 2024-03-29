@@ -9,15 +9,24 @@ import axthrix.world.util.StackWorldState;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
+import axthrix.world.util.*;
 
 import axthrix.content.*;
+
+import static arc.Core.app;
+import static mindustry.Vars.headless;
 
 public class AxthrixLoader extends Mod{
 
     public AxthrixLoader(){
-        Log.info("Loaded constructor.");
+        super();
+        Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
+            if(!headless){
+                AxShaders.init();
+                //AxSounds.load();
+            }
+        }));
     }
-
     @Override
     public void loadContent(){
         Log.info("Loading Axthrix content");

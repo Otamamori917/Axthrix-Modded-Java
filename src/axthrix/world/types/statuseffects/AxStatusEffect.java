@@ -4,7 +4,7 @@ import arc.struct.Seq;
 import arc.util.Time;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
-import axthrix.content.AxStats;
+import axthrix.world.util.AxStats;
 
 import java.util.HashMap;
 

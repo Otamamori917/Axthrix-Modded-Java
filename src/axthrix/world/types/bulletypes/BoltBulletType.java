@@ -2,7 +2,7 @@ package axthrix.world.types.bulletypes;
 
 import arc.graphics.*;
 import arc.math.*;
-import axthrix.util.*;
+import axthrix.world.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;

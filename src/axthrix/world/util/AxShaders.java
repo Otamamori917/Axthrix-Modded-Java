@@ -65,7 +65,7 @@ public class AxShaders {
         public float alpha = 1f;
 
         AlphaShader(){
-            super("screenspace", "postalpha");
+            super("screenspace", "postalphai");
         }
 
         @Override

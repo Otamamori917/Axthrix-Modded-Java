@@ -10,7 +10,7 @@ import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import axthrix.content.AxStats;
+import axthrix.world.util.AxStats;
 
 import java.util.HashMap;
 import java.util.List;
