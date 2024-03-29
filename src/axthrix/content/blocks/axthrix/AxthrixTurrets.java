@@ -39,7 +39,10 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, aratiri;
+    nado, aratiri,
+
+    //payload
+    apexus;
 
     public static void load(){
         kramola = new AcceleratedTurret("kramola"){{

@@ -1,4 +1,4 @@
-package axthrix.content;
+package axthrix.world.util;
 
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatCat;
@@ -6,7 +6,7 @@ import mindustry.world.meta.StatCat;
 public class AxStats {
     public static Stat
     maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
-    grinderTier,pierceReduction,shield,maxShield,timeToCloak
+    grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used
             ;
     public static void load()
     {
@@ -26,5 +26,9 @@ public class AxStats {
         shield = new Stat("shield",StatCat.function);
         maxShield = new Stat("maxShield",StatCat.function);
         timeToCloak = new Stat("timeToCloak",StatCat.function);
+        recipes = new Stat("recipes", StatCat.crafting);
+        producer = new Stat("producer", StatCat.crafting);
+        produce = new Stat("produce", StatCat.crafting);
+        used = new Stat("used", StatCat.crafting);
     }
 }

@@ -1,4 +1,4 @@
-package axthrix.util;
+package axthrix.world.util;
 
 import arc.math.Mathf;
 import mindustry.gen.Iconc;
