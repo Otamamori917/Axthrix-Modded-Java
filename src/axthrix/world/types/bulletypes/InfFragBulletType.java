@@ -2,8 +2,7 @@ package axthrix.world.types.bulletypes;
 
 import arc.math.*;
 import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Time;
+import arc.util.*;
 import axthrix.*;
 import axthrix.AxthrixLoader.BulletData;
 import mindustry.ai.types.MissileAI;
@@ -22,6 +21,13 @@ import static mindustry.gen.Groups.bullet;
 public class InfFragBulletType extends BasicBulletType {
     protected static Rand fragRand = new Rand();
 
+    /** If true, allow kill shooter bullets to spawn. */
+    public boolean allowKillShooter = false;
+
+    {
+        despawnHit = true;
+    }
+
     @Override
     public void init(Bullet b){
         super.init(b);
@@ -30,14 +36,26 @@ public class InfFragBulletType extends BasicBulletType {
 
     @Override
     public void createFrags(Bullet b, float x, float y){
+        Log.info("fragification");
         if((fragOnAbsorb || !b.absorbed)){
             fragRand.setSeed((long)b.fdata);
             for(int i = 0; i < fragBullets; i++){
                 float len = Mathf.random(1f, 7f);
                 float a = b.rotation() + Mathf.range(fragRandomSpread / 2) + fragAngle + ((i - fragBullets/2) * fragSpread);
-                AxthrixLoader.allBullets.random(fragRand).bulletType.create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
+                getBullet().create(b, x + Angles.trnsx(a, len), y + Angles.trnsy(a, len), a, Mathf.random(fragVelocityMin, fragVelocityMax), Mathf.random(fragLifeMin, fragLifeMax));
             }
             b.fdata = fragRand.seed0;
         }
+    }
+
+    protected BulletType getBullet(){
+        BulletType type = AxthrixLoader.allBullets.random(fragRand).bulletType;
+        if(allowKillShooter) return type;
+
+        while(type.killShooter){
+            type = AxthrixLoader.allBullets.random(fragRand).bulletType;
+        }
+
+        return type;
     }
 }

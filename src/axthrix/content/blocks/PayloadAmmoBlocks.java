@@ -2,6 +2,7 @@ package axthrix.content.blocks;
 
 import arc.graphics.Color;
 import arc.struct.Seq;
+import arc.util.*;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
@@ -464,8 +465,6 @@ public class PayloadAmmoBlocks {
             outlinedIcon = 0;
 
             if(AxthrixLoader.funibullet){
-                explosionArea = 0;
-                explosions = 1;
                 explosionBullet = new InfFragBulletType(){{
                     var CoLor = Color.gray;
                     lifetime = AxUtil.GetRange(20f,100);
@@ -485,6 +484,7 @@ public class PayloadAmmoBlocks {
                     trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
                     trailRotation = true;
                     fragBullets = 12;
+                    allowKillShooter = true;
                 }};
             }else {
                 explosionArea = 100;
