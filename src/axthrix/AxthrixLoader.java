@@ -53,6 +53,10 @@ public class AxthrixLoader extends Mod{
                 Mods.LoadedMod aj = mods.locateMod("aj");
                 Func<String, String> getModBundle = value -> bundle.get("mod." + aj.meta.name + "." + value);
             }
+
+            if(funibullet){
+                setupEveryBullets(null); //It having a chance to frag into itself will be really funny
+            }
         });
     }
     @Override

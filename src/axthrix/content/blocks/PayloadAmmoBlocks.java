@@ -485,7 +485,6 @@ public class PayloadAmmoBlocks {
                     trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
                     trailRotation = true;
                     fragBullets = 12;
-                    FragList = AxthrixLoader.allBullets;
                 }};
             }else {
                 explosionArea = 100;

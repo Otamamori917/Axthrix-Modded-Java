@@ -753,7 +753,6 @@ public class AxthrixTurrets{
                     trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
                     trailRotation = true;
                     fragBullets = 12;
-                    FragList = AxthrixLoader.allBullets;
                 }});
                 }
             size = 5;
