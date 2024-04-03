@@ -5,12 +5,13 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.statuseffects.*;
+import mindustry.entities.abilities.ArmorPlateAbility;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,excert,chainExcert,
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,excert,chainExcert,slivered,
 
     //visual statuses
     standFx,bFx
@@ -125,6 +126,20 @@ public class AxthrixStatus {
             ((StatusEffectAbility)excert).ability = new ChainHealAbility(this,60,35,8*8);
             localizedName = "[green]Chain Excert";
             permanent = false;
+        }};
+        slivered = new StatusEffectAbility("slivered"){{
+            localizedName = "[#9d98ab]Sli[#8b8696]ver[#7c7887]ed";
+            description = """
+                          [#9d98ab]Dan[#8b8696]ger[#7c7887]ous [#9d98ab]ele[#8b8696]men[#7c7887]ts [#9d98ab]a[#8b8696]r[#7c7887]e [#9d98ab]co[#8b8696]at[#7c7887]ed [#9d98ab]on[#8b8696]t[#7c7887]o [#9d98ab]eff[#8b8696]ect[#7c7887]ed [#9d98ab]ta[#8b8696]rg[#7c7887]et [#9d98ab]wea[#8b8696]ken[#7c7887]ing [#9d98ab]th[#8b8696]ei[#7c7887]r [#9d98ab]ar[#8b8696]mo[#7c7887]r
+                          [#9d98ab]c[#8b8696]a[#7c7887]n [#9d98ab]al[#8b8696]s[#7c7887]o [#9d98ab]pro[#8b8696]te[#7c7887]ct [#9d98ab]th[#8b8696]e[#7c7887]m [#9d98ab]un[#8b8696]de[#7c7887]r [#9d98ab]cer[#8b8696]ta[#7c7887]in                    [#9d98ab]circu[#8b8696]msta[#7c7887]nces
+                          """;
+
+            show = true;
+            healthMultiplier = 0.1f;
+            permanent = false;
+            ability = new ArmorPlateAbility(){{
+                healthMultiplier = 0.6f;
+            }};
         }};
     }
 }        

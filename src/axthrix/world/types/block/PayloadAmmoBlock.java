@@ -47,6 +47,9 @@ public class PayloadAmmoBlock extends Block{
         researchCostMultiplier = 5f;
         solid = true;
         update = true;
+        rotate = true;
+        rotateDraw = true;
+        lockRotation = false;
         hasShadow = false;
         rebuildable = false;
         drawDisabled = false;

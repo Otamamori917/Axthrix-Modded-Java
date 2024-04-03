@@ -546,7 +546,7 @@ public class AxthrixUnits {
             speed = 5.6f/7.5f;
             drag = 0.13f;
             hitSize = 34f;
-            health = 22400;
+            health = 13200;
             armor = 24;
             accel = 0.6f;
             rotateSpeed = 3.3f;

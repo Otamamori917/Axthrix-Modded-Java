@@ -1,0 +1,506 @@
+package axthrix.world.types.weapontypes;
+
+import arc.*;
+import arc.audio.*;
+import arc.func.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.*;
+import axthrix.world.types.block.defense.MultiTurretType;
+import axthrix.world.types.weapontypes.mounts.BlockWeaponMount;
+import mindustry.ai.types.*;
+import mindustry.audio.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
+import mindustry.entities.units.*;
+import mindustry.game.Team;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.world.Block;
+import mindustry.world.blocks.defense.turrets.BaseTurret;
+import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.meta.*;
+
+import javax.swing.text.html.parser.Entity;
+
+import static mindustry.Vars.headless;
+import static mindustry.Vars.state;
+
+public class BlockWeapon implements Cloneable{
+    /** displayed weapon region */
+    public String name;
+    /** bullet shot */
+    public BulletType bullet = Bullets.placeholder;
+    /** shell ejection effect */
+    public Effect ejectEffect = Fx.none;
+    /** If true, this weapon cannot be used to attack targets. */
+    public boolean noAttack = false;
+    /** whether weapon should appear in the stats of a unit with this weapon */
+    public boolean display = true;
+    /** whether to consume ammo when ammo is enabled in rules */
+    public boolean useAmmo = true;
+    /** whether to create a flipped copy of this weapon upon initialization. default: true */
+    public boolean mirror = true;
+    /** whether to flip the weapon's sprite when rendering. internal use only - do not set! */
+    public boolean flipSprite = false;
+    /** whether to shoot the weapons in different arms one after another, rather than all at once; only valid when mirror = true */
+    public boolean alternate = true;
+    /** whether to rotate toward the target independently of unit */
+    public boolean rotate = false;
+    /** Whether to show the sprite of the weapon in the database. */
+    public boolean showStatSprite = true;
+    /** rotation at which this weapon starts at. TODO buggy!*/
+    public float baseRotation = 0f;
+    /** whether to draw the outline on top. */
+    public boolean top = true;
+    /** whether to hold the bullet in place while firing; it will still require reload. */
+    public boolean continuous;
+    /** whether this weapon uses continuous fire without reloading; implies continuous = true */
+    public boolean alwaysContinuous;
+    /** whether this weapon can be aimed manually by players */
+    public boolean controllable = true;
+    /** whether this weapon can be automatically aimed by the unit */
+    public boolean aiControllable = true;
+    /** whether this weapon is always shooting, regardless of targets ore cone */
+    public boolean alwaysShooting = false;
+    /** whether to automatically target relevant units in update(); only works when controllable = false. */
+    public boolean autoTarget = false;
+    /** whether to perform target trajectory prediction */
+    public boolean predictTarget = true;
+    /** if true, this weapon is used for attack range calculations */
+    public boolean useAttackRange = true;
+    /** ticks to wait in-between targets */
+    public float targetInterval = 40f, targetSwitchInterval = 70f;
+    /** rotation speed of weapon when rotation is enabled, in degrees/t*/
+    public float rotateSpeed = 20f;
+    /** weapon reload in frames */
+    public float reload = 1;
+    /** inaccuracy of degrees of each shot */
+    public float inaccuracy = 0f;
+    /** intensity and duration of each shot's screen shake */
+    public float shake = 0f;
+    /** visual weapon knockback. */
+    public float recoil = 1.5f;
+    /** Number of additional counters for recoil. */
+    public int recoils = -1;
+    /** time taken for weapon to return to starting position in ticks. uses reload time by default */
+    public float recoilTime = -1f;
+    /** power curve applied to visual recoil */
+    public float recoilPow = 1.8f;
+    /** ticks to cool down the heat region */
+    public float cooldownTime = 20f;
+    /** projectile/effect offsets from center of weapon */
+    public float shootX = 0f, shootY = 3f;
+    /** offsets of weapon position on unit */
+    public float x = 5f, y = 0f;
+    /** Random spread on the X axis. */
+    public float xRand = 0f;
+    /** pattern used for bullets */
+    public ShootPattern shoot = new ShootPattern();
+    /** radius of shadow drawn under the weapon; <0 to disable */
+    public float shadow = -1f;
+    /** fraction of velocity that is random */
+    public float shootCone = 5f;
+    /** Cone in which the weapon can rotate relative to its mount. */
+    public float rotationLimit = 361f;
+    /** minimum weapon warmup before firing (this is not linear, do NOT use 1!) */
+    public float minWarmup = 0f;
+    /** lerp speed for shoot warmup, only used for parts */
+    public float shootWarmupSpeed = 0.1f, smoothReloadSpeed = 0.15f;
+    /** If true, shoot warmup is linear instead of a curve. */
+    public boolean linearWarmup = false;
+    /** random sound pitch range */
+    public float soundPitchMin = 0.8f, soundPitchMax = 1f;
+    /** whether shooter rotation is ignored when shooting. */
+    public boolean parentizeEffects;
+    /** internal value used for alternation - do not change! */
+    public int otherSide = -1;
+    /** draw Z offset relative to the default value */
+    public float layerOffset = 0f;
+    /** sound used for shooting */
+    public Sound shootSound = Sounds.pew;
+    /** sound used for weapons that have a delay */
+    public Sound chargeSound = Sounds.none;
+    /** sound played when there is nothing to shoot */
+
+    public TextureRegion region;
+    /** heat region, must be same size as region (optional) */
+    public TextureRegion heatRegion;
+    /** outline region to display if top is false */
+    public TextureRegion outlineRegion;
+    /** heat region tint */
+    public Color heatColor = Pal.turretHeat;
+    /** status effect applied when shooting */
+    /** type of weapon mount to be used */
+    public Func<BlockWeapon, BlockWeaponMount> mountType = BlockWeaponMount::new;
+    /** extra animated parts */
+    public Seq<DrawPart> parts = new Seq<>(DrawPart.class);
+
+    public BlockWeapon(String name){
+        this.name = name;
+    }
+
+    public BlockWeapon(){
+        this("");
+    }
+
+    public boolean hasStats(Block b){
+        return display;
+    }
+
+    public void addStats(Block b, Table t){
+        if(inaccuracy > 0){
+            t.row();
+            t.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)inaccuracy + " " + StatUnit.degrees.localized());
+        }
+        if(!alwaysContinuous && reload > 0){
+            t.row();
+            t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+        }
+
+        StatValues.ammo(ObjectMap.of(b, bullet)).display(t);
+    }
+
+    public float dps(){
+        return (bullet.estimateDPS() / reload) * shoot.shots * 60f;
+    }
+
+    public float shotsPerSec(){
+        return shoot.shots * 60f / reload;
+    }
+
+    //TODO copy-pasted code
+    public void drawOutline(BuildPlan plan, BlockWeaponMount mount){
+        if(!outlineRegion.found()) return;
+
+        float
+                rotation = plan.rotation - 90,
+                realRecoil = Mathf.pow(mount.recoil, recoilPow) * recoil,
+                weaponRotation  = rotation + (rotate ? mount.rotation : baseRotation),
+                wx = plan.drawx() + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil),
+                wy = plan.drawy() + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil);
+
+        Draw.xscl = -Mathf.sign(flipSprite);
+        Draw.rect(outlineRegion, wx, wy, weaponRotation);
+        Draw.xscl = 1f;
+    }
+
+    public void draw(BuildPlan plan, BlockWeaponMount mount){
+        //apply layer offset, roll it back at the end
+        float z = Draw.z();
+        Draw.z(z + layerOffset);
+
+        float
+                rotation = plan.rotation - 90,
+                realRecoil = Mathf.pow(mount.recoil, recoilPow) * recoil,
+                weaponRotation  = rotation + (rotate ? mount.rotation : baseRotation),
+                wx = plan.drawx() + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil),
+                wy = plan.drawy() + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil);
+
+        if(shadow > 0){
+            Drawf.shadow(wx, wy, shadow);
+        }
+
+        if(top){
+            drawOutline(plan, mount);
+        }
+
+        if(parts.size > 0){
+            DrawPart.params.set(mount.warmup, mount.reload / reload, mount.smoothReload, mount.heat, mount.recoil, mount.charge, wx, wy, weaponRotation + 90);
+            DrawPart.params.sideMultiplier = flipSprite ? -1 : 1;
+
+            for(int i = 0; i < parts.size; i++){
+                var part = parts.get(i);
+                DrawPart.params.setRecoil(part.recoilIndex >= 0 && mount.recoils != null ? mount.recoils[part.recoilIndex] : mount.recoil);
+                if(part.under){
+                    part.draw(DrawPart.params);
+                }
+            }
+        }
+
+        Draw.xscl = -Mathf.sign(flipSprite);
+
+        if(region.found()) Draw.rect(region, wx, wy, weaponRotation);
+
+        if(heatRegion.found() && mount.heat > 0){
+            Draw.color(heatColor, mount.heat);
+            Draw.blend(Blending.additive);
+            Draw.rect(heatRegion, wx, wy, weaponRotation);
+            Draw.blend();
+            Draw.color();
+        }
+
+        Draw.xscl = 1f;
+
+        if(parts.size > 0){
+            for(int i = 0; i < parts.size; i++){
+                var part = parts.get(i);
+                DrawPart.params.setRecoil(part.recoilIndex >= 0 && mount.recoils != null ? mount.recoils[part.recoilIndex] : mount.recoil);
+                if(!part.under){
+                    part.draw(DrawPart.params);
+                }
+            }
+        }
+
+        Draw.xscl = 1f;
+
+        Draw.z(z);
+    }
+
+    public float range(){
+        return bullet.range;
+    }
+
+    public void update(MultiTurretType mb, BuildPlan plan, Block b, Team team, BlockWeaponMount mount){
+        float lastReload = mount.reload;
+        mount.reload = Math.max(mount.reload - Time.delta, 0);
+        mount.recoil = Mathf.approachDelta(mount.recoil, 0,recoilTime);
+        if(recoils > 0){
+            if(mount.recoils == null) mount.recoils = new float[recoils];
+            for(int i = 0; i < recoils; i++){
+                mount.recoils[i] = Mathf.approachDelta(mount.recoils[i], 0,recoilTime);
+            }
+        }
+        mount.smoothReload = Mathf.lerpDelta(mount.smoothReload, mount.reload / reload, smoothReloadSpeed);
+        mount.charge = mount.charging && shoot.firstShotDelay > 0 ? Mathf.approachDelta(mount.charge, 1, 1 / shoot.firstShotDelay) : 0;
+
+        float warmupTarget = (mount.shoot) || (continuous && mount.bullet != null) || mount.charging ? 1f : 0f;
+        if(linearWarmup){
+            mount.warmup = Mathf.approachDelta(mount.warmup, warmupTarget, shootWarmupSpeed);
+        }else{
+            mount.warmup = Mathf.lerpDelta(mount.warmup, warmupTarget, shootWarmupSpeed);
+        }
+
+        //rotate if applicable
+        if(rotate && (mount.rotate || mount.shoot)){
+            float axisX = plan.drawx() + Angles.trnsx(plan.rotation - 90,  x, y),
+                    axisY = plan.drawy() + Angles.trnsy(plan.rotation - 90,  x, y);
+
+            mount.targetRotation = Angles.angle(axisX, axisY, mount.aimX, mount.aimY) - plan.rotation;
+            mount.rotation = Angles.moveToward(mount.rotation, mount.targetRotation, rotateSpeed * Time.delta);
+            if(rotationLimit < 360){
+                float dst = Angles.angleDist(mount.rotation, baseRotation);
+                if(dst > rotationLimit/2f){
+                    mount.rotation = Angles.moveToward(mount.rotation, baseRotation, dst - rotationLimit/2f);
+                }
+            }
+        }else if(!rotate){
+            mount.rotation = baseRotation;
+            mount.targetRotation = plan.angleTo(mount.aimX, mount.aimY);
+        }
+
+        float
+                weaponRotation = plan.rotation - 90 + (rotate ? mount.rotation : baseRotation),
+                mountX = plan.drawx() + Angles.trnsx(plan.rotation - 90, x, y),
+                mountY = plan.drawy() + Angles.trnsy(plan.rotation - 90, x, y),
+                bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX, this.shootY),
+                bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX, this.shootY),
+                shootAngle = bulletRotation(plan,mb, mount, bulletX, bulletY);
+
+        //find a new target
+        if(!controllable && autoTarget){
+            if((mount.retarget -= Time.delta) <= 0f){
+                mount.target = findTarget(team, mountX, mountY, bullet.range, bullet.collidesAir, bullet.collidesGround);
+                mount.retarget = mount.target == null ? targetInterval : targetSwitchInterval;
+            }
+
+            if(mount.target != null && checkTarget(team, mount.target, mountX, mountY, bullet.range)){
+                mount.target = null;
+            }
+
+            boolean shoot = false;
+
+            if(mount.target != null){
+                shoot = mount.target.within(mountX, mountY, bullet.range + Math.abs(shootY) + (mount.target instanceof Sized s ? s.hitSize()/2f : 0f));
+
+                if(predictTarget){
+                    Vec2 to = Predict.intercept(plan, mount.target, bullet.speed);
+                    mount.aimX = to.x;
+                    mount.aimY = to.y;
+                }else{
+                    mount.aimX = mount.target.x();
+                    mount.aimY = mount.target.y();
+                }
+            }
+
+            mount.shoot = mount.rotate = shoot;
+
+            //note that shooting state is not affected, as these cannot be controlled
+            //logic will return shooting as false even if these return true, which is fine
+        }
+
+        if(alwaysShooting) mount.shoot = true;
+
+        //update continuous state
+        if(continuous && mount.bullet != null){
+            if(!mount.bullet.isAdded() || mount.bullet.time >= mount.bullet.lifetime || mount.bullet.type != bullet){
+                mount.bullet = null;
+            }else{
+                mount.bullet.rotation(weaponRotation + 90);
+                mount.bullet.set(bulletX, bulletY);
+                mount.reload = reload;
+                mount.recoil = 1f;
+                mb.vel.add(Tmp.v1.trns(plan.rotation + 180f, mount.bullet.type.recoil * Time.delta));
+                if(shootSound != Sounds.none && !headless){
+                    if(mount.sound == null) mount.sound = new SoundLoop(shootSound, 1f);
+                    mount.sound.update(bulletX, bulletY, true);
+                }
+
+                if(alwaysContinuous && mount.shoot){
+                    mount.bullet.time = mount.bullet.lifetime * mount.bullet.type.optimalLifeFract * mount.warmup;
+                    mount.bullet.keepAlive = true;
+                }
+            }
+        }else{
+            //heat decreases when not firing
+            mount.heat = Math.max(mount.heat - Time.delta * cooldownTime, 0);
+
+            if(mount.sound != null){
+                mount.sound.update(bulletX, bulletY, false);
+            }
+        }
+
+        //flip weapon shoot side for alternating weapons
+        boolean wasFlipped = mount.side;
+        if(otherSide != -1 && alternate && mount.side == flipSprite && mount.reload <= reload / 2f && lastReload > reload / 2f){
+            mb.mounts[otherSide].side = !mb.mounts[otherSide].side;
+            mount.side = !mount.side;
+        }
+
+        //shoot if applicable
+        if(mount.shoot && //must be shooting
+
+                !(bullet.killShooter && mount.totalShots > 0) && //if the bullet kills the shooter, you should only ever be able to shoot once
+                //(!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo || plan.team.rules().infiniteAmmo) && //check ammo
+                (!alternate || wasFlipped == flipSprite) &&
+                mount.warmup >= minWarmup && //must be warmed up
+                (mount.reload <= 0.0001f || (alwaysContinuous && mount.bullet == null)) && //reload has to be 0, or it has to be an always-continuous weapon
+                (alwaysShooting || Angles.within(rotate ? mount.rotation : plan.rotation + baseRotation, mount.targetRotation, shootCone)) //has to be within the cone
+        ){
+            shoot(plan,mb, b,team, mount, bulletX, bulletY, shootAngle);
+
+            mount.reload = reload;
+
+            /*if(useAmmo){
+                unit.ammo--;
+                if(unit.ammo < 0) unit.ammo = 0;
+            }*/
+        }
+    }
+
+    protected Teamc findTarget(Team team, float x, float y, float range, boolean air, boolean ground){
+        return Units.closestTarget(team, x, y, range + Math.abs(shootY), u -> u.checkTarget(air, ground), t -> ground);
+    }
+
+    protected boolean checkTarget(Team team, Teamc target, float x, float y, float range){
+        return Units.invalidateTarget(target,team, x, y, range + Math.abs(shootY));
+    }
+
+    protected float bulletRotation(BuildPlan plan,MultiTurretType mb, BlockWeaponMount mount, float bulletX, float bulletY){
+        return rotate ? plan.rotation + mount.rotation : Angles.angle(bulletX, bulletY, mount.aimX, mount.aimY) + (plan.rotation - plan.angleTo(mount.aimX, mount.aimY)) + baseRotation;
+    }
+
+    protected void shoot(BuildPlan plan,MultiTurretType mb, Block b,Team team, BlockWeaponMount mount, float shootX, float shootY, float rotation){
+
+        if(shoot.firstShotDelay > 0){
+            mount.charging = true;
+            chargeSound.at(shootX, shootY, Mathf.random(soundPitchMin, soundPitchMax));
+            bullet.chargeEffect.at(shootX, shootY, rotation, bullet.keepVelocity || parentizeEffects ? plan : null);
+        }
+
+        shoot.shoot(mount.barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
+            //this is incremented immediately, as it is used for total bullet creation amount detection
+            mount.totalShots ++;
+
+            if(delay > 0f){
+                Time.run(delay, () -> bullet(plan,mb,team,b, mount, xOffset, yOffset, angle, mover));
+            }else{
+                bullet(plan,mb, team,b, mount, xOffset, yOffset, angle, mover);
+            }
+        }, () -> mount.barrelCounter++);
+    }
+
+    protected void bullet(BuildPlan plan,MultiTurretType mb,Team team,Block b, BlockWeaponMount mount, float xOffset, float yOffset, float angleOffset, Mover mover){
+
+        mount.charging = false;
+        float
+                xSpread = Mathf.range(xRand),
+                weaponRotation = plan.rotation - 90 + (rotate ? mount.rotation : baseRotation),
+                mountX = plan.drawx() + Angles.trnsx(plan.rotation - 90, x, y),
+                mountY = plan.drawy() + Angles.trnsy(plan.rotation - 90, x, y),
+                bulletX = mountX + Angles.trnsx(weaponRotation, this.shootX + xOffset + xSpread, this.shootY + yOffset),
+                bulletY = mountY + Angles.trnsy(weaponRotation, this.shootX + xOffset + xSpread, this.shootY + yOffset),
+                shootAngle = bulletRotation(plan,mb, mount, bulletX, bulletY) + angleOffset,
+                lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / bullet.range) : 1f,
+                angle = angleOffset + shootAngle + Mathf.range(inaccuracy + bullet.inaccuracy);
+        handleBullet(plan, mount, mount.bullet);
+
+        if(!continuous){
+            shootSound.at(bulletX, bulletY, Mathf.random(soundPitchMin, soundPitchMax));
+        }
+
+        ejectEffect.at(mountX, mountY, angle * Mathf.sign(this.x));
+        bullet.shootEffect.at(bulletX, bulletY, angle, bullet.hitColor, b);
+        bullet.smokeEffect.at(bulletX, bulletY, angle, bullet.hitColor, b);
+
+        mb.vel.add(Tmp.v1.trns(shootAngle + 180f, bullet.recoil));
+        Effect.shake(shake, shake, bulletX, bulletY);
+        mount.recoil = 1f;
+        if(recoils > 0){
+            mount.recoils[mount.barrelCounter % recoils] = 1f;
+        }
+        mount.heat = 1f;
+    }
+
+    //override to do special things to a bullet after spawning
+    protected void handleBullet(BuildPlan plan, BlockWeaponMount mount, Bullet bullet){
+
+    }
+
+    public void flip(){
+        x *= -1;
+        shootX *= -1;
+        baseRotation *= -1f;
+        flipSprite = !flipSprite;
+        shoot = shoot.copy();
+        shoot.flip();
+    }
+
+    public BlockWeapon copy(){
+        try{
+            return (BlockWeapon)clone();
+        }catch(CloneNotSupportedException suck){
+            throw new RuntimeException("very good language design", suck);
+        }
+    }
+
+    public void init(){
+        if(alwaysContinuous){
+            continuous = true;
+        }
+    }
+
+    public void load(){
+        region = Core.atlas.find(name);
+        heatRegion = Core.atlas.find(name + "-heat");
+        outlineRegion = Core.atlas.find(name + "-outline");
+
+        for(var part : parts){
+            part.turretShading = false;
+            part.load(name);
+        }
+    }
+
+    @Override
+    public String toString(){
+        return name == null || name.isEmpty() ? "Weapon" : "Weapon: " + name;
+    }
+
+}

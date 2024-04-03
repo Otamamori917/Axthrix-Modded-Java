@@ -2,7 +2,6 @@ package axthrix.world.types.statuseffects;
 
 import arc.Events;
 import arc.struct.Seq;
-import axthrix.world.types.statuseffects.AxStatusEffect;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.game.EventType;

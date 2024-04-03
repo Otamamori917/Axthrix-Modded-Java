@@ -1,11 +1,14 @@
 package axthrix.world.util;
 
+import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import axthrix.world.types.block.defense.MultiTurretType;
+import axthrix.world.types.weapontypes.BlockWeapon;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -166,6 +169,30 @@ public class AxStatValues {
                         t.add("@missing-research");
                     }
                 }).growX().pad(5);
+                table.row();
+            }
+        };
+    }
+    public static StatValue blockWeapons(MultiTurretType type, Seq<BlockWeapon> weapons){
+        return table -> {
+            table.row();
+            for(int i = 0; i < weapons.size; i++){
+                BlockWeapon weapon = weapons.get(i);
+
+                if(weapon.flipSprite || !weapon.hasStats(type)){
+                    //flipped weapons are not given stats
+                    continue;
+                }
+
+                TextureRegion region = !weapon.name.isEmpty() ? Core.atlas.find(weapon.name + "-preview", weapon.region) : null;
+
+                table.table(Styles.grayPanel, w -> {
+                    w.left().top().defaults().padRight(3).left();
+                    if(region != null && region.found() && weapon.showStatSprite) w.image(region).size(60).scaling(Scaling.bounded).left().top();
+                    w.row();
+
+                    weapon.addStats(type, w);
+                }).growX().pad(5).margin(10);
                 table.row();
             }
         };
