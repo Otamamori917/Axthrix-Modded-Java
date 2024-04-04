@@ -87,14 +87,14 @@ public class AxthrixLoader extends Mod{
             Time.runTask(10f, () -> {
                 BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-menu.title"));
                 dialog.cont.add(Core.bundle.get("menu.aj-menu.message")).row();
-                dialog.cont.image(Core.atlas.find("aj-welcome-icon.png")).pad(20f).row();
+                dialog.cont.image(Core.atlas.find("aj-welcome-icon")).pad(20f).row();
                 dialog.cont.button("okay", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
         });
     }
     private void loadSettings(){
-        ui.settings.addCategory(bundle.get("setting.aj-title"), "aj-settings-icon.png", t -> {
+        ui.settings.addCategory(bundle.get("setting.aj-title"), "aj-settings-icon", t -> {
             t.checkPref("aj-funni-disabled", false);
         });
     }
