@@ -55,6 +55,7 @@ public class AxthrixLoader extends Mod{
             }
 
             if(funibullet){
+                Log.info("Chaos Frag is turned on \nMay crash if FunniBullet is destroyed or Apex and Apexus fires an FunniBullet");
                 setupEveryBullets(null); //It having a chance to frag into itself will be really funny
             }
         });

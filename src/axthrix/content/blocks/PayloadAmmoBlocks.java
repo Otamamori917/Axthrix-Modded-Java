@@ -13,6 +13,7 @@ import axthrix.world.util.AxUtil;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.MultiEffect;
 
 public class PayloadAmmoBlocks {
     public static PayloadAmmoBlock
@@ -469,21 +470,20 @@ public class PayloadAmmoBlocks {
                     var CoLor = Color.gray;
                     lifetime = AxUtil.GetRange(20f,100);
                     speed = 20f;
-                    knockback = pierceCap = 4;
+                    knockback = 20;
+                    pierceCap = Integer.MAX_VALUE;
                     damage = 400;
                     impact = pierce = pierceBuilding = true;
                     collidesAir = true;
                     collidesGround = true;
                     trailInterval = 0;
                     trailChance = Integer.MAX_VALUE;
-                    bulletInterval = 0.5f;
-                    intervalBullets = 6;
                     trailLength = 40;
                     trailWidth = 2;
                     trailColor = lightColor = backColor = CoLor;
-                    trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                    trailEffect = new MultiEffect(AxthrixFfx.solidRoundRadiate(CoLor),AxthrixFfx.energyRoundRadiate(CoLor));
                     trailRotation = true;
-                    fragBullets = 12;
+                    fragBullets = 24;
                     allowKillShooter = true;
                 }};
             }else {

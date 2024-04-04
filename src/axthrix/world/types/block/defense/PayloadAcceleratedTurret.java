@@ -8,31 +8,31 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 
 
-public class AcceleratedTurret extends AxItemTurret{
+public class PayloadAcceleratedTurret extends PayloadTurretType{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
 
     public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
 
-    public AcceleratedTurret(String name){
+    public PayloadAcceleratedTurret(String name){
         super(name);
     }
-    
+
 
     @Override
     public void setBars(){
         super.setBars();
         if(acceleratedBonus == 1){
             if(burnsOut){
-                addBar("aj-heat", (AcceleratedTurretBuild entity) -> new Bar(
+                addBar("aj-heat", (PayloadAcceleratedTurretBuild entity) -> new Bar(
                         () -> Core.bundle.format("bar.aj-heat", Strings.autoFixed(entity.accelBoost * 100f, 2)),
                         () -> entity.accelCount > acceleratedSteps ? Pal.remove : Color.orange,
                         entity::boostf
                 ));
             }
         }else{
-            addBar("aj-phases", (AcceleratedTurretBuild entity) -> new Bar(
+            addBar("aj-phases", (PayloadAcceleratedTurretBuild entity) -> new Bar(
                     () -> Core.bundle.format("bar.aj-phases", Strings.autoFixed(entity.accelBoost * 100f, 2)),
                     () -> entity.accelCount > acceleratedSteps ? Pal.remove : Pal.techBlue,
                     entity::boostf
@@ -41,7 +41,7 @@ public class AcceleratedTurret extends AxItemTurret{
 
     }
 
-    public class AcceleratedTurretBuild extends ItemTurretBuild{
+    public class PayloadAcceleratedTurretBuild extends PayloadTurretTypeBuild {
         public float accelBoost, accelCounter;
         public int accelCount;
 
@@ -59,7 +59,7 @@ public class AcceleratedTurret extends AxItemTurret{
                     accelCounter %= cooldownDelay;
                 }
             }else if(isShooting()){
-                accelCounter += edelta(); 
+                accelCounter += edelta();
                 if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
                     accelBoost += (acceleratedBonus - 1);
                     accelCount++;
@@ -86,7 +86,7 @@ public class AcceleratedTurret extends AxItemTurret{
 
             reloadCounter = Math.min(reloadCounter, reload);
         }
-        
+
         public float boostf(){
             if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
             return Mathf.clamp((float)accelCount / acceleratedSteps);

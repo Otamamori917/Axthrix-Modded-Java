@@ -5,6 +5,7 @@ import axthrix.content.AxFactions;
 
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
+import axthrix.world.types.block.defense.PayloadAcceleratedTurret;
 import axthrix.world.types.block.defense.PayloadTurretType;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
@@ -14,6 +15,8 @@ import axthrix.world.util.AxUtil;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.content.*;
 import mindustry.entities.UnitSorts;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.pattern.ShootAlternate;
 import mindustry.gen.*;
 import arc.graphics.*;
 import arc.math.*;
@@ -109,7 +112,7 @@ public class AxthrixTurrets{
 
 
         razdor = new AcceleratedTurret("razdor"){{
-            localizedName = "Kramola";
+            localizedName = "Razdor";
             description = """
                           Homing Minigun MK2
                           """;
@@ -164,7 +167,7 @@ public class AxthrixTurrets{
 
 
         smuta = new AcceleratedTurret("smuta"){{
-            localizedName = "Kramola";
+            localizedName = "Smuta";
             description = """
                           Homing Minigun MK3
                           """;
@@ -456,8 +459,8 @@ public class AxthrixTurrets{
 
         aratiri = new AcceleratedTurret("aratiri"){{
             localizedName = "Aratiri";
-            description = """ 
-                          ThunderBolt Minigun 
+            description = """
+                          ThunderBolt Minigun
                           """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
@@ -491,11 +494,296 @@ public class AxthrixTurrets{
             );
             inaccuracy = 0f;
         }};
+        apex = new PayloadAcceleratedTurret("apex"){{
+            localizedName = "Apex";
+            description = """ 
+                          """;
+            requirements(Category.turret, with(
+                    Items.copper, 150,
+                    Items.graphite, 300,
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.axthrix);
+            ammo(
+                    basic1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.copper.color;
+                        lifetime = AxUtil.GetRange(15f,75);
+                        speed = 15f;
+                        knockback = pierceCap = 4;
+                        damage = 100;
+                        splashDamageRadius = 30;
+                        splashDamage = 100;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.4f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 1;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 2;
+                        fragBullet = intervalBullet = new FlakBulletType(){{
+                            explodeDelay = 10f;
+                            lifetime = AxUtil.GetRange(3f,5);
+                            speed = 3f;
+                            knockback = pierceCap = 4;
+                            splashDamageRadius = explodeRange = 40;
+                            splashDamage = 100;
+                            scaledSplashDamage = true;
+                            impact = pierce = pierceBuilding = true;
+                            buildingDamageMultiplier = 0.4f;
+                            collidesAir = true;
+                            collidesGround = true;
+                            trailLength = 40;
+                            trailWidth = 2;
+                            trailColor = lightColor = backColor = CoLor;
+                            trailRotation = true;
+                        }};
+                    }},
+                    frostbite1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.titanium.color;
+                        lifetime = AxUtil.GetRange(15f,75);
+                        speed = 15f;
+                        knockback = pierceCap = 4;
+                        damage = 100;
+                        splashDamageRadius = 30;
+                        splashDamage = 100;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.4f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 2;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 1;
+                        fragVelocityMax = 0;
+                        fragBullet = new AfterShockBulletType(80, 50){{
+                            splashDelay = 10;
+                            splashAmount = 3;
+                            status = StatusEffects.freezing;
+                            statusDuration = 80;
+                            buildingDamageMultiplier = 0.4f;
+                            frontColor = CoLor.cpy().a(0.4f);
+                            particleColor = bottomColor = backColor = CoLor;
+                        }};
+                    }},
+                    incendiary1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.pyratite.color;
+                        lifetime = AxUtil.GetRange(15f,75);
+                        speed = 15f;
+                        knockback = pierceCap = 4;
+                        damage = 200;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.4f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 0.5f;
+                        intervalDelay = AxUtil.GetRange(15f,100 / 8);
+                        intervalBullets = 3;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 6;
+                        fragBullet = intervalBullet = new FireBulletType(){{
+                            speed = 6f;
+                            radius = 5;
+                            velMin = 0.8f;
+                            velMax = 6;
+                            hittable = false;
+                            keepVelocity = false;
+                            collidesAir = false;
+                            hitEffect = Fx.hitFlameSmall;
+                            despawnEffect = Fx.none;
+                            trailColor = lightColor = backColor = CoLor;
+                            fragRandomSpread = 0f;
+                            fragSpread = 5f;
+                            fragVelocityMin = 1f;
+                            fragBullets = 10;
+                            fragBullet = new BulletType(4.2f, 8f) {{
+                                hitSize = 7f;
+                                lifetime = 13f;
+                                pierce = true;
+                                pierceBuilding = true;
+                                pierceCap = 2;
+                                trailColor = lightColor = backColor = CoLor;
+                                statusDuration = 60f * 4;
+                                shootEffect = Fx.shootSmallFlame;
+                                hitEffect = Fx.hitFlameSmall;
+                                despawnEffect = Fx.none;
+                                status = StatusEffects.melting;
+                                keepVelocity = false;
+                                hittable = false;
+                            }};
+                        }};
+                    }},
+                    quicksilver1mCaliber, new BasicBulletType(){{
+                        var CoLor = Color.valueOf("8b8696");
+                        lifetime = AxUtil.GetRange(20f,75);
+                        speed = 20f;
+                        knockback = 2;
+                        pierceCap = 12;
+                        damage = 100;
+                        impact = pierce = pierceBuilding = true;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        status = AxthrixStatus.slivered;
+                        statusDuration = 100;
+                        bulletInterval = 0.5f;
+                        intervalBullets = 6;
+                        fragBullets = 4;
+                        fragBullet = intervalBullet = new BulletType(4.2f, 8f) {{
+                            hitSize = 7f;
+                            lifetime = 13f;
+                            pierce = true;
+                            pierceBuilding = true;
+                            pierceCap = 2;
+                            trailColor = lightColor = backColor = CoLor;
+                            shootEffect = Fx.none;
+                            hitEffect = Fx.none;
+                            despawnEffect = Fx.none;
+                            status = AxthrixStatus.slivered;
+                            statusDuration = 300;
+                            keepVelocity = false;
+                            hittable = false;
+                        }};
+                    }},
+                    //energy rounds
+                    arcane1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.phaseFabric.color;
+                        lifetime = AxUtil.GetRange(15,75);
+                        speed = 15f;
+                        knockback = pierceCap = 4;
+                        damage = 300;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.4f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 2;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 4;
+                        fragBullet = intervalBullet = new LaserBulletType(){{
+                            colors = new Color[]{CoLor.cpy().a(0.4f), CoLor, Color.white};
+                            damage = 38;
+                            length = 24;
+                        }};
+                    }},
+                    void1mCaliber, new BasicBulletType(){{
+                        var CoLor = Color.valueOf("7b1c9b");
+                        lifetime = AxUtil.GetRange(10,75);
+                        speed = 10f;
+                        damage = 300;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
+                        fragOnHit = false;
+                        trailRotation = true;
+                        fragBullets = 1;
+                        fragVelocityMax = 0;
+                        fragBullet = new BlackHoleBulletType(){{
+                            buildingDamageMultiplier = 0.4f;
+                            lifetime = 200;
+                            damage = 50;
+                            speed = 0;
+                            horizonRadius = 5;
+                            lensingRadius = 120;
+                            damageRadius = 60;
+                            suctionRadius = 240;
+                            scaledForce = 1200;
+                            force = 20;
+                            color = CoLor;
+                        }};
+                    }}
+            );
+            if(AxthrixLoader.funibullet){
+                ammoTypes.put(funniBullet, new InfFragBulletType(){{
+                    var CoLor = Color.gray;
+                    lifetime = AxUtil.GetRange(15f,75);
+                    speed = 15f;
+                    knockback = 20;
+                    pierceCap = Integer.MAX_VALUE;
+                    damage = 100;
+                    impact = pierce = pierceBuilding = true;
+                    collidesAir = true;
+                    collidesGround = true;
+                    trailInterval = 0;
+                    trailChance = Integer.MAX_VALUE;
+                    trailLength = 40;
+                    trailWidth = 2;
+                    trailColor = lightColor = backColor = CoLor;
+                    trailEffect = new MultiEffect(AxthrixFfx.solidRoundRadiate(CoLor),AxthrixFfx.energyRoundRadiate(CoLor));
+                    trailRotation = true;
+                    fragBullets = 12;
+                }});
+            }
+            shoot = new ShootAlternate(10);
+            maxAmmo = 48;
+            size = 3;
+            hideDetails = false;
+            scaledHealth = 180;
+            reload = 30f;
+            acceleratedBonus = 1;
+            acceleratedSteps = 150;
+            acceleratedDelay = 1;
+            burnoutDelay = 300;
+            cooldownDelay = 800;
+            setWarmupTime(1.5f);
+            shootCone = 1f;
+            shootY = 0f;
+            range = 600f;
+            recoil = 0.5f;
+            rotateSpeed = 1.8f;
+            shootSound = Sounds.largeCannon;
+            shootEffect = Fx.shootPayloadDriver;
+            smokeEffect = Fx.shootBigSmoke2;
+
+            unitSort = UnitSorts.strongest;
+
+            coolant = consumeCoolant(0.2f);
+            setUsers();
+        }};
         apexus = new PayloadTurretType("apexus"){{
             localizedName = "Apexus";
-            description = """ 
-                          Engineered by Axthrix, Apexus is a large Payload cannon. 
-                          Has a variety of Payload ammunition types, this formidable weapon unleashes devastating high velocity 1m rounds. 
+            description = """
+                          Engineered by Axthrix, Apexus is a large Payload cannon.
+                          Has a variety of Payload ammunition types, this formidable weapon unleashes devastating high velocity 1m rounds.
                           Axthrix's precision craftsmanship shines through in every aspect of Apexus.
                           """;
             requirements(Category.turret, with(
@@ -732,29 +1020,28 @@ public class AxthrixTurrets{
                             }};
                         }}
                 );
-                if(AxthrixLoader.funibullet){
+            if(AxthrixLoader.funibullet){
                 ammoTypes.put(funniBullet, new InfFragBulletType(){{
                     var CoLor = Color.gray;
-                    lifetime = AxUtil.GetRange(20f,200);
-                    rangeOverride = 1600;
+                    lifetime = AxUtil.GetRange(20f,100);
                     speed = 20f;
-                    knockback = pierceCap = 4;
+                    knockback = 20;
+                    pierceCap = Integer.MAX_VALUE;
                     damage = 400;
                     impact = pierce = pierceBuilding = true;
                     collidesAir = true;
                     collidesGround = true;
                     trailInterval = 0;
                     trailChance = Integer.MAX_VALUE;
-                    bulletInterval = 0.5f;
-                    intervalBullets = 6;
                     trailLength = 40;
                     trailWidth = 2;
                     trailColor = lightColor = backColor = CoLor;
-                    trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                    trailEffect = new MultiEffect(AxthrixFfx.solidRoundRadiate(CoLor),AxthrixFfx.energyRoundRadiate(CoLor));
                     trailRotation = true;
-                    fragBullets = 12;
+                    fragBullets = 24;
                 }});
-                }
+            }
+            maxAmmo = 12;
             size = 5;
             hideDetails = false;
             scaledHealth = 180;
@@ -764,7 +1051,7 @@ public class AxthrixTurrets{
             shootY = 0f;
             range = 800f;
             recoil = 0.5f;
-            rotateSpeed = 0.9f;
+            rotateSpeed = 1.2f;
             shootSound = Sounds.largeCannon;
             shootEffect = Fx.shootPayloadDriver;
             smokeEffect = Fx.shootBigSmoke2;

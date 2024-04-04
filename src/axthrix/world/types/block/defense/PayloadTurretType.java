@@ -75,7 +75,7 @@ public class PayloadTurretType extends PayloadAmmoTurret{
         }
     }
 
-    public class SinglePayloadAmmoTurretBuild extends PayloadTurretBuild{
+    public class PayloadTurretTypeBuild extends PayloadTurretBuild{
         public Payload payload;
         public float payLen;
         public Vec2 payVector = new Vec2();

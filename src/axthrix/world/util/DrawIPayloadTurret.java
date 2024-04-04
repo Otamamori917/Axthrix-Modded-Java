@@ -32,7 +32,7 @@ public class DrawIPayloadTurret extends DrawTurret{
     @Override
     public void draw(Building build){
         PayloadTurretType turret = (PayloadTurretType)build.block;
-        SinglePayloadAmmoTurretBuild tb = (SinglePayloadAmmoTurretBuild)build;
+        PayloadTurretTypeBuild tb = (PayloadTurretTypeBuild)build;
 
         Draw.rect(base, build.x, build.y);
         for(int i = 0; i < 4; i++){
@@ -82,7 +82,7 @@ public class DrawIPayloadTurret extends DrawTurret{
         }
     }
 
-    public void drawPayload(SinglePayloadAmmoTurretBuild build){
+    public void drawPayload(PayloadTurretTypeBuild build){
         if(build.payload != null){
             build.updatePayload();
 
