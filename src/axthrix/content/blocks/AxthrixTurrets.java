@@ -5,12 +5,9 @@ import axthrix.content.AxFactions;
 
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
-import axthrix.world.types.block.defense.PayloadAcceleratedTurret;
-import axthrix.world.types.block.defense.PayloadTurretType;
+import axthrix.world.types.block.defense.*;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
-import axthrix.world.types.block.defense.AcceleratedTurret;
-import axthrix.world.types.block.defense.AxItemTurret;
 import axthrix.world.util.AxUtil;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.content.*;
@@ -56,7 +53,7 @@ public class AxthrixTurrets{
     apexus;
 
     public static void load(){
-        kramola = new AcceleratedTurret("kramola"){{
+        kramola = new ItemAcceleratedTurret("kramola"){{
             localizedName = "Kramola";
             description = """
                           Homing Minigun MK1
@@ -111,7 +108,7 @@ public class AxthrixTurrets{
 
 
 
-        razdor = new AcceleratedTurret("razdor"){{
+        razdor = new ItemAcceleratedTurret("razdor"){{
             localizedName = "Razdor";
             description = """
                           Homing Minigun MK2
@@ -166,7 +163,7 @@ public class AxthrixTurrets{
         }};
 
 
-        smuta = new AcceleratedTurret("smuta"){{
+        smuta = new ItemAcceleratedTurret("smuta"){{
             localizedName = "Smuta";
             description = """
                           Homing Minigun MK3
@@ -457,7 +454,7 @@ public class AxthrixTurrets{
             }};
         }};
 
-        aratiri = new AcceleratedTurret("aratiri"){{
+        aratiri = new PowerAcceleratedTurret("aratiri"){{
             localizedName = "Aratiri";
             description = """
                           ThunderBolt Minigun
@@ -486,13 +483,12 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            ammo(
-                Items.surgeAlloy, new BoltBulletType(500, Pal.surge){{
-                    boltLength = 30;
-                    boltLengthRand = 20;    
-                }}
-            );
             inaccuracy = 0f;
+            consumePower(10);
+            shootType = new BoltBulletType(500, Pal.surge){{
+                boltLength = 30;
+                boltLengthRand = 20;
+            }};
         }};
         apex = new PayloadAcceleratedTurret("apex"){{
             localizedName = "Apex";
@@ -776,7 +772,7 @@ public class AxthrixTurrets{
 
             unitSort = UnitSorts.strongest;
 
-            coolant = consumeCoolant(0.2f);
+            coolant = consumeCoolant(0.5f);
             setUsers();
         }};
         apexus = new PayloadTurretType("apexus"){{

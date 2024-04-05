@@ -8,14 +8,14 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 
 
-public class AcceleratedTurret extends AxItemTurret{
+public class ItemAcceleratedTurret extends AxItemTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
 
     public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
 
-    public AcceleratedTurret(String name){
+    public ItemAcceleratedTurret(String name){
         super(name);
     }
     
@@ -25,14 +25,14 @@ public class AcceleratedTurret extends AxItemTurret{
         super.setBars();
         if(acceleratedBonus == 1){
             if(burnsOut){
-                addBar("aj-heat", (AcceleratedTurretBuild entity) -> new Bar(
+                addBar("aj-heat", (ItemAcceleratedTurretBuild entity) -> new Bar(
                         () -> Core.bundle.format("bar.aj-heat", Strings.autoFixed(entity.accelBoost * 100f, 2)),
                         () -> entity.accelCount > acceleratedSteps ? Pal.remove : Color.orange,
                         entity::boostf
                 ));
             }
         }else{
-            addBar("aj-phases", (AcceleratedTurretBuild entity) -> new Bar(
+            addBar("aj-phases", (ItemAcceleratedTurretBuild entity) -> new Bar(
                     () -> Core.bundle.format("bar.aj-phases", Strings.autoFixed(entity.accelBoost * 100f, 2)),
                     () -> entity.accelCount > acceleratedSteps ? Pal.remove : Pal.techBlue,
                     entity::boostf
@@ -41,7 +41,7 @@ public class AcceleratedTurret extends AxItemTurret{
 
     }
 
-    public class AcceleratedTurretBuild extends ItemTurretBuild{
+    public class ItemAcceleratedTurretBuild extends ItemTurretBuild{
         public float accelBoost, accelCounter;
         public int accelCount;
 
