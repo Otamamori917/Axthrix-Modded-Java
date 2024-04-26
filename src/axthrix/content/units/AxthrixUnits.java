@@ -17,6 +17,7 @@ import axthrix.world.types.unittypes.CopterUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
+import static blackhole.utils.BlackHoleUtils.immuneUnits;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
@@ -2590,5 +2591,9 @@ public class AxthrixUnits {
                 }};
             }});
         }};
+
+        immuneUnits.add(
+            anagh
+        );
     }
 }

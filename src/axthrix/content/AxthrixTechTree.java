@@ -6,7 +6,7 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import axthrix.world.teamResearch;
 
-import static blackhole.utils.BlackHoleUtils.immuneUnits;
+
 import static mindustry.content.TechTree.node;
 import static mindustry.content.TechTree.nodeRoot;
 
@@ -40,10 +40,5 @@ public class AxthrixTechTree {
                  Vars.ui.research.rebuildTree(t.refTeam.techTree);
              }
         });
-        //DON'T REMOVE REQUIRED FOR ANAGH TREE
-        immuneUnits.add(
-            AxthrixUnits.anagh
-        );
-
     }
 }
