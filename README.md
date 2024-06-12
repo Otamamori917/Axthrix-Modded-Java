@@ -58,5 +58,5 @@ y̶̢̆͐ȍ̷͔̔͊̒̊̌ü̸͔͌̈́̔ ̵̓̀́̃ ̼̘͘c̷̢̛̜̖̝̻͎̐̓o�
 
   **At the moment there won't be any appeals**
 
-## [Discord Link Here :D](https://discord.gg/YC3QA3BUtm)
+## [Discord Link Here](https://discord.com/invite/7umsXagNsb)
 
