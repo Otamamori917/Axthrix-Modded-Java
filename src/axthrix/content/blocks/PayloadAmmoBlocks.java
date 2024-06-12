@@ -28,9 +28,7 @@ public class PayloadAmmoBlocks {
     //energy
     void1mCaliber,// Dark energy implosion effect upon impact.
     sonicwave1mCaliber,// Emits a powerful sonic wave upon impact, disorienting and deafening enemies.
-    tempest1mCaliber,// Creates a burst of lightning
-
-    funniBullet; //ohno
+    tempest1mCaliber;// Creates a burst of lightning
 
 
     public static void load(){
@@ -447,50 +445,6 @@ public class PayloadAmmoBlocks {
             elevation = 2f / 3f;
             outlined = true;
         }};
-        //ohno
-        funniBullet = new PayloadAmmoBlock("funni"){{
-            localizedName = "Funni Bullet";
-            description = """ 
-                          Needs to be enabled in properties.
-                          """;
-            buildCost(
-                    Items.copper, 40,
-                    Items.lead, 20
-            );
 
-            size = 2;
-            powerUse = 0.5f;
-            constructTime = 60f * 2f;
-            elevation = 2f / 3f;
-            outlineIcon = true;
-            outlinedIcon = 0;
-
-            if(AxthrixLoader.funibullet){
-                explosionBullet = new InfFragBulletType(){{
-                    var CoLor = Color.gray;
-                    lifetime = AxUtil.GetRange(20f,100);
-                    speed = 20f;
-                    knockback = 20;
-                    pierceCap = Integer.MAX_VALUE;
-                    damage = 400;
-                    impact = pierce = pierceBuilding = true;
-                    collidesAir = true;
-                    collidesGround = true;
-                    trailInterval = 0;
-                    trailChance = Integer.MAX_VALUE;
-                    trailLength = 40;
-                    trailWidth = 2;
-                    trailColor = lightColor = backColor = CoLor;
-                    trailEffect = new MultiEffect(AxthrixFfx.solidRoundRadiate(CoLor),AxthrixFfx.energyRoundRadiate(CoLor));
-                    trailRotation = true;
-                    fragBullets = 24;
-                    allowKillShooter = true;
-                }};
-            }else {
-                explosionArea = 100;
-                explosions = 20;
-                explosionBullet = new ExplosionBulletType(20000, 100);
-            }
-        }};
     }
 }

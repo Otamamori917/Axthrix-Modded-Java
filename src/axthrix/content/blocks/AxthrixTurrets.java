@@ -14,6 +14,9 @@ import mindustry.content.*;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.pattern.ShootAlternate;
+import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootHelix;
+import mindustry.entities.pattern.ShootMulti;
 import mindustry.gen.*;
 import arc.graphics.*;
 import arc.math.*;
@@ -67,6 +70,7 @@ public class AxthrixTurrets{
             cooldownDelay = 300f;
             cooldownTime = 120f;
 
+            recoils = 2;
             buildCostMultiplier = 0.1f;
             size = 2;
             scaledHealth = 420f;
@@ -83,7 +87,17 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(1, 2);
+            shoot = new ShootMulti(
+                    new ShootBarrel(){{
+                        barrels = new float[]{
+                                -2.5f, 12, 0,
+                                 2.5f, 12, 0
+                        };
+                    }},
+                    new ShootHelix(){{
+                        mag = 0.15f;
+                        scl = 0.05f;
+                    }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 15f;
@@ -103,6 +117,60 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
+            drawer = new DrawTurret("crystalized-"){{
+                parts.add(
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = -2.5f;
+                            y = 6;
+                            moveX = 2.5f;
+                            recoilIndex = 0;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = 2.5f;
+                            y = 6;
+                            moveX = -2.5f;
+                            recoilIndex = 1;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }});
+
+            }};
+
         }};
 
 
@@ -122,6 +190,7 @@ public class AxthrixTurrets{
             cooldownDelay = 300f;
             cooldownTime = 120f;
 
+            recoils = 3;
             buildCostMultiplier = 0.1f;
             size = 3;
             scaledHealth = 420f;
@@ -138,9 +207,18 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(2.5f, 1.5f){{
-                shots = 3;
-            }};
+            shoot = new ShootMulti(
+                    new ShootBarrel(){{
+                        barrels = new float[]{
+                                -3.5f, 15, 0,
+                                 0, 15, 0,
+                                 3.5f, 15, 0
+                        };
+                    }},
+                    new ShootHelix(){{
+                        mag = 0.2f;
+                        scl = 0.1f;
+                    }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 30f;
@@ -160,6 +238,81 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
+            drawer = new DrawTurret("crystalized-"){{
+                parts.add(
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            y = 9;
+                            moveX = 2.25f;
+                            recoilIndex = 0;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = -4.5f;
+                            y = 9;
+                            moveX = 3.5f;
+                            recoilIndex = 1;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = 4.5f;
+                            y = 9;
+                            moveX = -3.5f;
+                            recoilIndex = 2;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }});
+
+            }};
         }};
 
 
@@ -177,6 +330,7 @@ public class AxthrixTurrets{
             cooldownDelay = 300f;
             cooldownTime = 120f;
 
+            recoils = 4;
             buildCostMultiplier = 0.1f;
             size = 4;
             scaledHealth = 420f;
@@ -193,9 +347,19 @@ public class AxthrixTurrets{
             shootSound = Sounds.shootBig;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
-            shoot = new SpiralPattern(2.75f, 1.75f){{
-                shots = 4;
-            }};
+            shoot = new ShootMulti(
+                    new ShootBarrel(){{
+                        barrels = new float[]{
+                                -4.5f, 18, 0,
+                                -2.25f, 18, 0,
+                                2.25f, 18, 0,
+                                4.5f, 18, 0
+                        };
+                    }},
+                    new ShootHelix(){{
+                        mag = 0.25f;
+                        scl = 0.15f;
+                    }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 100){{
                     damage = 45f;
@@ -215,7 +379,104 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
+            drawer = new DrawTurret("crystalized-"){{
+                parts.add(
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            y = 12;
+                            moveX = 5.5f;
+                            recoilIndex = 0;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            y = 12;
+                            moveX = -5.5f;
+                            recoilIndex = 1;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = -5.5f;
+                            y = 12;
+                            moveX = 5.5f;
+                            recoilIndex = 2;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.reload;
+                            x = 5.5f;
+                            y = 12;
+                            moveX = -5.5f;
+                            recoilIndex = 3;
+                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                            children.add(
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = -0.8f;
+                                        y = 6;
+                                        moveX = 0.8f;
+                                    }},
+                                    new RegionPart("-barrel-secondary"){{
+                                        progress = PartProgress.reload;
+                                        x = 0.8f;
+                                        y = 6;
+                                        moveX = -0.8f;
+                                    }},
+                                    new RegionPart("-barrel-end"){{
+                                        y = 7;
+                                    }});
+                        }});
 
+            }};
         }};
 
         kisten = new AxItemTurret("kisten"){{
@@ -729,7 +990,7 @@ public class AxthrixTurrets{
                     }}
             );
             if(AxthrixLoader.funibullet){
-                ammoTypes.put(funniBullet, new InfFragBulletType(){{
+                ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
                     lifetime = AxUtil.GetRange(15f,75);
                     speed = 15f;
@@ -1017,7 +1278,7 @@ public class AxthrixTurrets{
                         }}
                 );
             if(AxthrixLoader.funibullet){
-                ammoTypes.put(funniBullet, new InfFragBulletType(){{
+                ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
                     lifetime = AxUtil.GetRange(20f,100);
                     speed = 20f;
