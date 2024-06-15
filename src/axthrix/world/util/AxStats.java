@@ -6,7 +6,7 @@ import mindustry.world.meta.StatCat;
 public class AxStats {
     public static Stat
     maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
-    grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used
+    grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used,maxFireRateBonus,timeForMaxBonus,overheat,timeToCool
             ;
     public static void load()
     {
@@ -26,6 +26,10 @@ public class AxStats {
         shield = new Stat("shield",StatCat.function);
         maxShield = new Stat("maxShield",StatCat.function);
         timeToCloak = new Stat("timeToCloak",StatCat.function);
+        maxFireRateBonus = new Stat("maxBonus",StatCat.function);
+        timeForMaxBonus = new Stat("timeMax",StatCat.function);
+        overheat = new Stat("timeOverheat",StatCat.function);
+        timeToCool = new Stat("timeCool",StatCat.function);
         recipes = new Stat("recipes", StatCat.crafting);
         producer = new Stat("producer", StatCat.crafting);
         produce = new Stat("produce", StatCat.crafting);
