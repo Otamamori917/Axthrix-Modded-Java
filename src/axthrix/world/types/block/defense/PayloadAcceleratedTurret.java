@@ -49,11 +49,11 @@ public class PayloadAcceleratedTurret extends PayloadTurretType{
     public void setStats(){
         super.setStats();
         if(acceleratedBonus != 1){
-            stats.add(AxStats.maxFireRateBonus, 60.0F / reload * (float)shoot.shots * (acceleratedBonus * acceleratedSteps - 1), StatUnit.perSecond);
+            stats.add(AxStats.maxFireRateBonus, 60.0F / reload * (float)shoot.shots * (acceleratedBonus * acceleratedSteps - 1) + "/sec ~ [stat]" + ((acceleratedBonus - 1)* acceleratedSteps) * 100 + "% []Bonus", StatUnit.none);
             stats.add(AxStats.timeForMaxBonus, (acceleratedDelay * acceleratedSteps) / 60, StatUnit.seconds);
         }
         if (burnsOut){
-            stats.add(AxStats.overheat, burnoutDelay / 60, StatUnit.seconds);
+            stats.add(AxStats.overheat, ((acceleratedDelay * acceleratedSteps) + burnoutDelay) / 60, StatUnit.seconds);
             stats.add(AxStats.timeToCool, cooldownDelay / 60, StatUnit.seconds);
         }
         if (this.coolant != null) {
@@ -65,17 +65,21 @@ public class PayloadAcceleratedTurret extends PayloadTurretType{
     }
 
     public class PayloadAcceleratedTurretBuild extends PayloadTurretTypeBuild {
-        public float accelBoost, accelCounter;
+        public float accelBoost, accelCounter, coolBonus;
         public int accelCount;
 
         @Override
         public void updateTile(){
             super.updateTile();
+            if(coolantMultiplier != 0){
+                coolBonus = coolantMultiplier;
+            }
+
 
             if(accelCount > acceleratedSteps){
                 accelCounter += edelta();
                 if(accelCounter >= cooldownDelay){
-                    coolantMultiplier = 5;
+                    coolantMultiplier = coolBonus;
                     super.updateCooling();
                     accelCount = 0;
                     accelBoost = 1;
@@ -97,7 +101,7 @@ public class PayloadAcceleratedTurret extends PayloadTurretType{
                 accelCount = 0;
                 accelCounter = 0;
                 accelBoost = 1;
-                coolantMultiplier = 5;
+                coolantMultiplier = coolBonus;
                 super.updateCooling();
             }
         }

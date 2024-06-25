@@ -15,7 +15,7 @@ import mindustry.world.meta.StatValues;
 
 public class PowerAcceleratedTurret extends AxPowerTurret{
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
-    public int acceleratedSteps = 1;
+    public int acceleratedSteps = 2;
 
     public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
@@ -49,11 +49,11 @@ public class PowerAcceleratedTurret extends AxPowerTurret{
     public void setStats(){
         super.setStats();
         if(acceleratedBonus != 1){
-            stats.add(AxStats.maxFireRateBonus, 60.0F / reload * (float)shoot.shots * (acceleratedBonus * acceleratedSteps - 1), StatUnit.perSecond);
+            stats.add(AxStats.maxFireRateBonus, 60.0F / reload * (float)shoot.shots * (acceleratedBonus * acceleratedSteps - 1) + "/sec ~ [stat]" + ((acceleratedBonus - 1)* acceleratedSteps) * 100 + "% []Bonus", StatUnit.none);
             stats.add(AxStats.timeForMaxBonus, (acceleratedDelay * acceleratedSteps) / 60, StatUnit.seconds);
         }
         if (burnsOut){
-            stats.add(AxStats.overheat, burnoutDelay / 60, StatUnit.seconds);
+            stats.add(AxStats.overheat, ((acceleratedDelay * acceleratedSteps) + burnoutDelay) / 60, StatUnit.seconds);
             stats.add(AxStats.timeToCool, cooldownDelay / 60, StatUnit.seconds);
         }
         if (this.coolant != null) {
@@ -65,24 +65,28 @@ public class PowerAcceleratedTurret extends AxPowerTurret{
     }
 
     public class PowerAcceleratedTurretBuild extends PowerTurretBuild{
-        public float accelBoost, accelCounter;
+        public float accelBoost, accelCounter, coolBonus;
         public int accelCount;
 
         @Override
         public void updateTile(){
             super.updateTile();
+            if(coolantMultiplier != 0){
+                coolBonus = coolantMultiplier;
+            }
+
 
             if(accelCount > acceleratedSteps){
                 accelCounter += edelta();
                 if(accelCounter >= cooldownDelay){
-                    coolantMultiplier = 5;
+                    coolantMultiplier = coolBonus;
                     super.updateCooling();
                     accelCount = 0;
                     accelBoost = 1;
                     accelCounter %= cooldownDelay;
                 }
             }else if(isShooting()){
-                accelCounter += edelta(); 
+                accelCounter += edelta();
                 if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
                     accelBoost += (acceleratedBonus - 1);
                     accelCount++;
@@ -97,7 +101,7 @@ public class PowerAcceleratedTurret extends AxPowerTurret{
                 accelCount = 0;
                 accelCounter = 0;
                 accelBoost = 1;
-                coolantMultiplier = 5;
+                coolantMultiplier = coolBonus;
                 super.updateCooling();
             }
         }
@@ -109,11 +113,12 @@ public class PowerAcceleratedTurret extends AxPowerTurret{
 
             reloadCounter = Math.min(reloadCounter, reload);
         }
-        
+
         public float boostf(){
             if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
             return Mathf.clamp((float)accelCount / acceleratedSteps);
         }
+
         public float heatf(){
             if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
             return accelCounter / burnoutDelay;

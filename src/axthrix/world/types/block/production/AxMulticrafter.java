@@ -1,7 +1,9 @@
 package axthrix.world.types.block.production;
 
+import arc.Core;
 import arc.struct.Seq;
 import axthrix.world.types.AxFaction;
+import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import multicraft.MultiCrafter;
 
@@ -11,6 +13,15 @@ public class AxMulticrafter extends MultiCrafter {
     public Seq<AxFaction> faction = new Seq<>();
     public boolean blackListFactions = false;
     public AxMulticrafter(String name) {super(name);}
+
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
+    }
     public boolean partOfPlayerFaction()
     {
         if (blackListFactions)

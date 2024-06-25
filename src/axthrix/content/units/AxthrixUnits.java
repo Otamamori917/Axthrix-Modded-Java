@@ -128,6 +128,7 @@ public class AxthrixUnits {
         setupID();
         quark = new AxUnitType("quark") {{
             localizedName = "[orange]Quark";
+            factions.add(AxFactions.axthrix);
             description = """
                           [orange]A little nant, the Quark is an agile hover.
                           Quark Fires A Atomic Tri-helix.
@@ -208,6 +209,7 @@ public class AxthrixUnits {
         }};
         electron = new AxUnitType("electron") {{
             localizedName = "[orange]Electron";
+            factions.add(AxFactions.axthrix);
             description = """
                           [orange]A Fast Attacker, Electron always has the first strike.
                           Electron Fires a burst of super fast charged Particles.
@@ -280,7 +282,7 @@ public class AxthrixUnits {
                 shoot.shots = 5;
                 shoot.shotDelay = 2;
                 immunities.add(shocked);
-                bullet = new BasicBulletType(24f, 60){{
+                bullet = new BasicBulletType(24f, 80){{
                     width = 4;
                     height = 4;
                     lifetime = 14;
@@ -303,14 +305,14 @@ public class AxthrixUnits {
                     soundPitchMax = 14;
                     soundPitchMin = 8;
                     intervalBullet = new LightningBulletType(){{
-                        damage = 20;
+                        damage = 50;
                         collidesAir = true;
                         ammoMultiplier = 1f;
                         lightningColor = Pal.techBlue;
                         lightningLength = 2;
                         lightningLengthRand = 8;
 
-                        lightningType = new BulletType(0.0001f, 0f) {{
+                        lightningType = new BulletType(0.0001f, 50f) {{
                             lifetime = Fx.lightning.lifetime;
                             hitEffect = Fx.hitLancer;
                             despawnEffect = Fx.none;
@@ -339,6 +341,7 @@ public class AxthrixUnits {
         }};
         baryon = new AxUnitType("baryon") {{
             localizedName = "[orange]Baryon";
+            factions.add(AxFactions.axthrix);
             description = """
                           [orange]A Large Brawler,Baryon Has 2 pistons on its back that help pump energy and expel heat.
                           Baryon uses this to expel large amounts of heat damaging any foe that comes too close.
@@ -535,6 +538,7 @@ public class AxthrixUnits {
         }};
         hadron = new AxUnitType("hadron") {{
             localizedName = "[orange]Hadron";
+            factions.add(AxFactions.axthrix);
             description = """
                           [orange]An Area defender, Hadron can lay mines behind enemy defences.
                           Hadron stores up heat and releases it at enemy units.
@@ -912,6 +916,7 @@ public class AxthrixUnits {
                           Has 2 Large automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             constructor = ElevationMoveUnit::create;
+            factions.add(AxFactions.axthrix);
             ammoType = new PowerAmmoType(50);
             flying = false;
             speed = 4f/7.5f;
@@ -2521,8 +2526,9 @@ public class AxthrixUnits {
                     new UnitEngine(60,29,10,270+45)
             );
         }};
-        aza = new UnitType("aza")
+        aza = new AxUnitType("aza")
         {{
+            factions.add(AxFactions.axthrix);
             localizedName = "Aza";
 
             constructor = UnitEntity::create;
@@ -2595,5 +2601,6 @@ public class AxthrixUnits {
         immuneUnits.add(
             anagh
         );
+
     }
 }

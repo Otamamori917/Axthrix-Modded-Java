@@ -1,5 +1,6 @@
 package axthrix.content.blocks;
 
+import arc.util.Time;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxFactions;
 
@@ -10,13 +11,11 @@ import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.util.AxUtil;
 import blackhole.entities.bullet.BlackHoleBulletType;
+import blackhole.entities.part.BlackHolePart;
 import mindustry.content.*;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.pattern.ShootAlternate;
-import mindustry.entities.pattern.ShootBarrel;
-import mindustry.entities.pattern.ShootHelix;
-import mindustry.entities.pattern.ShootMulti;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import arc.graphics.*;
 import arc.math.*;
@@ -32,12 +31,13 @@ import static mindustry.type.ItemStack.*;
 
 public class AxthrixTurrets{
     public static Block
+    //Axthrix
 
     //Bendy miniguns
 
     kramola, razdor, smuta,
 
-    //Rocket Artillery
+    //Artillery
 
     kisten,
 
@@ -47,34 +47,40 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, aratiri,
+    nado, aratiri, gravitation,
 
     multitest,
 
     //payload
     apex,//Small apexus? but autocannon possibly
-    apexus;
+    apexus,
 
-    public static void load(){
+    //Raodon
+    venture,asmot,rektios;
+
+    public static void loadAxthrix(){
         kramola = new ItemAcceleratedTurret("kramola"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Kramola";
             description = """
                           Homing Minigun MK1
                           """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
-            acceleratedDelay = 60f;
-            acceleratedBonus = 1.1f;
-            acceleratedSteps = 10;
-            burnoutDelay = 300f;
-            cooldownDelay = 300f;
-            cooldownTime = 120f;
+            acceleratedDelay = 40f;
+            acceleratedBonus = 1.8f;
+            acceleratedSteps = 16;
+            burnoutDelay = 240;
+            cooldownDelay = 360f;
 
+
+
+            cooldownTime = 120f;
             recoils = 2;
-            buildCostMultiplier = 0.1f;
+            minWarmup = 0.3f;
             size = 2;
             scaledHealth = 420f;
-            reload = 10f;
+            reload = 60f;
             range = 360f;
             maxAmmo = 200;
             ammoPerShot = 2;
@@ -90,8 +96,8 @@ public class AxthrixTurrets{
             shoot = new ShootMulti(
                     new ShootBarrel(){{
                         barrels = new float[]{
-                                -2.5f, 12, 0,
-                                 2.5f, 12, 0
+                                -1.5f, 15, 0,
+                                 1.5f, 15, 0
                         };
                     }},
                     new ShootHelix(){{
@@ -99,9 +105,8 @@ public class AxthrixTurrets{
                         scl = 0.05f;
                     }});
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 15f;
-                    homingPower = 4f;
+                Items.titanium, new BasicBulletType(4f, 15){{
+                    homingPower = 0.09f;
                     homingRange = 200;
                     homingDelay = 40f;
                     width = 2f;
@@ -117,57 +122,32 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            drawer = new DrawTurret("crystalized-"){{
+            drawer = new DrawTurret(){{
                 parts.add(
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = -2.5f;
-                            y = 6;
-                            moveX = 2.5f;
+                            progress = PartProgress.warmup;
+                            y = 4.5f;
+                            moveY = 3f;
                             recoilIndex = 0;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.reload, 2.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), -2.5f, 0f, 0f)
+                            );
 
                         }},
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = 2.5f;
-                            y = 6;
-                            moveX = -2.5f;
+                            progress = PartProgress.warmup;
+                            y = 4.5f;
+                            moveY = 3f;
                             recoilIndex = 1;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }});
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.reload, -2.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), 2.5f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-main"){{layerOffset = 2;}});
 
             }};
 
@@ -177,24 +157,25 @@ public class AxthrixTurrets{
 
 
         razdor = new ItemAcceleratedTurret("razdor"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Razdor";
             description = """
                           Homing Minigun MK2
                           """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
-            acceleratedDelay = 60f;
-            acceleratedBonus = 1.1f;
-            acceleratedSteps = 10;
-            burnoutDelay = 300f;
-            cooldownDelay = 300f;
-            cooldownTime = 120f;
+            acceleratedDelay = 50f;
+            acceleratedBonus = 1.8f;
+            acceleratedSteps = 18;
+            burnoutDelay = 300;
+            cooldownDelay = 360f;
 
+            cooldownTime = 120f;
             recoils = 3;
-            buildCostMultiplier = 0.1f;
+            minWarmup = 0.3f;
             size = 3;
             scaledHealth = 420f;
-            reload = 10f;
+            reload = 60f;
             range = 360f;
             maxAmmo = 300;
             ammoPerShot = 2;
@@ -210,9 +191,9 @@ public class AxthrixTurrets{
             shoot = new ShootMulti(
                     new ShootBarrel(){{
                         barrels = new float[]{
-                                -3.5f, 15, 0,
+                                -1.25f, 15, 0,
                                  0, 15, 0,
-                                 3.5f, 15, 0
+                                 1.25f, 15, 0
                         };
                     }},
                     new ShootHelix(){{
@@ -220,9 +201,8 @@ public class AxthrixTurrets{
                         scl = 0.1f;
                     }});
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 30f;
-                    homingPower = 4f;
+                Items.titanium, new BasicBulletType(4f, 30){{
+                    homingPower = 0.09f;
                     homingRange = 200;
                     homingDelay = 40f;
                     width = 3f;
@@ -240,83 +220,48 @@ public class AxthrixTurrets{
             inaccuracy = 0f;
             drawer = new DrawTurret("crystalized-"){{
                 parts.add(
+
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            y = 9;
-                            moveX = 2.25f;
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = 0;
+                            moveY = 6f;
                             recoilIndex = 0;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
+                            moves.add(
+                                    new PartMove(PartProgress.reload, -2.75f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), 0f, 0f, 0f)
+                            );
                         }},
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = -4.5f;
-                            y = 9;
-                            moveX = 3.5f;
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = 1.375f;
+                            moveY = 6f;
                             recoilIndex = 1;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
+                            moves.add(
+                                    new PartMove(PartProgress.reload, -2.75f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), 1.375f, 0f, 0f)
+                            );
                         }},
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = 4.5f;
-                            y = 9;
-                            moveX = -3.5f;
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = -1.375f;
+                            moveY = 6f;
                             recoilIndex = 2;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }});
+                            moves.add(
+                                    new PartMove(PartProgress.reload, 2.25f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), -1.375f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-main"));
 
             }};
         }};
 
 
         smuta = new ItemAcceleratedTurret("smuta"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Smuta";
             description = """
                           Homing Minigun MK3
@@ -324,17 +269,16 @@ public class AxthrixTurrets{
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 60f;
-            acceleratedBonus = 1.1f;
-            acceleratedSteps = 10;
-            burnoutDelay = 300f;
-            cooldownDelay = 300f;
-            cooldownTime = 120f;
+            acceleratedBonus = 1.8f;
+            acceleratedSteps = 20;
+            burnoutDelay = 360f;
+            cooldownDelay = 360f;
 
             recoils = 4;
-            buildCostMultiplier = 0.1f;
+            minWarmup = 0.3f;
             size = 4;
             scaledHealth = 420f;
-            reload = 10f;
+            reload = 60f;
             range = 360f;
             maxAmmo = 400;
             ammoPerShot = 2;
@@ -350,10 +294,10 @@ public class AxthrixTurrets{
             shoot = new ShootMulti(
                     new ShootBarrel(){{
                         barrels = new float[]{
-                                -4.5f, 18, 0,
-                                -2.25f, 18, 0,
-                                2.25f, 18, 0,
-                                4.5f, 18, 0
+                                -4, 18, 0,
+                                -2, 18, 0,
+                                2, 18, 0,
+                                4, 18, 0
                         };
                     }},
                     new ShootHelix(){{
@@ -361,9 +305,8 @@ public class AxthrixTurrets{
                         scl = 0.15f;
                     }});
             ammo(
-                Items.titanium, new BasicBulletType(4f, 100){{
-                    damage = 45f;
-                    homingPower = 4f;
+                Items.titanium, new BasicBulletType(4f, 45){{
+                    homingPower = 0.09f;
                     homingRange = 200;
                     homingDelay = 40f;
                     width = 4f;
@@ -380,106 +323,58 @@ public class AxthrixTurrets{
             );
             inaccuracy = 0f;
             drawer = new DrawTurret("crystalized-"){{
-                parts.add(
+                parts.addAll(
                         new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            y = 12;
-                            moveX = 5.5f;
-                            recoilIndex = 0;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            y = 12;
-                            moveX = -5.5f;
-                            recoilIndex = 1;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = -5.5f;
-                            y = 12;
-                            moveX = 5.5f;
-                            recoilIndex = 2;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.reload;
-                            x = 5.5f;
-                            y = 12;
-                            moveX = -5.5f;
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = -2.25f;
+                            moveY = 6f;
                             recoilIndex = 3;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                            children.add(
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = -0.8f;
-                                        y = 6;
-                                        moveX = 0.8f;
-                                    }},
-                                    new RegionPart("-barrel-secondary"){{
-                                        progress = PartProgress.reload;
-                                        x = 0.8f;
-                                        y = 6;
-                                        moveX = -0.8f;
-                                    }},
-                                    new RegionPart("-barrel-end"){{
-                                        y = 7;
-                                    }});
-                        }});
+                            moves.add(
+                                    new PartMove(PartProgress.reload, 4.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), -2.25f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = 2.25f;
+                            moveY = 6f;
+                            recoilIndex = 3;
+                            moves.add(
+                                    new PartMove(PartProgress.reload, -4.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), 2.25f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = 2.25f;
+                            moveY = 6f;
+                            recoilIndex = 3;
+                            moves.add(
+                                    new PartMove(PartProgress.reload, -4.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), -2.25f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-barrel"){{
+                            progress = PartProgress.warmup;
+                            y = 6;
+                            x = -2.25f;
+                            moveY = 6f;
+                            recoilIndex = 3;
+                            moves.add(
+                                    new PartMove(PartProgress.reload, 4.5f, 0f, 0f),
+                                    new PartMove(PartProgress.reload.inv(), 2.25f, 0f, 0f)
+                            );
+                        }},
+                        new RegionPart("-main"));
 
             }};
         }};
 
         kisten = new AxItemTurret("kisten"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Kisten";
             description = """
                           Biblically Accurate Rocket Launcher
@@ -716,22 +611,23 @@ public class AxthrixTurrets{
         }};
 
         aratiri = new PowerAcceleratedTurret("aratiri"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Aratiri";
             description = """
                           ThunderBolt Minigun
                           """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
-            acceleratedDelay = 20f;
-            acceleratedBonus = 3f;
-            acceleratedSteps = 20;
-            burnoutDelay = 1600f;
-            cooldownDelay = 400f;
+            acceleratedDelay = 45f;
+            acceleratedBonus = 2f;
+            acceleratedSteps = 8;
+            burnoutDelay = 300f;
+            cooldownDelay = 720f;
 
             buildCostMultiplier = 0.1f;
             size = 5;
             scaledHealth = 820f;
-            reload = 400f;
+            reload = 30f;
             range = 500f;
             maxAmmo = 1000;
             ammoPerShot = 10;
@@ -751,7 +647,110 @@ public class AxthrixTurrets{
                 boltLengthRand = 20;
             }};
         }};
+        gravitation = new AxItemTurret("gravitation"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "Gravitation";
+            description = """ 
+                          """;
+            range = 8*90;
+            size = 6;
+            reload = 600;
+            coolantMultiplier = 1.8f;
+            requirements(Category.turret, with(
+                    Items.surgeAlloy, 1500,
+                    Items.phaseFabric, 3000,
+                    Items.silicon, 3250,
+                    Items.titanium, 3500
+            ));
+            faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(1);
+            ammoPerShot = 60;
+            maxAmmo = 180;
+            ammo(
+                    Items.phaseFabric, new BlackHoleBulletType(){{
+                        lifetime = 600;
+                        speed = 2;
+                        damage = bulletDamage = 0;
+                        horizonRadius = 0;
+                        lensingRadius = 0;
+                        suctionRadius = 240;
+                        scaledForce = 400;
+                        force = 40;
+                        scaleLife = true;
+                        swirlEffect = Fx.none;
+                        color = Color.purple;
+                        fragBullets = 1;
+                        trailInterval = 1;
+                        trailLength = 60;
+                        trailColor = Color.purple;
+
+                        trailEffect = AxthrixFfx.circleOut(50,50, 10,Color.purple);
+                        fragBullet = new BlackHoleBulletType(){{
+                            lifetime = 400;
+                            speed = 0;
+                            damage = bulletDamage = 25;
+                            lensingRadius = 180;
+                            horizonRadius = 20;
+                            damageRadius = 280;
+                            suctionRadius = 680;
+                            scaledForce = 800;
+                            force = 100;
+                            color = Color.purple;
+                            fragBullets = 1;
+                            fragBullet = new BlackHoleBulletType(){{
+                                lifetime = 40;
+                                repel = true;
+                                speed = 0;
+                                color = Color.purple;
+                                damage = bulletDamage = 75;
+                                horizonRadius = 0;
+                                lensingRadius = 0;
+                                suctionRadius = damageRadius = 200;
+                                scaledForce = 2670;
+                                force = 200;
+                                swirlEffect = AxthrixFfx.circleOut(40,200, 20,Color.purple);
+                            }};
+                        }};
+
+                        lightning = 1;
+                        lightningType = new BlackHoleBulletType(){{
+                            lifetime = 40;
+                            repel = true;
+                            speed = 0;
+                            damage = bulletDamage = 150;
+                            horizonRadius = 0;
+                            lensingRadius = 0;
+                            suctionRadius = damageRadius = 280;
+                            scaledForce = 8000;
+                            force = 600;
+                            swirlEffect = AxthrixFfx.circleOut(40,280, 50,Color.purple);
+                        }};
+                        parts.add(
+
+                            new BlackHolePart(){{
+                                progress = PartProgress.constant(1f);
+                                growProgress = PartProgress.constant(1f);
+                                size = sizeTo = 4;
+                                edge = edgeTo = 120;
+                                x = 0;
+                                y = 0;
+                                color = Color.purple;
+                            }},
+                            new BlackHolePart(){{
+                                progress = PartProgress.constant(1f);
+                                growProgress = PartProgress.constant(1f);
+                                size = sizeTo = 4;
+                                edge = edgeTo = 120;
+                                x = 0;
+                                y = 0;
+                                color = Color.purple;
+                            }}
+                        );
+                    }}
+            );
+        }};
         apex = new PayloadAcceleratedTurret("apex"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Apex";
             description = """ 
                           """;
@@ -1017,10 +1016,9 @@ public class AxthrixTurrets{
             scaledHealth = 180;
             reload = 30f;
             acceleratedBonus = 1;
-            acceleratedSteps = 150;
             acceleratedDelay = 1;
-            burnoutDelay = 300;
-            cooldownDelay = 800;
+            burnoutDelay = 359;
+            cooldownDelay = 600;
             setWarmupTime(1.5f);
             shootCone = 1f;
             shootY = 0f;
@@ -1037,6 +1035,7 @@ public class AxthrixTurrets{
             setUsers();
         }};
         apexus = new PayloadTurretType("apexus"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "Apexus";
             description = """
                           Engineered by Axthrix, Apexus is a large Payload cannon.
@@ -1319,6 +1318,7 @@ public class AxthrixTurrets{
             setUsers();
         }};
         /*multitest = new MultiTurretType("multi"){{
+            outlineColor = Color.valueOf("#181a1b");
             localizedName = "multi";
             description = """
                           WIP
@@ -1379,6 +1379,82 @@ public class AxthrixTurrets{
                 }};
             }});
         }};*/
+
+    }
+    public static void loadRaodon(){
+        asmot = new AxItemTurret("asmot"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "Asmot";
+            description = """
+                          Short range Machinegun.
+                          Great for point blank and high speed targets
+                          """;
+            range = 8*23;
+            size = 2;
+            reload = 10;
+            coolantMultiplier = 2.5f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.raodon);
+            coolant = consumeCoolant(1);
+            health = 800;
+            ammoPerShot = 10;
+            maxAmmo = 400;
+            shoot = new ShootBarrel(){{
+                barrels = new float[]{
+                        -3f, 1, 20,
+                        -1.5f, 2, 10,
+                        0f, 3, 0,
+                        1.5f, 2, -10,
+                        3f, 1, -20
+                };
+            }};
+            ammo(
+                    Items.titanium, new BasicBulletType(){{
+                        lifetime = 46;
+                        speed = 4;
+                        damage = 80;
+                        trailInterval = 1;
+                        trailLength = 60;
+                        trailColor = frontColor = backColor = Color.darkGray;
+                    }},
+                    Items.silicon, new BasicBulletType(){{
+                        lifetime = 46;
+                        speed = 4;
+                        damage = 50;
+                        trailInterval = 1;
+                        trailLength = 60;
+                        homingDelay = 16;
+                        homingRange = 8;
+                        homingPower = 0.05f;
+                        trailColor = frontColor = backColor = Color.darkGray;
+                    }}
+            );
+            drawer = new DrawTurret("reinforced-"){{
+                parts.add(
+                        new RegionPart("-shell-r"){{
+                            progress = PartProgress.recoil;
+                            moveY = 0.5f;
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.smoothReload, -1f, -1f, 15f)
+                            );
+
+                        }},
+                        new RegionPart("-shell-l"){{
+                            progress = PartProgress.recoil;
+                            moveY = 0.5f;
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.smoothReload, 1f, -1f, -15f)
+                            );
+                        }},
+                        new RegionPart("-main"){{layerOffset = 2;}});
+
+            }};
+        }};
 
     }
 }

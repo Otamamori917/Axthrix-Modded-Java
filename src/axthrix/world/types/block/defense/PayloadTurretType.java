@@ -1,5 +1,6 @@
 package axthrix.world.types.block.defense;
 
+import arc.Core;
 import arc.math.geom.*;
 import arc.struct.Seq;
 import arc.util.*;
@@ -54,6 +55,10 @@ public class PayloadTurretType extends PayloadAmmoTurret{
     @Override
     public void setStats(){
         super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
 
         stats.remove(Stat.ammo);
         stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes, true));

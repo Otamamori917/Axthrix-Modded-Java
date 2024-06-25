@@ -76,7 +76,8 @@ public class AxthrixLoader extends Mod{
         PayloadAmmoBlocks.load();
         AxthrixCrafters.load();
         //AxthrixPower.load();
-        AxthrixTurrets.load();
+        AxthrixTurrets.loadAxthrix();
+        AxthrixTurrets.loadRaodon();
         AxPlanets.load();
         //AxSectorPresets.load();
         AxthrixTechTree.load();

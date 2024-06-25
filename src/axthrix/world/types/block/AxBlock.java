@@ -3,6 +3,7 @@ package axthrix.world.types.block;
 import arc.Core;
 import arc.struct.Seq;
 import axthrix.world.types.AxFaction;
+import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import mindustry.world.Block;
 
@@ -17,6 +18,15 @@ public class AxBlock extends Block {
         super(name);
         solid = true;
         destructible = true;
+    }
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
+
     }
 
     @Override

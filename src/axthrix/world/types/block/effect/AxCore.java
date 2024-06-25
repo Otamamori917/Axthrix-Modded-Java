@@ -4,6 +4,7 @@ import arc.Core;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Timer;
+import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -24,6 +25,15 @@ public class AxCore extends CoreBlock {
     public Effect warmupEffect = Fx.none;
     public Effect spawnEffect = Fx.none;
     public boolean blackListFactions = false;
+
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
+    }
 
     public DrawBlock drawer = new DrawMulti(
             new DrawDefault()

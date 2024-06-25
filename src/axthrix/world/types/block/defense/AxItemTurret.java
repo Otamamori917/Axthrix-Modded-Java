@@ -1,6 +1,8 @@
 package axthrix.world.types.block.defense;
 
+import arc.Core;
 import arc.struct.Seq;
+import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
 import axthrix.world.types.AxFaction;
@@ -13,6 +15,15 @@ public class AxItemTurret extends ItemTurret {
     public boolean blackListFactions = false;
     public AxItemTurret(String name) {
         super(name);
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
     }
 
     public boolean partOfPlayerFaction()
