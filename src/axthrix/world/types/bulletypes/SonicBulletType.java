@@ -27,8 +27,8 @@ public class SonicBulletType extends BasicBulletType{
         smokeEffect = Fx.none;
         knockback = 4;
         impact = true;
-        status = AxthrixStatus.vibration;
-        statusDuration = 100;
+        status = AxthrixStatus.unrepair;
+        statusDuration = 1000*1000;
         keepVelocity = false;
         reflectable = false;
         absorbable = false;

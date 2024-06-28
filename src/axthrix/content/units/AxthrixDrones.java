@@ -298,9 +298,8 @@ public class AxthrixDrones {
                 inaccuracy = 5;
                 shoot.shots = 3;
                 shoot.shotDelay = 3;
-                immunities.add(AxthrixStatus.vibration);
                 bullet = new SonicBulletType(){{
-                    damage = 2;
+                    damage = 10;
                     width = 8;
                     height = 4;
                 }};

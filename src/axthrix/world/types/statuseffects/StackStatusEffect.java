@@ -5,9 +5,11 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.content.StatusEffects;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
+import mindustry.type.StatusEffect;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import axthrix.world.util.AxStats;
@@ -19,11 +21,11 @@ import java.util.Stack;
 public class StackStatusEffect extends AxStatusEffect {
     public int charges = 1;
     public boolean setStatsInfinity = false;
-    public HashMap<Unit, Integer> unitCharges = new HashMap<>();
-    public HashMap<Unit, Float> unitTime = new HashMap<>();
-    public HashMap<Unit, Team> unitTeam = new HashMap<>();
+    public static HashMap<Unit, Integer> unitCharges = new HashMap<>();
+    public static HashMap<Unit, Float> unitTime = new HashMap<>();
+    public static HashMap<Unit, Team> unitTeam = new HashMap<>();
     List<Float> statsStatic = new Stack<>();
-    public Team newTeam = null;
+    public static Team newTeam = null;
     String localName = "";
 
     public StackStatusEffect(String name)
@@ -181,6 +183,23 @@ public class StackStatusEffect extends AxStatusEffect {
         if (newTeam != null)
             unit.team(unitTeam.get(unit));
         unitTeam.remove(unit);
+    }
+
+    public static void stackRemove(Unit unit, float amount,StatusEffect status)
+        /*by percentage  1.25/75%  2/50%  3.33/30%  4/25%  5/20%  6.66/15%  10/10%*/
+    {
+        float percent = unitCharges.get(unit) / amount;
+        int finalPercent = (int) percent + 10;
+        if(unitCharges.get(unit) <= finalPercent){
+            unit.unapply(status);
+            unitCharges.remove(unit);
+            unitTime.remove(unit);
+            if (newTeam != null)
+                unit.team(unitTeam.get(unit));
+            unitTeam.remove(unit);
+        } else {
+            unitCharges.replace(unit, unitCharges.get(unit) - finalPercent);
+        }
     }
 
     @Override

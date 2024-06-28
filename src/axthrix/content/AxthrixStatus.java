@@ -1,17 +1,21 @@
 package axthrix.content;
 
+import arc.Core;
 import arc.graphics.Color;
+import arc.util.Time;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.statuseffects.*;
 import mindustry.entities.abilities.ArmorPlateAbility;
+import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
+import mindustry.world.meta.Stat;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, vibration, repent, finalStand,excert,chainExcert,slivered,
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,
 
     //visual statuses
     standFx,bFx
@@ -68,17 +72,36 @@ public class AxthrixStatus {
             });
         }};
 
-        vibration = new StatusEffect("vibration"){{
-            color = Pal.lightishGray;
-            speedMultiplier = 0.60f;
-            reloadMultiplier = 0.80f;
-            damage = 5f;
-            transitionDamage = 20f;
-            init(() -> {
-                opposite(StatusEffects.unmoving); 
-            });
+        unrepair = new StackStatusEffect("unrepair"){{
+            color = Color.valueOf("6d6f7c");
+            healthMultiplier = .998f;
+            charges = 300;
         }};
 
+        grayRepair = new StatusEffect("gray-repair"){
+            @Override
+            public void update(Unit unit, float time){
+                {
+                    color = Color.valueOf("80ffb8");
+                }
+                if(unit.hasEffect(unrepair)){
+                    StackStatusEffect.stackRemove(unit,4,unrepair);
+                    AxthrixFfx.circleOut(120, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                    unit.health = unit.health + (unit.maxHealth() / 6.66f);
+                    AxthrixFfx.circleOut(180, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                    unit.unapply(this);
+                }else{
+                    unit.health = unit.health + (unit.maxHealth() / 10f);
+                    AxthrixFfx.circleOut(180, 15, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                    unit.unapply(this);
+                }
+            }
+            public void setStats(){
+                super.setStats();
+                stats.add(new Stat("gray-repair-repair"),"[stat]10% ~ 15%");
+                stats.add(new Stat("gray-repair-restore"),"[stat]25%");
+            }
+        };
 
         
         precludedX = new StatusEffect("precludedX"){{

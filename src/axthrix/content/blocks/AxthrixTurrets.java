@@ -525,9 +525,9 @@ public class AxthrixTurrets{
                     moveY = 5f;
                     mirror = true;
                     under = true;
-                    heatLayerOffset = 1.2f;
-                    layerOffset = 1;
-                    outlineLayerOffset = 0.8f;
+                    heatLayerOffset = 200f;
+                    layerOffset = 2.2f;
+                    outlineLayerOffset = -1f;
 
                     children.add(new RegionPart("-joint"){{
                         progress = PartProgress.warmup.delay(0.6f);
@@ -538,6 +538,8 @@ public class AxthrixTurrets{
                         moveRot = -4f;
                         moveY = 1f;
                         moveX = 2f;
+                        heatLayerOffset = 200f;
+                        layerOffset = 2.2f;
 
                         moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -20f));
                         children.add(new RegionPart("-plate"){{
@@ -550,6 +552,9 @@ public class AxthrixTurrets{
                             moveY = 1.5f;
                             moveX = 2.5f;
 
+                            heatLayerOffset = 200f;
+                            layerOffset = 1.8f;
+
                             moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
                             children.add(new RegionPart("-wing"){{
                                 progress = PartProgress.warmup;
@@ -561,6 +566,9 @@ public class AxthrixTurrets{
                                 x = 8f;
                                 moveY = 3f;
                                 moveX = 9.5f;
+
+                                heatLayerOffset = 200f;
+                                layerOffset = 1.8f;
 
                                 moves.add(new PartMove(PartProgress.recoil, 2f, 9f, 90f));      
                             }}); 
@@ -576,6 +584,9 @@ public class AxthrixTurrets{
                                 moveY = -2f;
                                 moveX = 5f;
 
+                                heatLayerOffset = 200f;
+                                layerOffset = 1.8f;
+
                                 moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 70f));      
                             }});     
                         }});
@@ -588,9 +599,8 @@ public class AxthrixTurrets{
                     mirror = false;
                     under = true;
                     moveY = -5f;
-                    heatLayerOffset = 1.2f;
-                    layerOffset = 0.9f;
-                    outlineLayerOffset = 0.7f;
+                    heatLayerOffset = 200f;
+                    layerOffset = 2f;
                     children.add(new RegionPart("-missile") {{
                         progress = PartProgress.reload.curve(Interp.pow2In);
 
@@ -601,8 +611,9 @@ public class AxthrixTurrets{
                         outline = false;
                         under = true;
 
-                        layerOffset = -0.1f;
-                        outlineLayerOffset = -0.2f;
+
+
+                        layerOffset = 1.8f;
 
                         moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
                     }});
@@ -1386,13 +1397,15 @@ public class AxthrixTurrets{
             outlineColor = Color.valueOf("#181a1b");
             localizedName = "Asmot";
             description = """
-                          Short range Machinegun.
+                          Short range High damage Machinegun.
                           Great for point blank and high speed targets
+                          Due to design has high spread and is very ammo hungry
+                          [stat]External Storage recomended.
                           """;
             range = 8*23;
             size = 2;
             reload = 10;
-            coolantMultiplier = 2.5f;
+            coolantMultiplier = 2f;
             requirements(Category.turret, with(
                     Items.silicon, 325,
                     Items.titanium, 350
@@ -1400,22 +1413,22 @@ public class AxthrixTurrets{
             faction.add(AxFactions.raodon);
             coolant = consumeCoolant(1);
             health = 800;
-            ammoPerShot = 10;
-            maxAmmo = 400;
+            ammoPerShot = 6;
+            maxAmmo = 6*25;
             shoot = new ShootBarrel(){{
                 barrels = new float[]{
-                        -3f, 1, 20,
-                        -1.5f, 2, 10,
-                        0f, 3, 0,
-                        1.5f, 2, -10,
-                        3f, 1, -20
+                        -4f, -8, 20,
+                        -2.5f, -5, 10,
+                        0f, -3, 0,
+                        2.5f, -5, -10,
+                        4f, -8, -20
                 };
             }};
             ammo(
                     Items.titanium, new BasicBulletType(){{
                         lifetime = 46;
                         speed = 4;
-                        damage = 80;
+                        damage = 100;
                         trailInterval = 1;
                         trailLength = 60;
                         trailColor = frontColor = backColor = Color.darkGray;
@@ -1423,12 +1436,12 @@ public class AxthrixTurrets{
                     Items.silicon, new BasicBulletType(){{
                         lifetime = 46;
                         speed = 4;
-                        damage = 50;
+                        damage = 70;
                         trailInterval = 1;
                         trailLength = 60;
                         homingDelay = 16;
                         homingRange = 8;
-                        homingPower = 0.05f;
+                        homingPower = 0.1f;
                         trailColor = frontColor = backColor = Color.darkGray;
                     }}
             );
@@ -1453,6 +1466,84 @@ public class AxthrixTurrets{
                         }},
                         new RegionPart("-main"){{layerOffset = 2;}});
 
+            }};
+        }};
+
+        rektios = new AxPowerTurret("rektios"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "Rektios";
+            description = """
+                          Medium Range Sonic Cannon
+                          deals Unrepairable damage by conventional healing
+                          Due to design it deals low damage and cannot be cooled
+                          [stat]External Booster recomended.
+                          """;
+            range = 8*36;
+            size = 3;
+            reload = 280;
+            inaccuracy = 2.5f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.raodon);
+            consumePower(210/60);
+            health = 1300;
+            shoot.shots = 3;
+            shoot.shotDelay = 1;
+            shootType = new SonicBulletType(){{
+                damage = 16;
+                lifetime = 36;
+                width = 20;
+                height = 6;
+            }};
+            drawer = new DrawTurret("reinforced-"){{
+                parts.add(
+                        new RegionPart("-shell-l"){{
+                            progress = PartProgress.reload.inv();;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveX = -1.5f;
+                            moveY = -2f;
+                            moveRot = -15f;
+                            layerOffset = 2;
+                            moves.add(new PartMove(PartProgress.reload, 1f, -2f, -5f));
+                            children.add(new RegionPart("-piston-l"){{
+                                progress = PartProgress.reload.inv();
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.heal;
+                                mirror = false;
+                                moveY = -1f;
+                                moveX = 1f;
+                                layerOffset = 2;
+                                moves.add(new PartMove(PartProgress.reload, -1f, 1f, 0f));
+                            }});
+                        }},
+                        new RegionPart("-shell-r"){{
+                            progress = PartProgress.reload.inv();;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveX = 1.5f;
+                            moveY = -2f;
+                            moveRot = 15f;
+                            layerOffset = 2;
+                            moves.add(new PartMove(PartProgress.reload, -1f, -2f, 5f));
+                            children.add(new RegionPart("-piston-r"){{
+                                progress = PartProgress.reload.inv();
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.heal;
+                                mirror = false;
+                                moveY = -1f;
+                                moveX = -1f;
+                                layerOffset = 2;
+                                moves.add(new PartMove(PartProgress.reload, 1f, 1f, 0f));
+                            }});
+                        }},
+                        new RegionPart("-main"){{layerOffset = 2;}});
             }};
         }};
 
