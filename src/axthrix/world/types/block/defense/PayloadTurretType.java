@@ -24,7 +24,6 @@ public class PayloadTurretType extends PayloadAmmoTurret{
 
     public Seq<AxFaction> faction = new Seq<>();
     public boolean blackListFactions = false;
-
     public boolean partOfPlayerFaction()
     {
         if (blackListFactions)
@@ -85,6 +84,8 @@ public class PayloadTurretType extends PayloadAmmoTurret{
         public float payLen;
         public Vec2 payVector = new Vec2();
 
+        public Unit unitCarry;
+
         @Override
         public void updateTile(){
             if(moveInPayload()){
@@ -103,7 +104,11 @@ public class PayloadTurretType extends PayloadAmmoTurret{
         @Override
         public void handlePayload(Building source, Payload payload){
             this.payload = payload;
-            this.payVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            if(source != null){
+                this.payVector.set(source).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            } else {
+                this.payVector.set(unitCarry.getX(), unitCarry.getY()).sub(this).clamp(-size * tilesize / 2f, -size * tilesize / 2f, size * tilesize / 2f, size * tilesize / 2f);
+            }
             payLen = payVector.len();
         }
 

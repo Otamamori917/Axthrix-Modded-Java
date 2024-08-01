@@ -15,7 +15,7 @@ import mindustry.content.*;
 import mindustry.world.meta.Stat;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,repair,
 
     //visual statuses
     standFx,bFx
@@ -100,6 +100,22 @@ public class AxthrixStatus {
                 super.setStats();
                 stats.add(new Stat("gray-repair-repair"),"[stat]10% ~ 15%");
                 stats.add(new Stat("gray-repair-restore"),"[stat]25%");
+            }
+        };
+        repair = new StatusEffect("repair"){
+            @Override
+            public void update(Unit unit, float time){
+                {
+                    color = Color.green;
+                }
+                unit.health = unit.health + (unit.maxHealth() / 12.5f);
+                AxthrixFfx.circleOut(180, 16, 2,Color.green).at(unit.x,unit.y);
+                unit.unapply(this);
+
+            }
+            public void setStats(){
+                super.setStats();
+                stats.add(new Stat("gray-repair-repair"),"[stat]8%");
             }
         };
 

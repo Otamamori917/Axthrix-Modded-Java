@@ -2192,7 +2192,7 @@ public class AxthrixUnits {
         naji = new CopterUnitType("naji") {{
             localizedName = "[green]Naji";
             description = """
-                          [green]A Slow Moving Airship, Naji Supports its allies With its Chain Healing.
+                          [green]A Slow Moving Airship, Naji Supports its allies With a healing burst.
                           Naji Deploys an Ivy Sentry that defends the area its in for a short while.
                           """;
             itemCapacity = 40;
@@ -2227,11 +2227,14 @@ public class AxthrixUnits {
             constructor = CptrUnitEntity::new;
             aiController = UnitHealerAi::new;
 
-            abilities.add(new ChainHealAbility(AxthrixStatus.chainExcert, 100f, 400f, 16*8));
+            abilities.add(new StatusFieldAbility(AxthrixStatus.repair,60,80,16*8){{
+                applyEffect = AxthrixFfx.circleOut(60,4,1,Color.green);
+                activeEffect = AxthrixFfx.circleOut(40,16*8, 4,Color.green);
+            }});
 
             weapons.add(new Weapon() {{
                 rotate = false;
-                reload = 120*10;
+                reload = 120*6;
                 x = y = shootX = 0;
                 shootY = 10;
                 baseRotation = 180f;
@@ -2322,7 +2325,7 @@ public class AxthrixUnits {
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;
-            rotateSpeed = 9 / 7.5f;
+            rotateSpeed = 18 / 7.5f;
             accel = 0.08f;
             drag = 0.014f;
             strafePenalty = 1;
@@ -2333,9 +2336,9 @@ public class AxthrixUnits {
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,6,-90),
-                    new UnitEngine(-10,-10,6,180+45),
-                    new UnitEngine(10,-10,6,270+45)
+                    new UnitEngine(0,-14,4,-90),
+                    new UnitEngine(-10,-10,4,180+45),
+                    new UnitEngine(10,-10,4,270+45)
             );
         }};
         aymoss = new MountUnitType("aymoss")
@@ -2358,7 +2361,7 @@ public class AxthrixUnits {
             itemCapacity = 600;
             itemOffsetY = 6;
             speed = 18f / 7.5f;
-            rotateSpeed = 8 / 7.5f;
+            rotateSpeed = 16 / 7.5f;
             accel = 0.07f;
             drag = 0.015f;
             strafePenalty = 1;
@@ -2394,7 +2397,7 @@ public class AxthrixUnits {
             itemCapacity = 1200;
             itemOffsetY = 6;
             speed = 16f / 7.5f;
-            rotateSpeed = 7 / 7.5f;
+            rotateSpeed = 14 / 7.5f;
             accel = 0.06f;
             drag = 0.016f;
             strafePenalty = 1;
@@ -2430,7 +2433,7 @@ public class AxthrixUnits {
             itemCapacity = 2400;
             itemOffsetY = 6;
             speed = 14f / 7.5f;
-            rotateSpeed = 6 / 7.5f;
+            rotateSpeed = 12 / 7.5f;
             accel = 0.05f;
             drag = 0.017f;
             strafePenalty = 1;
@@ -2466,7 +2469,7 @@ public class AxthrixUnits {
             itemCapacity = 4800;
             itemOffsetY = 6;
             speed = 12f / 7.5f;
-            rotateSpeed = 5 / 7.5f;
+            rotateSpeed = 10 / 7.5f;
             accel = 0.04f;
             drag = 0.018f;
             strafePenalty = 1;
@@ -2486,7 +2489,7 @@ public class AxthrixUnits {
         {{
             localizedName = "[#a52ac7]Arcalishion";
             description = """
-                          [orange]|Teir Xalibur Unit|
+                          [orange]|Teir X Unit|
                           (This Means This Is A Boss)[]
                           --------------------------------------------------
                           [#a52ac7]Can pick up and use any 6x6 Item Turret or smaller.
@@ -2505,7 +2508,7 @@ public class AxthrixUnits {
             itemCapacity = 10000;
             itemOffsetY = 20;
             speed = 8f / 7.5f;
-            rotateSpeed = 4 / 7.5f;
+            rotateSpeed = 6 / 7.5f;
             accel = 0.03f;
             drag = 0.019f;
             strafePenalty = 1;
@@ -2542,6 +2545,7 @@ public class AxthrixUnits {
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;
+            rotateSpeed = 18 / 7.5f;
             strafePenalty = 1;
             drag = 0.8f;
             lowAltitude = true;

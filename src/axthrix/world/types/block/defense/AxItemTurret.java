@@ -15,6 +15,7 @@ public class AxItemTurret extends ItemTurret {
     public boolean blackListFactions = false;
     public AxItemTurret(String name) {
         super(name);
+
     }
 
     @Override

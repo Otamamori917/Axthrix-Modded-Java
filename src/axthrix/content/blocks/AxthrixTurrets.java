@@ -525,7 +525,6 @@ public class AxthrixTurrets{
                     moveY = 5f;
                     mirror = true;
                     under = true;
-                    heatLayerOffset = 200f;
                     layerOffset = 2.2f;
                     outlineLayerOffset = -1f;
 
@@ -538,7 +537,6 @@ public class AxthrixTurrets{
                         moveRot = -4f;
                         moveY = 1f;
                         moveX = 2f;
-                        heatLayerOffset = 200f;
                         layerOffset = 2.2f;
 
                         moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -20f));
@@ -552,7 +550,6 @@ public class AxthrixTurrets{
                             moveY = 1.5f;
                             moveX = 2.5f;
 
-                            heatLayerOffset = 200f;
                             layerOffset = 1.8f;
 
                             moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
@@ -567,7 +564,6 @@ public class AxthrixTurrets{
                                 moveY = 3f;
                                 moveX = 9.5f;
 
-                                heatLayerOffset = 200f;
                                 layerOffset = 1.8f;
 
                                 moves.add(new PartMove(PartProgress.recoil, 2f, 9f, 90f));      
@@ -584,7 +580,6 @@ public class AxthrixTurrets{
                                 moveY = -2f;
                                 moveX = 5f;
 
-                                heatLayerOffset = 200f;
                                 layerOffset = 1.8f;
 
                                 moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 70f));      
@@ -599,7 +594,6 @@ public class AxthrixTurrets{
                     mirror = false;
                     under = true;
                     moveY = -5f;
-                    heatLayerOffset = 200f;
                     layerOffset = 2f;
                     children.add(new RegionPart("-missile") {{
                         progress = PartProgress.reload.curve(Interp.pow2In);
@@ -620,7 +614,6 @@ public class AxthrixTurrets{
                 }});
             }};
         }};
-
         aratiri = new PowerAcceleratedTurret("aratiri"){{
             outlineColor = Color.valueOf("#181a1b");
             localizedName = "Aratiri";

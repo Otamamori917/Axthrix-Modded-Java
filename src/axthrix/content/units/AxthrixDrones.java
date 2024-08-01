@@ -42,7 +42,7 @@ public class AxthrixDrones {
         ivy = new AmmoLifeTimeUnitType("ivy")
         {{
             localizedName = "[green]Ivy";
-            ammoCapacity = 1200;
+            ammoCapacity = 400;
             engineColor = Color.valueOf("4ea572");
             aiController = SentriAI::new;
             constructor = UnitEntity::create;
@@ -50,10 +50,9 @@ public class AxthrixDrones {
             speed = accel = 0f;
             drag = 0.1f;
             flying = true;
-            isEnemy = false;
+            isEnemy = true;
             useUnitCap = false;
             ammoType = new PowerAmmoType(10);
-            targetable = vulnerableWithPayloads = hittable = false;
             itemCapacity = 0;
             health = 200;
             engineSize = -1;
@@ -71,13 +70,12 @@ public class AxthrixDrones {
                 reload = 6f;
                 recoil = 1.5f / 4f;
                 ejectEffect = Fx.casing1;
-                bullet = new LaserBoltBulletType(2f, 25f){{
+                bullet = new LaserBoltBulletType(2f, 12.5f){{
                     shootSound = Sounds.pulseBlast;
                     soundPitchMax = soundPitchMin = 2;
                     lifetime = 60f;
                     width = 1f;
                     height = 3.5f;
-                    recoil = 0.08f;
                     backColor = Color.valueOf("4ea572");
                     frontColor = Color.white;
                 }};

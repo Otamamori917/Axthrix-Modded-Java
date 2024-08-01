@@ -31,6 +31,7 @@ public class DrawIPayloadTurret extends DrawTurret{
 
     @Override
     public void draw(Building build){
+
         PayloadTurretType turret = (PayloadTurretType)build.block;
         PayloadTurretTypeBuild tb = (PayloadTurretTypeBuild)build;
 
