@@ -9,6 +9,7 @@ import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
+import axthrix.world.types.ai.MiningAi;
 import mindustry.Vars;
 import mindustry.ai.types.LogicAI;
 import mindustry.content.Blocks;
@@ -21,7 +22,7 @@ import mindustry.ui.Bar;
 import mindustry.world.Tile;
 import mindustry.world.meta.Env;
 import axthrix.content.FX.AxthrixFx;
-import axthrix.world.types.ai.MiningAi;
+
 
 import static mindustry.Vars.*;
 

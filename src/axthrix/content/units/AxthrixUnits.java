@@ -12,9 +12,7 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.parts.Propeller;
-import axthrix.world.types.unittypes.AxUnitType;
-import axthrix.world.types.unittypes.CopterUnitType;
-import axthrix.world.types.unittypes.MountUnitType;
+import axthrix.world.types.unittypes.*;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
@@ -1364,7 +1362,14 @@ public class AxthrixUnits {
             boostMultiplier = 2.5f;
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
-           weapons.add(new Weapon("puw"){{
+            abilities.add(new DroneSpawnAbility(){{
+                startAng = 180;
+                endAng = 0;
+                startY = -5;
+                endY = 5;
+                drone = AxthrixDrones.wattGround;
+            }});
+            weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.sap;
                 shootY = 2f;
                 x = 0f;
@@ -1396,8 +1401,6 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
-
-            abilities.add(new ForceFieldAbility(20f, 0.1f, 200f, 40f * 6));
         }};
 
         blockade = new AxUnitType("blockade"){{
@@ -2307,10 +2310,10 @@ public class AxthrixUnits {
         //amos,aymoss,amalik,anuvaha,ambuvahini,
         amos = new MountUnitType("amos")
         {{
-            localizedName = "[#a52ac7]Amos";
+            localizedName = "Amos";
             description = """
-                          [#a52ac7]Can pick up and use any 1x1 Item Turret.
-                          Unit Item Storage will restock current attached turret.[]
+                          Can pick up and use any 1x1 Turret.
+                          Unit Item Storage will restock current attached turret.
                           [#800000]Only the first turret picked up will be operational.
                           """;
 
@@ -2319,33 +2322,29 @@ public class AxthrixUnits {
             armor = 2;
             faceTarget = true;
             factions.add(AxFactions.axthrix);
-            flying = true;
-            hitSize = 2*2;
-            engineColor = Color.valueOf("a52ac7");
+            speed = 2.5f;
+            accel = 0.06f;
+            drag = 0.017f;
+            hitSize = 16.05f;
             itemCapacity = 300;
             itemOffsetY = 6;
-            speed = 20f / 7.5f;
-            rotateSpeed = 18 / 7.5f;
-            accel = 0.08f;
-            drag = 0.014f;
-            strafePenalty = 1;
             lowAltitude = true;
             pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (1 * 1);
+            flying = true;
+            payloadCapacity = tilePayload * ((2 * 2) - 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,4,-90),
-                    new UnitEngine(-10,-10,4,180+45),
-                    new UnitEngine(10,-10,4,270+45)
+                    new UnitEngine(0,-14,4.5f,-90),
+                    new UnitEngine(-10,-10,4.5f,180+45),
+                    new UnitEngine(10,-10,4.5f,270+45)
             );
         }};
         aymoss = new MountUnitType("aymoss")
         {{
-            localizedName = "[#a52ac7]Aymoss";
+            localizedName = "Aymoss";
             description = """
-                          [#a52ac7]Can pick up and use any 2x2 Item Turret or smaller.
+                          Can pick up and use any 2x2 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
                           [#800000]Only the first turret picked up will be operational.
                           """;
@@ -2354,21 +2353,17 @@ public class AxthrixUnits {
             health = 1800;
             armor = 5;
             faceTarget = true;
-            factions.add(AxFactions.axthrix);
             flying = true;
-            hitSize = 4*4;
-            engineColor = Color.valueOf("a52ac7");
+            factions.add(AxFactions.axthrix);
+            speed = 2.5f;
+            accel = 0.06f;
+            drag = 0.017f;
+            hitSize = 24.05f;
             itemCapacity = 600;
             itemOffsetY = 6;
-            speed = 18f / 7.5f;
-            rotateSpeed = 16 / 7.5f;
-            accel = 0.07f;
-            drag = 0.015f;
-            strafePenalty = 1;
             lowAltitude = true;
             pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (2 * 2);
+            payloadCapacity = tilePayload * ((3 * 3) - 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2379,9 +2374,9 @@ public class AxthrixUnits {
         }};
         amalik = new MountUnitType("amalik")
         {{
-            localizedName = "[#a52ac7]Amalik";
+            localizedName = "Amalik";
             description = """
-                          [#a52ac7]Can pick up and use any 3x3 Item Turret or smaller.
+                          Can pick up and use any 3x3 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
                           [#800000]Only the first turret picked up will be operational.
                           """;
@@ -2391,20 +2386,18 @@ public class AxthrixUnits {
             armor = 8;
             faceTarget = true;
             factions.add(AxFactions.axthrix);
+            speed = 1.2f;
+            rotateSpeed = 2f;
+            accel = 0.05f;
+            drag = 0.017f;
+            faceTarget = true;
+            hitSize = 36f;
             flying = true;
-            hitSize = 6*6;
-            engineColor = Color.valueOf("a52ac7");
             itemCapacity = 1200;
             itemOffsetY = 6;
-            speed = 16f / 7.5f;
-            rotateSpeed = 14 / 7.5f;
-            accel = 0.06f;
-            drag = 0.016f;
-            strafePenalty = 1;
             lowAltitude = true;
             pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (3 * 3);
+            payloadCapacity = tilePayload * ((4 * 4) - 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2415,9 +2408,9 @@ public class AxthrixUnits {
         }};
         anuvaha = new MountUnitType("anuvaha")
         {{
-            localizedName = "[#a52ac7]Anuvaha";
+            localizedName = "Anuvaha";
             description = """
-                          [#a52ac7]Can pick up and use any 4x4 Item Turret or smaller.
+                          Can pick up and use any 4x4 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
                           [#800000]Only the first turret picked up will be operational.
                           """;
@@ -2427,20 +2420,18 @@ public class AxthrixUnits {
             armor = 11;
             faceTarget = true;
             factions.add(AxFactions.axthrix);
-            flying = true;
-            hitSize = 8*8;
-            engineColor = Color.valueOf("a52ac7");
-            itemCapacity = 2400;
-            itemOffsetY = 6;
-            speed = 14f / 7.5f;
-            rotateSpeed = 12 / 7.5f;
+            speed = 1.2f;
+            rotateSpeed = 2f;
             accel = 0.05f;
             drag = 0.017f;
-            strafePenalty = 1;
+            faceTarget = true;
+            hitSize = 50f;
+            flying = true;
+            itemCapacity = 2400;
+            itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (4 * 4);
+            payloadCapacity = tilePayload * ((5 * 5) - 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2451,9 +2442,9 @@ public class AxthrixUnits {
         }};
         ambuvahini = new MountUnitType("ambuvahini")
         {{
-            localizedName = "[#a52ac7]Ambuvahini";
+            localizedName = "Ambuvahini";
             description = """
-                          [#a52ac7]Can pick up and use any 5x5 Item Turret or smaller.
+                          Can pick up and use any 5x5 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
                           [#800000]Only the first turret picked up will be operational.
                           """;
@@ -2463,22 +2454,16 @@ public class AxthrixUnits {
             armor = 26;
             faceTarget = true;
             factions.add(AxFactions.axthrix);
-            flying = true;
-            hitSize = 10*10;
-            engineColor = Color.valueOf("a52ac7");
-            itemCapacity = 4800;
-            itemOffsetY = 6;
-            speed = 12f / 7.5f;
-            rotateSpeed = 10 / 7.5f;
+            speed = 0.8f;
+            rotateSpeed = 1f;
             accel = 0.04f;
             drag = 0.018f;
-            strafePenalty = 1;
-            lowAltitude = true;
-            pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (5 * 5);
+            flying = true;
+            hitSize = 66f;
+            payloadCapacity = tilePayload * ((6 * 6) - 1);
             range = 12*8;
             engineSize = 0;
+            lowAltitude = true;
             engines = Seq.with(
                     new UnitEngine(0,-14,6,-90),
                     new UnitEngine(-10,-10,6,180+45),
@@ -2487,12 +2472,12 @@ public class AxthrixUnits {
         }};
         arcalishion = new MountUnitType("arcalishion")//Todo Might have weapons or abilities
         {{
-            localizedName = "[#a52ac7]Arcalishion";
+            localizedName = "Arcalishion";
             description = """
                           [orange]|Teir X Unit|
                           (This Means This Is A Boss)[]
                           --------------------------------------------------
-                          [#a52ac7]Can pick up and use any 6x6 Item Turret or smaller.
+                          Can pick up and use any 6x6 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
                           [#800000]Only the first turret picked up will be operational.
                           """;
@@ -2502,22 +2487,16 @@ public class AxthrixUnits {
             armor = 39;
             faceTarget = true;
             factions.add(AxFactions.axthrix);
+            speed = 0.8f;
+            rotateSpeed = 1f;
+            accel = 0.04f;
+            drag = 0.018f;
             flying = true;
-            hitSize = 12*12;
-            engineColor = Color.valueOf("a52ac7");
-            itemCapacity = 10000;
-            itemOffsetY = 20;
-            speed = 8f / 7.5f;
-            rotateSpeed = 6 / 7.5f;
-            accel = 0.03f;
-            drag = 0.019f;
-            strafePenalty = 1;
-            lowAltitude = true;
-            pickupUnits = false;
-            omniMovement = false;
-            payloadCapacity = tilePayload * (6 * 6);
+            hitSize = 80f;
+            payloadCapacity = tilePayload * ((7 * 7) -1);
             range = 12*8;
             engineSize = 0;
+            lowAltitude = true;
             engines = Seq.with(
                     new UnitEngine(-30,-70,14,-90),
                     new UnitEngine(30,-70,14,-90),
@@ -2557,7 +2536,7 @@ public class AxthrixUnits {
                     new UnitEngine(-10,-10,6,180+45),
                     new UnitEngine(10,-10,6,270+45)
             );
-            weapons.add(new Weapon() {{
+            /*weapons.add(new Weapon() {{
                 reload = 120*10;
                 x = y = shootX = shootY = 0;
                 shootCone = 360;
@@ -2599,7 +2578,7 @@ public class AxthrixUnits {
                     shootEffect = Fx.shootBig;
                     spawnUnit = AxthrixDrones.wattAir;
                 }};
-            }});
+            }});*/
         }};
 
         immuneUnits.add(

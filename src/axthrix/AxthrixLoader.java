@@ -30,6 +30,10 @@ import static mindustry.Vars.headless;
 public class AxthrixLoader extends Mod{
     public static Seq<BulletData> allBullets = new Seq<>();
     public static boolean funibullet = false;
+    //debug
+    public static boolean amosPowerDebug = false;
+    public static boolean amosLiquidDebug = false;
+    public static boolean showMessage = true;
     public AxthrixLoader(){
         super();
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
@@ -44,6 +48,9 @@ public class AxthrixLoader extends Mod{
 
         // Check if funni bullet is enabled
         funibullet = settings.getBool("aj-funni-disabled", false);
+        amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
+        amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
+        showMessage = settings.getBool("aj-message-debug", true);
     }
     @Override
     public void init(){
@@ -63,6 +70,7 @@ public class AxthrixLoader extends Mod{
     public void loadContent(){
         Log.info("Loading Axthrix content");
         StackWorldState.load();
+        MountWorldState.load();
         AxFactions.load();
         AxStats.load();
         //AxItems.load();
@@ -90,13 +98,20 @@ public class AxthrixLoader extends Mod{
                 dialog.cont.add(Core.bundle.get("menu.aj-menu.message")).row();
                 dialog.cont.image(Core.atlas.find("aj-welcome-icon")).pad(20f).row();
                 dialog.cont.button("okay", dialog::hide).size(100f, 50f);
-                dialog.show();
+                if (showMessage){
+                    dialog.show();
+                } else {
+                    dialog.hide();
+                }
             });
         });
     }
     private void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.aj-title"), "aj-settings-icon", t -> {
             t.checkPref("aj-funni-disabled", false);
+            t.checkPref("aj-message-debug", true);
+            t.checkPref("aj-mount-power-debug", false);
+            t.checkPref("aj-mount-liquid-debug", false);
         });
     }
     public static boolean checkKillShooter(BulletType b){

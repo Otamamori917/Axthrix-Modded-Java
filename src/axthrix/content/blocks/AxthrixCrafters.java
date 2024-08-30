@@ -2,6 +2,7 @@ package axthrix.content.blocks;
 
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
+import axthrix.world.types.block.LiquidDeposit;
 import axthrix.world.types.block.production.AxMulticrafter;
 import axthrix.world.types.block.production.PayloadProducer;
 import mindustry.content.*;
@@ -21,7 +22,9 @@ public class AxthrixCrafters {
 
 	//payload ammo crafters
 
-	caliberPress, caliberCrafter;
+	caliberPress, caliberCrafter,
+
+	liquidDeposit;
 
     public static void load() {
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
@@ -120,6 +123,10 @@ public class AxthrixCrafters {
 					tempest1mCaliber
 			);
 			setRecipeProductionStats();
+		}};
+		liquidDeposit = new LiquidDeposit("liquid-deposit") {{
+			liquidCapacity = 200;
+			size = 2;
 		}};
     }
 }

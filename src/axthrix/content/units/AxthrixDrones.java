@@ -1,14 +1,11 @@
 package axthrix.content.units;
 
 import arc.graphics.Color;
-import arc.math.geom.Geometry;
 import axthrix.content.AxthrixStatus;
-import axthrix.world.types.ai.AgressiveFlyingAi;
 import axthrix.world.types.bulletypes.SonicBulletType;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.content.Fx;
-import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.RegionPart;
@@ -18,7 +15,6 @@ import axthrix.world.types.ai.*;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
 import mindustry.type.ammo.PowerAmmoType;
 
 public class AxthrixDrones {
@@ -105,7 +101,7 @@ public class AxthrixDrones {
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
+            controller = u -> new DroneAI();
             health = 200;
             armor = 2;
             faceTarget = true;
@@ -170,7 +166,7 @@ public class AxthrixDrones {
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
+            controller = u -> new DroneAI();
             health = 200;
             armor = 2;
             faceTarget = true;
@@ -217,7 +213,7 @@ public class AxthrixDrones {
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
+            controller = u -> new DroneAI();
             health = 200;
             armor = 2;
             faceTarget = true;
@@ -272,7 +268,7 @@ public class AxthrixDrones {
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
+            controller = u -> new DroneAI();
             health = 200;
             armor = 2;
             faceTarget = true;
