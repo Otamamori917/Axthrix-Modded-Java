@@ -69,7 +69,7 @@ public class DroneSpawnAbility extends Ability {
             du.tetherUnit = unit;
         }
         timer += Time.delta * Vars.state.rules.unitBuildSpeed(unit.team);
-        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && canReplace() == true) {
+        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && canReplace() == null) {
 
             spawnEffect.at(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)), 0.0F, parentizeEffects ? unit : null);
             Unit u = drone.create(unit.team);
