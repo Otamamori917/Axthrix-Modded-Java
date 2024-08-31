@@ -1369,6 +1369,18 @@ public class AxthrixUnits {
                 endY = 5;
                 drone = AxthrixDrones.wattGround;
             }});
+            parts.add(
+                    new RegionPart("-axis"){{
+                        progress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveX = moveY = 0f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
             weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.sap;
                 shootY = 2f;
@@ -1431,6 +1443,19 @@ public class AxthrixUnits {
                 width = 6f;
                 whenShooting = false;
             }});
+
+            parts.add(
+                    new RegionPart("-axis"){{
+                        progress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveX = moveY = 0f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
 
             weapons.add(new Weapon("aj-nano-launcher"){{
                 shootSound = Sounds.blaster;
@@ -1558,6 +1583,19 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
 
+            parts.add(
+                    new RegionPart("-axis"){{
+                        progress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveX = moveY = 0f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
+
             weapons.add(new Weapon("aj-recursor"){{
                 shootSound = Sounds.shockBlast;
                 shootWarmupSpeed = 0.06f;
@@ -1662,6 +1700,19 @@ public class AxthrixUnits {
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
                 onShoot = true;
             }});
+
+            parts.add(
+                    new RegionPart("-axis"){{
+                        progress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveX = moveY = 0f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
 
             weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
@@ -1850,6 +1901,19 @@ public class AxthrixUnits {
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationIII, 400f, 360f, 90){{
                 onShoot = true;
             }});
+
+            parts.add(
+                    new RegionPart("-axis"){{
+                        progress = PartProgress.warmup;
+                        heatColor = Pal.heal;
+                        mirror = false;
+                        under = false;
+                        moveX = moveY = 0f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        y = -3.5f;
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    }}
+            );
 
             parts.add(
             new RegionPart("-mount-l"){{

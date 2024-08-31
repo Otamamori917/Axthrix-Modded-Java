@@ -71,6 +71,7 @@ public class AxthrixLoader extends Mod{
         Log.info("Loading Axthrix content");
         StackWorldState.load();
         MountWorldState.load();
+        DroneWorldState.load();
         AxFactions.load();
         AxStats.load();
         //AxItems.load();

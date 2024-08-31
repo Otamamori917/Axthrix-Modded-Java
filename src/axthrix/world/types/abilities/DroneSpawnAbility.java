@@ -18,6 +18,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.part.DrawPart;
+import mindustry.entities.part.RegionPart;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Unit;
@@ -26,15 +27,16 @@ import mindustry.type.UnitType;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
+import java.util.HashMap;
+
 public class DroneSpawnAbility extends Ability {
     public UnitType drone;
     public float spawnTime = 60.0F;
     public Effect spawnEffect;
     public boolean parentizeEffects;
+    public HashMap<Unit, Boolean> unitAlive = new HashMap<>();
+    public HashMap<Unit, Unit> aliveUnit = new HashMap<>();
     protected float timer;
-    protected transient float droneProg;
-
-    public transient Seq<Unit> units = new Seq<>();
     public float startAng = 0f;
     public float endAng = 0f;
     public float startX = 0f;
@@ -53,10 +55,6 @@ public class DroneSpawnAbility extends Ability {
     public DroneSpawnAbility() {
         spawnEffect = Fx.spawn;
     }
-    @Nullable
-    public Unit canReplace() {
-        return units.find(u -> u.dead());
-    }
 
     public void addStats(Table t) {
         t.add("[lightgray]" + Stat.buildTime.localized() + ": [white]" + Strings.autoFixed(spawnTime / 60.0F, 2) + " " + StatUnit.seconds.localized());
@@ -65,34 +63,39 @@ public class DroneSpawnAbility extends Ability {
     }
 
     public void update(Unit unit) {
+        if (!aliveUnit.containsKey(unit)){
+            aliveUnit.put(unit,null);
+        }
+        if (!unitAlive.containsKey(unit)){
+            unitAlive.put(unit,false);
+        }
+
         if (drone instanceof DroneUnitType du){
-            du.tetherUnit = unit;
+            du.tetherUnitID = unit.id;
+        }
+        if(aliveUnit.get(unit) == null){
+            unitAlive.replace(unit,false);
         }
         timer += Time.delta * Vars.state.rules.unitBuildSpeed(unit.team);
-        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && canReplace() == null) {
+        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && !unitAlive.get(unit)) {
 
             spawnEffect.at(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)), 0.0F, parentizeEffects ? unit : null);
             Unit u = drone.create(unit.team);
             u.set(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)));
             u.rotation = unit.rotation + Mathf.lerp(startAng,endAng,ShootProg(unit));
-            if (units.size != 0) {
-                units.replace(canReplace(), u);
-            } else {
-                units.add(u);
-            }
-            if (u.type instanceof DroneUnitType du) du.tetherUnit = unit;
             Events.fire(new EventType.UnitCreateEvent(u, (Building)null, unit));
+            unitAlive.replace(unit,true);
+            aliveUnit.put(unit,u);
             if (!Vars.net.client()) {
                 u.add();
             }
-
             timer = 0.0F;
         }
 
     }
 
     public void draw(Unit unit) {
-        if (Units.canCreate(unit.team, drone)) {
+        if (Units.canCreate(unit.team, drone) && !unitAlive.get(unit)) {
             Draw.draw(Draw.z(), () -> {
                 Drawf.construct(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)), drone.fullIcon, (unit.rotation-90.0F)+Mathf.lerp(startAng,endAng,ShootProg(unit)), timer / spawnTime, 1.0F, timer);
             });
@@ -100,16 +103,14 @@ public class DroneSpawnAbility extends Ability {
 
     }
     public float ShootProg(Unit unit){
-        if(unit.isShooting() && droneProg != 1){
-            droneProg += 0.1f;
-        } else if (!unit.isShooting() && droneProg != 0) {
-            droneProg =- 0.1f;
+        if(unit.type.parts.first() instanceof RegionPart rp) {
+            return rp.progress.get(DrawPart.params);
         }
-        return droneProg;
+        return 0f;
     }
 
     public String localized() {
-        return Core.bundle.format("ability.unitspawn", new Object[]{drone.localizedName});
+        return Core.bundle.format("ability.dronespawn", new Object[]{drone.localizedName});
     }
 }
 
