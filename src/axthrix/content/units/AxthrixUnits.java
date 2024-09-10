@@ -1363,10 +1363,10 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
             abilities.add(new DroneSpawnAbility(){{
-                startAng = 180;
-                endAng = 0;
-                startY = -5;
-                endY = 5;
+                dRot = 180;
+                moveRot = 0;
+                dY = -5;
+                moveY = 5;
                 drone = AxthrixDrones.wattGround;
             }});
             parts.add(
@@ -2136,12 +2136,10 @@ public class AxthrixUnits {
         anagh = new AxUnitType("anagh") {{
             localizedName = "[purple]Anagh";
             description = """
-                          [purple]Lead Engineers at [#de9458]Axthrix[purple] decided not to make anagh a weapon, but make anagh itself the weapon!
+                          Lead Engineers at [#de9458]Axthrix[] decided not to make anagh a weapon, but make anagh itself the weapon!
                           Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
                           get too close and it will rip nearby bullets, units, and buildings apart.
                           has a special field around Anagh preventing allies from being effected by its Blackhole.
-                          
-                          [#800000]if 2 units on different teams with such ability meet they cancel each other's attraction but will still rip each other apart.
                           """;
             treadPullOffset = 0;
             itemCapacity = 0;
@@ -2182,6 +2180,87 @@ public class AxthrixUnits {
                         sizeTo = 1f;
                         edge = 3f;
                         edgeTo = 6f;
+                        color = Color.purple;
+                    }});
+
+        }};
+        akshaj = new AxUnitType("akshaj") {{
+            localizedName = "[purple]Akshaj";
+            description = """
+                          Lead Engineers at [#de9458]Axthrix[] decided not to make anagh a weapon, but make anagh itself the weapon!
+                          Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
+                          get too close and it will rip nearby bullets, units, and buildings apart.
+                          has a special field around Anagh preventing allies from being effected by its Blackhole.
+                          """;
+            treadPullOffset = 0;
+            itemCapacity = 0;
+            treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
+            factions.add(AxFactions.axthrix);
+            constructor = TankUnit::create;
+            outlines = false;
+            flying = false;
+            speed = 5.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 10f;
+            health = 400;
+            armor = 8;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = false;
+            range = 160;
+            weapons.add(new Weapon("gravic"){{
+                shootSound = Sounds.none;
+                shootY = 0f;
+                x = 0f;
+                y = 0f;
+                mirror = false;
+                top = false;
+                reload = 200;
+                bullet = new AfterShockBulletType(10, 160){{
+                    splashDelay = 10;
+                    splashAmount = 2;
+                    status = AxthrixStatus.gravicalSlow;
+                    statusDuration = 300;
+                    frontColor = Color.purple.cpy().a(0.4f);
+                    particleColor = bottomColor = backColor = Color.purple;
+                }};
+            }});
+            abilities.add(new AttractionFieldAbility(){{
+                whenShooting = true;
+                damageRadius = 60;
+                suctionRadius = 160;
+                damage = 6f;
+                bulletDamage = 3f;
+                scaledBulletForce = 1;
+                bulletForce = 0.5f;
+                scaledForce = 300;
+                force = 20;
+
+            }},
+            new AttractionFieldAbility(){{
+                whenNotShooting = true;
+                damageRadius = suctionRadius = 120;
+                repel = true;
+                damage = 12f;
+                bulletDamage = 6f;
+                scaledBulletForce = 2;
+                bulletForce = 1f;
+                scaledForce = 600;
+                force = 40;
+                swirlEffect = AxthrixFfx.circleOut(40,120, 10,Color.purple);
+            }});
+            parts.add(
+
+                    new BlackHolePart(){{
+                        growProgress = PartProgress.recoil.add(p -> Mathf.cos(Time.time / 16) / 2 + 0.2f);
+                        progress = PartProgress.warmup;
+                        moveY = 6;
+                        x = 0;
+                        y = -3;
+                        size = 1.4f;
+                        sizeTo = 2.8f;
+                        edge = 6.4f;
+                        edgeTo = 12.8f;
                         color = Color.purple;
                     }});
 

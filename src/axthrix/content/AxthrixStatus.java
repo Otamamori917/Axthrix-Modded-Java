@@ -15,7 +15,7 @@ import mindustry.content.*;
 import mindustry.world.meta.Stat;
 
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,repair,
+    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,repair,gravicalSlow,
 
     //visual statuses
     standFx,bFx
@@ -76,6 +76,11 @@ public class AxthrixStatus {
             color = Color.valueOf("6d6f7c");
             healthMultiplier = .998f;
             charges = 300;
+        }};
+        gravicalSlow = new StackStatusEffect("gravical-slow"){{
+            color = Color.purple;
+            speedMultiplier = .98f;
+            charges = 50;
         }};
 
         grayRepair = new StatusEffect("gray-repair"){

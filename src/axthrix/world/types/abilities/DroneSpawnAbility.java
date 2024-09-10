@@ -7,6 +7,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.Time;
@@ -21,6 +22,7 @@ import mindustry.entities.part.DrawPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
+import mindustry.gen.Call;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.type.UnitType;
@@ -31,18 +33,17 @@ import java.util.HashMap;
 
 public class DroneSpawnAbility extends Ability {
     public UnitType drone;
-    public float spawnTime = 60.0F;
+    public float spawnTime = 510;
     public Effect spawnEffect;
     public boolean parentizeEffects;
-    public HashMap<Unit, Boolean> unitAlive = new HashMap<>();
     public HashMap<Unit, Unit> aliveUnit = new HashMap<>();
     protected float timer;
-    public float startAng = 0f;
-    public float endAng = 0f;
-    public float startX = 0f;
-    public float endX = 0f;
-    public float startY = 0f;
-    public float endY = 0f;
+    public float dX;
+    public float dY;
+    public float dRot;
+    public float moveX;
+    public float moveY;
+    public float moveRot;
 
     public DroneSpawnAbility(UnitType unit, float spawnTime, float spawnX, float spawnY) {
         spawnEffect = Fx.spawn;
@@ -63,50 +64,47 @@ public class DroneSpawnAbility extends Ability {
     }
 
     public void update(Unit unit) {
+        if (unit.dead()){
+            aliveUnit.remove(unit);
+        }
         if (!aliveUnit.containsKey(unit)){
             aliveUnit.put(unit,null);
         }
-        if (!unitAlive.containsKey(unit)){
-            unitAlive.put(unit,false);
-        }
-
         if (drone instanceof DroneUnitType du){
             du.tetherUnitID = unit.id;
         }
-        if(aliveUnit.get(unit) == null){
-            unitAlive.replace(unit,false);
-        }
         timer += Time.delta * Vars.state.rules.unitBuildSpeed(unit.team);
-        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && !unitAlive.get(unit)) {
+        if (timer >= spawnTime && Units.canCreate(unit.team, drone) && canReplace(unit)){
 
-            spawnEffect.at(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)), 0.0F, parentizeEffects ? unit : null);
+            spawnEffect.at(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY), 0.0F, parentizeEffects ? unit : null);
             Unit u = drone.create(unit.team);
-            u.set(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)));
-            u.rotation = unit.rotation + Mathf.lerp(startAng,endAng,ShootProg(unit));
+            u.set(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY));
+            u.rotation = getPoscMath(unit,unit.rotation+dRot,moveRot);
             Events.fire(new EventType.UnitCreateEvent(u, (Building)null, unit));
-            unitAlive.replace(unit,true);
-            aliveUnit.put(unit,u);
             if (!Vars.net.client()) {
                 u.add();
             }
+            aliveUnit.replace(unit,u);
             timer = 0.0F;
         }
-
     }
 
     public void draw(Unit unit) {
-        if (Units.canCreate(unit.team, drone) && !unitAlive.get(unit)) {
+        if (Units.canCreate(unit.team, drone) && canReplace(unit)) {
             Draw.draw(Draw.z(), () -> {
-                Drawf.construct(Mathf.lerp(unit.x+startX,unit.x+endX,ShootProg(unit)), Mathf.lerp(unit.y+startY,unit.y+endY,ShootProg(unit)), drone.fullIcon, (unit.rotation-90.0F)+Mathf.lerp(startAng,endAng,ShootProg(unit)), timer / spawnTime, 1.0F, timer);
+                Drawf.construct(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY), drone.fullIcon, (getPoscMath(unit,unit.rotation+dRot,moveRot)), timer / spawnTime, 1.0F, timer);
             });
         }
 
     }
-    public float ShootProg(Unit unit){
+    public boolean canReplace(Unit unit){
+        return aliveUnit.get(unit) == null || !aliveUnit.get(unit).isValid() || aliveUnit.get(unit).team != unit.team;
+    }
+    public float getPoscMath(Unit unit, float startVal, float endVal){
         if(unit.type.parts.first() instanceof RegionPart rp) {
-            return rp.progress.get(DrawPart.params);
+            return endVal * rp.progress.get(DrawPart.params) + startVal;
         }
-        return 0f;
+        return 0;
     }
 
     public String localized() {

@@ -32,27 +32,7 @@ public class DroneWorldState {
                                     if (unit == null) return;
                                     stream.writeInt(unit.id);
                                     stream.writeInt(c.id);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    if (ut.abilities.first() instanceof DroneSpawnAbility dsa && ut instanceof AxUnitType aut){
-                        try {
-                            stream.writeInt(aut.id);
-                            stream.writeInt(dsa.unitAlive.size());
-                            dsa.unitAlive.forEach((unit,c) -> {
-                                try {
-                                    if (unit == null) return;
-                                    stream.writeInt(unit.id);
-                                    stream.writeBoolean(c);
-                                    if (dsa.aliveUnit.containsKey(unit) && dsa.aliveUnit.get(unit) != null)
-                                        stream.writeInt(dsa.aliveUnit.get(unit).id);
-                                    else
-                                        stream.writeInt(-1);
+                                    stream.writeFloat(dut.delay.get(unit));
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -69,32 +49,21 @@ public class DroneWorldState {
                 int count = stream.readInt();
                 for(;count > 0;count--) {
                     int droneId = stream.readInt();
-                    int dunitsize = stream.readInt();
-                    UnitType dunittype = Vars.content.units().find(mu -> mu.id == droneId);
-                    if (dunittype instanceof DroneUnitType dut) {
+                    int unitsize = stream.readInt();
+                    UnitType unittype = Vars.content.units().find(mu -> mu.id == droneId);
+                    if (unittype instanceof DroneUnitType dut /*&& unittype.abilities.first() instanceof DroneSpawnAbility abl*/) {
                         dut.tetherUnit.clear();
-                        for(;dunitsize > 0;dunitsize--) {
+                        dut.delay.clear();
+                        //abl.aliveUnit.clear();
+                        for(;unitsize > 0;unitsize--) {
                             int unitId = stream.readInt();
                             int unitDid = stream.readInt();
+                            Float unitDtic = stream.readFloat();
                             Unit unit = Groups.unit.find(u->u.id == unitId);
                             if (unit == null) continue;
                             dut.tetherUnit.put(unit, Groups.unit.find(u->u.id == unitDid));
-                        }
-                    }
-                    int mountUnitId = stream.readInt();
-                    int sunitsize = stream.readInt();
-                    UnitType sunittype = Vars.content.units().find(mu -> mu.id == mountUnitId);
-                    if (sunittype.abilities.first() instanceof DroneSpawnAbility dsa) {
-                        dsa.unitAlive.clear();
-                        dsa.aliveUnit.clear();
-                        for(;sunitsize > 0;sunitsize--) {
-                            int unitId = stream.readInt();
-                            boolean unitDa = stream.readBoolean();
-                            int unitDid = stream.readInt();
-                            Unit unit = Groups.unit.find(u->u.id == unitId);
-                            if (unit == null) continue;
-                            dsa.unitAlive.put(unit,unitDa);
-                            dsa.aliveUnit.put(unit, Groups.unit.find(u->u.id == unitDid));
+                            dut.delay.put(unit,unitDtic);
+                            //abl.aliveUnit.put(Groups.unit.find(u->u.id == unitDid),unit);
                         }
                     }
                 }
