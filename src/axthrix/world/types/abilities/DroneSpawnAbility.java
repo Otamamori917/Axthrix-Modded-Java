@@ -7,10 +7,7 @@ import arc.math.Angles;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
-import arc.util.Nullable;
-import arc.util.Strings;
-import arc.util.Time;
+import arc.util.*;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.Vars;
@@ -26,10 +23,13 @@ import mindustry.gen.Call;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.type.UnitType;
+import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
 import java.util.HashMap;
+
+import static mindustry.Vars.ui;
 
 public class DroneSpawnAbility extends Ability {
     public UnitType drone;
@@ -60,7 +60,14 @@ public class DroneSpawnAbility extends Ability {
     public void addStats(Table t) {
         t.add("[lightgray]" + Stat.buildTime.localized() + ": [white]" + Strings.autoFixed(spawnTime / 60.0F, 2) + " " + StatUnit.seconds.localized());
         t.row();
-        t.add(drone.emoji() + " " + drone.localizedName);
+        t.table( u -> {
+            u.image(drone.uiIcon).scaling(Scaling.fit).left();
+            u.table(in -> {
+                in.add(drone.localizedName).row();
+                if (Core.settings.getBool("console")) in.add("[lightgray]" +drone.name + "[]");
+            }).center().pad(10f).growX();
+            u.button("?", Styles.flatBordert, () -> ui.content.show(drone)).right().growY().visible(drone::unlockedNow).size(40f);
+        });
     }
 
     public void update(Unit unit) {
@@ -108,7 +115,7 @@ public class DroneSpawnAbility extends Ability {
     }
 
     public String localized() {
-        return Core.bundle.format("ability.dronespawn", new Object[]{drone.localizedName});
+        return Core.bundle.format("ability.aj-dronespawn", new Object[]{drone.localizedName});
     }
 }
 

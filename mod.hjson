@@ -10,6 +10,7 @@ contributors:
     nullevoy#7763| Spriting Tips.
     Monika#6030| Code clean up & starting blocks & bundles
     Siede#6321| Status effect sprites
+    RushieWashie/jirocab| AmmoLifeTimeUnitType
 '''
 main: "axthrix.AxthrixLoader"
 description: "BETA sandbox only! requires blackhole render by meep of faith"

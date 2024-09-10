@@ -2,13 +2,12 @@ package axthrix.world.types.ai;
 
 
 import arc.math.geom.Vec2;
-import arc.util.*;
+import arc.util.Tmp;
 import axthrix.world.types.abilities.DroneSpawnAbility;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.entities.Predict;
 import mindustry.entities.Units;
-import mindustry.entities.part.*;
-import mindustry.entities.units.*;
+import mindustry.entities.units.AIController;
 import mindustry.gen.Teamc;
 import mindustry.type.Weapon;
 
@@ -18,7 +17,7 @@ public class DroneAI extends AIController {
 	public void updateMovement() {
 		if ((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null) {
 			if (u.tetherUnit.get(unit).type.abilities.peek() instanceof DroneSpawnAbility abl) {
-				unit.set(Tmp.v1.add(abl.getPoscMath(u.tetherUnit.get(unit),u.tetherUnit.get(unit).x+abl.dX,abl.moveX), abl.getPoscMath(u.tetherUnit.get(unit),u.tetherUnit.get(unit).y+abl.dY,abl.moveY)));
+				unit.set(Tmp.v1.set(abl.getPoscMath(u.tetherUnit.get(unit),u.tetherUnit.get(unit).x+abl.dX,abl.moveX), abl.getPoscMath(u.tetherUnit.get(unit),u.tetherUnit.get(unit).y+abl.dY,abl.moveY)));
 				unit.rotation(abl.getPoscMath(u.tetherUnit.get(unit),u.tetherUnit.get(unit).rotation+abl.dRot,abl.moveRot));
 			}
 		}
