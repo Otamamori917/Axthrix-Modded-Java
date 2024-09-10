@@ -71,6 +71,14 @@ public class AttractionFieldAbility extends Ability {
     }
     @Override
     public void addStats(Table t){
+        if (whenNotShooting){
+            t.add("[lightgray]Active only While Not Shooting");
+            t.row();
+        }
+        if (whenShooting){
+            t.add("[lightgray]Active only While Shooting");
+            t.row();
+        }
         t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed(30f * damage, 2) + " " + StatUnit.perSecond.localized());
         t.row();
         if (damageRadius != suctionRadius) {
@@ -83,21 +91,14 @@ public class AttractionFieldAbility extends Ability {
             t.row();
         }
         if (!repel){
-            t.add("[lightgray] Attracting Force");
+            t.add("[lightgray]Attracting Force");
             t.row();
         } else {
-            t.add("[lightgray] Repelling Force");
+            t.add("[lightgray]Repelling Force");
             t.row();
         }
-        if (whenShooting){
-            t.add("[lightgray] Active only While Shooting");
-            t.row();
-        }
-        if (whenNotShooting){
-            t.add("[lightgray] Active only While Not Shooting");
-            t.row();
-        }
-        t.add("[#800000] Other units with the same ability will cancel out each-others Forces but take the Damage");
+
+        t.add("[#800000]will cancel out other's gravity based forces but not the damage");
         t.row();
     }
 
