@@ -1641,14 +1641,13 @@ public class AxthrixUnits {
                     }});
                 }});
 
-                bullet = new BasicBulletType(2f, 20){{
+                bullet = new BasicBulletType(4f, 40){{
                     homingRange = 40f;
                     homingPower = 4f;
-                    homingDelay = 5f;
+                    homingDelay = 2f;
                     width = 0.5f;
                     height = 0.5f;
-                    lifetime = 15;
-                    speed = 3;
+                    lifetime = 20;
                     healPercent = 1;
                     collidesTeam = true;
                     trailEffect = Fx.none;
@@ -2145,13 +2144,14 @@ public class AxthrixUnits {
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
             factions.add(AxFactions.axthrix);
+            immunities.add(AxthrixStatus.gravicalSlow);
             constructor = TankUnit::create;
             outlines = false;
             flying = false;
             speed = 5.3f/7.5f;
             drag = 0.13f;
             hitSize = 10f;
-            health = 400;
+            health = 1000;
             armor = 8;
             accel = 0.6f;
             rotateSpeed = 3.3f;
@@ -2160,7 +2160,7 @@ public class AxthrixUnits {
             abilities.add(new AttractionFieldAbility(){{
                 damageRadius = 30;
                 suctionRadius = 120;
-                damage = 8f;
+                damage = 6f;
                 bulletDamage = 4f;
 
                 scaledBulletForce = 1;
@@ -2178,14 +2178,89 @@ public class AxthrixUnits {
                         y = -2;
                         size = 0.8f;
                         sizeTo = 1f;
-                        edge = 3f;
-                        edgeTo = 6f;
+                        edge = 5f;
+                        edgeTo = 7f;
                         color = Color.purple;
                     }});
 
         }};
         akshaj = new AxUnitType("akshaj") {{
             localizedName = "[purple]Akshaj";
+            description = """
+                          
+                          """;
+            treadPullOffset = 5;
+            itemCapacity = 0;
+            treadRects = new Rect[]{new Rect(17 - 96f/2f, 10 - 96f/2f, 19, 76)};
+            factions.add(AxFactions.axthrix);
+            immunities.add(AxthrixStatus.gravicalSlow);
+            constructor = TankUnit::create;
+            outlines = false;
+            flying = false;
+            speed = 5.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 10f;
+            health = 2600;
+            armor = 9;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = false;
+            range = 160;
+            weapons.add(new Weapon("gravic"){{
+                shootSound = Sounds.none;
+                shootCone = 360;
+                ignoreRotation = true;
+                shootY = 0f;
+                x = 0f;
+                y = 0f;
+                mirror = false;
+                top = false;
+                reload = 200;
+                bullet = new AfterShockBulletType(40, 160){{
+                    applySound = Sounds.hum;
+                    splashDelay = 5;
+                    splashAmount = 5;
+                    status = AxthrixStatus.gravicalSlow;
+                    statusDuration = 300;
+                    frontColor = Color.purple.cpy().a(0.4f);
+                    particleColor = bottomColor = backColor = Color.purple;
+                }};
+            }});
+            abilities.add(new AttractionFieldAbility(){{
+                damageRadius = 60;
+                suctionRadius = 160;
+                damage = 8f;
+                bulletDamage = 3f;
+                scaledBulletForce = 1;
+                bulletForce = 0.5f;
+                scaledForce = 350;
+                force = 25;
+
+            }});
+            parts.add(
+
+                    new BlackHolePart(){{
+                        growProgress = p -> Mathf.cos(Time.time / 16) / 2 + 0.2f;
+                        x = 0;
+                        y = -3;
+                        size = 1f;
+                        sizeTo = 1.8f;
+                        edge = 6f;
+                        edgeTo = 9.8f;
+                        color = Color.purple;
+                    }},
+                     new BlackHolePart(){{
+                        growProgress = PartProgress.recoil;
+                        x = 0;
+                        y = -3;
+                        size = sizeTo = edge = 0f;
+                        edgeTo = 18f;
+                        color = Color.purple;
+                    }});
+
+        }};
+        amitojas = new AxUnitType("amitojas") {{
+            localizedName = "[purple]Amitojas";
             description = """
                           Lead Engineers at [#de9458]Axthrix[] decided not to make anagh a weapon, but make anagh itself the weapon!
                           Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
@@ -2196,59 +2271,89 @@ public class AxthrixUnits {
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
             factions.add(AxFactions.axthrix);
+            immunities.add(AxthrixStatus.gravicalSlow);
             constructor = TankUnit::create;
             outlines = false;
             flying = false;
             speed = 5.3f/7.5f;
             drag = 0.13f;
             hitSize = 10f;
-            health = 400;
-            armor = 8;
+            health = 5000;
+            armor = 10;
             accel = 0.6f;
             rotateSpeed = 3.3f;
             faceTarget = false;
             range = 160;
-            weapons.add(new Weapon("gravic"){{
+            weapons.add(new Weapon("gravcal"){{
                 shootSound = Sounds.none;
                 shootY = 0f;
                 x = 0f;
                 y = 0f;
                 mirror = false;
+                rotate = true;
                 top = false;
-                reload = 200;
-                bullet = new AfterShockBulletType(10, 160){{
-                    splashDelay = 10;
-                    splashAmount = 2;
-                    status = AxthrixStatus.gravicalSlow;
-                    statusDuration = 300;
+                reload = 150;
+                bullet = new BasicBulletType(9.0F, 200.0F){{
+                    pierce = true;
+                    pierceCap = 10;
+                    width = 14.0F;
+                    height = 33.0F;
+                    lifetime = 35.0F;
+                    shootEffect = Fx.shootBig;
+                    fragVelocityMin = 0.4F;
+                    hitEffect = Fx.blastExplosion;
+                    splashDamage = 18.0F;
+                    splashDamageRadius = 13.0F;
+                    fragBullets = 3;
+                    fragLifeMin = 0.0F;
+                    fragRandomSpread = 30.0F;
                     frontColor = Color.purple.cpy().a(0.4f);
-                    particleColor = bottomColor = backColor = Color.purple;
+                    backColor = Color.purple;
+                    fragBullets = 4;
+                    fragBullet = new FlakBulletType(9.0F, 0.0F){{
+                        width = 5.0F;
+                        height = 5.0F;
+                        lifetime = 20.0F;
+                        flakDelay = explodeDelay = 0;
+                        explodeRange = 25;
+                        frontColor = Color.purple.cpy().a(0.4f);
+                        backColor = Color.purple;
+                        fragBullets = 1;
+                        fragBullet = new AfterShockBulletType(25, 30){{
+                            applySound = Sounds.hum;
+                            splashDelay = 15;
+                            splashAmount = 3;
+                            status = AxthrixStatus.gravicalSlow;
+                            statusDuration = 300;
+                            frontColor = Color.purple.cpy().a(0.4f);
+                            particleColor = bottomColor = backColor = Color.purple;
+                        }};
+                    }};
                 }};
             }});
-            abilities.add(new AttractionFieldAbility(){{
-                whenShooting = true;
-                damageRadius = 60;
-                suctionRadius = 160;
-                damage = 6f;
-                bulletDamage = 3f;
-                scaledBulletForce = 1;
-                bulletForce = 0.5f;
-                scaledForce = 300;
-                force = 20;
-
-            }},
-            new AttractionFieldAbility(){{
-                whenNotShooting = true;
-                damageRadius = suctionRadius = 120;
-                repel = true;
-                damage = 12f;
-                bulletDamage = 6f;
-                scaledBulletForce = 2;
-                bulletForce = 1f;
-                scaledForce = 600;
-                force = 40;
-                swirlEffect = AxthrixFfx.circleOut(40,120, 10,Color.purple);
-            }});
+            abilities.add(
+                    new AttractionFieldAbility(){{
+                        whenShooting = true;
+                        damageRadius = 60;
+                        suctionRadius = 160;
+                        damage = 4f;
+                        bulletDamage = 3f;
+                        scaledBulletForce = 1;
+                        bulletForce = 0.5f;
+                        scaledForce = 300;
+                        force = 20;
+                    }},
+                    new AttractionFieldAbility(){{
+                        whenNotShooting = true;
+                        damageRadius = suctionRadius = 50;
+                        repel = true;
+                        damage = 2f;
+                        bulletDamage = 6f;
+                        scaledBulletForce = 5.5f;
+                        bulletForce = 1.5f;
+                        scaledForce = 400;
+                        force = 30;
+                    }});
             parts.add(
 
                     new BlackHolePart(){{
@@ -2725,7 +2830,19 @@ public class AxthrixUnits {
         }};
 
         immuneUnits.add(
-            anagh
+                anagh
+        );
+        immuneUnits.add(
+                akshaj
+        );
+        immuneUnits.add(
+                amitojas
+        );
+        immuneUnits.add(
+                agnitejas
+        );
+        immuneUnits.add(
+                ayustejas
         );
 
     }

@@ -1,21 +1,39 @@
 package axthrix.content;
 
 import arc.Core;
+import arc.Events;
 import arc.graphics.Color;
+import arc.util.Log;
 import arc.util.Time;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.statuseffects.*;
 import mindustry.entities.abilities.ArmorPlateAbility;
+import mindustry.game.EventType;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.content.*;
+import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.meta.Stat;
 
+import java.util.HashMap;
+
+import static axthrix.content.AxthrixSounds.PandemoniumMinigameTheme;
+
 public class AxthrixStatus {
-    public static StatusEffect vindicationI, vindicationII, vindicationIII, nanodiverge, precludedX, precludedA, repent, finalStand,excert,chainExcert,slivered,unrepair,grayRepair,repair,gravicalSlow,
+    public static StatusEffect
+            vindicationI, vindicationII, vindicationIII, nanodiverge,
+            precludedX, precludedA,
+            repent,
+            finalStand,
+            excert,chainExcert,
+            slivered,
+            unrepair,grayRepair,repair,
+            gravicalSlow,
+            minigame,
+
 
     //visual statuses
     standFx,bFx
@@ -79,7 +97,7 @@ public class AxthrixStatus {
         }};
         gravicalSlow = new StackStatusEffect("gravical-slow"){{
             color = Color.purple;
-            speedMultiplier = .98f;
+            speedMultiplier = buildSpeedMultiplier = .985f;
             charges = 50;
         }};
 
@@ -143,6 +161,36 @@ public class AxthrixStatus {
             init(() -> {
                 opposite(precludedX);
             });
+        }};
+        minigame = new StatusEffect("minigame"){
+
+            @Override
+            public void update(Unit unit, float time){
+                if(!unit.isPlayer()){
+                    unit.health = 0;
+                    unit.unapply(this);
+                } else {
+                    BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-minigame.title"));
+                    dialog.cont.add(Core.bundle.get("menu.aj-minigame.message")).row();
+                    dialog.cont.image(Core.atlas.find("aj-white-line")).row();
+                    dialog.cont.image(Core.atlas.find("aj-safe-circle")).pad(16f).row();
+                    Log.info(time);
+                    if (!dialog.isShown() && time >= 570){
+                        dialog.show();
+                        PandemoniumMinigameTheme.at(dialog.x,dialog.y, 1.5f);
+                    }
+                    if(time <= -4290){
+                        dialog.hide();
+                        unit.unapply(this);
+                    }
+                }
+            }
+            {
+            color = Color.black;
+            speedMultiplier = 0f;
+            buildSpeedMultiplier = 0f;
+            reloadMultiplier = 0f;
+            permanent = true;
         }};
 
         repent = new StackStatusEffect("repent"){{
