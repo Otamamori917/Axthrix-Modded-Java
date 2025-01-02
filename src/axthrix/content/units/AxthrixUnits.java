@@ -1,6 +1,8 @@
 package axthrix.content.units;
 
 import arc.graphics.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
@@ -13,15 +15,19 @@ import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.unittypes.*;
+import axthrix.world.types.weapontypes.RevolverWeapon;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
+
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.*;
 
 import mindustry.entities.pattern.ShootAlternate;
@@ -68,7 +74,9 @@ public class AxthrixUnits {
             //Elemental Shuttles | leader |
                 aza,enzo,ashur,alaric,aldrich,
                 //TX
-                enrique;
+                enrique,
+            //Specialist Spiders | Revolver |
+                sig,colt,caiber,magnum,siegfried;
     //Ikatusa |undetermined|
 
     //Core Units |4 units|
@@ -674,7 +682,7 @@ public class AxthrixUnits {
                 bullet = new ArtilleryBulletType(6f, 0){{
                     width = 8;
                     height = 8;
-                    lifetime = 189;
+                    lifetime = 109;
                     scaleLife = true;
                     keepVelocity = false;
                     trailColor = backColor = lightColor = Color.valueOf("683b3d");
@@ -1367,6 +1375,12 @@ public class AxthrixUnits {
                 moveRot = 0;
                 dY = -5;
                 moveY = 5;
+                drone = AxthrixDrones.wattGround;
+            }},new DroneSpawnAbility(){{
+                dRot = 180;
+                moveRot = 0;
+                dY = -10;
+                moveY = 10;
                 drone = AxthrixDrones.wattGround;
             }});
             parts.add(
@@ -2828,6 +2842,88 @@ public class AxthrixUnits {
                 }};
             }});*/
         }};
+
+        //revolver bois
+        sig = new AxUnitType("sig") {{
+                constructor = LegsUnit::create;
+                speed = 0.72F;
+                drag = 0.11F;
+                hitSize = 9.0F;
+                rotateSpeed = 3.0F;
+                health = 680.0F;
+                armor = 4.0F;
+                legStraightness = 0.3F;
+                stepShake = 0.0F;
+                legCount = 6;
+                legLength = 8.0F;
+                lockLegBase = true;
+                legContinuousMove = true;
+                legExtension = -2.0F;
+                legBaseOffset = 3.0F;
+                legMaxLength = 1.1F;
+                legMinLength = 0.2F;
+                legLengthScl = 0.96F;
+                legForwardScl = 1.1F;
+                legGroupSize = 3;
+                rippleScale = 0.2F;
+                legMoveSpace = 1.0F;
+                allowLegStep = true;
+                hovering = true;
+                legPhysicsLayer = false;
+                shadowElevation = 0.1F;
+                groundLayer = 74.0F;
+                targetAir = false;
+                researchCostMultiplier = 0.0F;
+                weapons.add(new RevolverWeapon("sig-weapon") {
+                    {
+                        shootSound = Sounds.missile;
+                        mirror = false;
+                        showStatSprite = false;
+                        x = 0.0F;
+                        y = 1.0F;
+                        shootY = 4.0F;
+                        reload = 5.0F;
+                        maxCartridges = 8;
+                        reloadCartridges = 120;
+                        cooldownTime = 42.0F;
+                        heatColor = Pal.turretHeat;
+                        bullet = new ArtilleryBulletType(3.0F, 40.0F) {
+                            {
+                                shootEffect = new MultiEffect(new Effect[]{Fx.shootSmallColor, new Effect(9.0F, (e) -> {
+                                    Draw.color(Color.white, e.color, e.fin());
+                                    Lines.stroke(0.7F + e.fout());
+                                    Lines.square(e.x, e.y, e.fin() * 5.0F, e.rotation + 45.0F);
+                                    Drawf.light(e.x, e.y, 23.0F, e.color, e.fout() * 0.7F);
+                                })});
+                                collidesTiles = true;
+                                backColor = hitColor = Pal.health;
+                                frontColor = Color.white;
+                                knockback = 0.8F;
+                                lifetime = 50.0F;
+                                width = height = 9.0F;
+                                splashDamageRadius = 19.0F;
+                                splashDamage = 30.0F;
+                                trailLength = 27;
+                                trailWidth = 2.5F;
+                                trailEffect = Fx.none;
+                                trailColor = backColor;
+                                trailInterp = Interp.slope;
+                                shrinkX = 0.6F;
+                                shrinkY = 0.2F;
+                                hitEffect = despawnEffect = new MultiEffect(new Effect[]{Fx.hitSquaresColor, new WaveEffect() {
+                                    {
+                                        colorFrom = colorTo =  Pal.health;
+                                        sizeTo = splashDamageRadius + 2.0F;
+                                        lifetime = 9.0F;
+                                        strokeFrom = 2.0F;
+                                    }
+                                }});
+                            }
+                        };
+                    }
+                });
+            }
+        };
 
         immuneUnits.add(
                 anagh

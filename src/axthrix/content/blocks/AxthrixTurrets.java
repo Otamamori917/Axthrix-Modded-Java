@@ -1,6 +1,7 @@
 package axthrix.content.blocks;
 
 import arc.util.Time;
+import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxFactions;
 
@@ -14,6 +15,7 @@ import blackhole.entities.bullet.BlackHoleBulletType;
 import blackhole.entities.part.BlackHolePart;
 import mindustry.content.*;
 import mindustry.entities.UnitSorts;
+import mindustry.entities.Units;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
@@ -45,9 +47,12 @@ public class AxthrixTurrets{
 
     fragmentation,
 
+    //revolvers
+    emily,corvo,nagual,lucifer,
+
     //special
 
-    nado, aratiri, gravitation,
+    nado, aratiri, gravitation, morta,
 
     multitest,
 
@@ -752,6 +757,76 @@ public class AxthrixTurrets{
                         );
                     }}
             );
+        }};
+
+        morta = new AxPowerTurret("morta"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "morta";
+            description = """
+                          
+                          """;
+            range = 8*50;
+            size = 4;
+            reload = 280;
+            inaccuracy =  0f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.axthrix);
+            consumePower(405/60);
+            health = 1300;
+            shootType = new SheildArcBullet(160,"aj-morta-sheild"){{
+                    lifetime = 240;
+            }};
+            drawer = new DrawTurret("crystalized-"){{
+                /*parts.add(
+                        new RegionPart("-shell-l"){{
+                            progress = PartProgress.reload.inv();;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveX = -1.5f;
+                            moveY = -2f;
+                            moveRot = -15f;
+                            layerOffset = 2;
+                            moves.add(new PartMove(PartProgress.reload, 1f, -2f, -5f));
+                            children.add(new RegionPart("-piston-l"){{
+                                progress = PartProgress.reload.inv();
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.heal;
+                                mirror = false;
+                                moveY = -1f;
+                                moveX = 1f;
+                                layerOffset = 2;
+                                moves.add(new PartMove(PartProgress.reload, -1f, 1f, 0f));
+                            }});
+                        }},
+                        new RegionPart("-shell-r"){{
+                            progress = PartProgress.reload.inv();;
+                            heatProgress = PartProgress.warmup;
+                            heatColor = Pal.heal;
+                            mirror = false;
+                            under = false;
+                            moveX = 1.5f;
+                            moveY = -2f;
+                            moveRot = 15f;
+                            layerOffset = 2;
+                            moves.add(new PartMove(PartProgress.reload, -1f, -2f, 5f));
+                            children.add(new RegionPart("-piston-r"){{
+                                progress = PartProgress.reload.inv();
+                                heatProgress = PartProgress.recoil;
+                                heatColor = Pal.heal;
+                                mirror = false;
+                                moveY = -1f;
+                                moveX = -1f;
+                                layerOffset = 2;
+                                moves.add(new PartMove(PartProgress.reload, 1f, 1f, 0f));
+                            }});
+                        }},
+                        new RegionPart("-main"){{layerOffset = 2;}});*/
+            }};
         }};
         apex = new PayloadAcceleratedTurret("apex"){{
             outlineColor = Color.valueOf("#181a1b");
@@ -1537,6 +1612,73 @@ public class AxthrixTurrets{
                             }});
                         }},
                         new RegionPart("-main"){{layerOffset = 2;}});
+            }};
+        }};
+
+        lucifer = new RevolverTurret("lucifer"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "lucifer";
+            maxCartridges = numOfReloadCartridges = 20;
+            cartridgeReloadTime = 400;
+            reloadIfNotFull = false;
+            description = """
+                          
+                          """;
+            shoot = new ShootBarrel(){{
+                barrels = new float[]{
+                        -2f, -8, 0,
+                        -1.25f, -2.5f, 0,
+                        0f, -3, 0,
+                        1.25f, -2.5f, 0,
+                        2f, -8, 0
+                };
+            }};
+            range = 8*23;
+            size = 3;
+            reload = 10;
+            coolantMultiplier = 2f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.raodon);
+            coolant = consumeCoolant(1);
+            health = 800;
+            ammoPerShot = 1;
+            maxAmmo = 6*25;
+            ammo(
+                    Items.titanium, new BasicBulletType(){{
+                        lifetime = 46;
+                        speed = 4;
+                        damage = 100;
+                        trailInterval = 1;
+                        trailLength = 60;
+                        trailColor = frontColor = backColor = Color.darkGray;
+                    }}
+
+            );
+            drawer = new DrawTurret("reinforced-"){{
+                parts.add(
+                        new RegionPart("-barrel"){{
+                            progress = cartridgeprogress();
+                            moveX = 1f;
+                            moveRot = 10;
+                            layerOffset = 2;
+                        }},
+                        new RegionPart("-back"){{
+                            progress = cartridgeprogress();
+                            moveX = 1f;
+                            moveRot = -10;
+                            layerOffset = 2;
+                        }},
+                        new RegionPart("-cylinder"){{
+                            progress = cartridgeprogress();
+                            moveX = -1f;
+                            moveRot = -10;
+                            layerOffset = 2;
+                        }}
+                        );
+
             }};
         }};
 

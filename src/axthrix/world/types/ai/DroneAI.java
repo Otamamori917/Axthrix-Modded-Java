@@ -24,7 +24,7 @@ public class DroneAI extends AIController {
 	}
     @Override
 	public void updateWeapons(){
-		if((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null && !u.tetherUnit.get(unit).dead && unit.type.canAttack){
+		if((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null && !u.tetherUnit.get(unit).dead && !u.isSheild){
 
 			Vec2 aimVec = Predict.intercept(vec , new Vec2(u.tetherUnit.get(unit).aimX, u.tetherUnit.get(unit).aimY), unit.type.weapons.first().bullet.speed);
 			if(!u.tetherUnit.get(unit).isShooting) aimVec = Predict.intercept(vec, unit, unit.speed());

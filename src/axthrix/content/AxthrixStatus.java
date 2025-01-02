@@ -174,8 +174,7 @@ public class AxthrixStatus {
                     dialog.cont.add(Core.bundle.get("menu.aj-minigame.message")).row();
                     dialog.cont.image(Core.atlas.find("aj-white-line")).row();
                     dialog.cont.image(Core.atlas.find("aj-safe-circle")).pad(16f).row();
-                    Log.info(time);
-                    if (!dialog.isShown() && time >= 570){
+                    if (!dialog.isShown()){
                         dialog.show();
                         PandemoniumMinigameTheme.at(dialog.x,dialog.y, 1.5f);
                     }
