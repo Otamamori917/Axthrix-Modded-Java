@@ -3,26 +3,19 @@ package axthrix.world.types.abilities;
 import arc.Core;
 import arc.Events;
 import arc.graphics.g2d.Draw;
-import arc.math.Angles;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
 import arc.util.*;
-import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
-import mindustry.entities.part.DrawPart;
-import mindustry.entities.part.RegionPart;
 import mindustry.game.EventType;
 import mindustry.gen.Building;
-import mindustry.gen.Call;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
-import mindustry.type.UnitType;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -32,11 +25,13 @@ import java.util.HashMap;
 import static mindustry.Vars.ui;
 
 public class DroneSpawnAbility extends Ability {
-    public UnitType drone;
+    public DroneUnitType drone;
     public float spawnTime = 510;
     public Effect spawnEffect;
     public boolean parentizeEffects;
+    public int droneSlot = 0;
     public HashMap<Unit, Unit> aliveUnit = new HashMap<>();
+    public HashMap<Unit, Float> warmup = new HashMap<>();
     protected float timer;
     public float dX;
     public float dY;
@@ -45,12 +40,12 @@ public class DroneSpawnAbility extends Ability {
     public float moveY;
     public float moveRot;
 
-    public DroneSpawnAbility(UnitType unit, float spawnTime, float spawnX, float spawnY) {
+    public DroneSpawnAbility(DroneUnitType unit, float spawTime, float spawX, float spawY) {
         spawnEffect = Fx.spawn;
         drone = unit;
-        spawnTime = spawnTime;
-        spawnX = spawnX;
-        spawnY = spawnY;
+        spawnTime = spawTime;
+        dX = spawX;
+        dY = spawY;
     }
 
     public DroneSpawnAbility() {
@@ -77,21 +72,33 @@ public class DroneSpawnAbility extends Ability {
         if (!aliveUnit.containsKey(unit)){
             aliveUnit.put(unit,null);
         }
-        if (drone instanceof DroneUnitType du){
-            du.tetherUnitID = unit.id;
+        if (!warmup.containsKey(unit)){
+            warmup.put(unit,0f);
+        }else{
+            warmup.replace(unit,Mathf.lerpDelta(warmup.get(unit), unit.isShooting ? 1.0F : 0.0F, 0.1f));
         }
         timer += Time.delta * Vars.state.rules.unitBuildSpeed(unit.team);
         if (timer >= spawnTime && Units.canCreate(unit.team, drone) && canReplace(unit)){
 
-            spawnEffect.at(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY), 0.0F, parentizeEffects ? unit : null);
+            spawnEffect.at(getPoscMath(warmup.get(unit),unit.x+dX,moveX),getPoscMath(warmup.get(unit),unit.y+dY,moveY), 0.0F, parentizeEffects ? unit : null);
             Unit u = drone.create(unit.team);
-            u.set(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY));
-            u.rotation = getPoscMath(unit,unit.rotation+dRot,moveRot);
-            Events.fire(new EventType.UnitCreateEvent(u, (Building)null, unit));
-            if (!Vars.net.client()) {
-                u.add();
+            if (!drone.tetherUnit.containsKey(u)){
+                drone.tetherUnit.put(u,unit);
+            }else{
+                drone.tetherUnit.replace(u,unit);
             }
             aliveUnit.replace(unit,u);
+            aliveUnit.get(unit).set(getPoscMath(warmup.get(unit),unit.x+dX,moveX),getPoscMath(warmup.get(unit),unit.y+dY,moveY));
+            aliveUnit.get(unit).rotation = getPoscMath(warmup.get(unit),dRot,moveRot);
+            Events.fire(new EventType.UnitCreateEvent(aliveUnit.get(unit), (Building)null, unit));
+            if (!Vars.net.client()) {
+                aliveUnit.get(unit).add();
+            }
+            if(!drone.droneSlot.containsKey(aliveUnit.get(unit))){
+                drone.droneSlot.put(aliveUnit.get(unit),droneSlot);
+            }else{
+                drone.droneSlot.replace(aliveUnit.get(unit),droneSlot);
+            }
             timer = 0.0F;
         }
     }
@@ -99,7 +106,7 @@ public class DroneSpawnAbility extends Ability {
     public void draw(Unit unit) {
         if (Units.canCreate(unit.team, drone) && canReplace(unit)) {
             Draw.draw(Draw.z(), () -> {
-                Drawf.construct(getPoscMath(unit,unit.x+dX,moveX), getPoscMath(unit,unit.y+dY,moveY), drone.fullIcon, (getPoscMath(unit,unit.rotation+dRot,moveRot)), timer / spawnTime, 1.0F, timer);
+                Drawf.construct(getPoscMath(warmup.get(unit),unit.x+dX,moveX),getPoscMath(warmup.get(unit),unit.y+dY,moveY), drone.fullIcon, (getRotShooter(unit,warmup.get(unit),dRot,moveRot,drone.isShield)- 90), timer / spawnTime, 1.0F, timer);
             });
         }
 
@@ -107,11 +114,15 @@ public class DroneSpawnAbility extends Ability {
     public boolean canReplace(Unit unit){
         return aliveUnit.get(unit) == null || !aliveUnit.get(unit).isValid() || aliveUnit.get(unit).team != unit.team;
     }
-    public float getPoscMath(Unit unit, float startVal, float endVal){
-        if(unit.type.parts.first() instanceof RegionPart rp) {
-            return endVal * rp.progress.get(DrawPart.params) + startVal;
+    public float getPoscMath(float partProgress, float startVal, float endVal){
+        return endVal * partProgress + startVal;
+    }
+    public float getRotShooter(Unit unit,float partProgress, float droneRotST, float droneRotED, boolean nonRotate){
+        if(!nonRotate){
+            return ((droneRotED * (1.0f - partProgress)) + unit.rotation) * partProgress + (droneRotST * (1.0f - partProgress));
+        }else{
+            return droneRotED * partProgress + droneRotST;
         }
-        return 0;
     }
 
     public String localized() {

@@ -2,7 +2,6 @@
 hello my name is **Otamamori917**
 this a mod I've been working on for quite a while starting with hjson the porting to java it is undetermined if I will keep the [hjson](https://github.com/Otamamori917/Axthrix-Modded2) version up but This version is a whole revamp compared to it
 
-
 ## Factions
 
 ### Axthraxians Or The Axthrix

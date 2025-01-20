@@ -4,10 +4,18 @@ import mindustry.entities.bullet.*;
 import mindustry.type.*;
 
 public class AxUtil {
-    public static float GetRange(float speed,float DesiredRange)
+    public static float GetLifetime(float speed, float range)
     {
-        return (DesiredRange*8)/speed;
+        return (range*8)/speed;
     }
+    public static float GetRange(float speed,float lifetime)
+    {
+        return (lifetime * speed)/8;
+    }public static float GetSpeed(float range,float lifetime)
+    {
+        return (range/8)/lifetime;
+    }
+
     public static String GetName(String added)
     {
         return "ax-"+added;

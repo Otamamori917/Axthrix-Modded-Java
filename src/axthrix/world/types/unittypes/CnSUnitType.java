@@ -4,6 +4,8 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.util.Strings;
 import arc.util.Tmp;
+import axthrix.AxthrixLoader;
+import axthrix.content.AxthrixSounds;
 import axthrix.world.util.AxStats;
 import axthrix.content.FX.AxthrixFfx;
 import mindustry.Vars;
@@ -27,6 +29,18 @@ public class CnSUnitType extends AxUnitType {
 
   public CnSUnitType(String name) {
     super(name);
+  }
+
+  public CnSUnitType(String name,float vulnerabilitytime) {
+    super(name);
+    vulnerabilityTime = vulnerabilitytime;
+    cloaks = true;
+    if(AxthrixLoader.screwStealthFlyers){
+      deathSound = AxthrixSounds.Death;
+      loopSound = AxthrixSounds.Stank;
+      loopSoundVolume = 0.5f;
+    }
+
   }
 
   @Override

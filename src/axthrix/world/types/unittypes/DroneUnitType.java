@@ -11,13 +11,18 @@ import java.util.HashMap;
 public class DroneUnitType extends AmmoLifeTimeUnitType {
 
 
+
+
     public HashMap<Unit, Unit> tetherUnit = new HashMap<>();
+    public HashMap<Unit, Integer> droneSlot = new HashMap<>();
     public HashMap<Unit, Float> delay = new HashMap<>();
 
-    public boolean isSheild = false;
+    public boolean isShield = false;
     public int tetherUnitID = -1;
+
     public DroneUnitType(String name){
         super(name);
+        useUnitCap = false;
     }
 
     @Override

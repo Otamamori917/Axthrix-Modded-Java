@@ -1,19 +1,14 @@
 package axthrix.content.blocks;
 
 import arc.graphics.Color;
-import arc.struct.Seq;
-import arc.util.*;
-import axthrix.AxthrixLoader;
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.block.PayloadAmmoBlock;
 import axthrix.world.types.bulletypes.AfterShockBulletType;
-import axthrix.world.types.bulletypes.InfFragBulletType;
 import axthrix.world.util.AxUtil;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.MultiEffect;
 
 public class PayloadAmmoBlocks {
     public static PayloadAmmoBlock
@@ -98,7 +93,7 @@ public class PayloadAmmoBlocks {
                 fragBullets = 4;
                 fragBullet = intervalBullet = new FlakBulletType(){{
                     explodeDelay = 10f;
-                    lifetime = AxUtil.GetRange(6,5);
+                    lifetime = AxUtil.GetLifetime(6,5);
                     speed = 6f;
                     knockback = pierceCap = 4;
                     splashDamageRadius = explodeRange = 40;
@@ -243,7 +238,7 @@ public class PayloadAmmoBlocks {
             explosionArea = 0;
             explosionBullet = new BasicBulletType(){{
                 var CoLor = Items.pyratite.color;
-                lifetime = AxUtil.GetRange(20f,100);
+                lifetime = AxUtil.GetLifetime(20f,100);
                 speed = 20f;
                 knockback = pierceCap = 4;
                 damage = 400;
@@ -316,7 +311,7 @@ public class PayloadAmmoBlocks {
             explosionArea = 0;
             explosionBullet = new BasicBulletType(){{
                 var CoLor = Color.valueOf("8b8696");
-                lifetime = AxUtil.GetRange(40f,100);
+                lifetime = AxUtil.GetLifetime(40f,100);
                 speed = 40f;
                 knockback = 4;
                 pierceCap = 12;

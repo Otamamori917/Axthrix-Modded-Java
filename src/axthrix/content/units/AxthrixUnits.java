@@ -1,18 +1,17 @@
 package axthrix.content.units;
 
 import arc.graphics.*;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
-import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Time;
 import axthrix.content.AxFactions;
+import axthrix.content.AxLiquids;
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
+import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.unittypes.*;
 import axthrix.world.types.weapontypes.RevolverWeapon;
@@ -20,14 +19,11 @@ import axthrix.world.types.weapontypes.WeaponHelix;
 import blackhole.entities.part.BlackHolePart;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
 
-import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.effect.WaveEffect;
 import mindustry.entities.part.*;
 
 import mindustry.entities.pattern.ShootAlternate;
@@ -42,13 +38,11 @@ import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.*;
 import arc.struct.ObjectMap.Entry;
-import mindustry.entities.abilities.MoveEffectAbility;
 import mindustry.graphics.Pal;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.BlockFlag;
 
-import static mindustry.Vars.tilesize;
-import static mindustry. Vars.tilePayload;
+import static mindustry.Vars.*;
 import static mindustry.content.StatusEffects.*;
 
 public class AxthrixUnits {
@@ -68,13 +62,13 @@ public class AxthrixUnits {
             //Support Airships |safety|
                 naji,haven,nagiah,abhayad,sosthenes,
             //Specialist Flying Mounts |carry|
-                amos,aymoss,amalik,anuvaha,ambuvahini,
+                amos,arvad,amasya,rahela,chavash,
                 //TX
-                arcalishion,
+                atlas,
             //Elemental Shuttles | leader |
-                aza,enzo,ashur,alaric,aldrich,
+                aza,enzo,ashur,shiva,vishnu,
                 //TX
-                enrique,
+                murugan,
             //Specialist Spiders | Revolver |
                 sig,colt,caiber,magnum,siegfried;
     //Ikatusa |undetermined|
@@ -311,14 +305,14 @@ public class AxthrixUnits {
                     soundPitchMax = 14;
                     soundPitchMin = 8;
                     intervalBullet = new LightningBulletType(){{
-                        damage = 50;
+                        damage = 12;
                         collidesAir = true;
                         ammoMultiplier = 1f;
                         lightningColor = Pal.techBlue;
                         lightningLength = 2;
                         lightningLengthRand = 8;
 
-                        lightningType = new BulletType(0.0001f, 50f) {{
+                        lightningType = new BulletType(0.0001f, 12f) {{
                             lifetime = Fx.lightning.lifetime;
                             hitEffect = Fx.hitLancer;
                             despawnEffect = Fx.none;
@@ -1358,8 +1352,8 @@ public class AxthrixUnits {
         barrier = new AxUnitType("barrier"){{
             localizedName = "[green]Barrier";
             description = """
-                          [green]Protects Allies with small but durable force field.
-                          Barrier Fires A single Hostile Nanobot that deals DOT.
+                          [green].
+                          Barrier Fires A single Nanobot that deals DOT.
                           """;
             ammoType = new ItemAmmoType(Items.silicon);
             speed = 0.55f;
@@ -1370,31 +1364,6 @@ public class AxthrixUnits {
             boostMultiplier = 2.5f;
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
-            abilities.add(new DroneSpawnAbility(){{
-                dRot = 180;
-                moveRot = 0;
-                dY = -5;
-                moveY = 5;
-                drone = AxthrixDrones.wattGround;
-            }},new DroneSpawnAbility(){{
-                dRot = 180;
-                moveRot = 0;
-                dY = -10;
-                moveY = 10;
-                drone = AxthrixDrones.wattGround;
-            }});
-            parts.add(
-                    new RegionPart("-axis"){{
-                        progress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveX = moveY = 0f;
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
-                    }}
-            );
             weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.sap;
                 shootY = 2f;
@@ -1432,8 +1401,8 @@ public class AxthrixUnits {
         blockade = new AxUnitType("blockade"){{
             localizedName = "[green]Blockade";
             description = """
-                          [green]Heals Allies and Deals Great Damage at Medium range.
-                          Blockade Fires Missiles containing Nanobots in quick succession.
+                          [green]Blocks Damage and Deals Great Damage at Medium range.
+                          Blockade Fires ForceFields in quick succession.
                           """;
             ammoType = new ItemAmmoType(Items.silicon);
             armor = 5f;
@@ -1446,32 +1415,20 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
 
-            abilities.add(new ShieldArcAbility(){{
-                region = "aj-blockade-shield";
-                radius = 30f;
-                angle = 45f;
-                y = -24f;
-                regen = 0.6f;
-                cooldown = 200f;
-                max = 600f;
-                width = 6f;
-                whenShooting = false;
-            }});
-
             parts.add(
-                    new RegionPart("-axis"){{
-                        progress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveX = moveY = 0f;
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                    new LightningPart(){{
+                        mirror = true;
+                        x = 2;
+                        x2 = 6;
+                        y = -5;
+                        y2 = 0;
+                        spawnRate = 15;
+                        color = Color.white;
+                        color2 = Pal.heal;
                     }}
             );
 
-            weapons.add(new Weapon("aj-nano-launcher"){{
+            weapons.add(new Weapon("aj-force-launcher"){{
                 shootSound = Sounds.blaster;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1481,8 +1438,8 @@ public class AxthrixUnits {
                 shootY = -1f;
                 mirror = true;
                 top = false;
-                reload = 40;
-                inaccuracy = 5;
+                reload = 20;
+                inaccuracy = 0;
                 heatColor = Pal.heal;
                 immunities.add(AxthrixStatus.nanodiverge);
                 parts.add(
@@ -1493,7 +1450,7 @@ public class AxthrixUnits {
                     mirror = false;
                     under = false;
                     moveX = 2f;
-                    moves.add(new PartMove(PartProgress.recoil, -1f, 1f, -25f));
+                    moves.add(new PartMove(PartProgress.recoil, 0, 0f, -25f));
                 }},
                 new RegionPart("-bar"){{
                     progress = PartProgress.warmup;
@@ -1504,59 +1461,10 @@ public class AxthrixUnits {
                     moveX = 2f;
                 }});
 
-                bullet = new BasicBulletType(){{
-                    ammoMultiplier = 4;
-                    speed = 0f;
-                    keepVelocity = false;
-                    collidesAir = false;
-                    spawnUnit = new MissileUnitType("nano-missile"){{
-                        targetAir = false;
-                        speed = 2.3f;
-                        maxRange = 6f;
-                        lifetime = 60f * 1.4f;
-                        outlineColor = Color.valueOf("#181a1b");
-                        engineColor = trailColor = Pal.heal;
-                        engineLayer = Layer.effect;
-                        health = 45;
-                        loopSoundVolume = 0.1f;
-                        immunities.add(AxthrixStatus.precludedA);
-                        immunities.add(AxthrixStatus.precludedX);
-                        immunities.add(AxthrixStatus.vindicationIII);
-                        immunities.add(AxthrixStatus.vindicationII);
-                        immunities.add(AxthrixStatus.vindicationI);
 
-                        weapons.add(new Weapon(){{
-                            shootCone = 360f;
-                            mirror = false;
-                            reload = 1f;
-                            shootOnDeath = true;
-                            bullet = new ExplosionBulletType(80f, 25f){{
-                                shootEffect = Fx.massiveExplosion;
-                                fragBullets = 20;
-                                fragBullet = new BasicBulletType(5.5f, 50){{
-                                    homingRange = 40f;
-                                    homingPower = 4f;
-                                    homingDelay = 5f;
-                                    width = 0.5f;
-                                    height = 0.5f;
-                                    damage = 1;
-                                    lifetime = 40;
-                                    speed = 1;
-                                    healPercent = 1;
-                                    collidesTeam = true;
-                                    trailEffect = Fx.none;
-                                    trailInterval = 3f;
-                                    trailParam = 4f;
-                                    trailColor = Pal.heal;
-                                    trailLength = 4;
-                                    trailWidth = 0.5f;
-                                    status = AxthrixStatus.nanodiverge;
-                                    backColor = Pal.heal;
-                                    frontColor = Color.white;
-                                }};
-                            }};
-                        }});
-                    }};
+                bullet = new SheildArcBullet(60,"aj-blockade-shield"){{
+                    lifetime = 140;
+                    damage = 25;
                 }};
             }});
         }};
@@ -1565,7 +1473,8 @@ public class AxthrixUnits {
             localizedName = "[green]Palisade";
             description = """
                           [green]A Nimble Walker Deals Heavy Damage at close quarters.
-                          Palisade Fires A Wave of hostile Nanobots.[]
+                          Protects Allies with 3 small but durable shield drones
+                          Palisade Fires A Wave of Nanobots.[]
                           [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
                           """;
             ammoType = new ItemAmmoType(Items.silicon);
@@ -1582,33 +1491,36 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationIII);
 
-            abilities.add(new ShieldArcAbility(){{
-                region = "aj-palisade-shield";
-                radius = 35f;
-                y = -24f;
-                angle = 50f;
-                regen = 0.6f;
-                cooldown = 200f;
-                max = 800f;
-                width = 8f;
-                whenShooting = false;
-            }});
+            abilities.add(
+                    new DroneSpawnAbility(){{
+                        spawnTime = 300;
+                        dRot = 90;
+                        dY = 20;
+                        moveY = 10;
+                        drone = AxthrixDrones.paliShield;
+                    }},new DroneSpawnAbility(){{
+                        droneSlot = 1;
+                        spawnTime = 300;
+                        dRot = 330;
+                        dY = -10;
+                        moveY = -5f;
+                        dX = 17.32051f;
+                        moveX = 8.66025f;
+                        drone = AxthrixDrones.paliShield;
+                    }},
+                    new DroneSpawnAbility(){{
+                        droneSlot = 2;
+                        spawnTime = 300;
+                        dRot = -150;
+                        dY = -10;
+                        moveY = -5f;
+                        dX = -17.32051f;
+                        moveX = -8.66025f;
+                        drone = AxthrixDrones.paliShield;
+                    }});
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationI, 400f, 360f, 30){{
                 onShoot = true;
             }});
-
-            parts.add(
-                    new RegionPart("-axis"){{
-                        progress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveX = moveY = 0f;
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
-                    }}
-            );
 
             weapons.add(new Weapon("aj-recursor"){{
                 shootSound = Sounds.shockBlast;
@@ -1699,33 +1611,44 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationIII);
             immunities.add(AxthrixStatus.vindicationI);
 
-            abilities.add(new ShieldArcAbility(){{
-                region = "aj-parapet-shield";
-                radius = 30f;
-                angle = 100f;
-                y = -22f;
-                regen = 0.6f;
-                cooldown = 200f;
-                max = 1000f;
-                width = 10f;
-                whenShooting = false;
-            }});
+            abilities.add(
+                    new DroneSpawnAbility(){{
+                        spawnTime = 350;
+                        dRot = 45;
+                        dY = dX = 17.5f;
+                        moveY = moveX = 17.5f;
+                        drone = AxthrixDrones.paliShield;
+                    }},new DroneSpawnAbility(){{
+                        droneSlot = 1;
+                        spawnTime = 350;
+                        dRot = 315;
+                        dY = -17.5f;
+                        dX = 17.5f;
+                        moveY = -17.5f;
+                        moveX = 17.5f;
+                        drone = AxthrixDrones.paliShield;
+                    }},
+                    new DroneSpawnAbility(){{
+                        droneSlot = 2;
+                        spawnTime = 350;
+                        dRot = 225;
+                        dY = dX = -17.5f;
+                        moveY = moveX = -17.5f;
+                        drone = AxthrixDrones.paliShield;
+                    }},
+                    new DroneSpawnAbility(){{
+                        droneSlot = 3;
+                        spawnTime = 350;
+                        dRot = 135;
+                        dY = 17.5f;
+                        dX = -17.5f;
+                        moveY = 17.5f;
+                        moveX = -17.5f;
+                        drone = AxthrixDrones.paliShield;
+                    }});
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
                 onShoot = true;
             }});
-
-            parts.add(
-                    new RegionPart("-axis"){{
-                        progress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveX = moveY = 0f;
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
-                    }}
-            );
 
             weapons.add(new Weapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shockBlast;
@@ -1795,7 +1718,7 @@ public class AxthrixUnits {
                 rotate = true;
                 mirror = true;
                 reload = 80;
-                inaccuracy = 10;
+                inaccuracy = 0;
                 shoot.shots = 2;
                 shoot.shotDelay = 10;
                 parts.add(
@@ -1830,51 +1753,9 @@ public class AxthrixUnits {
                         moves.add(new PartMove(PartProgress.recoil, 0f, -3.5f, 0f));
                     }});
                 }});
-                bullet = new BasicBulletType(){{
-                    ammoMultiplier = 6;
-                    speed = 0f;
-                    keepVelocity = false;
-                    collidesAir = false;
-                    spawnUnit = new MissileUnitType("burst-missile"){{
-                        targetAir = false;
-                        speed = 3f;
-                        maxRange = 6f;
-                        lifetime = 60f * 1.6f;
-                        outlineColor = Color.valueOf("#181a1b");
-                        engineColor = trailColor = Pal.heal;
-                        engineLayer = Layer.effect;
-                        health = 65;
-                        loopSoundVolume = 0.1f;
-                        immunities.add(AxthrixStatus.precludedA);
-                        immunities.add(AxthrixStatus.precludedX);
-                        immunities.add(AxthrixStatus.vindicationIII);
-                        immunities.add(AxthrixStatus.vindicationII);
-                        immunities.add(AxthrixStatus.vindicationI);
-
-                        weapons.add(new Weapon(){{
-                            shootCone = 360f;
-                            mirror = false;
-                            reload = 1f;
-                            shootOnDeath = true;
-                            bullet = new ExplosionBulletType(80f, 25f){{
-                                shootEffect = new ExplosionEffect(){{
-                                    lifetime = 28f;
-                                    waveStroke = 6f;
-                                    waveLife = 10f;
-                                    waveRadBase = 7f;
-                                    waveColor = Pal.heal;
-                                    waveRad = 30f;
-                                    smokes = 6;
-                                    smokeColor = Color.white;
-                                    sparkColor = Pal.heal;
-                                    sparks = 6;
-                                    sparkRad = 35f;
-                                    sparkStroke = 1.5f;
-                                    sparkLen = 4f;
-                                }};
-                            }};
-                        }});
-                    }};
+                bullet = new SheildArcBullet(120,"aj-blockade-shield"){{
+                    lifetime = 140;
+                    damage = 125;
                 }};
             }});
         }};
@@ -1894,13 +1775,18 @@ public class AxthrixUnits {
             hitSize = 28;
             buildSpeed = 4f;
             constructor = MechUnit::create;
+            mechStepParticles = true;
+            stepShake = 0.75f;
+            drownTimeMultiplier = 6f;
+            mechFrontSway = 1.9f;
+            mechSideSway = 0.6f;
             factions.add(AxFactions.axthrix);
             immunities.add(AxthrixStatus.nanodiverge);
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationI);
             abilities.add(new NanobotStormAbility());
 
-            abilities.add(new ShieldArcAbility(){{
+            /*abilities.add(new ShieldArcAbility(){{
                 region = "aj-impediment-shield";
                 radius = 40f;
                 angle = 100f;
@@ -1910,236 +1796,97 @@ public class AxthrixUnits {
                 max = 1000f;
                 width = 14f;
                 whenShooting = false;
-            }});
+            }});*/
             abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationIII, 400f, 360f, 90){{
                 onShoot = true;
             }});
 
-            parts.add(
-                    new RegionPart("-axis"){{
-                        progress = PartProgress.warmup;
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = false;
-                        moveX = moveY = 0f;
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
-                        y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
-                    }}
-            );
 
-            parts.add(
-            new RegionPart("-mount-l"){{
-                progress = PartProgress.warmup;
-                heatProgress = PartProgress.warmup.delay(0.6f);
-                heatColor = Pal.heal;
-                mirror = false;
-                under = true;
-                children.add(new RegionPart("-arm-l"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup.delay(0.6f);
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    x = 0f;
-                    moveX = 0;
-                    moveY = 1f;
-                    moveRot = 5f;
-                    moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
-                    children.add(new RegionPart("-plate-l"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup.delay(0.6f);
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = true;
-                        moveY = 0f;
-                        moveX = -6.8f;
-                        children.add(new RegionPart("-shell-l"){{
-                            progress = PartProgress.warmup;
-                            heatProgress = PartProgress.warmup.delay(0.6f);
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = true;
-                            moveY = -1f;
-                            moveX = 0f;
-                            moveRot = -10f;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 0f));
-                        }});
-                    }});
-                }});
-            }},
-            new RegionPart("-mount-r"){{
-                progress = PartProgress.warmup;
-                heatProgress = PartProgress.warmup.delay(0.6f);
-                heatColor = Pal.heal;
-                mirror = false;
-                under = true;
-                children.add(new RegionPart("-arm-r"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup.delay(0.6f);
-                    heatColor = Pal.heal;
-                    mirror = false;
-                    under = false;
-                    x = 0f;
-                    moveX = 0;
-                    moveY = 1f;
-                    moveRot = -5f;
-                    moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
-                    children.add(new RegionPart("-plate-r"){{
-                        progress = PartProgress.warmup;
-                        heatProgress = PartProgress.warmup.delay(0.6f);
-                        heatColor = Pal.heal;
-                        mirror = false;
-                        under = true;
-                        moveY = 0f;
-                        moveX = 6.8f;
-                        children.add(new RegionPart("-shell-r"){{
-                            progress = PartProgress.warmup;
-                            heatProgress = PartProgress.warmup.delay(0.6f);
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = true;
-                            moveY = -1f;
-                            moveX = 0f;
-                            moveRot = 10f;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 0f));
-                        }});
-                    }});
-                }});
-            }});
-
-
-            weapons.add(new Weapon("aj-bruh"){{
-                shootSound = Sounds.laserblast;
+            weapons.add(new Weapon("aj-force"){{
+                shootSound = Sounds.shockBlast;
+                shootCone = 90;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
                 x = 0;
                 y = 0f;
-                shootX = 14f;
-                shootY = 8;
+                shootX = 16f;
+                shootY = 6;
                 mirror = true;
                 alternate = false;
-                reload = 400;
+                reload = 40;
                 recoil = 0;
                 inaccuracy = 0;
                 parts.add(
-                    new RegionPart("-missile") {{
-                        progress = PartProgress.reload.curve(Interp.pow2In);
-
-                        colorTo = new Color(1f, 1f, 1f, 0f);
-                        color = Color.white;
-                        mixColorTo = Pal.accent;
-                        mixColor = new Color(1f, 1f, 1f, 0f);
-                        outline = false;
-                        under = true;
-                        y = 2.5f;
-                        x = 2;
-                        layerOffset = -0.1f;
-                        moves.add(
-                                new PartMove(PartProgress.warmup, 8f, -2.5f, -90f),
-                                new PartMove(PartProgress.warmup.delay(0.4f), 2f, 2f, 24f),
-                                new PartMove(PartProgress.warmup.delay(0.8f), 2f, 1f, 24f)
-                        );
-                    }}
-                );
-                bullet = new BasicBulletType(){{
-                    ammoMultiplier = 10;
-                    displayAmmoMultiplier = false;
-                    speed = 0f;
-                    keepVelocity = false;
-                    collidesAir = false;
-                    spawnUnit = new MissileUnitType("bruh-missile"){{
-                        speed = 4.6f;
-                        maxRange = 6f;
-                        lifetime = 60f * 5.5f;
-                        outlineColor = Color.valueOf("#181a1b");
-                        engineColor = trailColor = Pal.heal;
-                        engineLayer = Layer.effect;
-                        engineSize = 3.1f;
-                        engineOffset = 10f;
-                        rotateSpeed = 0.25f;
-                        trailLength = 18;
-                        missileAccelTime = 50f;
-                        lowAltitude = true;
-                        loopSound = Sounds.missileTrail;
-                        loopSoundVolume = 0.6f;
-                        deathSound = Sounds.largeExplosion;
-                        targetAir = true;
-                        collidesAir = true;
-
-                        fogRadius = 6f;
-
-                        health = 2100;
-                        immunities.add(AxthrixStatus.precludedA);
-                        immunities.add(AxthrixStatus.precludedX);
-                        immunities.add(AxthrixStatus.vindicationIII);
-                        immunities.add(AxthrixStatus.vindicationII);
-                        immunities.add(AxthrixStatus.vindicationI);
-
-                        weapons.add(new Weapon(){{
-                            float rad = 100f;
-                            shootCone = 360f;
+                        new RegionPart("-mount"){{
+                            progress = PartProgress.warmup;
+                            heatProgress = PartProgress.warmup.delay(0.6f);
+                            heatColor = Pal.heal;
                             mirror = false;
-                            reload = 1f;
-                            deathExplosionEffect = Fx.massiveExplosion;
-                            shootOnDeath = true;
-                            shake = 10f;
-                            bullet = new ExplosionBulletType(600f, rad){{
-                                hitColor = lightColor = Pal.heal;
-                                backColor = Pal.heal;
-                                frontColor = Color.white;
-                                mixColorTo = Color.white;
-
-                                despawnEffect = Fx.greenBomb;
-                                hitEffect = Fx.massiveExplosion;
-
-
-                                collidesAir = true;
-
-                                ammoMultiplier = 1f;
-                                fragLifeMin = 0.1f;
-                                fragBullets = 8;
-                                fragBullet = new EmpBulletType(){{
-                                    lightOpacity = 0.7f;
-                                    unitDamageScl = 0.8f;
-                                    healPercent = 1f;
-                                    timeIncrease = 3f;
-                                    timeDuration = 60f * 20f;
-                                    powerDamageScl = 2f;
-                                    damage = 60;
-                                    hitColor = lightColor = Pal.heal;
-                                    lightRadius = 70f;
-                                    clipSize = 250f;
-                                    shootEffect = Fx.hitEmpSpark;
-                                    smokeEffect = Fx.shootBigSmoke2;
-                                    lifetime = 30f;
-                                    sprite = "circle-bullet";
-                                    backColor = Pal.heal;
-                                    frontColor = Color.white;
-                                    width = height = 12f;
-                                    shrinkY = 0f;
-                                    speed = 2f;
-                                    trailLength = 20;
-                                    trailWidth = 6f;
-                                    trailColor = Pal.heal;
-                                    trailInterval = 3f;
-                                    splashDamage = 70f;
-                                    splashDamageRadius = 30;
-                                    hitShake = 4f;
-                                    trailRotation = false;
-                                    status = StatusEffects.electrified;
-                                }};
-                            }};
+                            under = true;
+                            children.add(new RegionPart("-arm"){{
+                                progress = PartProgress.warmup;
+                                heatProgress = PartProgress.warmup.delay(0.6f);
+                                heatColor = Pal.heal;
+                                mirror = false;
+                                under = false;
+                                x = 0f;
+                                moveX = 0;
+                                moveY = 1f;
+                                moveRot = 5f;
+                                moves.add(new PartMove(PartProgress.recoil, 0f,  0, 0f));
+                                children.add(new RegionPart("-plate"){{
+                                    progress = PartProgress.warmup;
+                                    heatProgress = PartProgress.warmup.delay(0.6f);
+                                    heatColor = Pal.heal;
+                                    mirror = false;
+                                    under = true;
+                                    moveY = 0f;
+                                    moveX = -6.8f;
+                                    moves.add(new PartMove(PartProgress.recoil, 4f, 1f, 4f));
+                                    children.add(new RegionPart("-shell"){{
+                                        progress = PartProgress.warmup;
+                                        heatProgress = PartProgress.warmup.delay(0.6f);
+                                        heatColor = Pal.heal;
+                                        mirror = false;
+                                        under = true;
+                                        moveY = -1f;
+                                        moveX = 0f;
+                                        moveRot = -10f;
+                                        moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 10f));
+                                    }});
+                                }});
+                            }});
                         }});
+                bullet = new BulletType(0,0){{
+                    fragSpread = 2.5f;
+                    fragRandomSpread = 2.5f;
+                    fragLifeMin = fragVelocityMin = 0.6f;
+                    fragLifeMax = fragVelocityMax = 1.4f;
+                    fragBullets = 18;
+                    absorbable = hittable = false;
+                    instantDisappear = true;
+                    keepVelocity = false;
+                    hitEffect = shootEffect= smokeEffect = despawnEffect = Fx.none;
 
-                        abilities.add(new MoveEffectAbility(){{
-                            effect = Fx.missileTrailSmoke;
-                            rotation = 180f;
-                            y = -9f;
-                            color = Color.grays(0.6f).lerp(Color.darkGray, 0.5f).a(0.4f);
-                            interval = 7f;
-                        }});
+
+                    fragBullet = new SheildArcBullet(10,"aj-impediment-shield"){{
+                        speed = 4;
+                        lifetime = 50;
+                        damage = 60;
+
+                        fragSpread = 1f;
+                        fragRandomSpread = 1f;
+                        fragLifeMin = fragVelocityMin = 0.3f;
+                        fragLifeMax = fragVelocityMax = 1.4f;
+                        fragBullets = 8;
+
+
+                        fragBullet = new SheildArcBullet(5,"aj-impediment-shield-2"){{
+                            speed = 4;
+                            lifetime = 10;
+                            damage = 20;
+                        }};
                     }};
                 }};
             }});
@@ -2453,6 +2200,84 @@ public class AxthrixUnits {
                     }}
             );
         }};
+        zyran = new CopterUnitType("zyran") {{
+            localizedName = "[orange]Zyran";
+            description = """
+                          [orange]Fast As Thunder, Zyran Is a fast and agile Helicopter.
+                          Releases Static Energy at enemy block with power, can recharge at ally Power Nodes, or over time.
+                          """;
+            itemCapacity = 0;
+            factions.add(AxFactions.axthrix);
+            health = 680;
+            hitSize = 24;
+
+            speed = 4.45f;
+            accel = 0.07f;
+            drag = 0.026f;
+            rotateSpeed = 5.5f;
+            abilities.add(
+                    new StaticEMPability(){{
+                        color = Color.orange.cpy().add(Color.maroon);
+                        range = 120;
+                        y = 12;
+                        poweredCharge = 0.5f;
+                        passiveCharge = 0.2f;
+                    }}
+            );
+
+            ammoType = new PowerAmmoType(10);
+
+            circleTarget = true;
+            lowAltitude = true;
+            faceTarget = flying = true;
+
+            fallSpeed = 0.0015f;
+            spinningFallSpeed = 4;
+            fallSmokeY = -10f;
+            engineSize = 0;
+
+            targetFlags = new BlockFlag[]{BlockFlag.battery, BlockFlag.generator, null};
+
+            constructor = CptrUnitEntity::new;
+            aiController = DynFlyingAI::new;
+
+            /*weapons.add(new Weapon(name + "-weapon"){{
+                shootY = 6f;
+                x = 0f;
+                y = 0f;
+                mirror = false;
+                reload = 6;
+                top = true;
+                heatColor =  Color.orange;
+                shoot.shotDelay = 30;
+                shoot.shots = 2;
+                bullet = new LightningBulletType(){{
+                    damage = 15;
+                    lightningLength = 15;
+                    lightningColor = Color.orange;
+                    collidesAir = true;
+                    shootSound = Sounds.spark;
+                    soundPitchMax = soundPitchMin = 1.2f;
+                }};
+            }});
+            parts.add(new RegionPart("-blade"){{
+                mirror = under = true;
+                weaponIndex = 0;
+                moveY = -2.25f;
+                moveX = -2;
+            }});*/
+
+            propeller.add(
+                    new Propeller("aj-short-blade") {{
+                        x = 0;
+                        y = 3f;
+                        rotorSpeed = -45f;
+                        bladeCount = 5;
+                        rotorTopSizeScl = 1.2f;
+                        rotorSizeScl = 1.8f;
+                    }}
+            );
+        }};
         //support airships
         naji = new CopterUnitType("naji") {{
             localizedName = "[green]Naji";
@@ -2463,7 +2288,6 @@ public class AxthrixUnits {
             itemCapacity = 40;
             factions.add(AxFactions.axthrix);
             float unitRange = 28 * tilesize;
-            outlines = false;
             health = 300;
             hitSize = 18;
 
@@ -2472,6 +2296,7 @@ public class AxthrixUnits {
             drag = 0.016f;
             rotateSpeed = 5.5f;
             buildSpeed = 2f;
+            outlines = false;
 
             ammoType = new ItemAmmoType(Items.silicon, 10);
 
@@ -2480,8 +2305,6 @@ public class AxthrixUnits {
             faceTarget = false;
             flying = true;
             range = unitRange;
-            engineColor = Color.valueOf("4ea572");
-            engineLayer = 0.05f;
             engineSize = 0;
             engines = Seq.with(new UnitEngine(0,-6.5f,2.5f,-90));
 
@@ -2492,9 +2315,15 @@ public class AxthrixUnits {
             constructor = CptrUnitEntity::new;
             aiController = UnitHealerAi::new;
 
-            abilities.add(new StatusFieldAbility(AxthrixStatus.repair,60,80,16*8){{
-                applyEffect = AxthrixFfx.circleOut(60,4,1,Color.green);
+            abilities.add(new StatusFieldAbility(AxthrixStatus.repair,60,280,16*8){{
                 activeEffect = AxthrixFfx.circleOut(40,16*8, 4,Color.green);
+            }});
+
+            parts.add(new RegionPart("-lineout"){{
+                mirror = false;
+                under = true;
+                outline = false;
+                layerOffset = -0.1f;
             }});
 
             weapons.add(new Weapon() {{
@@ -2515,15 +2344,10 @@ public class AxthrixUnits {
                     spawnUnit = AxthrixDrones.ivy;
                 }};
             }});
-            float layerOffset = -0.00009f;
+            float layerOffset = -0.01f;
 
-            float rotX = 19f * 0.25f;
-            float rotY = -10f * 0.25f;
-            float rotorScaling = 0.2f;
-            //small rotors
-            float rotXs = 10f * 0.25f;
-            float rotYs = 7f * 0.25f;
-            float rotorScalings = 0.18f;
+            float rotX = 17f * 0.25f;
+            float rotY = 3f * 0.25f;
             propeller.add(
                     new Propeller("aj-short-turbine-repair") {{
                         topBladeName = "short-blade";
@@ -2533,7 +2357,8 @@ public class AxthrixUnits {
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 8;
                         rotorLayer = layerOffset;
-                        rotorSizeScl = rotorTopSizeScl = rotorScaling;
+                        rotorSizeScl = 0.34f;
+                        rotorTopSizeScl = 0.45f;
                     }},
                     new Propeller("aj-short-turbine-repair") {{
                         topBladeName = "short-blade";
@@ -2543,33 +2368,13 @@ public class AxthrixUnits {
                         rotorBlurSpeedMultiplier = 0.08f;
                         bladeCount = 8;
                         rotorLayer = layerOffset;
-                        rotorSizeScl = rotorTopSizeScl = rotorScaling;
-                    }},
-                    //small rotors
-                    new Propeller("aj-short-turbine-repair") {{
-                        topBladeName = "short-blade";
-                        x = -rotXs;
-                        y = rotYs;
-                        rotorSpeed = 32;
-                        rotorBlurSpeedMultiplier = 0.08f;
-                        bladeCount = 6;
-                        rotorLayer = layerOffset;
-                        rotorSizeScl = rotorTopSizeScl = rotorScalings;
-                    }},
-                    new Propeller("aj-short-turbine-repair") {{
-                        topBladeName = "short-blade";
-                        x = rotXs;
-                        y = rotYs;
-                        rotorSpeed = -32;
-                        rotorBlurSpeedMultiplier = 0.08f;
-                        bladeCount = 6;
-                        rotorLayer = layerOffset;
-                        rotorSizeScl = rotorTopSizeScl = rotorScalings;
+                        rotorSizeScl = 0.34f;
+                        rotorTopSizeScl = 0.45f;
                     }}
             );
         }};
         //Special Flying Mount
-        //amos,aymoss,amalik,anuvaha,ambuvahini,
+        //amos,arvad,amasya,anuvaha,ambuvahini,
         amos = new MountUnitType("amos")
         {{
             localizedName = "Amos";
@@ -2602,9 +2407,9 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,4.5f,270+45)
             );
         }};
-        aymoss = new MountUnitType("aymoss")
+        arvad = new MountUnitType("arvad")
         {{
-            localizedName = "Aymoss";
+            localizedName = "arvad";
             description = """
                           Can pick up and use any 2x2 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
@@ -2621,7 +2426,7 @@ public class AxthrixUnits {
             accel = 0.06f;
             drag = 0.017f;
             hitSize = 24.05f;
-            itemCapacity = 600;
+            itemCapacity = liquidCap = 600;
             itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
@@ -2629,14 +2434,14 @@ public class AxthrixUnits {
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,6,-90),
-                    new UnitEngine(-10,-10,6,180+45),
-                    new UnitEngine(10,-10,6,270+45)
+                    new UnitEngine(0,-14,8,-90)//,
+                    //new UnitEngine(-10,-12,10,180+45),
+                    //new UnitEngine(10,-10,6,270+45)
             );
         }};
-        amalik = new MountUnitType("amalik")
+        amasya = new MountUnitType("amasya")
         {{
-            localizedName = "Amalik";
+            localizedName = "amasya";
             description = """
                           Can pick up and use any 3x3 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
@@ -2668,9 +2473,9 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,6,270+45)
             );
         }};
-        anuvaha = new MountUnitType("anuvaha")
+        rahela = new MountUnitType("rahela")
         {{
-            localizedName = "Anuvaha";
+            localizedName = "Rahela";
             description = """
                           Can pick up and use any 4x4 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
@@ -2702,9 +2507,9 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,6,270+45)
             );
         }};
-        ambuvahini = new MountUnitType("ambuvahini")
+        chavash = new MountUnitType("chavash")
         {{
-            localizedName = "Ambuvahini";
+            localizedName = "chavash";
             description = """
                           Can pick up and use any 5x5 Turret or smaller.
                           Unit Item Storage will restock current attached turret.[]
@@ -2732,9 +2537,9 @@ public class AxthrixUnits {
                     new UnitEngine(10,-10,6,270+45)
             );
         }};
-        arcalishion = new MountUnitType("arcalishion")//Todo Might have weapons or abilities
+        atlas = new MountUnitType("atlas")//Todo Might have weapons or abilities
         {{
-            localizedName = "Arcalishion";
+            localizedName = "atlas";
             description = """
                           [orange]|Teir X Unit|
                           (This Means This Is A Boss)[]
@@ -2846,6 +2651,7 @@ public class AxthrixUnits {
         //revolver bois
         sig = new AxUnitType("sig") {{
                 constructor = LegsUnit::create;
+                outlineRadius = 2;
                 speed = 0.72F;
                 drag = 0.11F;
                 hitSize = 9.0F;
@@ -2855,73 +2661,109 @@ public class AxthrixUnits {
                 legStraightness = 0.3F;
                 stepShake = 0.0F;
                 legCount = 6;
-                legLength = 8.0F;
+                legLength = 10.0F;
                 lockLegBase = true;
                 legContinuousMove = true;
-                legExtension = -2.0F;
+                legExtension = -2.5F;
                 legBaseOffset = 3.0F;
-                legMaxLength = 1.1F;
+                legMaxLength = 1.3F;
                 legMinLength = 0.2F;
                 legLengthScl = 0.96F;
                 legForwardScl = 1.1F;
                 legGroupSize = 3;
                 rippleScale = 0.2F;
-                legMoveSpace = 1.0F;
+                legMoveSpace = 1.2F;
                 allowLegStep = true;
                 hovering = true;
                 legPhysicsLayer = false;
                 shadowElevation = 0.1F;
-                groundLayer = 74.0F;
                 targetAir = false;
                 researchCostMultiplier = 0.0F;
+                range = 8*8;
+                maxRange = 14*8;
+
                 weapons.add(new RevolverWeapon("sig-weapon") {
                     {
-                        shootSound = Sounds.missile;
+                        shootSound = Sounds.spray;
+                        inaccuracy = 10;
+                        shoot.shots = 6;
                         mirror = false;
                         showStatSprite = false;
                         x = 0.0F;
                         y = 1.0F;
                         shootY = 4.0F;
                         reload = 5.0F;
-                        maxCartridges = 8;
-                        reloadCartridges = 120;
+                        maxCartridges = 6;
+                        numOfReloadCartridges = 2;
+                        reloadCartridges = 60;
                         cooldownTime = 42.0F;
                         heatColor = Pal.turretHeat;
-                        bullet = new ArtilleryBulletType(3.0F, 40.0F) {
-                            {
-                                shootEffect = new MultiEffect(new Effect[]{Fx.shootSmallColor, new Effect(9.0F, (e) -> {
-                                    Draw.color(Color.white, e.color, e.fin());
-                                    Lines.stroke(0.7F + e.fout());
-                                    Lines.square(e.x, e.y, e.fin() * 5.0F, e.rotation + 45.0F);
-                                    Drawf.light(e.x, e.y, 23.0F, e.color, e.fout() * 0.7F);
-                                })});
-                                collidesTiles = true;
-                                backColor = hitColor = Pal.health;
-                                frontColor = Color.white;
-                                knockback = 0.8F;
-                                lifetime = 50.0F;
-                                width = height = 9.0F;
-                                splashDamageRadius = 19.0F;
-                                splashDamage = 30.0F;
-                                trailLength = 27;
-                                trailWidth = 2.5F;
-                                trailEffect = Fx.none;
-                                trailColor = backColor;
-                                trailInterp = Interp.slope;
-                                shrinkX = 0.6F;
-                                shrinkY = 0.2F;
-                                hitEffect = despawnEffect = new MultiEffect(new Effect[]{Fx.hitSquaresColor, new WaveEffect() {
-                                    {
-                                        colorFrom = colorTo =  Pal.health;
-                                        sizeTo = splashDamageRadius + 2.0F;
-                                        lifetime = 9.0F;
-                                        strokeFrom = 2.0F;
-                                    }
-                                }});
-                            }
-                        };
+                        bullet = new LiquidBulletType(){{
+                            lifetime = 46;
+                            speed = 22;
+                            hitSize = 12;
+                            damage = 15;
+                            liquid = AxLiquids.xenon;
+                            fragBullets = 1;
+                            fragBullet = new LiquidBulletType(){{
+                                lifetime = 1;
+                                speed = 0;
+                                hitSize = puddleSize = 12;
+                                splashDamageRadius = 8*8;
+                                splashDamage = 50;
+                                liquid = AxLiquids.xenon;
+                            }};
+                        }};
                     }
                 });
+            parts.add(
+                    new RegionPart("-chamber"){{
+                        y = -0.5f;
+                        layerOffset = -0.001f;
+                        color = Color.valueOf("717380");
+                        colorTo = Color.valueOf("505163");
+                        growProgress = PartProgress.recoil;
+                        progress = PartProgress.recoil;
+                        growX = -0.5f;
+                        moveX = -1.4f;
+                    }},
+                    new RegionPart("-chamber"){{
+                        y = -0.5f;
+                        x = 1.4f;
+                        layerOffset = -0.001f;
+                        color = Color.valueOf("505163");
+                        colorTo = Color.valueOf("717380");
+                        growProgress = PartProgress.recoil.inv();
+                        progress = PartProgress.recoil;
+                        growX = -0.5f;
+                        moveX = -1.4f;
+                    }},
+                    new RegionPart("-chamber"){{
+                        y = -0.5f;
+                        x = -2.8f;
+                        layerOffset = -0.001f;
+                        color = Color.valueOf("505163");
+                        growProgress = PartProgress.recoil.inv();
+                        progress = PartProgress.recoil;
+                        growX = -0.5f;
+                        moveX = -1.4f;
+                        moves.add(
+                                new PartMove(PartProgress.constant(1), 0f, 0f, -0.5f, 0, 0f)
+                        );
+                    }},
+                    new RegionPart("-chamber"){{
+                        y = -0.5f;
+                        x = -1.4f;
+                        layerOffset = -0.001f;
+                        color = Color.valueOf("505163");
+                        growProgress = PartProgress.recoil;
+                        progress = PartProgress.recoil;
+                        growX = -0.5f;
+                        moveX = -1.4f;
+                        moves.add(
+                                new PartMove(PartProgress.constant(1), 0f, 0f, -0.5f, 0, 0f)
+                        );
+                    }});
             }
         };
 

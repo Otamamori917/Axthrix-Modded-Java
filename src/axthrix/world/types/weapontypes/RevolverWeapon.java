@@ -5,6 +5,8 @@ import arc.audio.Sound;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
+import axthrix.AxthrixLoader;
+import axthrix.content.AxthrixSounds;
 import axthrix.world.types.weapontypes.mounts.RevolverWeaponMount;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -14,6 +16,9 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.type.Weapon;
 
+import static axthrix.content.AxthrixSounds.RevolverEmpty;
+import static axthrix.content.AxthrixSounds.RevolverReload;
+
 
 public class RevolverWeapon extends Weapon {
 
@@ -21,7 +26,7 @@ public class RevolverWeapon extends Weapon {
 
 
     public Effect reloadCartridgesEffect = Fx.none;
-    public Sound reloadCartridgesSound = Sounds.none;
+    public Sound reloadCartridgesSound = RevolverReload;
     public float reloadCartridges = 1f;
 
 
@@ -36,14 +41,14 @@ public class RevolverWeapon extends Weapon {
 
     public TextureRegion nonCartridgesRegion;
     public Effect nonCartridgesShootEffect = Fx.none;
-    public Sound nonCartridgesShootSound = Sounds.none;
+    public Sound nonCartridgesShootSound = RevolverEmpty;
 
     @Override
     public void load() {
         super.load();
-        cartridgesRegion = Core.atlas.find("cartridges");
+        cartridgesRegion = Core.atlas.find("aj-cartridges");
 
-        nonCartridgesRegion = Core.atlas.find("non-cartridges");
+        nonCartridgesRegion = Core.atlas.find("aj-non-cartridges");
     }
     public RevolverWeapon() {
         super("");
@@ -60,7 +65,9 @@ public class RevolverWeapon extends Weapon {
         super.draw(unit, mount);
 
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
-        if (unit.isPlayer()) drawCartridgeses(rwm, unit.x, unit.y + unit.hitSize);
+        if(AxthrixLoader.showRevolverAmmo){
+            if (unit.isPlayer()) drawCartridgeses(rwm, unit.x, unit.y + unit.hitSize);
+        }
     }
 
     public void drawCartridgeses(RevolverWeaponMount rwm, float x, float y) {
@@ -80,7 +87,6 @@ public class RevolverWeapon extends Weapon {
     }
 
     private void drawCartridges(TextureRegion tr, float x, float y) {
-        Draw.z(Layer.end);
         Draw.scl(0.5f);
         Draw.rect(tr, x, y);
     }

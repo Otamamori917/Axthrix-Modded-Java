@@ -1,10 +1,9 @@
 package axthrix.content.blocks;
 
-import arc.util.Time;
-import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxFactions;
 
+import axthrix.content.AxLiquids;
 import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.block.defense.*;
@@ -15,7 +14,6 @@ import blackhole.entities.bullet.BlackHoleBulletType;
 import blackhole.entities.part.BlackHolePart;
 import mindustry.content.*;
 import mindustry.entities.UnitSorts;
-import mindustry.entities.Units;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
@@ -54,7 +52,7 @@ public class AxthrixTurrets{
 
     nado, aratiri, gravitation, morta,
 
-    multitest,
+    multitest,viper,
 
     //payload
     apex,//Small apexus? but autocannon possibly
@@ -66,10 +64,6 @@ public class AxthrixTurrets{
     public static void loadAxthrix(){
         kramola = new ItemAcceleratedTurret("kramola"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Kramola";
-            description = """
-                          Homing Minigun MK1
-                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 40f;
@@ -106,8 +100,8 @@ public class AxthrixTurrets{
                         };
                     }},
                     new ShootHelix(){{
-                        mag = 0.15f;
-                        scl = 0.05f;
+                        mag = 0.3f;
+                        scl = 0.1f;
                     }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 15){{
@@ -163,10 +157,6 @@ public class AxthrixTurrets{
 
         razdor = new ItemAcceleratedTurret("razdor"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Razdor";
-            description = """
-                          Homing Minigun MK2
-                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 50f;
@@ -202,8 +192,8 @@ public class AxthrixTurrets{
                         };
                     }},
                     new ShootHelix(){{
-                        mag = 0.2f;
-                        scl = 0.1f;
+                        mag = 0.4f;
+                        scl = 0.2f;
                     }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 30){{
@@ -267,10 +257,6 @@ public class AxthrixTurrets{
 
         smuta = new ItemAcceleratedTurret("smuta"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Smuta";
-            description = """
-                          Homing Minigun MK3
-                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom variables
             acceleratedDelay = 60f;
@@ -306,8 +292,8 @@ public class AxthrixTurrets{
                         };
                     }},
                     new ShootHelix(){{
-                        mag = 0.25f;
-                        scl = 0.15f;
+                        mag = 0.5f;
+                        scl = 0.3f;
                     }});
             ammo(
                 Items.titanium, new BasicBulletType(4f, 45){{
@@ -380,10 +366,6 @@ public class AxthrixTurrets{
 
         kisten = new AxItemTurret("kisten"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Kisten";
-            description = """
-                          Biblically Accurate Rocket Launcher
-                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
             buildCostMultiplier = 0.1f;
@@ -621,10 +603,6 @@ public class AxthrixTurrets{
         }};
         aratiri = new PowerAcceleratedTurret("aratiri"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Aratiri";
-            description = """
-                          ThunderBolt Minigun
-                          """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
             acceleratedDelay = 45f;
@@ -634,6 +612,7 @@ public class AxthrixTurrets{
             cooldownDelay = 720f;
 
             buildCostMultiplier = 0.1f;
+            buildCostMultiplier
             size = 5;
             scaledHealth = 820f;
             reload = 30f;
@@ -657,10 +636,8 @@ public class AxthrixTurrets{
             }};
         }};
         gravitation = new AxItemTurret("gravitation"){{
+            drawer = new DrawTurret("crystalized-");
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Gravitation";
-            description = """ 
-                          """;
             range = 8*90;
             size = 6;
             reload = 600;
@@ -761,10 +738,6 @@ public class AxthrixTurrets{
 
         morta = new AxPowerTurret("morta"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "morta";
-            description = """
-                          
-                          """;
             range = 8*50;
             size = 4;
             reload = 280;
@@ -776,7 +749,7 @@ public class AxthrixTurrets{
             faction.add(AxFactions.axthrix);
             consumePower(405/60);
             health = 1300;
-            shootType = new SheildArcBullet(160,"aj-morta-sheild"){{
+            shootType = new SheildArcBullet(240,"aj-morta-sheild"){{
                     lifetime = 240;
             }};
             drawer = new DrawTurret("crystalized-"){{
@@ -828,11 +801,63 @@ public class AxthrixTurrets{
                         new RegionPart("-main"){{layerOffset = 2;}});*/
             }};
         }};
+        viper = new AxLiquidTurret("viper"){{
+            outlineColor = Color.valueOf("#181a1b");
+            range = AxUtil.GetRange(22,46);
+            size = 2;
+            reload = 1;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.axthrix);
+            health = 800;
+            ammoPerShot = 2;
+            maxAmmo = 6*25;
+            shoot = new ShootBarrel(){{
+                barrels = new float[]{
+                        -4f, -8, 10,
+                        -2.5f, -5, 5,
+                        0f, -3, 0,
+                        2.5f, -5, -5,
+                        4f, -8, -10
+                };
+            }};
+            ammo(
+                    AxLiquids.iodineGas, new LiquidBulletType(){{
+                        lifetime = 46;
+                        speed = 22;
+                        hitSize = 12;
+                        damage = 10;
+                        liquid = AxLiquids.iodineGas;
+                        status = AxthrixStatus.unrepair;
+                    }}
+            );
+            drawer = new DrawTurret("crystalized-")/*{{
+                parts.add(
+                        new RegionPart("-shell-r"){{
+                            progress = PartProgress.recoil;
+                            moveY = 0.5f;
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.smoothReload, -1f, -1f, 15f)
+                            );
+
+                        }},
+                        new RegionPart("-shell-l"){{
+                            progress = PartProgress.recoil;
+                            moveY = 0.5f;
+                            layerOffset = 2;
+                            moves.add(
+                                    new PartMove(PartProgress.smoothReload, 1f, -1f, -15f)
+                            );
+                        }},
+                        new RegionPart("-main"){{layerOffset = 2;}});
+
+            }}*/;
+        }};
         apex = new PayloadAcceleratedTurret("apex"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Apex";
-            description = """ 
-                          """;
             requirements(Category.turret, with(
                     Items.copper, 150,
                     Items.graphite, 300,
@@ -843,7 +868,7 @@ public class AxthrixTurrets{
             ammo(
                     basic1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.copper.color;
-                        lifetime = AxUtil.GetRange(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,75);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 100;
@@ -865,7 +890,7 @@ public class AxthrixTurrets{
                         fragBullets = 2;
                         fragBullet = intervalBullet = new FlakBulletType(){{
                             explodeDelay = 10f;
-                            lifetime = AxUtil.GetRange(3f,5);
+                            lifetime = AxUtil.GetLifetime(3f,5);
                             speed = 3f;
                             knockback = pierceCap = 4;
                             splashDamageRadius = explodeRange = 40;
@@ -883,7 +908,7 @@ public class AxthrixTurrets{
                     }},
                     frostbite1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.titanium.color;
-                        lifetime = AxUtil.GetRange(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,75);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 100;
@@ -916,7 +941,7 @@ public class AxthrixTurrets{
                     }},
                     incendiary1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.pyratite.color;
-                        lifetime = AxUtil.GetRange(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,75);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 200;
@@ -927,7 +952,7 @@ public class AxthrixTurrets{
                         trailInterval = 0;
                         trailChance = Integer.MAX_VALUE;
                         bulletInterval = 0.5f;
-                        intervalDelay = AxUtil.GetRange(15f,100 / 8);
+                        intervalDelay = AxUtil.GetLifetime(15f,100 / 8);
                         intervalBullets = 3;
                         trailLength = 40;
                         trailWidth = 2;
@@ -969,7 +994,7 @@ public class AxthrixTurrets{
                     }},
                     quicksilver1mCaliber, new BasicBulletType(){{
                         var CoLor = Color.valueOf("8b8696");
-                        lifetime = AxUtil.GetRange(20f,75);
+                        lifetime = AxUtil.GetLifetime(20f,75);
                         speed = 20f;
                         knockback = 2;
                         pierceCap = 12;
@@ -1009,7 +1034,7 @@ public class AxthrixTurrets{
                     //energy rounds
                     arcane1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.phaseFabric.color;
-                        lifetime = AxUtil.GetRange(15,75);
+                        lifetime = AxUtil.GetLifetime(15,75);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 300;
@@ -1035,7 +1060,7 @@ public class AxthrixTurrets{
                     }},
                     void1mCaliber, new BasicBulletType(){{
                         var CoLor = Color.valueOf("7b1c9b");
-                        lifetime = AxUtil.GetRange(10,75);
+                        lifetime = AxUtil.GetLifetime(10,75);
                         speed = 10f;
                         damage = 300;
                         impact = pierce = pierceBuilding = true;
@@ -1070,7 +1095,7 @@ public class AxthrixTurrets{
             if(AxthrixLoader.funibullet){
                 ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
-                    lifetime = AxUtil.GetRange(15f,75);
+                    lifetime = AxUtil.GetLifetime(15f,75);
                     speed = 15f;
                     knockback = 20;
                     pierceCap = Integer.MAX_VALUE;
@@ -1115,12 +1140,6 @@ public class AxthrixTurrets{
         }};
         apexus = new PayloadTurretType("apexus"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Apexus";
-            description = """
-                          Engineered by Axthrix, Apexus is a large Payload cannon.
-                          Has a variety of Payload ammunition types, this formidable weapon unleashes devastating high velocity 1m rounds.
-                          Axthrix's precision craftsmanship shines through in every aspect of Apexus.
-                          """;
             requirements(Category.turret, with(
                     Items.copper, 150,
                     Items.graphite, 300,
@@ -1131,7 +1150,7 @@ public class AxthrixTurrets{
                 ammo(
                         basic1mCaliber, new BasicBulletType(){{
                             var CoLor = Items.copper.color;
-                            lifetime = AxUtil.GetRange(20f,100);
+                            lifetime = AxUtil.GetLifetime(20f,100);
                             speed = 20f;
                             knockback = pierceCap = 4;
                             damage = 200;
@@ -1153,7 +1172,7 @@ public class AxthrixTurrets{
                             fragBullets = 4;
                             fragBullet = intervalBullet = new FlakBulletType(){{
                                 explodeDelay = 10f;
-                                lifetime = AxUtil.GetRange(6f,5);
+                                lifetime = AxUtil.GetLifetime(6f,5);
                                 speed = 6f;
                                 knockback = pierceCap = 4;
                                 splashDamageRadius = explodeRange = 40;
@@ -1171,7 +1190,7 @@ public class AxthrixTurrets{
                         }},
                         frostbite1mCaliber, new BasicBulletType(){{
                             var CoLor = Items.titanium.color;
-                            lifetime = AxUtil.GetRange(20f,100);
+                            lifetime = AxUtil.GetLifetime(20f,100);
                             speed = 20f;
                             knockback = pierceCap = 4;
                             damage = 200;
@@ -1204,7 +1223,7 @@ public class AxthrixTurrets{
                         }},
                         incendiary1mCaliber, new BasicBulletType(){{
                             var CoLor = Items.pyratite.color;
-                            lifetime = AxUtil.GetRange(20f,100);
+                            lifetime = AxUtil.GetLifetime(20f,100);
                             speed = 20f;
                             knockback = pierceCap = 4;
                             damage = 400;
@@ -1215,7 +1234,7 @@ public class AxthrixTurrets{
                             trailInterval = 0;
                             trailChance = Integer.MAX_VALUE;
                             bulletInterval = 0.5f;
-                            intervalDelay = AxUtil.GetRange(20f,25);
+                            intervalDelay = AxUtil.GetLifetime(20f,25);
                             intervalBullets = 6;
                             trailLength = 40;
                             trailWidth = 2;
@@ -1257,7 +1276,7 @@ public class AxthrixTurrets{
                         }},
                         quicksilver1mCaliber, new BasicBulletType(){{
                             var CoLor = Color.valueOf("8b8696");
-                            lifetime = AxUtil.GetRange(30f,100);
+                            lifetime = AxUtil.GetLifetime(30f,100);
                             speed = 30f;
                             knockback =2;
                             pierceCap = 12;
@@ -1297,7 +1316,7 @@ public class AxthrixTurrets{
                         //energy rounds
                         arcane1mCaliber, new BasicBulletType(){{
                             var CoLor = Items.phaseFabric.color;
-                            lifetime = AxUtil.GetRange(20,100);
+                            lifetime = AxUtil.GetLifetime(20,100);
                             speed = 20f;
                             knockback = pierceCap = 4;
                             damage = 600;
@@ -1323,7 +1342,7 @@ public class AxthrixTurrets{
                         }},
                         void1mCaliber, new BasicBulletType(){{
                             var CoLor = Color.valueOf("7b1c9b");
-                            lifetime = AxUtil.GetRange(15,100);
+                            lifetime = AxUtil.GetLifetime(15,100);
                             speed = 15f;
                             damage = 600;
                             impact = pierce = pierceBuilding = true;
@@ -1358,7 +1377,7 @@ public class AxthrixTurrets{
             if(AxthrixLoader.funibullet){
                 ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
-                    lifetime = AxUtil.GetRange(20f,100);
+                    lifetime = AxUtil.GetLifetime(20f,100);
                     speed = 20f;
                     knockback = 20;
                     pierceCap = Integer.MAX_VALUE;
@@ -1539,13 +1558,6 @@ public class AxthrixTurrets{
 
         rektios = new AxPowerTurret("rektios"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Rektios";
-            description = """
-                          Medium Range Sonic Cannon
-                          deals Unrepairable damage by conventional healing
-                          Due to design it deals low damage and cannot be cooled
-                          [stat]External Booster recomended.
-                          """;
             range = 8*36;
             size = 3;
             reload = 280;
@@ -1617,13 +1629,9 @@ public class AxthrixTurrets{
 
         lucifer = new RevolverTurret("lucifer"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "lucifer";
             maxCartridges = numOfReloadCartridges = 20;
             cartridgeReloadTime = 400;
             reloadIfNotFull = false;
-            description = """
-                          
-                          """;
             shoot = new ShootBarrel(){{
                 barrels = new float[]{
                         -2f, -8, 0,
@@ -1681,6 +1689,5 @@ public class AxthrixTurrets{
 
             }};
         }};
-
     }
 }

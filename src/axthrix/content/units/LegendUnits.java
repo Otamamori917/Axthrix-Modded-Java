@@ -17,6 +17,7 @@ public class LegendUnits {
     //Core Units |1 units|
 
     //Legends |undetermined|
+            athena,
         //yin and yang tree
             spate, influx
             ;

@@ -7,6 +7,7 @@ import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSpread;
@@ -20,7 +21,10 @@ import mindustry.type.ammo.PowerAmmoType;
 public class AxthrixDrones {
     public static UnitType
     //naji tree sentry
-    ivy,iris,clove,azalea,bramble,
+    ivy,iris,clove,azalea,bramble;
+    public static DroneUnitType
+    //shield drones
+    paliShield,
     //watt
     wattFlame,wattIce,wattGround,wattAir,
     //kilowatt
@@ -92,6 +96,38 @@ public class AxthrixDrones {
             weapons.add(gunL, gunR);
 
 
+        }};
+        paliShield = new DroneUnitType("pali-shield")
+        {{
+            localizedName = "Shield U1";
+            ammoCapacity = 250;
+
+            flying = alwaysShootWhenMoving = drawAmmo = true;
+            playerControllable = useUnitCap = false;
+            constructor = UnitEntity::create;
+            controller = u -> new DroneAI();
+            health = 40;
+            armor = 2;
+            //isShield = true;
+            faceTarget = true;
+            hitSize = 2*2;
+            itemCapacity = 0;
+            speed = 40f / 7.5f;
+            strafePenalty = 1;
+            drag = 0.8f;
+            lowAltitude = true;
+            omniMovement = true;
+            engineSize = 2;
+            abilities.add(new ShieldArcAbility(){{
+                radius = 45f;
+                angle = 90f;
+                y = -24f;
+                regen = 0.6f;
+                cooldown = 200f;
+                max = 100f;
+                width = 10f;
+                whenShooting = false;
+            }});
         }};
         wattFlame = new DroneUnitType("f-w")
         {{

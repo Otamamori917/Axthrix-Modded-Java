@@ -1,24 +1,40 @@
 package axthrix.content.blocks;
 
+import arc.graphics.Color;
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
+import axthrix.content.AxItems;
+import axthrix.content.AxLiquids;
 import axthrix.world.types.block.LiquidDeposit;
+import axthrix.world.types.block.production.AxGenericCrafter;
 import axthrix.world.types.block.production.AxMulticrafter;
+import axthrix.world.types.block.production.AxSeparator;
 import axthrix.world.types.block.production.PayloadProducer;
 import mindustry.content.*;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.blocks.production.Separator;
+import mindustry.world.draw.*;
+import mindustry.world.meta.BlockGroup;
 import multicraft.*;
 
 import static axthrix.content.blocks.PayloadAmmoBlocks.*;
 import static mindustry.type.ItemStack.with;
+import static multicraft.RecipeSelector.Detailed;
 
 public class AxthrixCrafters {
-	public static Block placeholder,
+	public static Block
 
     //multicrafters
-    centrifugalAccelerator,
+    centrifugalAccelerator,componentPrinter,pCoilPress,
+
+	//crafters
+	coreCrafter,broiler,
+
+	//seperators
+	chemicalSeparator,liquidator,
 
 	//payload ammo crafters
 
@@ -31,7 +47,6 @@ public class AxthrixCrafters {
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
-			localizedName = "Centrifugal Accelerator";
 			size = 4;
 			resolvedRecipes = Seq.with(
 					new Recipe(
@@ -72,11 +87,225 @@ public class AxthrixCrafters {
 			craftEffect = Fx.bubble;
 		}};
 
+		componentPrinter = new AxMulticrafter("component-printer")
+		{{
+			faction = Seq.with(AxFactions.axthrix);
+			requirements(Category.crafting, with(Items.copper,1));
+			selector = Detailed;
+			size = 2;
+			resolvedRecipes = Seq.with(
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(ItemStack.with(AxItems.carbonCoil, 8, AxItems.silverCoil, 1)),
+									//Liquid input
+									Seq.with()
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(ItemStack.with(AxItems.CSW, 2)),
+									//output fluids, again, it can be empty
+									Seq.with()
+							),
+							//float craftTime in ticks
+							120f
+					),
+
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(ItemStack.with(AxItems.tungstenCoil, 2, AxItems.copperCoil, 4, AxItems.silverCoil,1)),
+									//Liquid input
+									Seq.with(LiquidStack.with(Liquids.cryofluid, 0.265f))
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(ItemStack.with(AxItems.coolingAssembly, 1)),
+									//output fluids, again, it can be empty
+									Seq.with()
+							),
+							//float craftTime in ticks
+							260f
+					)
+			);
+			craftEffect = Fx.bubble;
+		}};
+		pCoilPress = new AxMulticrafter("p-coil-press")
+		{{
+			faction = Seq.with(AxFactions.axthrix);
+			requirements(Category.crafting, with(Items.copper,1));
+			selector = Detailed;
+			size = 1;
+			drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawRegion("-spinner", 1, true),
+					new DrawDefault());
+			resolvedRecipes = Seq.with(
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(ItemStack.with(AxItems.aqullium, 2)),
+									//Liquid input
+									Seq.with()
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(ItemStack.with(AxItems.carbonCoil, 2, AxItems.tungstenCoil, 1, AxItems.ingot, 1)),
+									//output fluids, again, it can be empty
+									Seq.with()
+							),
+							//float craftTime in ticks
+							20f
+					),
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(ItemStack.with(AxItems.esperillo, 2)),
+									//Liquid input
+									Seq.with()
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(ItemStack.with(AxItems.copperCoil, 2, AxItems.ingot, 4)),
+									//output fluids, again, it can be empty
+									Seq.with()
+							),
+							//float craftTime in ticks
+							20f
+					),
+					new Recipe(
+							//IOEntry input
+							new IOEntry(
+									//item input
+									Seq.with(ItemStack.with(AxItems.komainium, 2)),
+									//Liquid input
+									Seq.with()
+							),
+							//IOEntry output
+							new IOEntry(
+									Seq.with(ItemStack.with(AxItems.leadCoil, 2, AxItems.silverCoil, 1, AxItems.ingot, 1)),
+									//output fluids, again, it can be empty
+									Seq.with()
+							),
+							//float craftTime in ticks
+							20f
+					)
+			);
+			craftEffect = Fx.bubble;
+		}};
+
+		coreCrafter  = new AxGenericCrafter("core-crafter"){{
+			faction = Seq.with(AxFactions.axthrix);
+			hasItems = hasLiquids = hasPower = true;
+
+			size = 3;
+			craftTime = 1200f;
+			itemCapacity = 20;
+			buildCostMultiplier = 0.5f;
+			craftEffect = Fx.pulverizeMedium;
+
+			drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawLiquidTile(AxLiquids.xenon),
+					new DrawLiquidTile(AxLiquids.mercury, 10f),
+					new DrawDefault()
+			);
+			consumePower(800f/60f);
+			outputItem = new ItemStack(AxItems.RDC, 1);
+			researchCost = with(Items.copper, 1);
+			requirements(Category.crafting, with(Items.copper, 1));
+			consumeLiquids(LiquidStack.with(AxLiquids.xenon, 0.2f, AxLiquids.iodineGas, 0.15));
+			consumeItems(ItemStack.with(AxItems.CSW, 2, AxItems.coolingAssembly, 1,AxItems.dysprosium,4));
+		}};
+
+		chemicalSeparator = new AxSeparator("chemical-separator"){{
+			faction = Seq.with(AxFactions.axthrix);
+			localizedName = "Chemical Separator";
+			requirements(Category.crafting, with(Items.copper, 1));
+			results = with(
+					AxItems.sulfur, 8,
+					AxItems.iodine, 5,
+					AxItems.samarium, 2,
+					AxItems.curium, 2,
+					AxItems.dysprosium, 1
+			);
+
+			hasPower = true;
+			craftTime = 150f;
+			size = 3;
+			itemCapacity = 40;
+
+			consumePower(8f);
+			consumeItem(AxItems.ingot, 4);
+
+			drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawLiquidTile(),
+					new DrawRegion("-spinner", 3, true),
+					new DrawDefault());
+		}};
+
+		liquidator = new AxGenericCrafter("liquidator"){{
+			faction = Seq.with(AxFactions.axthrix);
+			requirements(Category.crafting, with(Items.copper, 1));
+			size = 3;
+
+
+            researchCostMultiplier = 1.2f;
+			craftTime = 10f;
+			rotate = true;
+			invertFlip = true;
+			itemCapacity = 16;
+
+			liquidCapacity = 50f;
+
+			consumeItem(AxItems.ingot,3);
+			consumePower(2f);
+
+			drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawBubbles(AxLiquids.xenon.color.cpy().add(AxLiquids.mercury.color)){{
+						sides = 10;
+						recurrence = 3f;
+						spread = 6;
+						radius = 1.5f;
+						amount = 20;
+					}},
+					new DrawRegion(),
+					new DrawGlowRegion(){{
+						alpha = 0.7f;
+						color = Color.lightGray;
+						glowIntensity = 0.3f;
+						glowScale = 6f;
+					}}
+			);
+
+			ambientSound = Sounds.electricHum;
+			ambientSoundVolume = 0.08f;
+
+			regionRotated1 = 3;
+			outputLiquids = LiquidStack.with(AxLiquids.xenon, 16f / 60, AxLiquids.mercury, 15f / 60);
+			liquidOutputDirections = new int[]{1, 3};
+		}};
+		broiler = new AxGenericCrafter("broiler"){{
+			hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
+
+			size = 2;
+			health = 100;
+			craftTime = 4f;
+
+			consumePower(10f);
+			consumeItem(AxItems.iodine, 2);
+			outputLiquid = new LiquidStack(AxLiquids.iodineGas, 12.5f/60f);
+			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion());
+			requirements(Category.liquid, with(Items.copper,1));
+		}};
+
 		caliberPress = new PayloadProducer("caliber-press"){{
-			localizedName = "Caliber Shell Press";
-			description = """
-                          Presses materials into ammunition shells.
-                          """;
 			requirements(Category.crafting, with(
 					Items.copper, 75,
 					Items.lead, 100,
@@ -94,10 +323,6 @@ public class AxthrixCrafters {
 		}};
 
 		caliberCrafter = new PayloadProducer("caliber-crafter"){{
-			localizedName = "Caliber Crafter";
-			description = """
-                          Takes Caliber Shells and materials to make live Payload ammunition.
-                          """;
 			requirements(Category.crafting, with(
 					Items.copper, 350,
 					Items.lead, 250,
@@ -127,6 +352,12 @@ public class AxthrixCrafters {
 		liquidDeposit = new LiquidDeposit("liquid-deposit") {{
 			liquidCapacity = 200;
 			size = 2;
+			requirements(Category.liquid, with(
+					Items.copper, 75,
+					Items.lead, 100,
+					Items.titanium, 100,
+					Items.silicon, 80
+			));
 		}};
     }
 }

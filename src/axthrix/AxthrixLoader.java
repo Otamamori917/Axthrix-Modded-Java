@@ -30,10 +30,13 @@ import static mindustry.Vars.headless;
 public class AxthrixLoader extends Mod{
     public static Seq<BulletData> allBullets = new Seq<>();
     public static boolean funibullet = false;
+    public static boolean screwStealthFlyers = false;
     //debug
     public static boolean amosPowerDebug = false;
     public static boolean amosLiquidDebug = false;
     public static boolean showMessage = true;
+    //options
+    public static boolean showRevolverAmmo = true;
     public AxthrixLoader(){
         super();
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
@@ -51,6 +54,8 @@ public class AxthrixLoader extends Mod{
         amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
         amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
         showMessage = settings.getBool("aj-message-debug", true);
+        showRevolverAmmo = settings.getBool("aj-revolver-ammo", true);
+        screwStealthFlyers = settings.getBool("aj-screw-stealth", true);
     }
     @Override
     public void init(){
@@ -75,9 +80,9 @@ public class AxthrixLoader extends Mod{
         AxFactions.load();
         AxStats.load();
         AxthrixSounds.LoadSounds();
-        //AxItems.load();
+        AxItems.load();
         AxthrixStatus.load();
-        //AxLiquids.load();
+        AxLiquids.load();
         AxthrixDrones.load();
         AxthrixUnits.load();
         LegendUnits.load();
@@ -111,9 +116,11 @@ public class AxthrixLoader extends Mod{
     private void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.aj-title"), "aj-settings-icon", t -> {
             t.checkPref("aj-funni-disabled", false);
+            t.checkPref("aj-screw-stealth", false);
             t.checkPref("aj-message-debug", true);
             t.checkPref("aj-mount-power-debug", false);
             t.checkPref("aj-mount-liquid-debug", false);
+            t.checkPref("aj-revolver-ammo", true);
         });
     }
     public static boolean checkKillShooter(BulletType b){

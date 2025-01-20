@@ -2,13 +2,18 @@ package axthrix.content;
 
 import arc.Core;
 import arc.Events;
+import arc.flabel.effects.ShakeEffect;
 import arc.graphics.Color;
+import arc.math.Mathf;
+import arc.scene.actions.TouchableAction;
 import arc.util.Log;
 import arc.util.Time;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
+import axthrix.world.types.abilities.SilveringWeakness;
 import axthrix.world.types.statuseffects.*;
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.ArmorPlateAbility;
 import mindustry.game.EventType;
 import mindustry.gen.Unit;
@@ -20,7 +25,8 @@ import mindustry.world.meta.Stat;
 
 import java.util.HashMap;
 
-import static axthrix.content.AxthrixSounds.PandemoniumMinigameTheme;
+import static axthrix.content.AxthrixSounds.*;
+import static mindustry.Vars.mobile;
 
 public class AxthrixStatus {
     public static StatusEffect
@@ -110,13 +116,25 @@ public class AxthrixStatus {
                 if(unit.hasEffect(unrepair)){
                     StackStatusEffect.stackRemove(unit,4,unrepair);
                     AxthrixFfx.circleOut(120, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
-                    unit.health = unit.health + (unit.maxHealth() / 6.66f);
-                    AxthrixFfx.circleOut(180, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
-                    unit.unapply(this);
+                    if(unit.health+(unit.maxHealth() / 6.66f) >= unit.maxHealth() || unit.health == unit.maxHealth()){
+                        unit.health = unit.maxHealth();
+                        unit.unapply(this);
+                    }else{
+                        unit.health = unit.health + (unit.maxHealth() / 6.66f);
+                        AxthrixFfx.circleOut(180, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                        unit.unapply(this);
+                    }
+
                 }else{
-                    unit.health = unit.health + (unit.maxHealth() / 10f);
-                    AxthrixFfx.circleOut(180, 15, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
-                    unit.unapply(this);
+                    if(unit.health+(unit.maxHealth() / 10f) >= unit.maxHealth() || unit.health == unit.maxHealth()){
+                        unit.health = unit.maxHealth();
+                        unit.unapply(this);
+                    }else{
+                        unit.health = unit.health + (unit.maxHealth() / 10f);
+                        AxthrixFfx.circleOut(180, 15, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                        unit.unapply(this);
+                    }
+
                 }
             }
             public void setStats(){
@@ -131,9 +149,14 @@ public class AxthrixStatus {
                 {
                     color = Color.green;
                 }
-                unit.health = unit.health + (unit.maxHealth() / 12.5f);
-                AxthrixFfx.circleOut(180, 16, 2,Color.green).at(unit.x,unit.y);
-                unit.unapply(this);
+                if(unit.health+(unit.maxHealth() / 12.5f) >= unit.maxHealth() || unit.health == unit.maxHealth()){
+                    unit.health = unit.maxHealth();
+                    unit.unapply(this);
+                }else{
+                    unit.health = unit.health + (unit.maxHealth() / 12.5f);
+                    AxthrixFfx.circleOut(180, 16, 2,Color.green).at(unit.x,unit.y);
+                    unit.unapply(this);
+                }
 
             }
             public void setStats(){
@@ -164,24 +187,135 @@ public class AxthrixStatus {
         }};
         minigame = new StatusEffect("minigame"){
 
+            boolean once = false;
+            boolean once1 = false;
+            boolean once2 = false;
+            public final HashMap<Unit, Float> delay = new HashMap<>();
+            public final HashMap<Unit, Float> delay2 = new HashMap<>();
+            public final HashMap<Unit, Float> delay3 = new HashMap<>();
+            public final HashMap<Unit, Float> deathTimer = new HashMap<>();
+            public final HashMap<Unit, Float> minigame = new HashMap<>();
+            public BaseDialog dia1;
+            public BaseDialog dia2;
+
+
             @Override
             public void update(Unit unit, float time){
+                if (!delay.containsKey(unit)){
+                    delay.put(unit,0f);
+                }
+                if (!delay2.containsKey(unit)){
+                    delay2.put(unit,500f);
+                }
+                if (!delay3.containsKey(unit)){
+                    delay3.put(unit,0f);
+                }
+                if (!deathTimer.containsKey(unit)){
+                    deathTimer.put(unit,240f);
+                }
+                if (!minigame.containsKey(unit)){
+                    minigame.put(unit,0f);
+                }
+                if(!once){
+                    PandemoniumScreaming.play();
+                    once = true;
+                }
                 if(!unit.isPlayer()){
                     unit.health = 0;
+                    unit.dead = true;
                     unit.unapply(this);
                 } else {
-                    BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-minigame.title"));
-                    dialog.cont.add(Core.bundle.get("menu.aj-minigame.message")).row();
-                    dialog.cont.image(Core.atlas.find("aj-white-line")).row();
-                    dialog.cont.image(Core.atlas.find("aj-safe-circle")).pad(16f).row();
-                    if (!dialog.isShown()){
-                        dialog.show();
-                        PandemoniumMinigameTheme.at(dialog.x,dialog.y, 1.5f);
+                    if(delay.get(unit) >= 240){
+                        //Log.info("X:"+Core.input.mouseX()+"    Y:"+Core.input.mouseY());
+                        if (!once1){
+                            PandemoniumScreaming.stop();
+                            BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-minigame.title"));
+                            dialog.cont.add(Core.bundle.get("menu.aj-minigame.message")).padTop(10).row();
+                            dialog.cont.image(Core.atlas.find("aj-white-line")).padTop(10).row();
+                            dialog.cont.image(Core.atlas.find("aj-safe-circle")).pad(16f).row();
+                            dia1 = dialog;
+                            if (!dialog.isShown()){
+                                PandemoniumMinigameTheme.play(10);
+                                dialog.show();
+                            }
+
+                            once1 = true;
+                        }
+                        if(!(deathTimer.get(unit) <= 0)){
+                            if(Core.input.mouseX() > 720 && Core.input.mouseX() < 815 && Core.input.mouseY() > 350 && Core.input.mouseY() < 460){
+                                if(deathTimer.get(unit) >= 240){
+                                    deathTimer.replace(unit,240f);
+                                }else{
+                                    deathTimer.replace(unit,deathTimer.get(unit)+1);
+                                }
+                            }else{
+                                deathTimer.replace(unit,deathTimer.get(unit)-1);
+                            }
+                            //Log.info("timeLeft:"+deathTimer.get(unit));
+                        }else{
+                            if(dia1 != null){dia1.hide();}
+                            PandemoniumMinigameTheme.stop();
+                            if(!once2){
+                                BaseDialog dialog = new BaseDialog(Core.bundle.get("menu.aj-minigame.title"));
+                                dialog.cont.image(Core.atlas.find("aj-pandi")).row();
+                                dia2 = dialog;
+                                if (!dialog.isShown()){
+                                    PandemoniumScreaming.play(2);
+                                    dialog.show();
+                                }
+                                once2 = true;
+                            }
+                            if(delay3.get(unit) >= 120){
+                                unit.health = 0;
+                                unit.dead = true;
+                            }
+                            delay3.replace(unit,delay3.get(unit)+1);
+                        }
+                        if(minigame.get(unit) >= 950){
+                            //Log.info("shake:"+delay2.get(unit));
+                            if(delay2.get(unit) >= 500){
+                                MetalCrash.play(5);
+                                Core.input.mouse().add(Mathf.random(250,750), Mathf.random(300,600));
+                                Effect.shake(1, 50, unit.x,unit.y);
+                                delay2.replace(unit,0f);
+                            }
+                            delay2.replace(unit,delay2.get(unit)+1);
+                        }
+                        //Log.info("timer"+minigame.get(unit));
+                        if(minigame.get(unit) >= 11260){
+                            once2 = once1 = once = false;
+                            if(dia1 != null){dia1.hide();}
+                            if(dia2 != null){dia2.hide();}
+                            delay.remove(unit);
+                            delay2.remove(unit);
+                            delay3.remove(unit);
+                            deathTimer.remove(unit);
+                            minigame.remove(unit);
+                            dia1 = dia2 =null;
+                            unit.unapply(this);
+
+                        }
+                        if(minigame.get(unit) != null){
+                            minigame.replace(unit,minigame.get(unit)+1);
+                        }
                     }
-                    if(time <= -4290){
-                        dialog.hide();
-                        unit.unapply(this);
+                    if(delay.get(unit) != null) {
+                        delay.replace(unit, delay.get(unit) + 1);
                     }
+                }
+                if(unit.dead || !unit.hasEffect(this)){
+                    once2 = once1 = once = false;
+                    PandemoniumMinigameTheme.stop();
+                    PandemoniumScreaming.stop();
+                    if(dia1 != null){dia1.hide();}
+                    if(dia2 != null){dia2.hide();}
+                    delay.remove(unit);
+                    delay2.remove(unit);
+                    delay3.remove(unit);
+                    deathTimer.remove(unit);
+                    minigame.remove(unit);
+                    dia1 = dia2 =null;
+                    unit.unapply(this);
                 }
             }
             {
@@ -200,8 +334,6 @@ public class AxthrixStatus {
         }};
 
         finalStand = new StatusEffectTrigger("final-stand"){{
-            localizedName = "[blue]Final Stand";
-            description = "Protects you at low HP\n[orange]Activation Threshold[] \n>|[lightgray]30%[]| HP.\n[orange]Activation Invincibility Duration[] \n>|[lightgray]3[]| Seconds.";
             activationStatusFx = standFx;
             activationThreshold = 4f;
             activationResistanceTime = 180f;
@@ -209,27 +341,19 @@ public class AxthrixStatus {
         }};
 
         excert = new StatusEffectAbility("excert") {{
-            localizedName = "[green]Excert";
             permanent = false;
         }};
         chainExcert = new StatusEffectAbility("chain-excert") {{
             ability = new ChainHealAbility(excert,60,35,8*8);
             ((StatusEffectAbility)excert).ability = new ChainHealAbility(this,60,35,8*8);
-            localizedName = "[green]Chain Excert";
             permanent = false;
         }};
         slivered = new StatusEffectAbility("slivered"){{
-            localizedName = "[#9d98ab]Sli[#8b8696]ver[#7c7887]ed";
-            description = """
-                          [#9d98ab]Dan[#8b8696]ger[#7c7887]ous [#9d98ab]ele[#8b8696]men[#7c7887]ts [#9d98ab]a[#8b8696]r[#7c7887]e [#9d98ab]co[#8b8696]at[#7c7887]ed [#9d98ab]on[#8b8696]t[#7c7887]o [#9d98ab]eff[#8b8696]ect[#7c7887]ed [#9d98ab]ta[#8b8696]rg[#7c7887]et [#9d98ab]wea[#8b8696]ken[#7c7887]ing [#9d98ab]th[#8b8696]ei[#7c7887]r [#9d98ab]ar[#8b8696]mo[#7c7887]r
-                          [#9d98ab]c[#8b8696]a[#7c7887]n [#9d98ab]al[#8b8696]s[#7c7887]o [#9d98ab]pro[#8b8696]te[#7c7887]ct [#9d98ab]th[#8b8696]e[#7c7887]m [#9d98ab]un[#8b8696]de[#7c7887]r [#9d98ab]cer[#8b8696]ta[#7c7887]in                    [#9d98ab]circu[#8b8696]msta[#7c7887]nces
-                          """;
-
             show = true;
-            healthMultiplier = 0.1f;
             permanent = false;
-            ability = new ArmorPlateAbility(){{
-                healthMultiplier = 0.6f;
+            ability = new SilveringWeakness(){{
+                healthReduction = 0.7f;
+                maxPentalyTime = 240;
             }};
         }};
     }
