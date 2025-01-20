@@ -1,8 +1,11 @@
 apply plugin: "java"
 
+apply plugin: "maven-publish"
+
 version '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
+
 
 repositories{
     mavenCentral()
