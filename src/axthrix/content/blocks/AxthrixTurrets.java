@@ -612,7 +612,6 @@ public class AxthrixTurrets{
             cooldownDelay = 720f;
 
             buildCostMultiplier = 0.1f;
-            buildCostMultiplier
             size = 5;
             scaledHealth = 820f;
             reload = 30f;
