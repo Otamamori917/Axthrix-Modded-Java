@@ -6,6 +6,7 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.entities.Effect;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
@@ -21,6 +22,7 @@ import java.util.Stack;
 public class StackStatusEffect extends AxStatusEffect {
     public int charges = 1;
     public boolean setStatsInfinity = false;
+    public Effect tickFx;
     public static HashMap<Unit, Integer> unitCharges = new HashMap<>();
     public static HashMap<Unit, Float> unitTime = new HashMap<>();
     public static HashMap<Unit, Team> unitTeam = new HashMap<>();
@@ -204,6 +206,9 @@ public class StackStatusEffect extends AxStatusEffect {
 
     @Override
     public void update(Unit unit, float time){
+        if(tickFx != null){
+            tickFx.at(unit.x, unit.y);
+        }
         if (!unitCharges.containsKey(unit))
             start(unit,time);
         if (unitTime.get(unit) < time)

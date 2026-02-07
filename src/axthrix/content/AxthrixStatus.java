@@ -1,39 +1,34 @@
 package axthrix.content;
 
 import arc.Core;
-import arc.Events;
-import arc.flabel.effects.ShakeEffect;
 import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.scene.actions.TouchableAction;
-import arc.util.Log;
-import arc.util.Time;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.abilities.SilveringWeakness;
 import axthrix.world.types.statuseffects.*;
 import mindustry.entities.Effect;
-import mindustry.entities.abilities.ArmorPlateAbility;
-import mindustry.game.EventType;
+import mindustry.entities.bullet.LightningBulletType;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.ParticleEffect;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.content.*;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.meta.Stat;
 
 import java.util.HashMap;
 
+import static arc.math.Interp.pow10Out;
 import static axthrix.content.AxthrixSounds.*;
-import static mindustry.Vars.mobile;
 
 public class AxthrixStatus {
     public static StatusEffect
+            melting,
             vindicationI, vindicationII, vindicationIII, nanodiverge,
             precludedX, precludedA,
-            repent,
-            finalStand,
+            Thundering,Lightning,
+            finalStand,ReapAndSow,
             excert,chainExcert,
             slivered,
             unrepair,grayRepair,repair,
@@ -42,7 +37,7 @@ public class AxthrixStatus {
 
 
     //visual statuses
-    standFx,bFx
+    standFx,ReapFx,bFx
             ;
 
     public static void load(){
@@ -52,10 +47,30 @@ public class AxthrixStatus {
         }};
         standFx = new StatusEffect("stand-trigger-vfx") {{
             color = Color.blue;
-            applyEffect = AxthrixFfx.circleOut(180, 30, 4,Color.blue);
+            applyEffect = AxthrixFfx.circleOut(180, 30, 4,Layer.blockOver,Color.blue);
             parentizeApplyEffect = true;
             show = false;
         }};
+
+        ReapFx = new StatusEffect("reap-vfx") {{
+            color = Color.valueOf("972020");
+            applyEffect = new MultiEffect(
+                AxthrixFfx.circleOut(30, 30, 4,Layer.blockOver,Color.valueOf("972020")),
+                AxthrixFfx.circleOut(35, 35, 5,Layer.blockOver,Color.valueOf("972020")),
+                AxthrixFfx.circleOut(40, 40, 6,Layer.blockOver,Color.valueOf("972020")),
+                AxthrixFfx.circleOut(45, 45, 7,Layer.blockOver,Color.valueOf("972020"))
+            );
+            parentizeApplyEffect = true;
+            show = false;
+        }};
+
+        melting = new StackStatusEffect("melting"){{
+            color = Color.valueOf("ff2a00");
+            damage = 0.01f;
+            charges = 25;
+            effect = AxthrixFx.ahhimaLiquidNow;
+        }};
+
         vindicationI = new StatusEffect("vindicationI"){{
             color = Pal.heal;
             healthMultiplier = 1.25f;
@@ -115,13 +130,13 @@ public class AxthrixStatus {
                 }
                 if(unit.hasEffect(unrepair)){
                     StackStatusEffect.stackRemove(unit,4,unrepair);
-                    AxthrixFfx.circleOut(120, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                    AxthrixFfx.circleOut(120, 30, 4,Layer.blockOver,Color.valueOf("80ffb8")).at(unit.x,unit.y);
                     if(unit.health+(unit.maxHealth() / 6.66f) >= unit.maxHealth() || unit.health == unit.maxHealth()){
                         unit.health = unit.maxHealth();
                         unit.unapply(this);
                     }else{
                         unit.health = unit.health + (unit.maxHealth() / 6.66f);
-                        AxthrixFfx.circleOut(180, 30, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                        AxthrixFfx.circleOut(180, 30, 4,Layer.blockOver,Color.valueOf("80ffb8")).at(unit.x,unit.y);
                         unit.unapply(this);
                     }
 
@@ -131,7 +146,7 @@ public class AxthrixStatus {
                         unit.unapply(this);
                     }else{
                         unit.health = unit.health + (unit.maxHealth() / 10f);
-                        AxthrixFfx.circleOut(180, 15, 4,Color.valueOf("80ffb8")).at(unit.x,unit.y);
+                        AxthrixFfx.circleOut(180, 15, 4,Layer.blockOver,Color.valueOf("80ffb8")).at(unit.x,unit.y);
                         unit.unapply(this);
                     }
 
@@ -154,7 +169,7 @@ public class AxthrixStatus {
                     unit.unapply(this);
                 }else{
                     unit.health = unit.health + (unit.maxHealth() / 12.5f);
-                    AxthrixFfx.circleOut(180, 16, 2,Color.green).at(unit.x,unit.y);
+                    AxthrixFfx.circleOut(180, 16, 2,Layer.blockOver,Color.green).at(unit.x,unit.y);
                     unit.unapply(this);
                 }
 
@@ -235,8 +250,8 @@ public class AxthrixStatus {
                             dialog.cont.image(Core.atlas.find("aj-safe-circle")).pad(16f).row();
                             dia1 = dialog;
                             if (!dialog.isShown()){
-                                PandemoniumMinigameTheme.play(10);
                                 dialog.show();
+                                PandemoniumMinigameTheme.play();
                             }
 
                             once1 = true;
@@ -274,8 +289,7 @@ public class AxthrixStatus {
                         if(minigame.get(unit) >= 950){
                             //Log.info("shake:"+delay2.get(unit));
                             if(delay2.get(unit) >= 500){
-                                MetalCrash.play(5);
-                                Core.input.mouse().add(Mathf.random(250,750), Mathf.random(300,600));
+                                MetalCrash.play(1);
                                 Effect.shake(1, 50, unit.x,unit.y);
                                 delay2.replace(unit,0f);
                             }
@@ -326,11 +340,31 @@ public class AxthrixStatus {
             permanent = true;
         }};
 
-        repent = new StackStatusEffect("repent"){{
+        Thundering = new StackStatusEffect("thundering"){{
+            tickFx = new ParticleEffect(){{
+                lifetime = 50;
+                particles = 3;
+                length = 12;
+                baseLength = 2;
+                interp = pow10Out;
+                colorFrom = Color.valueOf("576A7399");
+                colorTo = Color.valueOf("576A734E");
+                sizeFrom = 0;
+                sizeTo = 3;
+                layer = Layer.blockOver;
+            }};
             color = Color.yellow;
-            reloadMultiplier = 1.5f;
+            speedMultiplier = 0.975f;
             charges = 15;
-            show = false;
+        }};
+
+        Lightning = new FragStatusEffect("lightning"){{
+            fragBullets = 4;
+            fragBullet = new LightningBulletType(){{
+                lightningLength = 4;
+                lightningColor = Color.orange.cpy().add(Color.maroon);
+                damage = 10f;
+            }};
         }};
 
         finalStand = new StatusEffectTrigger("final-stand"){{
@@ -338,6 +372,13 @@ public class AxthrixStatus {
             activationThreshold = 4f;
             activationResistanceTime = 180f;
             permanent = true;
+        }};
+        ReapAndSow = new StatusEffectTrigger("reap-and-sow"){{
+            activationStatusFx = ReapFx;
+            color = Color.valueOf("972020");
+            Reap = true;
+            activationThreshold = 5f;
+            permanent = false;
         }};
 
         excert = new StatusEffectAbility("excert") {{

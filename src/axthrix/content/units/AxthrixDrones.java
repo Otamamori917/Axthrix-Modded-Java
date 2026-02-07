@@ -2,13 +2,18 @@ package axthrix.content.units;
 
 import arc.graphics.Color;
 import axthrix.content.AxthrixStatus;
+import axthrix.content.FX.AxthrixFx;
+import axthrix.world.types.bulletypes.FirePuddleBulletType;
 import axthrix.world.types.bulletypes.SonicBulletType;
 import axthrix.world.types.unittypes.AmmoLifeTimeUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
+import axthrix.world.types.weapontypes.AcceleratedWeapon;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
+import mindustry.content.UnitTypes;
 import mindustry.entities.abilities.ShieldArcAbility;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.HoverPart;
 import mindustry.entities.part.RegionPart;
 import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.*;
@@ -19,9 +24,6 @@ import mindustry.type.Weapon;
 import mindustry.type.ammo.PowerAmmoType;
 
 public class AxthrixDrones {
-    public static UnitType
-    //naji tree sentry
-    ivy,iris,clove,azalea,bramble;
     public static DroneUnitType
     //shield drones
     paliShield,
@@ -39,64 +41,6 @@ public class AxthrixDrones {
     petawattFlame,petawattIce,petawattGround,petawattAir
             ;
     public static void load(){
-        ivy = new AmmoLifeTimeUnitType("ivy")
-        {{
-            localizedName = "[green]Ivy";
-            ammoCapacity = 400;
-            engineColor = Color.valueOf("4ea572");
-            aiController = SentriAI::new;
-            constructor = UnitEntity::create;
-
-            speed = accel = 0f;
-            drag = 0.1f;
-            flying = true;
-            isEnemy = true;
-            useUnitCap = false;
-            ammoType = new PowerAmmoType(10);
-            itemCapacity = 0;
-            health = 200;
-            engineSize = -1;
-            Weapon gunL = new Weapon(name + "-gun-r"){{
-                rotate = top = false;
-                mirror = false;
-                alternate = true;
-                otherSide = 1;
-
-                x = 4.75f / 4f;
-                y = 11f / 4f;
-                shootX = -0.5f / 4f;
-                shootY = 3f / 4f;
-
-                reload = 6f;
-                recoil = 1.5f / 4f;
-                ejectEffect = Fx.casing1;
-                bullet = new LaserBoltBulletType(2f, 12.5f){{
-                    shootSound = Sounds.pulseBlast;
-                    soundPitchMax = soundPitchMin = 2;
-                    lifetime = 60f;
-                    width = 1f;
-                    height = 3.5f;
-                    backColor = Color.valueOf("4ea572");
-                    frontColor = Color.white;
-                }};
-            }};
-            Weapon gunR = gunL.copy();
-            gunR.name = name + "-gun-l";
-            gunR.x *= -1;
-            gunR.shootX *= -1;
-            gunR.flipSprite = true;
-            gunR.otherSide = 0;
-            parts.add(new RegionPart("-anchor"){{
-                mirror = false;
-                under = true;
-                layerOffset = 1f;
-                outlineLayerOffset = 1f;
-            }});
-
-            weapons.add(gunL, gunR);
-
-
-        }};
         paliShield = new DroneUnitType("pali-shield")
         {{
             localizedName = "Shield U1";

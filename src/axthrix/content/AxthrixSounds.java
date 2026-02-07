@@ -15,7 +15,12 @@ public class AxthrixSounds {
              RevolverEmpty = new Sound(),
              Swings = new Sound(),
              Stank = new Sound(),
-             Death = new Sound()
+             Death = new Sound(),
+             SolarEmbrace = new Sound(),
+             laserwoosh = new Sound(),
+             laserememit = new Sound(),
+             catchit = new Sound(),
+             payitback = new Sound()
             ;
 
     public static void  LoadSounds(){
@@ -29,5 +34,10 @@ public class AxthrixSounds {
         Swings = tree.loadSound("swings");
         Stank = tree.loadSound("stank-noise");
         Death = tree.loadSound("Boom");
+        SolarEmbrace = tree.loadSound("solar-embrace");
+        laserwoosh = tree.loadSound("woooshhh");
+        laserememit = tree.loadSound("laser2");
+        catchit = tree.loadSound("catch");
+        payitback = tree.loadSound("payback");
     }
 }

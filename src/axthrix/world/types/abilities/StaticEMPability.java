@@ -96,7 +96,7 @@ public class StaticEMPability extends Ability {
             redirected.put(unit, false);
         }
         Units.nearbyBuildings(unit.x, unit.y, range, b -> {
-            if (b.team() == unit.team() && b.block() instanceof PowerNode) {
+            if (b.team() == unit.team() && b.block instanceof PowerNode) {
                 if(b.power != null && b.power.graph.getLastPowerProduced() > 0.0F) {
                     if (!(currentCharge.get(unit) >= maxPower)) {
                         chargingFloat.replace(unit, chargingFloat.get(unit) + poweredCharge);
@@ -124,7 +124,7 @@ public class StaticEMPability extends Ability {
 
             if(unit.isShooting() && currentCharge.get(unit) >= minimumPowerToDischarge){
                 if (b.team() != unit.team() && b.power != null && b.power.graph.getLastPowerProduced() > 0.0F) {
-                    Units.nearbyBuildings(b.x, b.y, 12, p -> {
+                    Units.nearbyBuildings(b.x, b.y, b.hitSize() * 2.5f, p -> {
                         if(p.absorbLasers()){
                             redirected.replace(unit,true);
                             if(emp){
@@ -177,7 +177,5 @@ public class StaticEMPability extends Ability {
         }
     }
 
-    public String localized() {
-        return Core.bundle.format("ability.aj-static-energy");
-    }
+    public String localized() {return Core.bundle.format("ability.aj-static-energy");}
 }

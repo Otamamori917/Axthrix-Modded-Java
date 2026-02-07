@@ -17,9 +17,9 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.type.ItemStack;
-import mindustry.ui.ItemImage;
 import mindustry.world.blocks.units.UnitFactory.UnitPlan;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatValues;
 
 public class SingularUnitFactory extends AxBlock {
   public TextureRegion topRegion;
@@ -34,7 +34,7 @@ public class SingularUnitFactory extends AxBlock {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(Stat.input, t -> {for (ItemStack stack : unitPlan.requirements) t.add(new ItemImage(stack)).pad(3f);});
+    stats.add(Stat.input, t -> {for (ItemStack stack : unitPlan.requirements) t.add(StatValues.displayItem(stack.item)).pad(3f);});
     stats.add(Stat.output, t -> t.image(unitPlan.unit.fullIcon).size(32f).pad(5));
   }
 

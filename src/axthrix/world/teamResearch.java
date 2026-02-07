@@ -34,7 +34,7 @@ public class teamResearch extends Block {
         details = refTeam.info;
         Events.run(EventType.Trigger.update,()->{
              if (Vars.state.rules.infiniteResources || Vars.state.isEditor())
-                 localizedName = localName + (refTeam.partOf(Vars.player.team()) ? " [red][Remove][]" : " [green][Add][]");
+                 localizedName = localName + (refTeam.partOf(Vars.player.team()) ? " [red][buns][]" : " [green][buns][]");
              else
                  localizedName = localName;
         });

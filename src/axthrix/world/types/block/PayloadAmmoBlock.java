@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import axthrix.world.types.AxFaction;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -38,6 +39,8 @@ public class PayloadAmmoBlock extends Block{
 
     public TextureRegion topRegion, outlineRegion;
 
+    public Seq<AxFaction> faction = new Seq<>();
+
     public PayloadAmmoBlock(String name){
         super(name);
 
@@ -58,7 +61,6 @@ public class PayloadAmmoBlock extends Block{
 
     @Override
     public void init(){
-        if(constructTime < 0) constructTime = buildCost;
         if(elevation < 0) elevation = size / 3f;
         if(explosionArea < 0) explosionArea = size * tilesize;
 
@@ -76,6 +78,10 @@ public class PayloadAmmoBlock extends Block{
     @Override
     public void setStats(){
         super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
 
         if(user != null && bullet != null){
             stats.add(AxStats.used, AxStatValues.ammo(ObjectMap.of(user, bullet)));

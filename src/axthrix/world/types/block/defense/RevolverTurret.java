@@ -6,7 +6,8 @@ import arc.graphics.*;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.*;
 import arc.util.*;
-import axthrix.world.types.weapontypes.mounts.RevolverWeaponMount;
+import axthrix.content.AxthrixSounds;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
@@ -19,13 +20,15 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 
+import java.util.HashMap;
+
 //U rename it lol
 public class RevolverTurret extends AxItemTurret{
     public int maxCartridges = 6;
 
 
     public Effect reloadCartridgesEffect = Fx.none;
-    public Sound reloadCartridgesSound = Sounds.none;
+    public Sound reloadCartridgesSound = AxthrixSounds.RevolverReload;
     public float cartridgeReloadTime = 1f;
     public boolean reloadIfNotFull = true;
 
@@ -41,7 +44,8 @@ public class RevolverTurret extends AxItemTurret{
 
     public TextureRegion nonCartridgesRegion;
     public Effect nonCartridgesShootEffect = Fx.none;
-    public Sound nonCartridgesShootSound = Sounds.none;
+    public Sound nonCartridgesShootSound = AxthrixSounds.RevolverEmpty;
+    public float secondarySmoothReloadSpeed = 0.15f;
 
     public RevolverTurret(String name){
         super(name);
@@ -58,31 +62,20 @@ public class RevolverTurret extends AxItemTurret{
         ));
     }
 
-    public DrawPart.PartProgress cartridgeprogress() {
-        if(buildType.get() instanceof RevolverTurretBuild entity){
-
-            return new DrawPart.PartProgress() {
-                @Override
-                public float get(DrawPart.PartParams partParams) {
-                    if (entity.cartridges != 0 && !reloadIfNotFull) return 0;
-
-                    return Mathf.clamp(entity.reloadConCartridges / cartridgeReloadTime);
-                }
-            };
-        }
-        return null;
-    }
-
     public class RevolverTurretBuild extends ItemTurretBuild {
-        int cartridges = 1;
+        int cartridges = 0;
         float reloadConCartridges;
+        public float secondarySmoothReload;
 
-
+        public float progress() {
+            return (cartridges > 0) ? 1 : Math.abs(((reloadConCartridges*2) / cartridgeReloadTime) - 1);
+        }
 
         @Override
         public void updateTile(){
             super.updateTile();
-            if (reloadConCartridges <= 0) reloadCartridges();
+            secondarySmoothReload = Mathf.lerpDelta(secondarySmoothReload,(reloadConCartridges <= 0) ? 1.0F : 0.0F, secondarySmoothReloadSpeed);
+            if (reloadConCartridges <= 0 && ammo.size > 0) reloadCartridges();
             reloadConCartridges = Math.max(reloadConCartridges - Time.delta * coolant.multiplier.get(this), 0);
         }
 
@@ -109,6 +102,7 @@ public class RevolverTurret extends AxItemTurret{
         public void reloadCartridges() {
             if (cartridges >= maxCartridges) return;
             if (cartridges != 0 && !reloadIfNotFull) return;
+
             reloadConCartridges = cartridgeReloadTime;
             cartridges += numOfReloadCartridges;
             if (cartridges > maxCartridges) cartridges = maxCartridges;

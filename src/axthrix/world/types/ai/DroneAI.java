@@ -16,10 +16,20 @@ public class DroneAI extends AIController {
 
 	@Override
 	public void updateMovement() {
-		if ((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null) {
+		/*if ((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null) {
 			if (u.tetherUnit.get(unit).type.abilities.get(u.droneSlot.get(unit)) instanceof DroneSpawnAbility abl) {
 				unit.set(Tmp.v1.set(abl.getPoscMath(abl.warmup.get(u.tetherUnit.get(unit)),u.tetherUnit.get(unit).x+abl.dX,abl.moveX), abl.getPoscMath(abl.warmup.get(u.tetherUnit.get(unit)),u.tetherUnit.get(unit).y+abl.dY,abl.moveY)));
 				unit.rotation(abl.getRotShooter(u.tetherUnit.get(unit),abl.warmup.get(u.tetherUnit.get(unit)),abl.dRot,abl.moveRot,u.isShield));
+			}
+		}*/
+
+		if ((unit.type instanceof DroneUnitType u) && u.tetherUnit.get(unit) != null) {
+			var un = u.tetherUnit.get(unit);
+			if(un.type.abilities.get(u.droneSlot.get(unit)) instanceof DroneSpawnAbility abl) {
+				var ablWarmup = abl.warmup.get(un);
+
+				unit.set(Tmp.v1.set(abl.getPoscMath(ablWarmup, un.x + abl.dX, abl.moveX), abl.getPoscMath(ablWarmup, un.y + abl.dY, abl.moveY)));
+				unit.rotation(abl.getRotShooter(un, ablWarmup, abl.dRot, abl.moveRot, u.isShield));
 			}
 		}
 	}

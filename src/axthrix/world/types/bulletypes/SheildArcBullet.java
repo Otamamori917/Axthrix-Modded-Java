@@ -16,7 +16,7 @@ import mindustry.gen.*;
 
 import java.util.HashMap;
 
-public abstract class SheildArcBullet extends BulletType {
+public class SheildArcBullet extends BulletType {
 
     public float max;
     @Nullable

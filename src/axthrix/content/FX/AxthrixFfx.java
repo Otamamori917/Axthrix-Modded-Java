@@ -2,6 +2,7 @@ package axthrix.content.FX;
 
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
+import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Position;
@@ -11,6 +12,7 @@ import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 
 
 import java.util.Arrays;
@@ -36,12 +38,17 @@ public class AxthrixFfx{
 	}
 
 
-		public static Effect lightningPart(float xv, float yv, float thick,Color color){
+	public static Effect lightningPart(float xv, float yv, float thick,float layer,float layerOffset,Color color){
 		return new Effect(4F, 300.0F, (e) -> {
 
-			float var14 = xv;
-			float ty = yv;
-			float dst = Mathf.dst(e.x, e.y, var14, ty);
+			float z = Draw.z();
+			if(layer >= 1){
+				Draw.z(layer + layerOffset);
+			}else{
+				Draw.z(z + layerOffset);
+			}
+
+            float dst = Mathf.dst(e.x, e.y, xv, yv);
 			Tmp.v1.set(xv,yv).sub(e.x, e.y).nor();
 			float normx = Tmp.v1.x;
 			float normy = Tmp.v1.y;
@@ -58,8 +65,8 @@ public class AxthrixFfx{
 				float nx;
 				float ny;
 				if (i == links - 1) {
-					nx = var14;
-					ny = ty;
+					nx = xv;
+					ny = yv;
 				} else {
 					float len = (float)(i + 1) * spacing;
 					Tmp.v1.setToRandomDirection(rand).scl(range / 4.0F);
@@ -69,8 +76,29 @@ public class AxthrixFfx{
 				Lines.linePoint(nx, ny);
 			}
 			Lines.endLine();
+			Draw.z(z);
 		}).followParent(true).rotWithParent(true);
 	}
+
+	public static final Effect LightPulse = (new Effect(280.0F, 100.0F, (e) -> {
+		color(new Color(255F, 255F, 255F, 0.10F));
+		stroke(e.fin() * 2.0F);
+		circle(e.x, e.y, 4.0F + e.fout() * 100.0F);
+		Fill.circle(e.x, e.y, e.fin() * 20.0F);
+		color();
+		for (int i = 0; i < 4; i++) {
+			circle(e.x, e.y, i * 3.5F + e.fout() * 20.0F);
+		}
+		Fill.circle(e.x, e.y, e.fin() * 10.0F);
+		Drawf.light(e.x, e.y, e.fin() * 20.0F, Pal.heal, 0.7F);
+	})).followParent(true).rotWithParent(true);
+
+	public static final Effect GoldShine = new Effect(10.0F, (e) -> {
+		Draw.color(Color.gold);
+		for (int i = 0; i < 4; i++) {
+			Fill.square(e.x + Mathf.random(-i, i), e.y + Mathf.random(-i, i), e.fslope()/2, 45.0F * i);
+		}
+	});
 
 	public static Effect staticShock(float radius) {
 		return new Effect(80f, 100f, e -> {
@@ -94,11 +122,14 @@ public class AxthrixFfx{
 		}).layer(Layer.effect + 0.001f);
 	}
 	
-	public static Effect circleOut(float lifetime, float radius, float thick,Color color){
+	public static Effect circleOut(float lifetime, float radius, float thick,float layer,Color color){
 		return new Effect(lifetime, radius * 2f, e -> {
+			float z = Draw.z();
+			Draw.z(layer);
 			Draw.color(color, Color.white, e.fout() * 0.7f);
 			Lines.stroke(thick * e.fout());
 			Lines.circle(e.x, e.y, radius * e.fin(Interp.pow3Out));
+			Draw.z(z);
 		});
 	}
 

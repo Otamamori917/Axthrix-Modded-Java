@@ -5,9 +5,9 @@ import mindustry.world.meta.StatCat;
 
 public class AxStats {
     public static Stat
-    maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
+    image,maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
     grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used,maxFireRateBonus,timeForMaxBonus,overheat,timeToCool,faction,shieldBoi,
-    chargeTimePas,chargeTimePow,emp,empDuration,empPower,staticShock,minimumPowerToDischarge
+    chargeTimePas,chargeTimePow,emp,empDuration,empPower,staticShock,minimumPowerToDischarge,tiles,timeToGrow,unitsOfForce,refuelRate,Fuel,maxBoostTime
             ;
     public static void load()
     {
@@ -44,5 +44,12 @@ public class AxStats {
         empDuration = new Stat("emp-duration", StatCat.function);
         staticShock = new Stat("static-shock", StatCat.function);
         minimumPowerToDischarge = new Stat("minimum-to-discharge", StatCat.function);
+        tiles = new Stat("tiles", StatCat.function);
+        timeToGrow = new Stat("time-to-grow", StatCat.function);
+        image = new Stat("image", StatCat.general);
+        refuelRate = new Stat("refuel-rate", StatCat.function);
+        Fuel = new Stat("fuel", StatCat.function);
+        unitsOfForce = new Stat("units-of-force", StatCat.function);
+        maxBoostTime = new Stat("max-boost-time", StatCat.function);
     }
 }

@@ -17,7 +17,7 @@ public class AxLiquids {
             color = gasColor = Color.valueOf("972020");
             animationScaleGas = 4f;
             heatCapacity = 1.15f;
-            effect = AxthrixStatus.repent;
+            effect = AxthrixStatus.ReapAndSow;
         }};
         iodineGas = new Liquid("iodine-gas") {{
             gas = true;

@@ -5,10 +5,13 @@ import arc.struct.Seq;
 import axthrix.content.AxFactions;
 import axthrix.content.AxthrixSounds;
 import axthrix.content.AxthrixStatus;
+import axthrix.world.types.abilities.AfterBurnAbility;
+import axthrix.world.types.abilities.DroneSpawnAbility;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.CnSUnitType;
+import axthrix.world.util.importedcode.DropBombBulletType;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
@@ -37,8 +40,6 @@ public class RaodonUnits {
             danu,odon,dorit,shriyan,beelzebub,
         //Specialist aircraft |Fame|
             efim,estes,zephyr,erebus,clymene
-
-
     //Core Units |3 units|
             ;
     public static void load(){
@@ -158,15 +159,15 @@ public class RaodonUnits {
                 x = y = 0f;
                 shootY = -5;
                 mirror = false;
-                reload = 180f;
+                reload = 140f;
                 minShootVelocity = 0.01f;
                 shootSound = Sounds.none;
                 shoot.shots = 8;
-                shoot.shotDelay = 4;
+                shoot.shotDelay = 2;
                 bullet = new BasicBulletType(){{
                     sprite = "large-bomb";
                     width = height = 60/4f;
-                    maxRange = 30f;
+                    maxRange = 2f;
                     ignoreRotation = true;
                     shootEffect = smokeEffect = Fx.none;
                     backColor = Color.valueOf("2d0827");
@@ -185,7 +186,7 @@ public class RaodonUnits {
                     shrinkX = shrinkY = 0.7f;
                     speed = 0f;
                     collides = false;
-                    splashDamage = 55f;
+                    splashDamage = 15f;
                     splashDamageRadius = 20;
                 }};
             }});
@@ -209,20 +210,22 @@ public class RaodonUnits {
             constructor = StealthUnit::new;
             aiController = DynFlyingAI::new;
             engineSize = 0;
-            engines = Seq.with(new UnitEngine(0,-3f,2.5f,-90));
+            engines = Seq.with(new UnitEngine(0,-8f,2.5f,-90));
 
             targetFlags = new BlockFlag[]{BlockFlag.battery,BlockFlag.generator, null};
 
+            abilities.add(new AfterBurnAbility());
+
             weapons.add(new Weapon(){{
                 x = y = 0f;
-                shootY = 0;
+                shootY = 8f;
                 mirror = false;
                 reload = 240f;
                 minShootVelocity = 0.01f;
                 baseRotation = 180;
                 shootSound = Sounds.none;
                 shoot.shots = 4;
-                shoot.shotDelay = 5;
+                shoot.shotDelay = 8;
                 bullet = new BasicBulletType(){{
                     sprite = "large-bomb";
                     width = height = 60/4f;
@@ -250,7 +253,7 @@ public class RaodonUnits {
                     fragBullet = bullet = new BasicBulletType(){{
                         sprite = "large-bomb";
                         width = height = 60/8f;
-                        maxRange = 30f;
+                        maxRange = 5f;
                         ignoreRotation = true;
                         shootEffect = smokeEffect = Fx.none;
                         backColor = Color.valueOf("2d0827");
@@ -269,9 +272,9 @@ public class RaodonUnits {
                         speed = 3f;
                         drag = 0.1f;
                         collides = false;
-                        splashDamage = 100f;
+                        splashDamage = 20;
                         scaledSplashDamage = true;
-                        splashDamageRadius = 25;
+                        splashDamageRadius = 50;
                     }};
                 }};
             }});

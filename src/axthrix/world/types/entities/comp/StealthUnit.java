@@ -1,6 +1,7 @@
 package axthrix.world.types.entities.comp;
 
 import arc.util.Time;
+import axthrix.world.types.abilities.AfterBurnAbility;
 import mindustry.gen.UnitEntity;
 import axthrix.world.types.entities.AXEntityMapping;
 import axthrix.world.types.unittypes.CnSUnitType;

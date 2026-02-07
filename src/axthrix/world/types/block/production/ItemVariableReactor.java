@@ -1,7 +1,11 @@
 package axthrix.world.types.block.production;
 
+import arc.Core;
 import arc.math.Mathf;
+import arc.struct.Seq;
 import arc.util.Time;
+import axthrix.world.types.AxFaction;
+import axthrix.world.util.AxStats;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.type.ItemStack;
@@ -15,6 +19,17 @@ public class ItemVariableReactor extends VariableReactor {
     public ItemVariableReactor(String name)
     {
         super(name);
+    }
+    public Seq<AxFaction> faction = new Seq<>();
+
+    @Override
+    public void setStats() {
+        super.setStats();
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
+
     }
 
     public class ItemVariableReactorBuild extends VariableReactorBuild

@@ -1,89 +1,65 @@
-/*package axthrix.world.types.weapontypes;
+package axthrix.world.types.weapontypes;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
-import mindustry.core.*;
-import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.meta.*;
 
-import static mindustry.Vars.*;
-
+/** @author EyeOfDarkness */
 public class AcceleratedWeapon extends Weapon{
-    public Float acceleratedDelay = 120f, acceleratedBonus = 1.5f;
-    public Int acceleratedSteps = 1;
-    public Float burnoutDelay = 240f, cooldownDelay = 120f;
-    public Boolean burnsOut = true;
+    public float accelCooldownTime = 120f;
+    public float accelCooldownWaitTime = 60f;
+    public float accelPerShot = 1.1f;
+    public float minReload = 5f;
 
     public AcceleratedWeapon(String name){
         super(name);
-    }
-    
-    public AcceleratedWeapon(){
-    }
-
-    {
-        reload = 10f;
-        predictTarget = true;
-        rotate = true;
-        useAmmo = false;
         mountType = AcceleratedMount::new;
-        recoil = 10f;
     }
-
-    public float accelBoost, accelCounter;
-    public int accelCount;
 
     @Override
     public void update(Unit unit, WeaponMount mount){
-         super.update(unit, mount);
-
-        if(accelCount > acceleratedSteps){
-            accelCounter += edelta();
-            if(accelCounter >= cooldownDelay){
-                accelCount = 0;
-                accelBoost = 1;
-                accelCounter %= cooldownDelay;
-            }
-        }else if(isShooting()){
-            accelCounter += edelta(); 
-            if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
-                accelBoost += (acceleratedBonus - 1);
-                accelCount++;
-                accelCounter %= acceleratedDelay;
-            }else if(burnsOut && accelCounter >= burnoutDelay){
-                accelBoost = 0;
-                accelCount++;
-                accelCounter %= burnoutDelay;
-            }
+        AcceleratedMount aMount = (AcceleratedMount)mount;
+        //mount.reload -= ((aMount.accel / minReload) * unit.reloadMultiplier * Time.delta) * (reload - minReload);
+        float r = ((aMount.accel / reload) * unit.reloadMultiplier * Time.delta) * (reload - minReload);
+        if(!alternate || otherSide == -1){
+            mount.reload -= r;
         }else{
-            accelCount = 0;
-            accelCounter = 0;
-            accelBoost = 1;
+            WeaponMount other = unit.mounts[otherSide];
+            other.reload -= r / 2f;
+            mount.reload -= r / 2f;
+            if(other instanceof AcceleratedMount aM){
+                float accel = unit.isShooting() && unit.canShoot() ? Math.max(aM.accel, aMount.accel) : Math.min(aM.accel, aMount.accel);
+                float wTime = unit.isShooting() && unit.canShoot() ? Math.max(aM.waitTime, aMount.waitTime) : Math.min(aM.waitTime, aMount.waitTime);
+                aM.accel = accel;
+                aM.waitTime = wTime;
+                aMount.accel = accel;
+                aMount.waitTime = wTime;
+            }
+        }
+        if(aMount.waitTime <= 0f){
+            aMount.accel = Math.max(0f, aMount.accel - (minReload / accelCooldownTime) * Time.delta);
+        }else{
+            aMount.waitTime -= Time.delta;
+        }
+        super.update(unit, mount);
+    }
+
+    @Override
+    protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+        AcceleratedMount aMount = (AcceleratedMount)mount;
+        aMount.accel = Mathf.clamp(aMount.accel + accelPerShot, 0f, minReload);
+        aMount.waitTime = accelCooldownWaitTime;
+        super.shoot(unit, mount, shootX, shootY, rotation);
+    }
+
+    public static class AcceleratedMount extends WeaponMount{
+        float accel = 0f;
+        float waitTime = 0f;
+
+        AcceleratedMount(Weapon weapon){
+            super(weapon);
         }
     }
-
-    @Override
-    public void update(Unit unit, WeaponMount mount){
-        float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
-        reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
-
-        reloadCounter = Math.min(reloadCounter, reload);
-    }
-        
-    public float boostf(){
-        if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
-        return Mathf.clamp((float)accelCount / acceleratedSteps);
-    }
-}*/
+}

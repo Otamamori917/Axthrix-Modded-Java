@@ -173,7 +173,7 @@ public class MountUnitType extends AxUnitType {
             Payload turret = unit.payloads().first();
             float layer = unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit;
             Draw.z(layer + 5);
-            if (turret instanceof BuildPayload buildTurret && buildTurret.build.block() instanceof Turret)
+            if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret)
             {
                 Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
                 float rot = unit.rotation - build.payloadRotation;
@@ -185,7 +185,7 @@ public class MountUnitType extends AxUnitType {
                 Draw.rect(turret.content().fullIcon, unit.x, unit.y, unit.rotation - 90);
             }
             Payload module = unit.payloads().peek();
-            if (module instanceof BuildPayload buildModule && !(buildModule.build.block() instanceof Turret)){
+            if (module instanceof BuildPayload buildModule && !(buildModule.block() instanceof Turret)){
                 if (buildModule.build.block instanceof MendProjector mend) {
                     MendProjector.MendBuild mendb = (MendProjector.MendBuild)buildModule.build;
                     float rot = unit.rotation - mendb.payloadRotation;
@@ -294,7 +294,7 @@ public class MountUnitType extends AxUnitType {
         if (unit instanceof Payloadc p && p.hasPayload()) {
                 Payload turret = p.payloads().first();
                 Payload module = p.payloads().peek();
-                if (module instanceof BuildPayload buildModule && !(buildModule.build.block() instanceof Turret)){
+                if (module instanceof BuildPayload buildModule && !(buildModule.block() instanceof Turret)){
                     if(buildModule.build.block.hasLiquids && buildModule.build.liquids != null && liquidType.get(unit) != null) {
                         if(buildModule.build.acceptLiquid(null,liquidType.get(unit)) && liquidAmount.get(unit) != 0){
                             if (buildModule.build.liquids.currentAmount() < buildModule.build.block.liquidCapacity){
@@ -321,7 +321,7 @@ public class MountUnitType extends AxUnitType {
                     }
 
                 }
-                if (turret instanceof BuildPayload buildTurret && buildTurret.build.block() instanceof Turret) {
+                if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret) {
                     Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
                     build.x(unit.x);
                     build.y(unit.y);

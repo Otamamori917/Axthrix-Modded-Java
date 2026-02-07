@@ -10,10 +10,13 @@ import axthrix.world.types.block.production.AxGenericCrafter;
 import axthrix.world.types.block.production.AxMulticrafter;
 import axthrix.world.types.block.production.AxSeparator;
 import axthrix.world.types.block.production.PayloadProducer;
+import axthrix.world.util.AxRecipe;
+import axthrix.world.util.AxRecipeSelector;
 import mindustry.content.*;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.production.Separator;
 import mindustry.world.draw.*;
@@ -22,7 +25,6 @@ import multicraft.*;
 
 import static axthrix.content.blocks.PayloadAmmoBlocks.*;
 import static mindustry.type.ItemStack.with;
-import static multicraft.RecipeSelector.Detailed;
 
 public class AxthrixCrafters {
 	public static Block
@@ -42,6 +44,8 @@ public class AxthrixCrafters {
 
 	liquidDeposit;
 
+
+
     public static void load() {
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
 		{{
@@ -49,7 +53,7 @@ public class AxthrixCrafters {
 			requirements(Category.crafting, with(Items.copper,1));
 			size = 4;
 			resolvedRecipes = Seq.with(
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input
@@ -66,7 +70,7 @@ public class AxthrixCrafters {
 							//float craftTime in ticks
 							60f
 					),
-			new Recipe(
+			new AxRecipe(
 					//IOEntry input
 					new IOEntry(
 							//item input
@@ -91,10 +95,10 @@ public class AxthrixCrafters {
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
-			selector = Detailed;
+			selector = AxRecipeSelector.Detailed;
 			size = 2;
 			resolvedRecipes = Seq.with(
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input
@@ -112,7 +116,7 @@ public class AxthrixCrafters {
 							120f
 					),
 
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input
@@ -136,14 +140,14 @@ public class AxthrixCrafters {
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
-			selector = Detailed;
+			selector = AxRecipeSelector.Detailed;
 			size = 1;
 			drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
 					new DrawRegion("-spinner", 1, true),
 					new DrawDefault());
 			resolvedRecipes = Seq.with(
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input
@@ -160,7 +164,7 @@ public class AxthrixCrafters {
 							//float craftTime in ticks
 							20f
 					),
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input
@@ -177,7 +181,7 @@ public class AxthrixCrafters {
 							//float craftTime in ticks
 							20f
 					),
-					new Recipe(
+					new AxRecipe(
 							//IOEntry input
 							new IOEntry(
 									//item input

@@ -6,14 +6,11 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
 import axthrix.AxthrixLoader;
-import axthrix.content.AxthrixSounds;
-import axthrix.world.types.weapontypes.mounts.RevolverWeaponMount;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
-import mindustry.graphics.Layer;
 import mindustry.type.Weapon;
 
 import static axthrix.content.AxthrixSounds.RevolverEmpty;
@@ -138,5 +135,16 @@ public class RevolverWeapon extends Weapon {
         mount.reloadCartridges = reloadCartridges;
 
         super.shoot(unit, mount, shootX, shootY, rotation);
+    }
+
+    public static class RevolverWeaponMount extends WeaponMount {
+        public int cartridges = 1;
+        public float reloadCartridges = 1;
+        public RevolverWeapon revolverWeapon;
+
+        public RevolverWeaponMount(Weapon weapon) {
+            super(weapon);
+            revolverWeapon = (RevolverWeapon) weapon;
+        }
     }
 }

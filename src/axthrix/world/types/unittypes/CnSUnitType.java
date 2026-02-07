@@ -12,12 +12,12 @@ import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.type.ItemStack;
-import mindustry.type.UnitType;
-import mindustry.ui.ItemImage;
 import mindustry.world.meta.Stat;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.recipes.RecipeGeneric;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValue;
+import mindustry.world.meta.StatValues;
 
 public class CnSUnitType extends AxUnitType {
   // Stealth stuff
@@ -51,10 +51,10 @@ public class CnSUnitType extends AxUnitType {
     }
     if (recipe != null) {
       stats.add(Stat.input, t -> {
-        for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack)).pad(3f);
+        for (ItemStack stack : recipe.consumeItems) t.add(StatValues.displayItem(stack.item)).pad(3f);
       });
       stats.add(Stat.output, t -> {
-        for (ItemStack stack : recipe.outputItems) t.add(new ItemImage(stack)).pad(3f);
+        for (ItemStack stack : recipe.outputItems) t.add(StatValues.displayItem(stack.item)).pad(3f);
       });
     }
   }

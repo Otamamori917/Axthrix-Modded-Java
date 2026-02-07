@@ -10,6 +10,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import axthrix.world.types.AxFaction;
 import axthrix.world.util.*;
 import mindustry.*;
 import mindustry.entities.units.*;
@@ -29,6 +30,7 @@ import static mindustry.Vars.*;
 public class PayloadProducer extends PayloadBlock{
     private float scrollPos;
 
+    public Seq<AxFaction> faction = new Seq<>();
     public Seq<PayloadRecipe> recipes = new Seq<>();
     public boolean hasTop = true;
 
@@ -155,6 +157,10 @@ public class PayloadProducer extends PayloadBlock{
         stats.remove(Stat.powerUse);
         stats.remove(Stat.itemCapacity);
         stats.remove(Stat.liquidCapacity);
+
+        if(faction.any()){
+            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
+        }
 
         stats.add(AxStats.recipes, AxStatValues.payloadProducts(recipes));
     }

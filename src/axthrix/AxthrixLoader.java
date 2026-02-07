@@ -2,14 +2,19 @@ package axthrix;
 
 import arc.*;
 import arc.func.Func;
+import arc.graphics.g2d.Draw;
 import arc.util.*;
 import axthrix.content.blocks.AxthrixCrafters;
+import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.content.blocks.AxthrixTurrets;
 import axthrix.content.blocks.PayloadAmmoBlocks;
 import axthrix.content.units.*;
 import axthrix.world.types.bulletypes.InfFragBulletType;
 import axthrix.world.util.StackWorldState;
+import mindustry.Vars;
+import mindustry.game.EventType;
 import mindustry.game.EventType.*;
+import mindustry.graphics.Shaders;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 import axthrix.world.util.*;
@@ -34,6 +39,7 @@ public class AxthrixLoader extends Mod{
     //debug
     public static boolean amosPowerDebug = false;
     public static boolean amosLiquidDebug = false;
+    public static boolean nado3dDebug = false;
     public static boolean showMessage = true;
     //options
     public static boolean showRevolverAmmo = true;
@@ -49,10 +55,26 @@ public class AxthrixLoader extends Mod{
             loadSettings();
         });
 
+        /*Events.run(EventType.Trigger.drawOver, () -> {
+                    if (Vars.renderer.animateShields && PvShaders.nullisAura != null)
+                        Draw.drawRange(PvLayers.voidLayer, 0.1f, () -> {
+                            if (!Vars.renderer.effectBuffer.isBound())
+                                Vars.renderer.effectBuffer.begin(Color.clear);
+                        }, () ->
+                        {
+                            Vars.renderer.effectBuffer.end();
+                            Vars.renderer.effectBuffer.blit(Shaders);
+                            if (Vars.renderer.effectBuffer.isBound())
+                                Vars.renderer.effectBuffer.endBind();
+                        });
+                });    */
+
+
         // Check if funni bullet is enabled
         funibullet = settings.getBool("aj-funni-disabled", false);
         amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
         amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
+        nado3dDebug = settings.getBool("aj-nado-3d-debug", false);
         showMessage = settings.getBool("aj-message-debug", true);
         showRevolverAmmo = settings.getBool("aj-revolver-ammo", true);
         screwStealthFlyers = settings.getBool("aj-screw-stealth", true);
@@ -83,9 +105,11 @@ public class AxthrixLoader extends Mod{
         AxItems.load();
         AxthrixStatus.load();
         AxLiquids.load();
+        AxthrixEnvironment.load();
         AxthrixDrones.load();
         AxthrixUnits.load();
         LegendUnits.load();
+        IkatusaUnits.load();
         RaodonUnits.load();
         //AxthrixBlocks.load();
         PayloadAmmoBlocks.load();
@@ -120,6 +144,7 @@ public class AxthrixLoader extends Mod{
             t.checkPref("aj-message-debug", true);
             t.checkPref("aj-mount-power-debug", false);
             t.checkPref("aj-mount-liquid-debug", false);
+            t.checkPref("aj-nado-3d-debug", false);
             t.checkPref("aj-revolver-ammo", true);
         });
     }

@@ -3,23 +3,28 @@ package axthrix.world.util;
 import arc.Core;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.scene.Element;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import axthrix.world.types.block.defense.MultiTurretType;
 import axthrix.world.types.weapontypes.BlockWeapon;
+import mindustry.Vars;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.maps.Map;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import axthrix.world.types.recipes.*;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.meta.*;
 import axthrix.world.types.block.*;
+import static arc.Core.*;
 
 
 import static mindustry.Vars.*;
@@ -31,6 +36,77 @@ public class AxStatValues {
 
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, boolean showUnit){
         return ammo(map, 0, showUnit);
+    }
+
+    public static StatValue blocks(Seq<Block> attr, boolean floating) {
+        return blocks(attr, floating, true);
+    }
+
+    public static StatValue kisten() {
+        return (table) -> table.table((c) -> {
+            c.row();
+            c.image(atlas.find("aj-meepyboi")).padTop(8f).scaling(Scaling.fit);
+        });
+    }
+
+    public static StatValue blocks(Seq<Block> attr, boolean floating, boolean checkFloors) {
+        return (table) -> table.table((c) -> {
+            Runnable[] rebuild = new Runnable[]{null};
+            Map[] lastMap = new Map[]{null};
+            rebuild[0] = () -> {
+                c.clearChildren();
+                c.left();
+                if (state.isGame()) {
+                    Seq<Block> blocks = content.blocks().select((blockx) -> {
+                        boolean var10000;
+                        label36: {
+                            if ((!checkFloors || blockx instanceof Floor) && indexer.isBlockPresent(blockx)) {
+                                if (!(blockx instanceof Floor f)) {
+                                    break label36;
+                                }
+
+                                if (!f.isDeep() || floating) {
+                                    break label36;
+                                }
+                            }
+
+                            var10000 = false;
+                            return var10000;
+                        }
+
+                        var10000 = true;
+                        return var10000;
+                    });
+                    if (blocks.any()) {
+                        int i = 0;
+
+                        for(Block block : blocks) {
+                            attr.each(fl -> {
+                                if (fl == block) content(block,12).display(c);
+                            });
+                            ++i;
+                            if (i % 5 == 0) {
+                                c.row();
+                            }
+                        }
+                    } else {
+                        c.add("@none.inmap");
+                    }
+                } else {
+                    c.add("@stat.showinmap");
+                }
+
+            };
+            rebuild[0].run();
+            c.update(() -> {
+                Map current = state.isGame() ? state.map : null;
+                if (current != lastMap[0]) {
+                    rebuild[0].run();
+                    lastMap[0] = current;
+                }
+
+            });
+        });
     }
 
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map, int indent, boolean showUnit){
@@ -153,7 +229,7 @@ public class AxStatValues {
                                         if(i % col == 0) req.row();
 
                                         ItemStack stack = payloadRecipe.itemRequirements[i];
-                                        req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5);
+                                        req.add(StatValues.displayItem(stack.item, stack.amount, false)).pad(5);
 
                                         i++;
                                     }
@@ -198,13 +274,13 @@ public class AxStatValues {
         };
     }
 
-    public static StatValue content(UnlockableContent content){
+    public static StatValue content(UnlockableContent content,float left){
         return table -> {
             table.row();
             table.table(t -> {
                 t.image(icon(content)).size(3 * 8);
-                t.add("[lightgray]" + content.localizedName).padLeft(6);
-                infoButton(t, content, 4 * 8).padLeft(6);
+                t.add("[lightgray]" + content.localizedName).padLeft(left);
+                infoButton(t, content, 4 * 8).padLeft(left);
             });
         };
     }

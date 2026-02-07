@@ -28,6 +28,7 @@ public class AfterShockBulletType extends BulletType {
 	 * How many times splash splashDamage occurs
 	 */
 	public int splashAmount = 3;
+	public boolean drawBlast = true;
 
 	public Sound applySound = Sounds.shotgun;
 	/** Adjust circle light color */
@@ -78,7 +79,9 @@ public class AfterShockBulletType extends BulletType {
 	public void generateAftershock(Bullet b) {
 		if (b.timer(5, splashDelay) && splashAmount > 1) {
 			Damage.damage(b.team, b.x, b.y, splashDamageRadius, splashDamage * b.damageMultiplier(), collidesAir, collidesGround, scaledSplashDamage);
-			aftershockCircle(splashDamageRadius, splashDelay, frontColor, backColor, bottomColor == null ? backColor : bottomColor).at(b.x, b.y);
+			if(drawBlast){
+				aftershockCircle(splashDamageRadius, splashDelay, frontColor, backColor, bottomColor == null ? backColor : bottomColor).at(b.x, b.y);
+			}
 			applySound.at(b.x, b.y);
 			for (int j = 0; j < ((splashAmount) * 15); j++) {
 				particleEffect.at(
@@ -108,3 +111,4 @@ public class AfterShockBulletType extends BulletType {
 		super.update(b);
 	}
 }
+

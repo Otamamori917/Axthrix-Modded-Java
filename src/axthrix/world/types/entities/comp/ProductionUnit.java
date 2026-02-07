@@ -36,10 +36,10 @@ public class ProductionUnit extends PayloadUnit {
     if (payloads.isEmpty()) return;
     if (payloads.first() instanceof BuildPayload payload && type().recipe != null && payload.build.items != null) {
       for (ItemStack stack : type().recipe.consumeItems) {
-        if (payload.build.items().get(stack.item) < stack.amount) crafting = false;
+        if (payload.build.items.get(stack.item) < stack.amount) crafting = false;
       }
       for (ItemStack stack : type().recipe.outputItems) {
-        if (payload.build.items().get(stack.item) > payload.build.block.itemCapacity - stack.amount) crafting = false;
+        if (payload.build.items.get(stack.item) > payload.build.block.itemCapacity - stack.amount) crafting = false;
       }
 
       if (crafting) {
@@ -51,8 +51,8 @@ public class ProductionUnit extends PayloadUnit {
 
         if (progress >= type().recipe.craftTime) {
           progress %= 1f;
-          for (ItemStack stack : type().recipe.consumeItems) payload.build.items().remove(stack);
-          for (ItemStack stack : type().recipe.outputItems) payload.build.items().add(stack.item, stack.amount);
+          for (ItemStack stack : type().recipe.consumeItems) payload.build.items.remove(stack);
+          for (ItemStack stack : type().recipe.outputItems) payload.build.items.add(stack.item, stack.amount);
           type().recipe.craftEffect.at(this);
         }
       }

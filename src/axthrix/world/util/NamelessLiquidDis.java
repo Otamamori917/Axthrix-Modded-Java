@@ -10,7 +10,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-/** Similar to {@link LiquidDisplay}, however does not append with the liquid's name. */
+/** Similar to LiquidDisplay, however does not append with the liquid's name. */
 public class NamelessLiquidDis extends Table{
     public final Liquid liquid;
     public final float amount;

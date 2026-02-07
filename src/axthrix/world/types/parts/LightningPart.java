@@ -27,6 +27,8 @@ public class LightningPart extends DrawPart {
     public float layerOffset;
     //how many ticks in between spawning the effect
     public float spawnRate;
+
+
     public HashMap<Integer, Float> delay = new HashMap<>();
 
     public LightningPart() {
@@ -56,7 +58,7 @@ public class LightningPart extends DrawPart {
                 float rx2 = params.x + Tmp.v2.x;
                 float ry2 = params.y + Tmp.v2.y;
                 if(Vars.state.isPlaying()){
-                    AxthrixFfx.lightningPart(rx2,ry2,thickness,color2).at(rx, ry, Angles.angle(rx,ry,rx2,ry2), color);
+                    AxthrixFfx.lightningPart(rx2,ry2,thickness,layer,layerOffset,color2).at(rx, ry, Angles.angle(rx,ry,rx2,ry2), color);
                     delay.replace(params.hashCode(),0f);
                 }
             }

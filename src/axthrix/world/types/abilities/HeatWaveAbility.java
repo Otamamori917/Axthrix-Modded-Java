@@ -18,6 +18,7 @@ import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
@@ -40,7 +41,7 @@ public class HeatWaveAbility extends Ability{
 	
 	public float knockback = 20f;
 
-    public Color hitColor = Pal.accent;
+    public Color hitColor;
 	
 	public Sound shootSound = Sounds.shockBlast;
 	public Effect hitEffect = Fx.pointHit;
@@ -99,7 +100,7 @@ public class HeatWaveAbility extends Ability{
 				timer = 0;
 				shootSound.at(rx, ry, 1 + Mathf.range(0.15f), 3);
 
-                AxthrixFfx.circleOut(16,range,damage/40,hitColor).at(rx, ry, range);
+                AxthrixFfx.circleOut(16,range,damage/40, Layer.blockOver,hitColor).at(rx, ry, range);
 				for(Unit u : all){
 					for(ObjectFloatMap.Entry<StatusEffect> s : status.entries()){
 						u.apply(s.key, s.value);
