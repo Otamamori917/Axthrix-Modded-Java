@@ -20,8 +20,12 @@ public class AxthrixSounds {
              laserwoosh = new Sound(),
              laserememit = new Sound(),
              catchit = new Sound(),
-             payitback = new Sound()
-            ;
+             payitback = new Sound(),
+             slam = new Sound()
+
+
+
+                     ;
 
     public static void  LoadSounds(){
         //Note: Vars.tree.loadSound only works with .mp3 and .ogg
@@ -39,5 +43,7 @@ public class AxthrixSounds {
         laserememit = tree.loadSound("laser2");
         catchit = tree.loadSound("catch");
         payitback = tree.loadSound("payback");
+        slam = tree.loadSound("slam");
+
     }
 }

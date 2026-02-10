@@ -39,6 +39,7 @@ public class AxthrixLoader extends Mod{
     //debug
     public static boolean amosPowerDebug = false;
     public static boolean amosLiquidDebug = false;
+    public static int nadoEffectDensity = 100;
     public static boolean nado3dDebug = false;
     public static boolean showMessage = true;
     //options
@@ -74,6 +75,7 @@ public class AxthrixLoader extends Mod{
         funibullet = settings.getBool("aj-funni-disabled", false);
         amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
         amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
+        nadoEffectDensity = settings.getInt("aj-nado-density",100);
         nado3dDebug = settings.getBool("aj-nado-3d-debug", false);
         showMessage = settings.getBool("aj-message-debug", true);
         showRevolverAmmo = settings.getBool("aj-revolver-ammo", true);
@@ -144,7 +146,7 @@ public class AxthrixLoader extends Mod{
             t.checkPref("aj-message-debug", true);
             t.checkPref("aj-mount-power-debug", false);
             t.checkPref("aj-mount-liquid-debug", false);
-            t.checkPref("aj-nado-3d-debug", false);
+            t.sliderPref("aj-nado-density", 100, 20, 100, 20, i -> i == -1 ? "@aj-nado-density.def" : i + "%");            t.checkPref("aj-nado-3d-debug", false);
             t.checkPref("aj-revolver-ammo", true);
         });
     }

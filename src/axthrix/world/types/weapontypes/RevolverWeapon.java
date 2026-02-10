@@ -2,7 +2,6 @@ package axthrix.world.types.weapontypes;
 
 import arc.Core;
 import arc.audio.Sound;
-import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
 import axthrix.AxthrixLoader;
@@ -12,41 +11,49 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.Weapon;
+import axthrix.world.util.RevolverLogic;
 
 import static axthrix.content.AxthrixSounds.RevolverEmpty;
 import static axthrix.content.AxthrixSounds.RevolverReload;
 
+public class RevolverWeapon extends Weapon implements RevolverLogic {
 
-public class RevolverWeapon extends Weapon {
-
-    public int maxCartridges = 1;
-
-
+    public int maxCartridges = 6;
     public Effect reloadCartridgesEffect = Fx.none;
     public Sound reloadCartridgesSound = RevolverReload;
-    public float reloadCartridges = 1f;
-
-
+    public float cartridgeReloadTime = 1f;
 
     public TextureRegion cartridgesRegion;
-
     public Effect shootCartridgesEffect = Fx.none;
     public Sound shootCartridgesSound = Sounds.none;
     public float shotCartridges = 1f;
     public int numOfReloadCartridges = 1;
 
-
     public TextureRegion nonCartridgesRegion;
     public Effect nonCartridgesShootEffect = Fx.none;
     public Sound nonCartridgesShootSound = RevolverEmpty;
+
+    // Interface implementations
+    @Override public int getMaxCartridges() { return maxCartridges; }
+    @Override public Effect getReloadCartridgesEffect() { return reloadCartridgesEffect; }
+    @Override public Sound getReloadCartridgesSound() { return reloadCartridgesSound; }
+    @Override public float getCartridgeReloadTime() { return cartridgeReloadTime; }
+    @Override public int getNumOfReloadCartridges() { return numOfReloadCartridges; }
+    @Override public Effect getShootCartridgesEffect() { return shootCartridgesEffect; }
+    @Override public Sound getShootCartridgesSound() { return shootCartridgesSound; }
+    @Override public float getShotCartridges() { return shotCartridges; }
+    @Override public Effect getNonCartridgesShootEffect() { return nonCartridgesShootEffect; }
+    @Override public Sound getNonCartridgesShootSound() { return nonCartridgesShootSound; }
+    @Override public TextureRegion getCartridgesRegion() { return cartridgesRegion; }
+    @Override public TextureRegion getNonCartridgesRegion() { return nonCartridgesRegion; }
 
     @Override
     public void load() {
         super.load();
         cartridgesRegion = Core.atlas.find("aj-cartridges");
-
         nonCartridgesRegion = Core.atlas.find("aj-non-cartridges");
     }
+
     public RevolverWeapon() {
         super("");
         sinit();
@@ -62,38 +69,16 @@ public class RevolverWeapon extends Weapon {
         super.draw(unit, mount);
 
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
-        if(AxthrixLoader.showRevolverAmmo){
-            if (unit.isPlayer()) drawCartridgeses(rwm, unit.x, unit.y + unit.hitSize);
+        if(AxthrixLoader.showRevolverAmmo && unit.isPlayer()){
+            drawCartridges(rwm.getCartridges(), unit.x, unit.y + unit.hitSize);
         }
-    }
-
-    public void drawCartridgeses(RevolverWeaponMount rwm, float x, float y) {
-        float len = (cartridgesRegion.width / 4f * 0.5f) * (maxCartridges - 0.5f);
-        float _x = x - len / 2f + (cartridgesRegion.width / 4f * 0.5f) / 2f;
-        float _y = y;
-
-        for (int i = 0; i < maxCartridges; i++) {
-            if (rwm.cartridges > i) {
-                drawCartridges(cartridgesRegion, _x, _y);
-            } else {
-                drawCartridges(nonCartridgesRegion, _x, _y);
-            }
-
-            _x += cartridgesRegion.width / 4f * 0.5f;
-        }
-    }
-
-    private void drawCartridges(TextureRegion tr, float x, float y) {
-        Draw.scl(0.5f);
-        Draw.rect(tr, x, y);
     }
 
     @Override
     public void update(Unit unit, WeaponMount mount) {
         super.update(unit, mount);
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
-        if (rwm.reloadCartridges <= 0) reloadCartridges(unit, rwm);
-        rwm.reloadCartridges = Math.max(rwm.reloadCartridges - Time.delta * unit.reloadMultiplier, 0);
+        rwm.updateRevolverLogic(Time.delta, unit.reloadMultiplier);
     }
 
     public void sinit() {
@@ -103,48 +88,38 @@ public class RevolverWeapon extends Weapon {
     @Override
     protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation) {
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
-
-        if (rwm.cartridges < shotCartridges) {
-            nonCartridgesShoot(unit, shootX, shootY, rotation);
-            return;
-        }
-
-        cartridgesShoot(unit, rwm, shootX, shootY, rotation);
+        rwm.tryShoot(shootX, shootY, rotation, () -> super.shoot(unit, mount, shootX, shootY, rotation));
     }
 
-    public void reloadCartridges(Unit unit, RevolverWeaponMount mount) {
-        if (mount.cartridges >= maxCartridges) return;
-        mount.reloadCartridges = reloadCartridges;
-        mount.cartridges += numOfReloadCartridges;
-
-        reloadCartridgesEffect.at(unit.x, unit.y + unit.hitSize / 2f);
-        reloadCartridgesSound.at(unit);
-    }
-
-    protected void nonCartridgesShoot(Unit unit, float shootX, float shootY, float rotation) {
-        nonCartridgesShootEffect.at(shootX, shootY, rotation);
-        nonCartridgesShootSound.at(unit);
-    }
-
-    protected void cartridgesShoot(Unit unit, RevolverWeaponMount mount, float shootX, float shootY, float rotation) {
-        mount.cartridges -= shotCartridges;
-
-        shootCartridgesEffect.at(shootX, shootY, rotation);
-        shootCartridgesSound.at(unit);
-
-        mount.reloadCartridges = reloadCartridges;
-
-        super.shoot(unit, mount, shootX, shootY, rotation);
-    }
-
-    public static class RevolverWeaponMount extends WeaponMount {
-        public int cartridges = 1;
-        public float reloadCartridges = 1;
-        public RevolverWeapon revolverWeapon;
+    public class RevolverWeaponMount extends WeaponMount implements RevolverLogic.RevolverBuild {
+        public int cartridges = maxCartridges;
+        public float reloadConCartridges = 0;
 
         public RevolverWeaponMount(Weapon weapon) {
             super(weapon);
-            revolverWeapon = (RevolverWeapon) weapon;
         }
+
+        // Getters and setters
+        @Override public int getCartridges() { return cartridges; }
+        @Override public void setCartridges(int value) { cartridges = value; }
+        @Override public float getReloadConCartridges() { return reloadConCartridges; }
+        @Override public void setReloadConCartridges(float value) { reloadConCartridges = value; }
+
+        // From parent weapon
+        @Override public int getMaxCartridges() { return maxCartridges; }
+        @Override public float getCartridgeReloadTime() { return cartridgeReloadTime; }
+        @Override public int getNumOfReloadCartridges() { return numOfReloadCartridges; }
+        @Override public Effect getReloadCartridgesEffect() { return reloadCartridgesEffect; }
+        @Override public Sound getReloadCartridgesSound() { return reloadCartridgesSound; }
+        @Override public float getShotCartridges() { return shotCartridges; }
+        @Override public Effect getShootCartridgesEffect() { return shootCartridgesEffect; }
+        @Override public Sound getShootCartridgesSound() { return shootCartridgesSound; }
+        @Override public Effect getNonCartridgesShootEffect() { return nonCartridgesShootEffect; }
+        @Override public Sound getNonCartridgesShootSound() { return nonCartridgesShootSound; }
+
+        // Position
+        @Override public float getX() { return weapon.x; }
+        @Override public float getY() { return weapon.y; }
+        @Override public float getHitSize() { return 0; }
     }
 }

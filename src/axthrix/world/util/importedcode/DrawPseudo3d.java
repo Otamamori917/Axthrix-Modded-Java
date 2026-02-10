@@ -133,23 +133,41 @@ public class DrawPseudo3d {
 
 
     public static void TORNADO(Effect effect, Boolean counterClockwise, float rad, float height, Bullet b, Color color1, Color color2, Color color3, Color color4, float teamColorPotency, float transparency){
+        // BEHOLD MY HEADACHE-ANATOR
+        float densityDivisor = 12 - (AxthrixLoader.nadoEffectDensity / 10f);
+        float maxI1 = height / 2f;
+        int totalParticles = (int)maxI1;
+        int particlesToShow = Math.min(10, Math.max(2, (int)(maxI1 / (densityDivisor / 2f)))); // Hard cap at 10 prone to alterations
 
-
-        float maxI1 = height/2;
         float radMultiplier = rad * (counterClockwise ? -1.0F : 1.0F);
         float xDiff = xHeight(b.lastX, height) - b.x;
         float yDiff = yHeight(b.lastY, height) - b.y;
 
         if (b.time <= b.lifetime - effect.lifetime) {
-            for (int i1 = 0; i1 < maxI1; i1++) {
+
+            float effectCutoff = b.lifetime - effect.lifetime;
+            float mergeStart = effectCutoff * 0.8f;
+            float mergeProgress = Math.max(0, Math.min(1, (b.time - mergeStart) / (effectCutoff - mergeStart)));
+            mergeProgress = mergeProgress * mergeProgress * mergeProgress;
+
+            for (int i1 = 0; i1 < particlesToShow; i1++) {
                 if (b.type instanceof TornadoBulletType tb){
-                    float t = i1 / (maxI1 - 1);
-                    Color currentColor = (i1 / maxI1 <= 0.25f) ? color1 : (i1 / maxI1 <= 0.5f) ? color2 : (i1 / maxI1 <= 0.75f) ? color3 : color4;
+
+                    float actualIndex = particlesToShow > 1 ? i1 * (totalParticles - 1f) / (particlesToShow - 1f) : 0;
+                    float t = totalParticles > 1 ? actualIndex / (totalParticles - 1) : 0;
+
+
+                    float mergedT = t * (1f - mergeProgress);
+
+
+                    float radiusScale = 1f + (mergedT * 0.8f);
+
+                    Color currentColor = (mergedT <= 0.25f) ? color1 : (mergedT <= 0.5f) ? color2 : (mergedT <= 0.75f) ? color3 : color4;
 
                     effect.at(
-                            b.x + t * xDiff,
-                            b.y + t * yDiff,
-                            radMultiplier * tb.fout(b),
+                            b.x + mergedT * xDiff,
+                            b.y + mergedT * yDiff,
+                            radMultiplier * tb.fout(b) * radiusScale,
                             currentColor.cpy().add(b.team.color.cpy().mul(teamColorPotency)).a(transparency),
                             b
                     );

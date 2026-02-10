@@ -83,7 +83,18 @@ public class TornadoBulletType extends BulletType {
         lifetime = life;
         height = Height;
         width = Width;
-        swirlEffect = new SwirlEffect();
+        swirlEffect = new SwirlEffect(){{
+            length = 5;
+            width = 2.5F;
+            minRot = 120.0F;
+            maxRot = 450.0F;
+            minDst = -1.0F;
+            maxDst = -1.0F;
+            lightOpacity = 0.4F;
+            fallterp = Interp.pow4Out;
+            spinterp = Interp.pow3Out;
+            lifetime = 120;
+        }};
 
 
         damageRadius = 6.0F;
@@ -119,6 +130,10 @@ public class TornadoBulletType extends BulletType {
 
     public float continuousDamage() {
         return damage / 2.0F * 60.0F;
+    }
+
+    public void updateTrailEffects(Bullet b) {
+        super.updateTrailEffects(b);
     }
 
     public void init(Bullet b) {
@@ -178,12 +193,12 @@ public class TornadoBulletType extends BulletType {
                 }
             }
         });
+        DrawPseudo3d.TORNADO(swirlEffect,counterClockwise,width,height,b,colors[0],colors[1],colors[2],colors[3],0.5f,0.5f);
 
         super.update(b);
     }
 
     public void draw(Bullet b) {
-        DrawPseudo3d.TORNADO(swirlEffect,counterClockwise,width,height,b,colors[0],colors[1],colors[2],colors[3],0.5f,0.5f);
         if (AxthrixLoader.nado3dDebug) {
             DrawPseudo3d.slantTube(b.x, b.y, b.lastX, b.lastY, width, height,colors[0],colors[1],colors[2],colors[3]);
         }

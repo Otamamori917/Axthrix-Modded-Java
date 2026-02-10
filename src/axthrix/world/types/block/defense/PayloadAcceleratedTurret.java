@@ -1,127 +1,96 @@
 package axthrix.world.types.block.defense;
 
-import arc.*;
-import arc.graphics.Color;
-import arc.math.*;
-import arc.util.*;
-import axthrix.world.util.AxStatValues;
-import axthrix.world.util.AxStats;
-import mindustry.graphics.*;
-import mindustry.ui.*;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
+import axthrix.world.util.AcceleratedLogic;
 
-
-public class PayloadAcceleratedTurret extends PayloadTurretType{
+public class PayloadAcceleratedTurret extends PayloadTurretType implements AcceleratedLogic {
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
     public int acceleratedSteps = 1;
-
     public float burnoutDelay = 240, cooldownDelay = 120;
     public boolean burnsOut = true;
+    public boolean heatOnShoot = false;
 
     public PayloadAcceleratedTurret(String name){
         super(name);
     }
 
+    // Interface implementations
+    @Override public float getAcceleratedDelay() { return acceleratedDelay; }
+    @Override public float getAcceleratedBonus() { return acceleratedBonus; }
+    @Override public int getAcceleratedSteps() { return acceleratedSteps; }
+    @Override public float getBurnoutDelay() { return burnoutDelay; }
+    @Override public float getCooldownDelay() { return cooldownDelay; }
+    @Override public boolean burnsOut() { return burnsOut; }
+    @Override public boolean heatOnShoot() { return heatOnShoot; }
+    @Override public float getReload() { return reload; }
+    @Override public int getShootShots() { return shoot.shots; }
+    @Override public Object getCoolant() { return coolant; }
+    @Override public float getCoolantMultiplier() { return coolantMultiplier; }
+    @Override public boolean consumesLiquid(Object l) { return this.consumesLiquid((mindustry.type.Liquid)l); }
 
     @Override
     public void setBars(){
         super.setBars();
-        if(acceleratedBonus == 1){
-            if(burnsOut){
-                addBar("aj-heat", (PayloadAcceleratedTurret.PayloadAcceleratedTurretBuild entity) -> new Bar(
-                        () -> entity.accelCount > acceleratedSteps ? Core.bundle.format("bar.aj-overheated") : Core.bundle.format("bar.aj-heat", Strings.autoFixed((entity.accelBoost - 1) * 100f, 2)),
-                        () -> entity.accelCount > acceleratedSteps ? Pal.remove : Color.orange,
-                        entity::heatf
-                ));
-            }
-        }else{
-            addBar("aj-phases", (PayloadAcceleratedTurret.PayloadAcceleratedTurretBuild entity) -> new Bar(
-                    () -> entity.accelCount > acceleratedSteps ? Core.bundle.format("bar.aj-overheated") : Core.bundle.format("bar.aj-phases", Strings.autoFixed((entity.accelBoost - 1) * 100f, 2)),
-                    () -> entity.accelCount > acceleratedSteps ? Pal.remove : Pal.techBlue,
-                    entity::boostf
-            ));
+        boolean isHeatMode = acceleratedBonus == 1 && burnsOut;
+        if(acceleratedBonus == 1 && burnsOut || acceleratedBonus != 1){
+            addBar(isHeatMode ? "aj-heat" : "aj-phases",
+                    (PayloadAcceleratedTurretBuild entity) -> createAcceleratedBar(entity, isHeatMode));
         }
-
     }
+
     @Override
     public void setStats(){
         super.setStats();
-        if(acceleratedBonus != 1){
-            stats.add(AxStats.maxFireRateBonus, 60.0F / reload * (float)shoot.shots * (acceleratedBonus * acceleratedSteps - 1) + "/sec ~ [stat]" + ((acceleratedBonus - 1)* acceleratedSteps) * 100 + "% []Bonus", StatUnit.none);
-            stats.add(AxStats.timeForMaxBonus, (acceleratedDelay * acceleratedSteps) / 60, StatUnit.seconds);
-        }
-        if (burnsOut){
-            stats.add(AxStats.overheat, ((acceleratedDelay * acceleratedSteps) + burnoutDelay) / 60, StatUnit.seconds);
-            stats.add(AxStats.timeToCool, cooldownDelay / 60, StatUnit.seconds);
-        }
-        if (this.coolant != null) {
-            this.stats.remove(Stat.booster);
-            this.stats.add(Stat.booster, StatValues.boosters(this.reload, this.coolant.amount, this.coolantMultiplier, true, (l) -> {
-                return l.coolant && this.consumesLiquid(l);
-            }));
-        }
+        addAcceleratedStats(stats); // stats is already of type Stats, this should work now
     }
 
-    public class PayloadAcceleratedTurretBuild extends PayloadTurretTypeBuild {
-        public float accelBoost, accelCounter, coolBonus;
+    public class PayloadAcceleratedTurretBuild extends PayloadTurretTypeBuild implements AcceleratedLogic.AcceleratedTurretBuild {
+        public float accelBoost = 1, accelCounter, coolBonus;
         public int accelCount;
+        public float lastReloadCounter = 0;
+
+        // Getters and setters for interface
+        @Override public float getAccelBoost() { return accelBoost; }
+        @Override public void setAccelBoost(float value) { accelBoost = value; }
+        @Override public float getAccelCounter() { return accelCounter; }
+        @Override public void setAccelCounter(float value) { accelCounter = value; }
+        @Override public float getCoolBonus() { return coolBonus; }
+        @Override public void setCoolBonus(float value) { coolBonus = value; }
+        @Override public int getAccelCount() { return accelCount; }
+        @Override public void setAccelCount(int value) { accelCount = value; }
+        @Override public float getLastReloadCounter() { return lastReloadCounter; }
+        @Override public void setLastReloadCounter(float value) { lastReloadCounter = value; }
+        @Override public float getReloadCounter() { return reloadCounter; }
+        @Override public void setReloadCounter(float value) { reloadCounter = value; }
+        @Override public float getReload() { return reload; }
+        @Override public float getCoolantMultiplier() { return coolantMultiplier; }
+        @Override public void setCoolantMultiplier(float value) { coolantMultiplier = value; }
+
+        // Override updateCooling as public to match interface
+        @Override
+        public void updateCooling() {
+            super.updateCooling();
+        }
+
+        // Acceleration parameters from parent
+        @Override public float getAcceleratedDelay() { return acceleratedDelay; }
+        @Override public float getAcceleratedBonus() { return acceleratedBonus; }
+        @Override public int getAcceleratedSteps() { return acceleratedSteps; }
+        @Override public float getBurnoutDelay() { return burnoutDelay; }
+        @Override public float getCooldownDelay() { return cooldownDelay; }
+        @Override public boolean burnsOut() { return burnsOut; }
+        @Override public boolean heatOnShoot() { return heatOnShoot; }
 
         @Override
         public void updateTile(){
             super.updateTile();
-            if(coolantMultiplier != 0){
-                coolBonus = coolantMultiplier;
-            }
-
-
-            if(accelCount > acceleratedSteps){
-                accelCounter += edelta();
-                if(accelCounter >= cooldownDelay){
-                    coolantMultiplier = coolBonus;
-                    super.updateCooling();
-                    accelCount = 0;
-                    accelBoost = 1;
-                    accelCounter %= cooldownDelay;
-                }
-            }else if(isShooting()){
-                accelCounter += edelta();
-                if(accelCount < acceleratedSteps && accelCounter >= acceleratedDelay){
-                    accelBoost += (acceleratedBonus - 1);
-                    accelCount++;
-                    accelCounter %= acceleratedDelay;
-                }else if(burnsOut && accelCounter >= burnoutDelay){
-                    accelBoost = 0;
-                    coolantMultiplier = 0;
-                    accelCount++;
-                    accelCounter %= burnoutDelay;
-                }
-            }else{
-                accelCount = 0;
-                accelCounter = 0;
-                accelBoost = 1;
-                coolantMultiplier = coolBonus;
-                super.updateCooling();
-            }
+            updateAcceleration();
         }
 
         @Override
         protected void updateReload(){
             float multiplier = hasAmmo() ? peekAmmo().reloadMultiplier : 1f;
             reloadCounter += delta() * multiplier * accelBoost * baseReloadSpeed();
-
             reloadCounter = Math.min(reloadCounter, reload);
-        }
-
-        public float boostf(){
-            if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
-            return Mathf.clamp((float)accelCount / acceleratedSteps);
-        }
-
-        public float heatf(){
-            if(accelCount > acceleratedSteps) return 1 - (accelCounter / cooldownDelay);
-            return accelCounter / burnoutDelay;
         }
     }
 }

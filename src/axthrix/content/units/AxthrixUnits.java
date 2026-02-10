@@ -1,8 +1,11 @@
 package axthrix.content.units;
 
 import arc.graphics.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
+import arc.math.geom.Geometry;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -37,6 +40,7 @@ import mindustry.entities.part.*;
 import mindustry.entities.pattern.ShootAlternate;
 import axthrix.world.types.ai.*;
 import mindustry.entities.pattern.ShootBarrel;
+import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -1958,10 +1962,11 @@ public class AxthrixUnits {
                 shootX = 16f;
                 shootY = 6;
                 mirror = true;
-                alternate = false;
-                reload = 40;
+                alternate = true;
+                reload = 35;
                 recoil = 2;
-                inaccuracy = 0;
+                inaccuracy = 10;
+                shoot = new ShootSpread(18, 2);
                 parts.add(
                         new RegionPart("-mount"){{
                             progress = PartProgress.warmup;
@@ -1999,41 +2004,39 @@ public class AxthrixUnits {
                                         moveX = 0f;
                                         moveRot = -10f;
                                         moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 10f));
+                                    }},
+                                    new RegionPart("-gen"){{
+                                        progress = PartProgress.warmup;
+                                        heatProgress = PartProgress.warmup.delay(0.6f);
+                                        heatColor = Pal.heal;
+                                        mirror = false;
+                                        under = true;
+                                        layerOffset = -0.5f;
+                                        y = 0;
+                                        x = -23;
+                                        moveY = -4f;
+                                        moveX = 4f;
+                                        moveRot = -100f;
+                                        moves.add(new PartMove(PartProgress.recoil, 0f, 0f, 100f));
+                                    }},
+                                    new RegionPart("-gen-attachment"){{
+                                        progress = PartProgress.warmup;
+                                        mirror = false;
+                                        under = true;
+                                        layerOffset = -0.6f;
+                                        y = 0;
+                                        x = -20.5f;
+                                        moveY = -4f;
+                                        moveX = 2f;
+                                        moves.add(new PartMove(PartProgress.recoil, -4f, -1f, 0));
                                     }});
                                 }});
                             }});
                         }});
-                bullet = new BulletType(0,0){{
-                    range = AxUtil.GetRange(4,60);
-                    fragSpread = 2.5f;
-                    fragRandomSpread = 2.5f;
-                    fragLifeMin = fragVelocityMin = 0.6f;
-                    fragLifeMax = fragVelocityMax = 1.4f;
-                    fragBullets = 18;
-                    absorbable = hittable = false;
-                    instantDisappear = true;
-                    keepVelocity = false;
-                    hitEffect = shootEffect= smokeEffect = despawnEffect = Fx.none;
-
-
-                    fragBullet = new SheildArcBullet(10,"aj-impediment-shield"){{
+                bullet = new SheildArcBullet(10,"aj-impediment-shield"){{
                         speed = 4;
                         lifetime = 50;
                         damage = 60;
-
-                        fragSpread = 1f;
-                        fragRandomSpread = 1f;
-                        fragLifeMin = fragVelocityMin = 0.3f;
-                        fragLifeMax = fragVelocityMax = 1.4f;
-                        fragBullets = 8;
-
-
-                        fragBullet = new SheildArcBullet(5,"aj-impediment-shield-2"){{
-                            speed = 4;
-                            lifetime = 10;
-                            damage = 20;
-                        }};
-                    }};
                 }};
             }});
         }};
@@ -2100,7 +2103,6 @@ public class AxthrixUnits {
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(17 - 96f/2f, 10 - 96f/2f, 19, 76)};
             factions.add(AxFactions.axthrix);
-            immunities.add(AxthrixStatus.gravicalSlow);
             constructor = TankUnit::create;
             outlines = false;
             flying = false;
@@ -2117,20 +2119,22 @@ public class AxthrixUnits {
                 shootSound = Sounds.none;
                 shootCone = 360;
                 ignoreRotation = true;
+                chargeSound = Sounds.drillCharge;
                 shootY = 0f;
                 x = 0f;
                 y = 0f;
                 mirror = false;
                 top = false;
-                reload = 200;
-                bullet = new AfterShockBulletType(40, 160){{
-                    applySound = Sounds.hum;
-                    splashDelay = 5;
-                    splashAmount = 5;
-                    status = AxthrixStatus.gravicalSlow;
-                    statusDuration = 300;
-                    frontColor = Color.purple.cpy().a(0.4f);
-                    particleColor = bottomColor = backColor = Color.purple;
+                reload = 400;
+                shoot.firstShotDelay = 180;
+                bullet = new GravityWellBulletType(){{
+                    scaleLife = false;
+                    speed = 0;
+                    lifetime = 1;
+                    instantDisappear = true;
+                    gravityRadius = 140;
+                    gravityDuration = 300;
+                    pullStrength = 0.05f;
                 }};
             }});
             abilities.add(new AttractionFieldAbility(){{
@@ -2157,11 +2161,12 @@ public class AxthrixUnits {
                         color = Color.purple;
                     }},
                      new BlackHolePart(){{
-                        growProgress = PartProgress.recoil;
+                        growProgress = PartProgress.charge;
                         x = 0;
                         y = -3;
-                        size = sizeTo = edge = 0f;
-                        edgeTo = 18f;
+                        size = edge = 0f;
+                        sizeTo = 2.5f;
+                        edgeTo = 28f;
                         color = Color.purple;
                     }});
 
@@ -2200,42 +2205,10 @@ public class AxthrixUnits {
                 rotate = true;
                 top = false;
                 reload = 150;
-                bullet = new BasicBulletType(9.0F, 200.0F){{
-                    pierce = true;
-                    pierceCap = 10;
-                    width = 14.0F;
-                    height = 33.0F;
-                    lifetime = 35.0F;
-                    shootEffect = Fx.shootBig;
-                    fragVelocityMin = 0.4F;
-                    hitEffect = Fx.blastExplosion;
-                    splashDamage = 18.0F;
-                    splashDamageRadius = 13.0F;
-                    fragBullets = 3;
-                    fragLifeMin = 0.0F;
-                    fragRandomSpread = 30.0F;
-                    frontColor = Color.purple.cpy().a(0.4f);
-                    backColor = Color.purple;
-                    fragBullets = 4;
-                    fragBullet = new FlakBulletType(9.0F, 0.0F){{
-                        width = 5.0F;
-                        height = 5.0F;
-                        lifetime = 20.0F;
-                        flakDelay = explodeDelay = 0;
-                        explodeRange = 25;
-                        frontColor = Color.purple.cpy().a(0.4f);
-                        backColor = Color.purple;
-                        fragBullets = 1;
-                        fragBullet = new AfterShockBulletType(25, 30){{
-                            applySound = Sounds.hum;
-                            splashDelay = 15;
-                            splashAmount = 3;
-                            status = AxthrixStatus.gravicalSlow;
-                            statusDuration = 300;
-                            frontColor = Color.purple.cpy().a(0.4f);
-                            particleColor = bottomColor = backColor = Color.purple;
-                        }};
-                    }};
+                bullet = new GravityWellBulletType(){{
+                    scaleLife = true;
+                    gravityRadius = 48;
+                    pullStrength = 0.1f;
                 }};
             }});
             abilities.add(
@@ -3079,7 +3052,7 @@ public class AxthrixUnits {
                         reload = 5.0F;
                         maxCartridges = 6;
                         numOfReloadCartridges = 2;
-                        reloadCartridges = 60;
+                        cartridgeReloadTime = 60;
                         cooldownTime = 42.0F;
                         heatColor = Pal.turretHeat;
                         bullet = new LiquidBulletType(){{

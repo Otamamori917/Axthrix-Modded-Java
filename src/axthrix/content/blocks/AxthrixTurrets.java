@@ -11,6 +11,7 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.block.defense.*;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
+import axthrix.world.types.weapontypes.BlockWeapon;
 import axthrix.world.util.*;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import blackhole.entities.part.BlackHolePart;
@@ -645,13 +646,13 @@ public class AxthrixTurrets{
                 boltLengthRand = 20;
             }};
         }};
-        gravitation = new AxItemTurret("gravitation"){{
+        gravitation = new AxPowerTurret("gravitation"){{
             drawer = new DrawTurret("crystalized-");
             outlineColor = Color.valueOf("#181a1b");
             range = 8*90;
             size = 6;
-            reload = 600;
-            coolantMultiplier = 1.8f;
+            reload = 2200;
+            coolantMultiplier = 1.6f;
             requirements(Category.turret, with(
                     Items.surgeAlloy, 1500,
                     Items.phaseFabric, 3000,
@@ -660,90 +661,38 @@ public class AxthrixTurrets{
             ));
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(1);
-            ammoPerShot = 60;
-            maxAmmo = 180;
-            ammo(
-                    Items.phaseFabric, new BlackHoleBulletType(){{
-                        lifetime = 600;
-                        speed = 2;
-                        damage = bulletDamage = 0;
-                        horizonRadius = 0;
-                        lensingRadius = 0;
-                        suctionRadius = 240;
-                        scaledForce = 400;
-                        force = 40;
-                        scaleLife = true;
-                        swirlEffect = Fx.none;
-                        color = Color.purple;
-                        fragBullets = 1;
-                        trailInterval = 1;
-                        trailLength = 60;
-                        trailColor = Color.purple;
+            shootType = new WarningBulletType(){{
+                scaleLife = true;
+                fragBullets = 2;
+                fragSpread = fragAngle = fragOffsetMax = fragOffsetMin = 0;
+                warningDuration = 100;
+                spriteRadius = 240;
+                fragBullet = new BulletType(){{
+                    lifetime = 100;
+                    damage = 0;
+                    shrinkX = shrinkY = 0.7f;
+                    speed = 0f;
+                    collides = false;
+                    splashDamage = 0f;
+                    fragBullets = 20;
+                    fragRandomSpread = 0;
+                    fragSpread = 18;
+                    fragVelocityMax = fragLifeMax = 1.4f;
+                    fragVelocityMin = fragLifeMin = 0.4f;
+                    fragBullet = new GravityWellBulletType(){{
+                        speed = 20;
+                        drag = 0.2f;
+                        gravityDuration = 200;
+                        pullStrength = 0.2f;
+                        continuousDamage = 10;
+                        gravityRadius = 48;
+                        splashDamage = 180;
+                        splashDamageRadius = 72;
+                        scaledSplashDamage = true;
+                    }};
+                }};
+            }};
 
-                        trailEffect = AxthrixFfx.circleOut(50,50, 10,Layer.blockOver,Color.purple);
-                        fragBullet = new BlackHoleBulletType(){{
-                            lifetime = 400;
-                            speed = 0;
-                            damage = bulletDamage = 25;
-                            lensingRadius = 180;
-                            horizonRadius = 20;
-                            damageRadius = 280;
-                            suctionRadius = 680;
-                            scaledForce = 800;
-                            force = 100;
-                            color = Color.purple;
-                            fragBullets = 1;
-                            fragBullet = new BlackHoleBulletType(){{
-                                lifetime = 40;
-                                repel = true;
-                                speed = 0;
-                                color = Color.purple;
-                                damage = bulletDamage = 75;
-                                horizonRadius = 0;
-                                lensingRadius = 0;
-                                suctionRadius = damageRadius = 200;
-                                scaledForce = 2670;
-                                force = 200;
-                                swirlEffect = AxthrixFfx.circleOut(40,200, 20,Layer.blockOver,Color.purple);
-                            }};
-                        }};
-
-                        lightning = 1;
-                        lightningType = new BlackHoleBulletType(){{
-                            lifetime = 40;
-                            repel = true;
-                            speed = 0;
-                            damage = bulletDamage = 150;
-                            horizonRadius = 0;
-                            lensingRadius = 0;
-                            suctionRadius = damageRadius = 280;
-                            scaledForce = 8000;
-                            force = 600;
-                            swirlEffect = AxthrixFfx.circleOut(40,280, 50,Layer.blockOver,Color.purple);
-                        }};
-                        parts.add(
-
-                            new BlackHolePart(){{
-                                progress = PartProgress.constant(1f);
-                                growProgress = PartProgress.constant(1f);
-                                size = sizeTo = 4;
-                                edge = edgeTo = 120;
-                                x = 0;
-                                y = 0;
-                                color = Color.purple;
-                            }},
-                            new BlackHolePart(){{
-                                progress = PartProgress.constant(1f);
-                                growProgress = PartProgress.constant(1f);
-                                size = sizeTo = 4;
-                                edge = edgeTo = 120;
-                                x = 0;
-                                y = 0;
-                                color = Color.purple;
-                            }}
-                        );
-                    }}
-            );
         }};
 
         morta = new AxPowerTurret("morta"){{
@@ -824,7 +773,7 @@ public class AxthrixTurrets{
             faction.add(AxFactions.axthrix);
             consumePower(405/60);
             health = 1300;
-            shootType = new TornadoBulletType(800,7,45);
+            shootType = new TornadoBulletType(800,7,35);
             drawer = new DrawTurret("crystalized-"){{
                 /*parts.add(
                         new RegionPart("-shell-l"){{
@@ -946,6 +895,7 @@ public class AxthrixTurrets{
                     Items.silicon, 325,
                     Items.titanium, 350
             ));
+            heatOnShoot = true;
             faction.add(AxFactions.axthrix);
             ammo(
                     basic1mCaliber, new BasicBulletType(){{
@@ -1525,9 +1475,9 @@ public class AxthrixTurrets{
                 trailColor = Color.valueOf("#d0af54");
             }};
         }};
-        /*multitest = new MultiTurretType("multi"){{
+        multitest = new MultiTurretType("multi"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "multi";
+            localizedName = "Claymore";
             description = """
                           WIP
                           """;
@@ -1538,35 +1488,14 @@ public class AxthrixTurrets{
             size = 2;
             scaledHealth = 420f;
             range = 360f;
-            faction.add(AxFactions.axthrix);
-            ammo(
-                    Items.pyratite, new MissileBulletType(4f, 100){{
-                        damage = 200f;
-                        makeFire = true;
-                        homingPower = 3f;
-                        homingRange = 80;
-                        homingDelay = 60f;
-                        width = 6f;
-                        height = 12f;
-                        hitSize = 6f;
-                        lifetime = 200f;
-                        trailEffect = Fx.burning;
-                        trailInterval = 3f;
-                        trailParam = 4f;
-                        trailColor = Pal.darkFlame;
-                        status = StatusEffects.burning;
-                        trailLength = 16;
-                        trailWidth = 2f;
-                        backColor = Pal.darkFlame;
-                        frontColor = Pal.techBlue;
-                    }});
+            //faction.add(AxFactions.axthrix);
             weapons.add(new BlockWeapon("puw"){{
                 shootY = 2f;
                 x = 4f;
                 y = 4f;
-                mirror = true;
-                reload = 10;
+                reload = 15;
                 heatColor = Pal.heal;
+                itemCost = Items.titanium;
                 bullet = new BasicBulletType(){{
                     damage = 40;
                     lifetime = 60;
@@ -1577,16 +1506,17 @@ public class AxthrixTurrets{
                 shootY = 2f;
                 x = -4f;
                 y = -4f;
-                mirror = true;
-                reload = 10;
+                reload = 30;
                 heatColor = Pal.heal;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
+                itemCost = Items.lead;
+                bullet = new LaserBulletType(){{
+                    damage = 120;
+                    lifetime = 20;
+                    length = 30;
+                    speed = 0;
                 }};
             }});
-        }};*/
+        }};
 
     }
     public static void loadRaodon(){
@@ -1764,7 +1694,7 @@ public class AxthrixTurrets{
             coolant = consumeCoolant(1);
             health = 800;
             ammoPerShot = 1;
-            maxAmmo = 6*25;
+            maxAmmo = 25;
             ammo(
                     Items.titanium, new MissileBulletType(){
                         @Override
@@ -1776,7 +1706,11 @@ public class AxthrixTurrets{
                                 if (unit.dead) {
                                     if(b.owner() instanceof RevolverTurretBuild rtb){
                                         if(!((int) unit.armor >= 20)){
-                                            rtb.addAmmo((int) unit.armor);
+                                            if(unit.armor == 0){
+                                                rtb.addAmmo(1);
+                                            }else{
+                                                rtb.addAmmo((int) unit.armor);
+                                            }
                                         } else {
                                             rtb.addAmmo( 20 );
                                         }
@@ -1787,7 +1721,7 @@ public class AxthrixTurrets{
                         {
                         lifetime = 80;
                         speed = 6;
-                        damage = 100;
+                        damage = 150;
                         trailInterval = 1;
                         trailLength = 1;
                         width = 1;
