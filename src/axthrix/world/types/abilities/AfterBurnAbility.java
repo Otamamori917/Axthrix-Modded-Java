@@ -100,7 +100,6 @@ public class AfterBurnAbility extends Ability {
                 unit.vel.add(Tmp.v1.trns(unit.rotation+forceDirection, (boostForce/60)));
             }
             if(!CheckIfPlayer(unit) && !(fuel >= fuelCap)){
-                Log.info("fuel : "+fuel);
                 fuel += fuelRegenPerTick;
             }
         }

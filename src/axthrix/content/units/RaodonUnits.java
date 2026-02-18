@@ -4,32 +4,20 @@ import arc.graphics.Color;
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
 import axthrix.content.AxthrixSounds;
-import axthrix.content.AxthrixStatus;
 import axthrix.world.types.abilities.AfterBurnAbility;
-import axthrix.world.types.abilities.DroneSpawnAbility;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.CnSUnitType;
-import axthrix.world.util.importedcode.DropBombBulletType;
-import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
-import mindustry.content.UnitTypes;
-import mindustry.entities.abilities.EnergyFieldAbility;
 import mindustry.entities.bullet.*;
-import mindustry.entities.pattern.ShootBarrel;
-import mindustry.entities.pattern.ShootMulti;
-import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.MechUnit;
 import mindustry.gen.Sounds;
-import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.BlockFlag;
-
-import static mindustry.Vars.tilesize;
 
 public class RaodonUnits {
     public static UnitType
@@ -63,9 +51,9 @@ public class RaodonUnits {
                 rotate = false;
                 alternate = false;
                 top = false;
-                shootSound = Sounds.shootAltLong;
+                shootSound = Sounds.shootTank;
                 bullet = new BasicBulletType(9.0F, 30.0F){{
-                    shootSound = Sounds.shootBig;
+                    shootSound = Sounds.shootBreach;
                     keepVelocity = false;
                     pierce = true;
                     pierceCap = 10;
@@ -92,7 +80,7 @@ public class RaodonUnits {
             canBoost = true;
             boostMultiplier = 2.5f;
             constructor = MechUnit::create;
-            factions.add(AxFactions.raodon);
+            factions.add(AxFactions.axthrix);
             weapons.add(new Weapon(name+"-slash"){{
                 y = x = 0;
                 shootY = 3;

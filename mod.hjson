@@ -16,5 +16,5 @@ main: "axthrix.AxthrixLoader"
 description: "BETA sandbox only! requires blackhole render by meep of faith"
 version: 2.2
 "dependencies": ["black-hole-renderer"]
-minGameVersion: 149
+minGameVersion: 155
 java: true

@@ -1,5 +1,6 @@
 package axthrix.content.FX;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -79,6 +80,16 @@ public class AxthrixFfx{
 			Draw.z(z);
 		}).followParent(true).rotWithParent(true);
 	}
+
+	public static final Effect payloadCasing = (new Effect(80.0F, (e) -> {
+		Draw.color(Pal.lightOrange, Pal.lightishGray, Pal.lightishGray, e.fin());
+		Draw.alpha(e.fout(0.5F));
+		float rot = Math.abs(e.rotation) + 90.0F;
+		int i = -Mathf.sign(e.rotation);
+		float len = (4.0F + e.finpow() * 9.0F) * (float)i;
+		float lr = rot + Mathf.randomSeedRange((long)(e.id + i + 6), 20.0F * e.fin()) * (float)i;
+		Draw.rect(Core.atlas.find("aj-empty-1m-caliber"), e.x + Angles.trnsx(lr, len) + Mathf.randomSeedRange((long)(e.id + i + 7), 3.0F * e.fin()), e.y + Angles.trnsy(lr, len) + Mathf.randomSeedRange((long)(e.id + i + 8), 3.0F * e.fin()), 16F, 14, rot + e.fin() * 50.0F * (float)i);
+	})).layer(100.0F);
 
 	public static final Effect LightPulse = (new Effect(280.0F, 100.0F, (e) -> {
 		color(new Color(255F, 255F, 255F, 0.10F));

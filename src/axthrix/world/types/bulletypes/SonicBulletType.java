@@ -20,7 +20,7 @@ public class SonicBulletType extends BasicBulletType{
         frontColor = Pal.lightishGray;
         shrinkY = -0.2f;
         shrinkX = -0.6f;
-        hitSound = Sounds.shield;
+        hitSound = Sounds.shootEnergyField;
         despawnEffect = Fx.none;
         shootEffect = Fx.none;
         hitEffect = Fx.none;

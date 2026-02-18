@@ -6,9 +6,13 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.blocks.AxthrixCrafters;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.block.Egg;
+import axthrix.world.types.bulletypes.GrabBulletType;
+import axthrix.world.types.entities.comp.ExtensionUnit;
+import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.unittypes.IkatusaUnitType;
 import axthrix.world.types.unittypes.LeggedWaterUnit;
 import mindustry.content.Blocks;
+import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.ExplosionBulletType;
@@ -50,11 +54,12 @@ public class IkatusaUnits {
 
             ;
     public static void load() {
-        ElderJelly = new IkatusaUnitType("iyiminin-elder", true) {{
+        ElderJelly = new IkatusaUnitType("iyiminin-elder") {{
             localizedName = "Elder Iyiminin";
             description = """
                          
                           """;
+            constructor = ExtensionUnit::create;
 
             finalStage = true;
             growthTime = 3280;
@@ -122,11 +127,12 @@ public class IkatusaUnits {
             }});
         }};
 
-        AdultJelly = new IkatusaUnitType("iyiminin-adult", true) {{
+        AdultJelly = new IkatusaUnitType("iyiminin-adult") {{
             localizedName = "Iyiminin";
             description = """
                          
                           """;
+            constructor = ExtensionUnit::create;
 
             nextStage = ElderJelly;
             growthTime = 2880;
@@ -194,7 +200,7 @@ public class IkatusaUnits {
             }});
         }};
 
-        JuvenileJelly = new IkatusaUnitType("iyiminin-juvenile", true) {{
+        JuvenileJelly = new IkatusaUnitType("iyiminin-juvenile") {{
             localizedName = "Juvenile Iyiminin";
             description = """
                          
@@ -203,6 +209,7 @@ public class IkatusaUnits {
 
             nextStage = AdultJelly;
             growthTime = maturityTime = 860;
+            constructor = ExtensionUnit::create;
 
 
             flying = false;
@@ -263,7 +270,7 @@ public class IkatusaUnits {
             }});
         }};
 
-        YoungJelly = new IkatusaUnitType("iyiminin-young", true) {{
+        YoungJelly = new IkatusaUnitType("iyiminin-young") {{
             localizedName = "Young Iyiminin";
             description = """
                          
@@ -271,6 +278,7 @@ public class IkatusaUnits {
 
             nextStage = JuvenileJelly;
             growthTime = maturityTime = 650;
+            constructor = ExtensionUnit::create;
 
             flying = false;
             speed = 8.3f/7.5f;
@@ -345,11 +353,14 @@ public class IkatusaUnits {
         }};
 
         MaleAdultCrocit = new LeggedWaterUnit("rakdosm") {{
-            localizedName = "Rakdos";
+            localizedName = "Male Rakdos";
             description = """
                          
                           """;
-            constructor = UnitWaterMove::create;
+            constructor = LeggedWaterEntity::create;
+            legCount = 4;
+            boostUsesNaval = naval = true;
+            showLegsOnDeepLiquid = showLegsOnLiquid = false;
 
             finalStage = true;
             growthTime = 12500;
@@ -413,17 +424,20 @@ public class IkatusaUnits {
             }});
         }};
 
-        FemaleAdultCrocit = new LeggedWaterUnit("rakdos") {{
-            localizedName = "Rakdos";
+        FemaleAdultCrocit = new LeggedWaterUnit("rakdosf") {{
+            localizedName = "Female Rakdos";
             description = """
                          
                           """;
-            constructor = UnitWaterMove::create;
-
+            constructor = LeggedWaterEntity::create;
+            legCount = 4;
+            boostUsesNaval = naval = true;
             finalStage = true;
             growthTime = 12500;
             oppositeGender = MaleAdultCrocit;
             ((IkatusaUnitType)MaleAdultCrocit).oppositeGender = this;
+            legCount = 4;
+            showLegsOnDeepLiquid = showLegsOnLiquid = false;
 
             flying = false;
             speed = 8.3f/7.5f;
@@ -488,7 +502,11 @@ public class IkatusaUnits {
             description = """
                          
                           """;
-            constructor = UnitWaterMove::create;
+            constructor = LeggedWaterEntity::create;
+            legCount = 4;
+            boostUsesNaval = naval = true;
+            canDrown = false;
+            showLegsOnDeepLiquid = showLegsOnLiquid = false;
 
             maleStage = MaleAdultCrocit;
             femaleStage = FemaleAdultCrocit;
@@ -545,9 +563,16 @@ public class IkatusaUnits {
                 reload = 60f/0.8f;
                 shootStatus = StatusEffects.unmoving;
                 shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
+                bullet = new GrabBulletType(){{
+                    grabDuration = 180f;
+                    damage = 10f;
+
+                    maxSizeRatio = 1.5f; // Can only grab units up to 18 hitSize
+                    canGrabFlying = false; // Cannot grab flying units
+
+                    failEffect = Fx.smoke; // Show smoke when grab fails
+                    grabEffect = Fx.blastExplosion;
+                    grabColor = Color.valueOf("ff0000");
                 }};
             }});
         }};

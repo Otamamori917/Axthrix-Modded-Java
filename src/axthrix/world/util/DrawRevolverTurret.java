@@ -18,7 +18,8 @@ public class DrawRevolverTurret extends DrawTurret {
 
                 AxPartParms.axparams.set(
                         1f - progress,
-                        rb.secondarySmoothReload
+                        rb.secondarySmoothReload,
+                        0
                 );
             }
         }

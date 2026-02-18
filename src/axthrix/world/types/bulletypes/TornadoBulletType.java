@@ -53,7 +53,7 @@ public class TornadoBulletType extends BulletType {
         pierceBuilding = true;
         pierce = true;
         laserAbsorb = false;
-        hitSound = Sounds.shield;
+        hitSound = Sounds.shieldHit;
         despawnEffect = Fx.none;
         shootEffect = Fx.none;
         hitEffect = Fx.none;
@@ -102,7 +102,7 @@ public class TornadoBulletType extends BulletType {
         bulletDamage = 0.0F;
         colors = new Color[]{Color.white,Color.lightGray,Color.darkGray,Color.black};
         counterClockwise = false;
-        loopSound = Sounds.spellLoop;
+        loopSound = Sounds.loopMalign;
         loopSoundVolume = 2.0F;
         hittable = absorbable = false;
         collides = false;

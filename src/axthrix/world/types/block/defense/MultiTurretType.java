@@ -19,6 +19,7 @@ public class MultiTurretType extends Turret {
         drawer = new DrawDefault();
         weapons = new Seq<>();
         itemCapacity = 10;
+        canPickup = false; //no MountUnitType synergy
     }
 
     @Override

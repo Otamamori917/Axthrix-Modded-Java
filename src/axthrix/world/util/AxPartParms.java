@@ -6,11 +6,12 @@ public class AxPartParms {
     public static final AxPartParms.AxPartParams axparams = new AxPartParms.AxPartParams();
 
     public static class AxPartParams{
-        public float SecondaryReload,SecondarySmoothReload;
+        public float SecondaryReload,SecondarySmoothReload,SecondaryHeat;
 
-        public AxPartParams set(float sr,float ssr){
+        public AxPartParams set(float sr,float ssr,float sh){
             SecondaryReload = sr;
             SecondarySmoothReload = ssr;
+            SecondaryHeat = sh;
 
             return this;
         }
@@ -28,7 +29,8 @@ public class AxPartParms {
 
         DrawPart.PartProgress
                 secondaryReload = p -> axparams.SecondaryReload,
-                secondarySmoothReload = p -> axparams.SecondarySmoothReload
+                secondarySmoothReload = p -> axparams.SecondarySmoothReload,
+                secondaryHeat = p -> axparams.SecondaryHeat
                         ;
 
         float get(AxPartParams p);

@@ -7,6 +7,7 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
+import mindustry.entities.units.StatusEntry;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
@@ -205,15 +206,15 @@ public class StackStatusEffect extends AxStatusEffect {
     }
 
     @Override
-    public void update(Unit unit, float time){
+    public void update(Unit unit, StatusEntry entry){
         if(tickFx != null){
             tickFx.at(unit.x, unit.y);
         }
         if (!unitCharges.containsKey(unit))
-            start(unit,time);
-        if (unitTime.get(unit) < time)
-            start(unit,time);
-        unitTime.replace(unit,time);
+            start(unit,entry.time);
+        if (unitTime.get(unit) < entry.time)
+            start(unit,entry.time);
+        unitTime.replace(unit,entry.time);
         unit.damageMultiplier *= 1+(statsStatic.get(0)-1)*unitCharges.get(unit);
         unit.healthMultiplier *= 1+(statsStatic.get(1)-1)*unitCharges.get(unit);
         unit.speedMultiplier *= 1+(statsStatic.get(2)-1)*unitCharges.get(unit);
@@ -238,7 +239,7 @@ public class StackStatusEffect extends AxStatusEffect {
             effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 0, color, parentizeEffect ? unit : null);
         }
 
-        if (unitCharges.containsKey(unit) && (time <= Time.delta * 2f || !unit.isValid()))
+        if (unitCharges.containsKey(unit) && (entry.time <= Time.delta * 2f || !unit.isValid()))
         {{
             end(unit);
         }}

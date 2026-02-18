@@ -249,7 +249,7 @@ public class Extension {
         float[] items = points.items;
         float segments = size2 * type.bLength;
 
-        TextureRegion region = type.branchEndRegion;
+        TextureRegion region = type.tentacleEndRegion;
         Rand r = ExtensionUtils.rand;
         r.setSeed(randSeed);
 
@@ -262,7 +262,7 @@ public class Extension {
             int ridx = r.random(0, 2);
 
             if(c2 > c1){
-                TextureRegion tex = (lc + c) < 1 ? type.branchRegions[ridx] : type.branchEndRegion;
+                TextureRegion tex = (lc + c) < 1 ? type.tentacleRegions[ridx] : type.tentacleEndRegion;
 
                 float wfin = 1f - (lc) * 0.5f;
                 int idx1 = Mathf.clamp((int)(c1 * (size2 - 1)), 0, size2 - 1) * 2;

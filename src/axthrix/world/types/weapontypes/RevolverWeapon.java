@@ -5,6 +5,8 @@ import arc.audio.Sound;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
 import axthrix.AxthrixLoader;
+import axthrix.world.types.block.defense.RevolverTurret;
+import axthrix.world.util.AxPartParms;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.WeaponMount;
@@ -67,6 +69,18 @@ public class RevolverWeapon extends Weapon implements RevolverLogic {
     @Override
     public void draw(Unit unit, WeaponMount mount) {
         super.draw(unit, mount);
+
+        if(parts.size > 0) {
+            if (mount instanceof RevolverWeaponMount rw) {
+                float progress = (rw.cartridges > 0) ? 1 : Math.abs(((rw.reloadConCartridges * 2) / cartridgeReloadTime) - 1);
+
+                AxPartParms.axparams.set(
+                        1f - progress,
+                        0,
+                        0
+                );
+            }
+        }
 
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
         if(AxthrixLoader.showRevolverAmmo && unit.isPlayer()){

@@ -28,7 +28,7 @@ public class NanobotStormAbility extends Ability {
     public float damage = 4f, range = 90, reload = 1, buildingDamageReduction = 8;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFlamePlasma, damageEffect = Fx.none;
     public StatusEffect status = nanodiverge;
-    public Sound shootSound = Sounds.flux;
+    public Sound shootSound = Sounds.loopFlux;
     public float statusDuration = 60f * 6f;
     public float x, y = 7f;
     public boolean targetGround = true, targetAir = true, hitBuildings = true, hitUnits = true;

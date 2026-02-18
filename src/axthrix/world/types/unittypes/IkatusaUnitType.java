@@ -55,19 +55,14 @@ public class IkatusaUnitType extends AxUnitType{
     public HashMap<Unit, Boolean> brooding = new HashMap<>();
 
     //extension types
-    public TextureRegion[] branchRegions;
-    public TextureRegion branchEndRegion;
+    public TextureRegion[] tentacleRegions;
+    public TextureRegion tentacleEndRegion;
     public int extensionsNum = 3;
-    public boolean Extensions;
     public float bDamage = 6, bLength = 6,eReload = 20;
 
-    public IkatusaUnitType(String name, boolean extensions){
+    public IkatusaUnitType(String name){
         super(name);
         factions.add(AxFactions.ikatusa);
-        Extensions = extensions;
-        if (extensions){
-            constructor = ExtensionUnit::create;
-        }
         aiController = WildAi::new;
     }
 
@@ -76,12 +71,14 @@ public class IkatusaUnitType extends AxUnitType{
     @Override
     public void load(){
         super.load();
-        branchRegions = new TextureRegion[extensionsNum];
+        if (constructor instanceof ExtensionUnit){
+            tentacleRegions = new TextureRegion[extensionsNum];
 
-        for(int i = 0; i < extensionsNum; i++){
-            branchRegions[i] = Core.atlas.find(name + "-extension-" + i);
+            for(int i = 0; i < extensionsNum; i++){
+                tentacleRegions[i] = Core.atlas.find(name + "-extension-" + i);
+            }
+            tentacleEndRegion = Core.atlas.find(name + "-extension-end");
         }
-        branchEndRegion = Core.atlas.find(name + "-extension-end");
     }
 
     @Override
@@ -171,6 +168,14 @@ public class IkatusaUnitType extends AxUnitType{
         if(tick.containsKey(unit)){
             tick.replace(unit,tick.get(unit)+1);
         }
+    }
+
+    public static boolean onWater(Unit unit){
+        return unit.floorOn().isLiquid;
+    }
+
+    public boolean onDeepWater(Unit unit){
+        return onWater(unit) && unit.floorOn().drownTime > 0;
     }
 
     public void Move(Position posc, Float circleLength){

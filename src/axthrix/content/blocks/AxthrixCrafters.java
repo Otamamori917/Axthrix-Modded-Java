@@ -288,7 +288,7 @@ public class AxthrixCrafters {
 					}}
 			);
 
-			ambientSound = Sounds.electricHum;
+			ambientSound = Sounds.loopCircuit;
 			ambientSoundVolume = 0.08f;
 
 			regionRotated1 = 3;
@@ -318,7 +318,7 @@ public class AxthrixCrafters {
 			));
 
 			size = 3;
-			ambientSound = Sounds.machine;
+			ambientSound = Sounds.loopMachine;
 			recipes(
 					empty1mCaliber
 			);
@@ -337,7 +337,7 @@ public class AxthrixCrafters {
 
 			size = 3;
 			hideDetails = false;
-			ambientSound = Sounds.machine;
+			ambientSound = Sounds.loopMachine;
 			liquidCapacity = 80f;
 			recipes(
 					basic1mCaliber,

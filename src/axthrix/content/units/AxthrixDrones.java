@@ -96,7 +96,7 @@ public class AxthrixDrones {
             range = 12*8;
             engineSize = 2;
             weapons.add(new Weapon(){{
-                shootSound = Sounds.flame;
+                shootSound = Sounds.shootFlame;
                 x = 0;
                 y = 0;
                 shootY = 6;
@@ -161,7 +161,7 @@ public class AxthrixDrones {
             range = 12*8;
             engineSize = 2;
             weapons.add(new Weapon(){{
-                shootSound = Sounds.shotgun;
+                shootSound = Sounds.shootFuse;
                 x = 0;
                 y = 0;
                 shootY = 6;
@@ -209,7 +209,7 @@ public class AxthrixDrones {
             engineSize = 4;
             engineOffset = 4;
             weapons.add(new Weapon(){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.shootAfflict;
                 x = 0;
                 y = 0;
                 shootY = 6;
@@ -263,7 +263,7 @@ public class AxthrixDrones {
             range = 12*8;
             engineSize = 2;
             weapons.add(new Weapon(){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.shootAvert;
                 x = 0;
                 y = 0;
                 shootY = 6;

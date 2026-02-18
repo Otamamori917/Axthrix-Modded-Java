@@ -173,5 +173,20 @@ public interface AcceleratedLogic {
             if(getAccelCount() > getAcceleratedSteps()) return 1 - (getAccelCounter() / getCooldownDelay());
             return getAccelCounter() / getBurnoutDelay();
         }
+
+        default float heatp(){
+            if(getAccelCount() > getAcceleratedSteps()) {
+                // Overheated - show cooldown progress (1 = just overheated, 0 = cooled)
+                return 1 - (getAccelCounter() / getCooldownDelay());
+            }
+
+            // Not overheated - show total heat accumulation
+            // Calculate total progress: completed steps + current step progress
+            float completedSteps = (float)getAccelCount() * getAcceleratedDelay();
+            float totalHeat = completedSteps + getAccelCounter();
+            float maxHeat = getAcceleratedSteps() * getAcceleratedDelay();
+
+            return Mathf.clamp(totalHeat / maxHeat, 0f, 1f);
+        }
     }
 }

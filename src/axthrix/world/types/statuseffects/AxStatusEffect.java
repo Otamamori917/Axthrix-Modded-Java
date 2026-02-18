@@ -2,6 +2,7 @@ package axthrix.world.types.statuseffects;
 
 import arc.struct.Seq;
 import arc.util.Time;
+import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 import axthrix.world.util.AxStats;
@@ -9,7 +10,7 @@ import axthrix.world.util.AxStats;
 import java.util.HashMap;
 
 public class AxStatusEffect extends StatusEffect {
-    public float shield = 0; //Now hold on. aint That PvStatusEffect?
+    public float shield = 0;
     public float maxShield = 100;
 
     public boolean numbness = false;
@@ -42,7 +43,7 @@ public class AxStatusEffect extends StatusEffect {
     }
 
     @Override
-    public void update(Unit unit, float time){
+    public void update(Unit unit, StatusEntry entry){
         if (!effectOn.contains(unit))
         {
             start(unit);
@@ -59,8 +60,8 @@ public class AxStatusEffect extends StatusEffect {
         float shieldDiff = maxShield - unit.shield;
         if (shieldDiff > 0)
             unit.shield += Math.min(shield,shieldDiff);
-        super.update(unit,time);
-        if (time <= Time.delta * 2f)
+        super.update(unit,entry);
+        if (entry.time <= Time.delta * 2f)
         {{
             end(unit);
             effectOn.remove(unit);

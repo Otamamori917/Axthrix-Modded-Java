@@ -16,7 +16,7 @@ import static mindustry.Vars.world;
 
 public class MineBulletType extends BulletType{
     public Block mine;
-    public Sound creationSound = Sounds.mineDeploy, creationFailureSound = Sounds.boom;
+    public Sound creationSound = Sounds.blockPlace2, creationFailureSound = Sounds.explosion;
 
     public boolean createChance, failureShoot = true, allowKillShooter = false;
     public float createChancePercent;

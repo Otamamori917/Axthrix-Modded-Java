@@ -1,9 +1,10 @@
 package axthrix.world.types.entities.comp;
 
 import arc.util.Time;
+import axthrix.content.units.AxthrixUnits;
 import axthrix.world.types.abilities.AfterBurnAbility;
 import mindustry.gen.UnitEntity;
-import axthrix.world.types.entities.AXEntityMapping;
+
 import axthrix.world.types.unittypes.CnSUnitType;
 
 public class StealthUnit extends UnitEntity {
@@ -17,8 +18,9 @@ public class StealthUnit extends UnitEntity {
   @Override public CnSUnitType type() {
     return (CnSUnitType) super.type();
   }
-  @Override public int classId() {
-    return AXEntityMapping.idMap.get(getClass());
+  @Override
+  public int classId() {
+    return AxthrixUnits.classID(getClass());
   }
 
   @Override

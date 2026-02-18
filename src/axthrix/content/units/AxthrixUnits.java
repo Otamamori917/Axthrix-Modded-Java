@@ -17,12 +17,16 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
+import axthrix.world.types.entities.comp.LeggedWaterEntity;
+import axthrix.world.types.entities.comp.ProductionUnit;
+import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.unittypes.*;
 import axthrix.world.types.weapontypes.AcceleratedWeapon;
 import axthrix.world.types.weapontypes.RevolverWeapon;
 import axthrix.world.types.weapontypes.WeaponHelix;
+import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxUtil;
 import blackhole.entities.part.BlackHolePart;
 
@@ -86,9 +90,11 @@ public class AxthrixUnits {
                 sig,colt,caiber,magnum,siegfried;
     //Core Units |4 units|
 
-    // Steal from UAW which stole from Progressed Material which stole from Endless Rusting which stole from Progressed Materials in the past which stole from BetaMindy
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(CptrUnitEntity.class, CptrUnitEntity::new),
+            prov(StealthUnit.class, StealthUnit::new),
+            prov(ProductionUnit.class, ProductionUnit::new),
+            prov(LeggedWaterEntity.class, LeggedWaterEntity::new)
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -212,7 +218,7 @@ public class AxthrixUnits {
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
-                    shootSound = Sounds.blaster;
+                    shootSound = Sounds.shootElude;
                     soundPitchMax = soundPitchMin = 6;
 
                 }};
@@ -312,7 +318,7 @@ public class AxthrixUnits {
                     trailChance = 0f;
                     trailWidth = 0.7f;
                     despawnEffect = hitEffect = Fx.none;
-                    shootSound = Sounds.cannon;
+                    shootSound = Sounds.shootArtillery;
                     soundPitchMax = 14;
                     soundPitchMin = 8;
                     intervalBullet = new LightningBulletType(){{
@@ -484,7 +490,7 @@ public class AxthrixUnits {
                     scaledSplashDamage = true;
                     backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
                     frontColor = Color.white;
-                    hitSound = Sounds.titanExplosion;
+                    hitSound = Sounds.explosionTitan;
 
                     status = StatusEffects.blasted;
 
@@ -497,7 +503,7 @@ public class AxthrixUnits {
 
                     shootEffect = Fx.shootTitan;
                     smokeEffect = Fx.shootSmokeTitan;
-                    shootSound = Sounds.corexplode;
+                    shootSound = Sounds.explosionCore;
                     soundPitchMax = soundPitchMin = 3;
 
 
@@ -710,7 +716,7 @@ public class AxthrixUnits {
 
                     shootEffect = Fx.shootTitan;
                     smokeEffect = Fx.shootSmokeTitan;
-                    shootSound = Sounds.largeExplosion;
+                    shootSound = Sounds.explosionDull;
                     soundPitchMax = soundPitchMin = 3;
 
                     trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
@@ -890,7 +896,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.railgun;
+                shootSound = Sounds.shootForeshadow;
                 parts.add(
                     new RegionPart("-front"){{
                         progress = PartProgress.recoil;
@@ -1313,7 +1319,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.railgun;
+                shootSound = Sounds.shootForeshadow;
                 shoot = new ShootAlternate(7f);
                 recoils =2;
                 parts.add(
@@ -1376,7 +1382,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.railgun;
+                shootSound = Sounds.shootForeshadow;
                 shoot = new ShootAlternate(7f);
                 recoils =2;
                 parts.add(
@@ -1439,7 +1445,7 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
             weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.sap;
+                shootSound = Sounds.shootSap;
                 shootY = 2f;
                 x = 0f;
                 y = 0f;
@@ -1504,7 +1510,7 @@ public class AxthrixUnits {
             );
 
             weapons.add(new Weapon("aj-force-launcher"){{
-                shootSound = Sounds.blaster;
+                shootSound = Sounds.shootElude;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 x = 6;
@@ -1598,7 +1604,7 @@ public class AxthrixUnits {
             }});
 
             weapons.add(new Weapon("aj-recursor"){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 x = 8f;
@@ -1726,7 +1732,7 @@ public class AxthrixUnits {
             }});
 
             weapons.add(new Weapon("aj-hammer-shotgun"){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = false;
@@ -1783,7 +1789,7 @@ public class AxthrixUnits {
                 }};
             }});
             weapons.add(new Weapon("aj-burst"){{
-                shootSound = Sounds.plasmaboom;
+                shootSound = Sounds.shootQuad;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
@@ -1845,7 +1851,7 @@ public class AxthrixUnits {
                 }};
             }},
             new Weapon("aj-burst"){{
-                shootSound = Sounds.plasmaboom;
+                shootSound = Sounds.shootQuad;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 top = true;
@@ -1951,7 +1957,7 @@ public class AxthrixUnits {
 
 
             weapons.add(new Weapon("aj-force"){{
-                shootSound = Sounds.shockBlast;
+                shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
                 maxRange = AxUtil.GetRange(4,60);
@@ -2283,32 +2289,36 @@ public class AxthrixUnits {
             constructor = CptrUnitEntity::new;
             aiController = DynFlyingAI::new;
 
-            weapons.add(new AcceleratedWeapon(name + "-weapon"){{
+            weapons.add(new AcceleratedWeapon(name+"-wep"){{
                 shootY = 6f;
-                accelPerShot = 1.2f;
-                accelCooldownWaitTime = 10;
-                accelCooldownTime = 20;
+                accelPerShot = 1.3f;
+                accelCooldownWaitTime = 130;
+                accelCooldownTime = 10;
+                overheatDuration = 380;
+                overheatCooldown = 60;
                 x = 0f;
                 y = 0f;
                 mirror = false;
                 reload = 18;
                 top = true;
                 heatColor =  Color.orange;
+                recoil = 0;
                 bullet = new LightningBulletType(){{
                     damage = 15;
                     lightningLength = 15;
                     lightningColor = Color.orange.cpy().add(Color.maroon);
                     collidesAir = true;
-                    shootSound = Sounds.spark;
+                    shootSound = Sounds.shootArc;
                     soundPitchMax = soundPitchMin = 1.2f;
                 }};
+                parts.add(new RegionPart("-blade"){{
+                    mirror = under = true;
+                    heatProgress = AxPartParms.AxPartProgress.secondaryHeat;
+                    weaponIndex = 0;
+                    moveY = -2.25f;
+                    moveX = -2;
+                }});
             }});
-            parts.add(new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2.25f;
-                        moveX = -2;
-                    }});
 
             propeller.add(
                     new Propeller("aj-short-blade") {{
@@ -2370,6 +2380,9 @@ public class AxthrixUnits {
                 accelPerShot = 1.5f;
                 accelCooldownWaitTime = 130f;
                 accelCooldownTime = 10;
+                minReload = 35;
+                overheatDuration = 680;
+                overheatCooldown = 180;
                 x = y = recoil = 0f;
                 mirror = true;
                 reload = 128;
@@ -2387,7 +2400,7 @@ public class AxthrixUnits {
                     shotDelay = 65;
                     shots = 2;
                 }};
-                shootSound = Sounds.missileLaunch;
+                shootSound = Sounds.shootMissileLong;
                 bullet = new MissileBulletType(3.5f, 100, "circle-bullet"){{
                     shootEffect = Fx.sparkShoot;
                     smokeEffect = AxthrixFx.shootSmokeMiniTitan;
@@ -2523,7 +2536,7 @@ public class AxthrixUnits {
             }});
 
             weapons.add(new Weapon(name+"-inferno"){{
-                shootSound = Sounds.shootSnap;
+                shootSound = Sounds.shootBreachCarbide;
                 x = 8F;
                 y = -0.5F;
                 mirror = true;
@@ -2552,7 +2565,7 @@ public class AxthrixUnits {
                     mirror = true;
                 }});
                 bullet = new LaserBoltBulletType(3f, 12.5f){{
-                    shootSound = Sounds.pulseBlast;
+                    shootSound = Sounds.shootAfflict;
                     soundPitchMax = soundPitchMin = 2;
                     trailLength = 4;
                     trailEffect = AxthrixFx.PlasmaFlame2;
@@ -2766,10 +2779,10 @@ public class AxthrixUnits {
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,8,-90)//,
-                    //new UnitEngine(-10,-12,10,180+45),
-                    //new UnitEngine(10,-10,6,270+45)
-            );
+                    new UnitEngine(0,-18,6,-90),
+                    new UnitEngine(-17,2,3,180+45),
+                    new UnitEngine(17,2,3,270+45)
+             );
         }};
         amasya = new MountUnitType("amasya")
         {{
@@ -2800,9 +2813,9 @@ public class AxthrixUnits {
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,6,-90),
-                    new UnitEngine(-10,-10,6,180+45),
-                    new UnitEngine(10,-10,6,270+45)
+                    new UnitEngine(0,-24,10,-90),
+                    new UnitEngine(-22,5,4,180+45),
+                    new UnitEngine(22,5,4,270+45)
             );
         }};
         rahela = new MountUnitType("rahela")
@@ -2972,7 +2985,7 @@ public class AxthrixUnits {
                     }});
 
             weapons.add(new Weapon("puw"){{
-                shootSound = Sounds.sap;
+                shootSound = Sounds.shootSap;
                 shootY = 2f;
                 x = 0f;
                 y = 0f;
@@ -3041,7 +3054,7 @@ public class AxthrixUnits {
 
                 weapons.add(new RevolverWeapon("sig-weapon") {
                     {
-                        shootSound = Sounds.spray;
+                        shootSound = Sounds.loopSpray;
                         inaccuracy = 10;
                         shoot.shots = 6;
                         mirror = false;

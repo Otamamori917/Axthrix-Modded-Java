@@ -32,7 +32,8 @@ public class AxUtil {
     public static float GetRange(float speed,float lifetime)
     {
         return (lifetime * speed)/8;
-    }public static float GetSpeed(float range,float lifetime)
+    }
+    public static float GetSpeed(float range,float lifetime)
     {
         return (range/8)/lifetime;
     }

@@ -21,7 +21,12 @@ public class AxthrixSounds {
              laserememit = new Sound(),
              catchit = new Sound(),
              payitback = new Sound(),
-             slam = new Sound()
+             slam = new Sound(),
+             nadeshoot = new Sound(),
+             nadeblast = new Sound(),
+             parserShoot = new Sound(),
+             parserCharge = new Sound(),
+             pop = new Sound()
 
 
 
@@ -44,6 +49,11 @@ public class AxthrixSounds {
         catchit = tree.loadSound("catch");
         payitback = tree.loadSound("payback");
         slam = tree.loadSound("slam");
+        nadeshoot = tree.loadSound("grenade");
+        nadeblast = tree.loadSound("grenade-blast");
+        parserShoot = tree.loadSound("shoot-parser");
+        parserCharge = tree.loadSound("charge-parser");
+        pop = tree.loadSound("pop");
 
     }
 }

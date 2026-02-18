@@ -11,6 +11,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.bullet.LightningBulletType;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
+import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -124,7 +125,7 @@ public class AxthrixStatus {
 
         grayRepair = new StatusEffect("gray-repair"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 {
                     color = Color.valueOf("80ffb8");
                 }
@@ -160,7 +161,7 @@ public class AxthrixStatus {
         };
         repair = new StatusEffect("repair"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 {
                     color = Color.green;
                 }
@@ -215,7 +216,7 @@ public class AxthrixStatus {
 
 
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 if (!delay.containsKey(unit)){
                     delay.put(unit,0f);
                 }

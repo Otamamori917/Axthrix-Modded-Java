@@ -143,7 +143,7 @@ public class BlockWeapon implements Cloneable {
         this.soundPitchMin = 0.8F;
         this.soundPitchMax = 1.0F;
         this.layerOffset = 0.001F;
-        this.shootSound = Sounds.pew;
+        this.shootSound = Sounds.shoot;
         this.chargeSound = Sounds.none;
         this.heatColor = Pal.turretHeat;
         this.mountType = BlockWeaponMount::new;

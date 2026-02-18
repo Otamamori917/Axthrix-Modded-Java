@@ -9,12 +9,11 @@ import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.content.blocks.AxthrixTurrets;
 import axthrix.content.blocks.PayloadAmmoBlocks;
 import axthrix.content.units.*;
-import axthrix.world.types.bulletypes.InfFragBulletType;
+import axthrix.world.types.bulletypes.GrabBulletType;
 import axthrix.world.util.StackWorldState;
-import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.game.EventType.*;
-import mindustry.graphics.Shaders;
+import mindustry.gen.Groups;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.*;
 import axthrix.world.util.*;
@@ -24,6 +23,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.blocks.defense.turrets.*;
+import axthrix.world.types.bulletypes.AttachmentGrenadeBulletType;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -49,7 +49,6 @@ public class AxthrixLoader extends Mod{
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
             if(!headless){
                 AxShaders.init();
-                //AxSounds.load();
             }
         }));
         Events.on(ClientLoadEvent.class, e -> {
@@ -71,7 +70,6 @@ public class AxthrixLoader extends Mod{
                 });    */
 
 
-        // Check if funni bullet is enabled
         funibullet = settings.getBool("aj-funni-disabled", false);
         amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
         amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
@@ -94,6 +92,19 @@ public class AxthrixLoader extends Mod{
                 setupEveryBullets(null); //It having a chance to frag into itself will be really funny
             }
         });
+
+
+        Events.run(EventType.Trigger.update, () -> {
+            Groups.unit.each(AttachmentGrenadeBulletType::updateGrenades);
+        });
+
+        Events.run(EventType.Trigger.draw, () -> {
+            Groups.unit.each(AttachmentGrenadeBulletType::drawGrenades);
+        });
+
+        Events.run(EventType.Trigger.update, GrabBulletType::updateGrabs);
+
+        Events.run(EventType.Trigger.draw, GrabBulletType::drawGrabs);
     }
     @Override
     public void loadContent(){

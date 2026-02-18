@@ -43,7 +43,7 @@ public class HeatWaveAbility extends Ability{
 
     public Color hitColor;
 	
-	public Sound shootSound = Sounds.shockBlast;
+	public Sound shootSound = Sounds.shootEnergyField;
 	public Effect hitEffect = Fx.pointHit;
 	
 	public float maxSpeed = -1;

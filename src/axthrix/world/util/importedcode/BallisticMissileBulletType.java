@@ -51,11 +51,11 @@ public class BallisticMissileBulletType extends BulletType{
 
         shootEffect = smokeEffect = Fx.none;
         despawnEffect = MissileFx.missileExplosion;
-        hitSound = Sounds.largeExplosion;
+        hitSound = Sounds.explosionTitan;
         layer = Layer.flyingUnit + 2;
         ammoMultiplier = 1;
         lifetime = 120f;
-        collides = hittable = absorbable = reflectable = keepVelocity = backMove = false;
+        collides = hittable = absorbable = reflectable = keepVelocity = false;
         scaleLife = true;
         scaledSplashDamage = true;
         status = StatusEffects.blasted;
@@ -147,7 +147,7 @@ public class BallisticMissileBulletType extends BulletType{
                 Tmp.v1.add(target);
 
                 Tmp.v2.trns(b.angleTo(Tmp.v1), b.dst(Tmp.v1)).limit(homingPower * Time.delta);
-                b.move(Tmp.v2);
+                //b.move(Tmp.v2);
             }
         }
     }

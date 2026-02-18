@@ -4,11 +4,11 @@ import arc.math.Mathf;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import axthrix.content.units.AxthrixUnits;
 import mindustry.gen.Building;
 import mindustry.gen.PayloadUnit;
 import mindustry.type.ItemStack;
 import mindustry.world.blocks.payloads.BuildPayload;
-import axthrix.world.types.entities.AXEntityMapping;
 import axthrix.world.types.unittypes.CnSUnitType;
 
 /**
@@ -25,8 +25,9 @@ public class ProductionUnit extends PayloadUnit {
   @Override public CnSUnitType type() {
     return (CnSUnitType) super.type();
   }
-  @Override public int classId() {
-    return AXEntityMapping.idMap.get(getClass());
+  @Override
+  public int classId() {
+    return AxthrixUnits.classID(getClass());
   }
 
   @Override

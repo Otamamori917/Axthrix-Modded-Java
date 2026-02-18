@@ -76,9 +76,26 @@ public class DrawIPayloadTurret extends DrawTurret{
 
             //TODO no smooth reload
             var params = DrawPart.params.set(build.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
+            for(DrawPart part1 : parts){
+                assignPayloadAmmoParent(part1, build);
+            }
+            for(DrawPart part2 : this.parts) {
+                params.setRecoil(part2.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part2.recoilIndex] : tb.curRecoil);
+                part2.draw(params);
+            }
+        }
+    }
 
-            for(var part : parts){
-                part.draw(params);
+    private void assignPayloadAmmoParent(DrawPart part, Building build) {
+        // Check if this part is DrawIPayloadAmmo
+        if(part instanceof DrawIPayloadAmmo da){
+            da.parent = build;
+        }
+
+        // If this part has children (RegionPart), process them recursively
+        if(part instanceof RegionPart rp && rp.children.size > 0){
+            for(DrawPart child : rp.children){
+                assignPayloadAmmoParent(child, build);
             }
         }
     }

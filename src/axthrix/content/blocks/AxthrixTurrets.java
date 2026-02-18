@@ -40,7 +40,7 @@ public class AxthrixTurrets{
 
     //Bendy miniguns
 
-    kramola, razdor, smuta,
+    kramola,
 
     //Artillery
 
@@ -48,7 +48,7 @@ public class AxthrixTurrets{
 
     //shotguns
 
-    fragmentation,
+    fragmentation,parser,
 
     //revolvers
     emily,corvo,nagual,lucifer,athena,
@@ -57,7 +57,7 @@ public class AxthrixTurrets{
 
     nado, aratiri, gravitation, morta,
 
-    multitest,viper,coiner,
+    multitest,viper,coiner,pop,
 
     //payload
     apex,//Small apexus? but autocannon possibly
@@ -94,7 +94,7 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootSpectre;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
             shoot = new ShootMulti(
@@ -126,14 +126,16 @@ public class AxthrixTurrets{
                 }}
             );
             inaccuracy = 0f;
-            drawer = new DrawTurret(){{
+            drawer = new DrawAcceleratedTurret("crystalized-"){{
                 parts.add(
                         new RegionPart("-barrel"){{
                             progress = PartProgress.warmup;
+                            heatProgress = AxPartParms.AxPartProgress.secondaryHeat;
                             y = 4.5f;
                             moveY = 3f;
                             recoilIndex = 0;
                             layerOffset = 2;
+                            turretHeatLayer = 54;
                             moves.add(
                                     new PartMove(PartProgress.reload, 2.5f, 0f, 0f),
                                     new PartMove(PartProgress.reload.inv(), -2.5f, 0f, 0f)
@@ -142,10 +144,12 @@ public class AxthrixTurrets{
                         }},
                         new RegionPart("-barrel"){{
                             progress = PartProgress.warmup;
+                            heatProgress = AxPartParms.AxPartProgress.secondaryHeat;
                             y = 4.5f;
                             moveY = 3f;
                             recoilIndex = 1;
                             layerOffset = 2;
+                            turretHeatLayer = 54;
                             moves.add(
                                     new PartMove(PartProgress.reload, -2.5f, 0f, 0f),
                                     new PartMove(PartProgress.reload.inv(), 2.5f, 0f, 0f)
@@ -155,218 +159,6 @@ public class AxthrixTurrets{
 
             }};
 
-        }};
-
-
-
-
-        razdor = new ItemAcceleratedTurret("razdor"){{
-            outlineColor = Color.valueOf("#181a1b");
-            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            //custom variables
-            acceleratedDelay = 50f;
-            acceleratedBonus = 1.8f;
-            acceleratedSteps = 18;
-            burnoutDelay = 300;
-            cooldownDelay = 360f;
-
-            cooldownTime = 120f;
-            recoils = 3;
-            minWarmup = 0.3f;
-            size = 3;
-            scaledHealth = 420f;
-            reload = 60f;
-            range = 360f;
-            maxAmmo = 300;
-            ammoPerShot = 2;
-            consumeAmmoOnce = false;
-            recoil = 3f;
-            rotateSpeed = 2f;
-            targetAir = true;
-            targetGround = true;
-            shootY = -2f;
-            shootSound = Sounds.shootBig;
-            faction.add(AxFactions.axthrix);
-            coolant = consumeCoolant(0.2f);
-            shoot = new ShootMulti(
-                    new ShootBarrel(){{
-                        barrels = new float[]{
-                                -1.25f, 15, 0,
-                                 0, 15, 0,
-                                 1.25f, 15, 0
-                        };
-                    }},
-                    new ShootHelix(){{
-                        mag = 0.4f;
-                        scl = 0.2f;
-                    }});
-            ammo(
-                Items.titanium, new BasicBulletType(4f, 30){{
-                    homingPower = 0.09f;
-                    homingRange = 200;
-                    homingDelay = 40f;
-                    width = 3f;
-                    height = 6f;
-                    hitSize = 3f;
-                    lifetime = 100f;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.tungstenShot;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
-            );
-            inaccuracy = 0f;
-            drawer = new DrawTurret("crystalized-"){{
-                parts.add(
-
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = 0;
-                            moveY = 6f;
-                            recoilIndex = 0;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, -2.75f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), 0f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = 1.375f;
-                            moveY = 6f;
-                            recoilIndex = 1;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, -2.75f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), 1.375f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = -1.375f;
-                            moveY = 6f;
-                            recoilIndex = 2;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, 2.25f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), -1.375f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-main"));
-
-            }};
-        }};
-
-
-        smuta = new ItemAcceleratedTurret("smuta"){{
-            outlineColor = Color.valueOf("#181a1b");
-            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-            //custom variables
-            acceleratedDelay = 60f;
-            acceleratedBonus = 1.8f;
-            acceleratedSteps = 20;
-            burnoutDelay = 360f;
-            cooldownDelay = 360f;
-
-            recoils = 4;
-            minWarmup = 0.3f;
-            size = 4;
-            scaledHealth = 420f;
-            reload = 60f;
-            range = 360f;
-            maxAmmo = 400;
-            ammoPerShot = 2;
-            consumeAmmoOnce = false;
-            recoil = 3f;
-            rotateSpeed = 2f;
-            targetAir = true;
-            targetGround = true;
-            shootY = -2f;
-            shootSound = Sounds.shootBig;
-            faction.add(AxFactions.axthrix);
-            coolant = consumeCoolant(0.2f);
-            shoot = new ShootMulti(
-                    new ShootBarrel(){{
-                        barrels = new float[]{
-                                -4, 18, 0,
-                                -2, 18, 0,
-                                2, 18, 0,
-                                4, 18, 0
-                        };
-                    }},
-                    new ShootHelix(){{
-                        mag = 0.5f;
-                        scl = 0.3f;
-                    }});
-            ammo(
-                Items.titanium, new BasicBulletType(4f, 45){{
-                    homingPower = 0.09f;
-                    homingRange = 200;
-                    homingDelay = 40f;
-                    width = 4f;
-                    height = 8f;
-                    hitSize = 4f;
-                    lifetime = 100f;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.tungstenShot;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
-            );
-            inaccuracy = 0f;
-            drawer = new DrawTurret("crystalized-"){{
-                parts.addAll(
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = -2.25f;
-                            moveY = 6f;
-                            recoilIndex = 3;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, 4.5f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), -2.25f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = 2.25f;
-                            moveY = 6f;
-                            recoilIndex = 3;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, -4.5f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), 2.25f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = 2.25f;
-                            moveY = 6f;
-                            recoilIndex = 3;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, -4.5f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), -2.25f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-barrel"){{
-                            progress = PartProgress.warmup;
-                            y = 6;
-                            x = -2.25f;
-                            moveY = 6f;
-                            recoilIndex = 3;
-                            moves.add(
-                                    new PartMove(PartProgress.reload, 4.5f, 0f, 0f),
-                                    new PartMove(PartProgress.reload.inv(), 2.25f, 0f, 0f)
-                            );
-                        }},
-                        new RegionPart("-main"));
-
-            }};
         }};
 
         kisten = new AxItemTurret("kisten"){
@@ -393,7 +185,7 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shootSound = Sounds.mediumCannon;
+            shootSound = Sounds.shootSalvo;
             minWarmup = 0.94f;
             shootWarmupSpeed = 0.05f;
             faction.add(AxFactions.axthrix);
@@ -613,7 +405,48 @@ public class AxthrixTurrets{
                 }});
             }};
         }};
+        parser = new ChargingShotgunTurret("parser"){{
+            outlineColor = Color.valueOf("#181a1b");
+            hideDetails = false;
+            size = 3;
+            reload = 10;
+            coolantMultiplier = 2f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            shoot.shots = 8;
+            faction.add(AxFactions.axthrix);
+            shootSound = AxthrixSounds.parserShoot;
+            health = 800;
+            maxAmmo = 6*25;
+
+            minSpread = 1;
+            maxSpread = 40;
+            inaccuracy = 0;
+            maxLifetimeMultiplier = 12f;
+            aiChargeThreshold = 3.33f;
+            range = (AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier)*8);
+            ammo(
+                    Items.titanium, new BasicBulletType(){{
+                        lifetime = 10;
+                        speed = 4;
+                        damage = 20;
+
+                    }}
+            );
+            drawer = new DrawChargingShotgunTurret("crystalized-"){{
+                parts.add(
+                    new RegionPart("-main"){{
+                        progress = AxPartParms.AxPartProgress.secondaryReload;
+                        moveY = 10;
+                    }}
+                );
+            }};
+
+        }};
         aratiri = new PowerAcceleratedTurret("aratiri"){{
+            drawer = new DrawAcceleratedTurret("crystalized-");
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
@@ -636,7 +469,7 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootY = -2f;
-            shootSound = Sounds.shootBig;
+            shootSound = Sounds.shootSpectre;
             faction.add(AxFactions.axthrix);
             coolant = consumeCoolant(0.2f);
             inaccuracy = 0f;
@@ -900,7 +733,7 @@ public class AxthrixTurrets{
             ammo(
                     basic1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.copper.color;
-                        lifetime = AxUtil.GetLifetime(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,45);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 100;
@@ -940,7 +773,7 @@ public class AxthrixTurrets{
                     }},
                     frostbite1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.titanium.color;
-                        lifetime = AxUtil.GetLifetime(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,45);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 100;
@@ -973,7 +806,7 @@ public class AxthrixTurrets{
                     }},
                     incendiary1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.pyratite.color;
-                        lifetime = AxUtil.GetLifetime(15f,75);
+                        lifetime = AxUtil.GetLifetime(15f,45);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 200;
@@ -1026,7 +859,7 @@ public class AxthrixTurrets{
                     }},
                     quicksilver1mCaliber, new BasicBulletType(){{
                         var CoLor = Color.valueOf("8b8696");
-                        lifetime = AxUtil.GetLifetime(20f,75);
+                        lifetime = AxUtil.GetLifetime(20f,45);
                         speed = 20f;
                         knockback = 2;
                         pierceCap = 12;
@@ -1066,7 +899,7 @@ public class AxthrixTurrets{
                     //energy rounds
                     arcane1mCaliber, new BasicBulletType(){{
                         var CoLor = Items.phaseFabric.color;
-                        lifetime = AxUtil.GetLifetime(15,75);
+                        lifetime = AxUtil.GetLifetime(15,45);
                         speed = 15f;
                         knockback = pierceCap = 4;
                         damage = 300;
@@ -1092,7 +925,7 @@ public class AxthrixTurrets{
                     }},
                     void1mCaliber, new BasicBulletType(){{
                         var CoLor = Color.valueOf("7b1c9b");
-                        lifetime = AxUtil.GetLifetime(10,75);
+                        lifetime = AxUtil.GetLifetime(10,45);
                         speed = 10f;
                         damage = 300;
                         impact = pierce = pierceBuilding = true;
@@ -1127,7 +960,7 @@ public class AxthrixTurrets{
             if(AxthrixLoader.funibullet){
                 ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
-                    lifetime = AxUtil.GetLifetime(15f,75);
+                    lifetime = AxUtil.GetLifetime(15f,45);
                     speed = 15f;
                     knockback = 20;
                     pierceCap = Integer.MAX_VALUE;
@@ -1145,7 +978,70 @@ public class AxthrixTurrets{
                     fragBullets = 12;
                 }});
             }
-            shoot = new ShootAlternate(10);
+            drawer = new DrawAcceleratedPayloadTurret(true, "crystalized-"){{
+
+                for(int i = 0; i < 2; i++){
+                    int barrelIndex = i;
+                    float side = i == 0 ? -1f : 1f;
+                    String barrelSuffix = i == 1 ? "barrel-r" : "barrel-l";
+
+
+                    parts.add(
+                            new RegionPart("-" + barrelSuffix){{
+                                progress = PartProgress.warmup;
+                                heatProgress = AxPartParms.AxPartProgress.secondaryHeat;
+                                mirror = false;
+                                x = 6f * side;
+                                recoilIndex = barrelIndex;
+                                moveY = 0.5f;
+                                layerOffset = 2.5f;
+                                turretHeatLayer = 52.8f;
+
+                                moves.add(
+                                        new PartMove(PartProgress.recoil, 0f, -3f, 0)
+                                );
+                            }}
+                    );
+
+                    parts.add(
+                            new RegionPart("-air"){{
+                                progress = PartProgress.warmup;
+                                mirror = false;
+                                x = 6f * side;
+                                y = -20f;
+                                recoilIndex = barrelIndex;
+
+
+                                moves.add(
+                                        new PartMove(PartProgress.recoil.inv().delay(0.2f), 0f, 20f, 0f, 0f, 0)
+                                );
+
+
+                                children.add(
+                                        new DrawIPayloadAmmo(){{
+                                            progress = PartProgress.warmup;
+                                            matProgress = PartProgress.recoil.inv();
+                                            x = 0f;
+                                            y = 0;
+                                            layerOffset = 2f;
+                                            materialize = true;
+                                            rotation = 90f;
+                                            recoilIndex = barrelIndex;
+                                        }}
+                                );
+                            }}
+                    );
+                }
+                parts.add(
+                        new RegionPart("-main"){{
+                            layerOffset = 3;
+                            outlineLayerOffset = -1f;
+                        }}
+                );
+            }};
+
+            shoot = new ShootAlternate(14);
+            recoils = 2;
             maxAmmo = 48;
             size = 3;
             hideDetails = false;
@@ -1155,19 +1051,18 @@ public class AxthrixTurrets{
             acceleratedDelay = 1;
             burnoutDelay = 359;
             cooldownDelay = 600;
+            ammoUseEffect = AxthrixFfx.payloadCasing;
             setWarmupTime(1.5f);
             shootCone = 1f;
-            shootY = 0f;
-            range = 600f;
+            shootY = 10f;
+            range = 46*8;
             recoil = 0.5f;
             rotateSpeed = 1.8f;
-            shootSound = Sounds.largeCannon;
+            shootSound = Sounds.shootArtillery;
             shootEffect = Fx.shootPayloadDriver;
             smokeEffect = Fx.shootBigSmoke2;
 
             unitSort = UnitSorts.strongest;
-
-            coolant = consumeCoolant(0.5f);
             setUsers();
         }};
         apexus = new PayloadTurretType("apexus"){{
@@ -1427,6 +1322,60 @@ public class AxthrixTurrets{
                     fragBullets = 24;
                 }});
             }
+            drawer = new DrawIPayloadTurret(true, "crystalized-"){{
+                parts.add(
+                    new RegionPart("-main"){{
+                       layerOffset = 2;
+                       outlineLayerOffset = -2f;
+                       y = -10;
+                        turretHeatLayer = 52.8f;
+                       children.add(
+                           new RegionPart("-barrel"){{
+                               layerOffset = 2;
+                               outlineLayerOffset = -2f;
+                               y = 12;
+                               moves.add(
+                                       new PartMove(PartProgress.recoil.inv(), 0f, 6f, 0f, 0f, 0)
+                               );
+                               turretHeatLayer = 52.8f;
+                               children.add(
+                                       new RegionPart("-barrel-end"){{
+                                           layerOffset = 2;
+                                           outlineLayerOffset = -2f;
+                                           y = 11;
+                                           moves.add(
+                                                   new PartMove(PartProgress.recoil.inv(), 0f, 2f, 0f, 0f, 0)
+                                           );
+                                           turretHeatLayer = 52.8f;
+                                       }},
+                                       new RegionPart("-air"){{
+                                           mirror = false;
+                                           x = 6f;
+                                           y = -6f;
+
+                                           moves.add(
+                                                   new PartMove(PartProgress.recoil.inv().delay(0.2f), -6f, 8, 0f, 0f, 0)
+
+                                           );
+
+
+                                           children.add(
+                                                   new DrawIPayloadAmmo(){{
+                                                       matProgress = PartProgress.recoil.inv();
+                                                       x = 0f;
+                                                       y = 0;
+                                                       layer = 51f;
+                                                       materialize = true;
+                                                       rotation = 90f;
+                                                   }}
+                                           );
+                                       }}
+                               );
+                           }}
+                       );
+                    }}
+                );
+            }};
             maxAmmo = 12;
             size = 5;
             hideDetails = false;
@@ -1438,7 +1387,8 @@ public class AxthrixTurrets{
             range = 800f;
             recoil = 0.5f;
             rotateSpeed = 1.2f;
-            shootSound = Sounds.largeCannon;
+            ammoUseEffect = AxthrixFfx.payloadCasing;
+            shootSound = Sounds.shootArtillery;
             shootEffect = Fx.shootPayloadDriver;
             smokeEffect = Fx.shootBigSmoke2;
 
@@ -1475,47 +1425,114 @@ public class AxthrixTurrets{
                 trailColor = Color.valueOf("#d0af54");
             }};
         }};
+        pop = new AxItemTurret("pop"){{
+            outlineColor = Color.valueOf("#181a1b");
+            localizedName = "pop";
+            range = 8*23;
+            size = 2;
+            reload = 300;
+            coolantMultiplier = 2f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.raodon);
+            coolant = consumeCoolant(1);
+            health = 800;
+            shootSound = Sounds.none;
+            ammo(
+                    Items.titanium, new AnimationBulletType(){{
+                        speed = 0.5f;
+                        lifetime = (49*12)-20;
+                        damage = 100000;
+                        name = "aj-pop";
+                        lightColor = Color.clear;
+                        frames = 49;
+                        width = height = 50;
+                        frameTime = 12;
+                        loop = true;
+                        shootSound = AxthrixSounds.pop;
+                        pierce = true;
+                        pierceCap = 1000;
+                        customAngle = 0;
+                    }}
+            );
+            drawer = new DrawTurret("crystalized-");
+        }};
         multitest = new MultiTurretType("multi"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Claymore";
+            localizedName = "Karma";
             description = """
-                          WIP
-                          """;
+                  Fires sticky grenades that attach to enemies.
+                  rifle shot detonates all attached grenades for massive damage.
+                  """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
-
 
             buildCostMultiplier = 0.1f;
             size = 2;
             scaledHealth = 420f;
             range = 360f;
             //faction.add(AxFactions.axthrix);
-            weapons.add(new BlockWeapon("puw"){{
-                shootY = 2f;
-                x = 4f;
-                y = 4f;
-                reload = 15;
-                heatColor = Pal.heal;
-                itemCost = Items.titanium;
-                bullet = new BasicBulletType(){{
-                    damage = 40;
-                    lifetime = 60;
-                    speed = 5;
-                }};
-            }},
-            new BlockWeapon("puw"){{
-                shootY = 2f;
-                x = -4f;
-                y = -4f;
-                reload = 30;
-                heatColor = Pal.heal;
-                itemCost = Items.lead;
-                bullet = new LaserBulletType(){{
-                    damage = 120;
-                    lifetime = 20;
-                    length = 30;
-                    speed = 0;
-                }};
-            }});
+
+            AttachmentGrenadeBulletType grenadeBullet = new AttachmentGrenadeBulletType(){{
+                attachDuration = 120f; // 2 seconds
+                speed = 2.5f;
+                lifetime = 120f;
+                damage = 15f;
+                splashDamage = 10f;
+                splashDamageRadius = 15f;
+                knockback = 0.8F;
+                width = height = 4f;
+
+                // Detonation properties
+                detonationDamage = 80f;
+                detonationRadius = 50f;
+                detonationEffect = Fx.massiveExplosion;
+
+                // Visual
+                grenadeColor = Color.orange;
+                attachEffect = Fx.hitBulletColor;
+            }};
+
+            weapons.add(
+                    // Grenade launcher weapon
+                    new BlockWeapon("nader"){{
+                        shootY = 2f;
+                        x = 4f;
+                        y = 4f;
+                        reload = 80f;
+                        heatColor = Color.orange;
+                        itemCost = Items.titanium;
+                        shootSound = AxthrixSounds.nadeshoot;
+                        bullet = grenadeBullet;
+                    }},
+                    // Detonator sniper weapon
+                    new BlockWeapon("rifler"){{
+                        shootY = 2f;
+                        x = -4f;
+                        y = -4f;
+                        reload = 280f;
+                        heatColor = Pal.surge;
+                        itemCost = Items.thorium;
+                        shootSound = Sounds.shootBreach;
+                        bullet = new DetonatorBulletType(){{
+                            grenadeType = grenadeBullet; // Link to the grenade bullet
+
+                            speed = 25f;
+                            lifetime = 12f;
+                            damage = 40f;
+                            baseHitDamage = 40f;
+
+                            // Visual - fast sniper shot
+                            width = 8f;
+                            height = 12f;
+                            shrinkY = 0f;
+
+                            detonateEffect = Fx.shockwave;
+                            hitEffect = Fx.hitBulletBig;
+                        }};
+                    }}
+            );
         }};
 
     }

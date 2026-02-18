@@ -14,16 +14,15 @@ import mindustry.graphics.Pal;
 
 public class LeggedWaterUnit extends IkatusaUnitType {
     private static final Vec2 legOffset = new Vec2();
-    public float groundSpeed =  1f, navalSpeed = groundSpeed, deepSpeed = -1;
+    public float navalSpeed = speed, deepSpeed = -1;
     public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true,
             floaterOnHiddenLegs = false,
-            boostUsesNaval, customShadow = false,
-            omniMovementNaval = omniMovement, omniMovementGround = omniMovement;
-    ;
+            boostUsesNaval, customShadow = false
+            ;
 
     public LeggedWaterUnit(String name){
-        super(name,false);
-        speed = groundSpeed;
+        super(name);
+        speed = navalSpeed;
         canDrown = false;
     }
 
@@ -121,27 +120,5 @@ public class LeggedWaterUnit extends IkatusaUnitType {
         applyColor(unit);
         Draw.rect(treadRegion, unit.x, unit.y, unit.rotation - 90);
         Draw.reset();
-    }
-
-    @Override
-    public void update(Unit unit){
-        if (onWater(unit) || (unit.isFlying() && boostUsesNaval) ){
-            if(deepSpeed > -1 && onDeepWater(unit)) speed = deepSpeed;
-            else speed = navalSpeed;
-            omniMovement = omniMovementNaval;
-        }else {
-            speed = groundSpeed;
-            omniMovement = omniMovementGround;
-        }
-
-        super.update(unit);
-    }
-
-    public boolean onWater(Unit unit){
-        return unit.floorOn().isLiquid;
-    }
-
-    public boolean onDeepWater(Unit unit){
-        return onWater(unit) && unit.floorOn().drownTime > 0;
     }
 }

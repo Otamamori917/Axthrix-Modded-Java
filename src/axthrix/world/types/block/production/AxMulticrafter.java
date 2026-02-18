@@ -111,7 +111,7 @@ public class AxMulticrafter extends AxBlock {
         solid = true;
         sync = true;
         flags = EnumSet.of(new BlockFlag[]{BlockFlag.factory});
-        ambientSound = Sounds.machine;
+        ambientSound = Sounds.loopMachine;
         configurable = true;
         saveConfig = true;
         ambientSoundVolume = 0.03F;
