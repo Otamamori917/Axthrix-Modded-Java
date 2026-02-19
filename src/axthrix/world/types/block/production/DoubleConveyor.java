@@ -1,11 +1,9 @@
-package mindustry.world.blocks.distribution;
+/*
+package axthrix.world.types.block.production;
 
 import java.lang.Math;
-import java.util.Arrays;
 
-import arc.Core;
 import arc.func.*;
-import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -13,7 +11,6 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.Vars;
-import mindustry.annotations.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
@@ -23,7 +20,7 @@ import mindustry.input.*;
 import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -50,7 +47,7 @@ public class DoubleConveyor extends Block {
         conveyorPlacement = true;
         underBullets = true;
 
-        ambientSound = Sounds.conveyor;
+        ambientSound = Sounds.loopConveyor;
         ambientSoundVolume = 0.0022f;
         unloadable = false;
         noUpdateDisabled = false;
@@ -784,7 +781,7 @@ public class DoubleConveyor extends Block {
                 return (belts[0].len < perBeltCap && belts[0].hasSpace())
                         || (belts[1].len < perBeltCap && belts[1].hasSpace());
             } else {
-                belt = this.getRelOffset(source).rotate(rotation * -90).y > 0 ? 0
+                belt = getRelOffset(source).rotate(rotation * -90).y > 0 ? 0
                         : 1;
             }
             return belts[belt].len < perBeltCap && belts[belt].hasSpace();
@@ -914,3 +911,4 @@ public class DoubleConveyor extends Block {
         }
     }
 }
+ */
