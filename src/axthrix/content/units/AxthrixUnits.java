@@ -1940,6 +1940,7 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationI);
             abilities.add(new NanobotStormAbility());
 
+
             /*abilities.add(new ShieldArcAbility(){{
                 region = "aj-impediment-shield";
                 radius = 40f;
@@ -2847,9 +2848,16 @@ public class AxthrixUnits {
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
-                    new UnitEngine(0,-14,6,-90),
-                    new UnitEngine(-10,-10,6,180+45),
-                    new UnitEngine(10,-10,6,270+45)
+                    new UnitEngine(0,-44,12,-90),
+
+                    new UnitEngine(-28,-35,6,180+45),
+                    new UnitEngine(-32.5f,-22,4.5f,180+45),
+
+                    new UnitEngine(28,-35,6,270+45),
+                        new UnitEngine(32.5f,-22,4.5f,270+45),
+
+                    new UnitEngine(-30,10,6.5f,180+45),
+                    new UnitEngine(30,10,6.5f,270+45)
             );
         }};
         chavash = new MountUnitType("chavash")
