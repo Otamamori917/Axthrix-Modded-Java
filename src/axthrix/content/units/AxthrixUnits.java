@@ -1,11 +1,8 @@
 package axthrix.content.units;
 
 import arc.graphics.*;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Time;
@@ -1938,7 +1935,9 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.nanodiverge);
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationI);
-            abilities.add(new NanobotStormAbility());
+            abilities.add(new NanobotAbility(){{
+
+            }});
 
 
             /*abilities.add(new ShieldArcAbility(){{

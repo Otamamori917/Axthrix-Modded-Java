@@ -480,15 +480,17 @@ public class MountUnitType extends AxUnitType {
     @Override
     public void draw(Unit unit){
         super.draw(unit);
-
-        if (liquidAmount.get(unit) > 0.001F) {
-            Draw.z(Layer.flyingUnitLow + 1f);
-            Draw.color(liquidType.get(unit).color, (float) liquidAmount.get(unit) / liquidCap * liquidType.get(unit).color.a);
-            Draw.rect(liquidRegion, unit.x, unit.y, unit.rotation - 90);
-            Draw.color();
+        if (liquidAmount.containsKey(unit)){
+            if (liquidAmount.get(unit) > 0.001F) {
+                Draw.z(Layer.flyingUnitLow + 1f);
+                Draw.color(liquidType.get(unit).color, (float) liquidAmount.get(unit) / liquidCap * liquidType.get(unit).color.a);
+                Draw.rect(liquidRegion, unit.x, unit.y, unit.rotation - 90);
+                Draw.color();
+            }
+            Draw.reset();
         }
-        Draw.reset();
     }
+
     @Override
     public void load() {
         liquidRegion = Core.atlas.find(name + "-liquid", name);

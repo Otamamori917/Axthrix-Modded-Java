@@ -6,6 +6,7 @@ import axthrix.content.AxFactions;
 import axthrix.content.AxItems;
 import axthrix.content.AxLiquids;
 import axthrix.world.types.block.LiquidDeposit;
+import axthrix.world.types.block.effect.NanobotProjector;
 import axthrix.world.types.block.production.AxGenericCrafter;
 import axthrix.world.types.block.production.AxMulticrafter;
 import axthrix.world.types.block.production.AxSeparator;
@@ -29,6 +30,8 @@ import static mindustry.type.ItemStack.with;
 public class AxthrixCrafters {
 	public static Block
 
+			nanobotProjector,nanobotDome,nanobotRealm,
+
     //multicrafters
     centrifugalAccelerator,componentPrinter,pCoilPress,
 
@@ -47,6 +50,35 @@ public class AxthrixCrafters {
 
 
     public static void load() {
+		nanobotProjector = new NanobotProjector("nanobot-projector"){{
+			size = 1;
+			health = 40;
+			range = 9*8f;
+			damage = 5;
+			buildingDamageMultiplier = 0.10f;
+			baseTickRate = 30f;
+			liquidBoost = 3.45f;
+			healAmount = 2f;
+			healPercent = 0.08f;
+			bulletSpeedBonus = 1.03f;
+			bulletSlowdown = 0.995f;
+			statusDuration = baseTickRate;
+			efficiencyBoost = 1.2f;
+			nanobotSize = 0.25f;
+			nanobotSpeed = 2.5f;
+			nanobotCount = 6;
+			stackPenalty = 0.8f;
+
+			faction = Seq.with(AxFactions.axthrix);
+
+			requirements(Category.effect, with(
+					Items.copper, 75,
+					Items.lead, 100));
+
+			consumePower(1.5f);
+			consumeItem(AxItems.sulfur, 4);
+			consumeLiquid(AxLiquids.mercury, 0.2f).boost();
+		}};
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
 		{{
 			faction = Seq.with(AxFactions.axthrix);

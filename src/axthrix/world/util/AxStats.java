@@ -7,7 +7,9 @@ public class AxStats {
     public static Stat
     image,maxDamage,maxDamageMultiplier,maxHealthMultiplier,maxSpeedMultiplier,maxReloadSpeedMultiplier, maxBuildSpeedMultiplier,maxCharges,maxHealing,dragMultiplier,maxDragMultiplier,newTeam,
     grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used,maxFireRateBonus,timeForMaxBonus,overheat,timeToCool,faction,shieldBoi,
-    chargeTimePas,chargeTimePow,emp,empDuration,empPower,staticShock,minimumPowerToDischarge,tiles,timeToGrow,unitsOfForce,refuelRate,Fuel,maxBoostTime
+    chargeTimePas,chargeTimePow,emp,empDuration,empPower,staticShock,minimumPowerToDischarge,tiles,timeToGrow,unitsOfForce,refuelRate,Fuel,maxBoostTime,
+
+            healingF,boosterLiq,boosterItm,bulletEffect,dashes,damageB,healingFB,bulletEffectB
             ;
     public static void load()
     {
@@ -51,5 +53,13 @@ public class AxStats {
         Fuel = new Stat("fuel", StatCat.function);
         unitsOfForce = new Stat("units-of-force", StatCat.function);
         maxBoostTime = new Stat("max-boost-time", StatCat.function);
+        boosterLiq = new Stat("booster-liquid", StatCat.optional);
+        damageB = new Stat("damage-b", StatCat.optional);
+        healingF = new Stat("healing-f", StatCat.function);
+        healingFB = new Stat("healing-f", StatCat.optional);
+        boosterItm = new Stat("booster-item", StatCat.crafting);
+        bulletEffect = new Stat("bullet-effect", StatCat.function);
+        bulletEffectB = new Stat("bullet-effect", StatCat.optional);
+        dashes = new Stat("dashes", StatCat.function);
     }
 }

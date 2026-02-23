@@ -32,6 +32,7 @@ public class ChargingShotgunTurret extends AxItemTurret {
 
     public ChargingShotgunTurret(String name){
         super(name);
+        canOverdrive = false;
     }
 
     @Override

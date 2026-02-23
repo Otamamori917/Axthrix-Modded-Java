@@ -12,8 +12,10 @@ import arc.scene.ui.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.*;
+import mindustry.gen.Unit;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import mindustry.world.Block;
 
 import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;

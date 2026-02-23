@@ -28,6 +28,8 @@ import static arc.Core.*;
 
 
 import static mindustry.Vars.*;
+import static mindustry.world.meta.StatValues.displayItem;
+import static mindustry.world.meta.StatValues.displayLiquid;
 
 public class AxStatValues {
     public static <T extends UnlockableContent> StatValue ammo(ObjectMap<T, BulletType> map){
@@ -46,6 +48,13 @@ public class AxStatValues {
         return (table) -> table.table((c) -> {
             c.row();
             c.image(atlas.find("aj-meepyboi")).padTop(8f).scaling(Scaling.fit);
+        });
+    }
+
+    public static StatValue image(String spritename,String name) {
+        return (table) -> table.table((c) -> {
+            c.image(atlas.find(spritename));
+            c.add(name).marginRight(4);
         });
     }
 
@@ -229,7 +238,7 @@ public class AxStatValues {
                                         if(i % col == 0) req.row();
 
                                         ItemStack stack = payloadRecipe.itemRequirements[i];
-                                        req.add(StatValues.displayItem(stack.item, stack.amount, false)).pad(5);
+                                        req.add(displayItem(stack.item, stack.amount, false)).pad(5);
 
                                         i++;
                                     }
@@ -292,4 +301,6 @@ public class AxStatValues {
     private static TextureRegion icon(UnlockableContent t){
         return t.fullIcon;
     }
+
+
 }
