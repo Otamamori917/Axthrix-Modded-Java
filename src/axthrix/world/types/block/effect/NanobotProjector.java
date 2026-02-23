@@ -4,6 +4,7 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.Mathf;
+import arc.scene.style.*;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
 import axthrix.world.types.block.AxBlock;
@@ -11,14 +12,17 @@ import axthrix.world.util.AxDrawf;
 import axthrix.world.util.AxStatValues;
 import axthrix.world.util.AxStats;
 import axthrix.world.util.NanobotLogic;
+import mindustry.ai.*;
 import mindustry.entities.Units;
-import mindustry.gen.Building;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.Bar;
+import mindustry.ui.*;
 import mindustry.world.Block;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
+
+import javax.swing.text.*;
 
 import static axthrix.content.AxthrixStatus.nanodiverge;
 import static mindustry.Vars.*;
@@ -78,27 +82,66 @@ public class NanobotProjector extends AxBlock {
     public void setStats(){
         super.setStats();
         stats.add(Stat.range, range/8, StatUnit.blocks);
-        stats.add(Stat.damage, damage * (60f / baseTickRate), StatUnit.perSecond);
-        stats.add(Stat.damage, "[lightgray]To Buildings:[] " + (damage * buildingDamageMultiplier * (60f / baseTickRate)), StatUnit.perSecond);
-        stats.add(AxStats.healingF, healAmount * (60f / baseTickRate) + " + " +healPercent  * (60f / baseTickRate) + "% " + StatUnit.perSecond.localized(), StatUnit.perSecond);
-        stats.add(AxStats.bulletEffect, "[]Ally: +" + (int)(bulletSpeedBonus * 100f) * (60f / baseTickRate) + "% "+ StatUnit.perSecond.localized());
-        stats.add(AxStats.bulletEffect, "[]Enemy: -" + (int)((bulletSlowdown) * 100f) * (60f / baseTickRate) + "% "+ StatUnit.perSecond.localized());
+        //rushie no want to add a million Stat category, so we table and pray + its gives better highlight to these important stats
+        TextureRegionDrawable owo = (TextureRegionDrawable)Tex.whiteui;
+        Color uwu = Pal.gray;
+        Drawable style =  owo.tint(uwu.r, uwu.g, uwu.b, 0.75f);
 
-        stats.add(AxStats.boosterLiq, (int)(liquidBoost * 100f) + "%");
-        stats.add(AxStats.damageB, damage * (60f / (baseTickRate / liquidBoost)), StatUnit.perSecond);
-        stats.add(AxStats.damageB, "[lightgray]To Buildings:[] " + (damage * buildingDamageMultiplier * (60f / (baseTickRate / liquidBoost))), StatUnit.perSecond);
-        stats.add(AxStats.healingFB, healAmount * (60f / (baseTickRate / liquidBoost)) + " + " +healPercent  * (60f / (baseTickRate / liquidBoost)) + "% " + StatUnit.perSecond.localized(), StatUnit.perSecond);
-        stats.add(AxStats.bulletEffectB, "[]Ally: +" + (int)(bulletSpeedBonus * 100f) * (60f / (baseTickRate / liquidBoost)) + "% "+ StatUnit.perSecond.localized());
-        stats.add(AxStats.bulletEffectB, "[]Enemy: -" + (int)((bulletSlowdown) * 100f) * (60f / (baseTickRate / liquidBoost)) + "% "+ StatUnit.perSecond.localized());
+        stats.add(Stat.bullet,  par ->{
+            par.row();
+            par.table(style, table -> {
+                table.defaults().left().padLeft(2.5f).padTop(1.5f);
+                table.add("[stat]" + autoFixedCustom((efficiencyBoost -1)*100) + "% [lightgray]" + Core.bundle.get("stat.boosteffect")).style(Styles.outlineLabel).row();
+                table.add("[stat]" + autoFixedCustom(damage * (60f / (baseTickRate ))) + " [lightgray]" + Core.bundle.get("stat.damage") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add("[stat]" + Core.bundle.format("bullet.buildingdamage", damage * buildingDamageMultiplier * (60f / (baseTickRate )) ).replace("%" , "").replace("[stat]", "") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add( Core.bundle.format("bullet.healpercent", autoFixedCustom(healPercent * (60f / (baseTickRate ))) ) + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add(Core.bundle.format("bullet.healamount", autoFixedCustom(healAmount  * (60f / (baseTickRate ))) ).replace("%" , "") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add("[stat]" + autoFixedCustom(((bulletSpeedBonus) * 100f) * (60f / (baseTickRate ))) + "% [lightgray]" + "Ally " + Core.bundle.get("stat.bullet") + " " +  Core.bundle.get("stat.speed")).style(Styles.outlineLabel).row();
+                table.add("[stat]" + autoFixedCustom(((bulletSlowdown) * 100f) * (60f / (baseTickRate ))) + "% [lightgray]" + "Enemy " + Core.bundle.get("stat.bullet") + " " + Core.bundle.get("stat.speed")).style(Styles.outlineLabel).row();
+            }).margin(5);
 
+        });
 
-        for(var cons : consumeBuilder){
+        if(consumers.length == 0) return;
+        //Geeez i do like tables :3 -rushie
+        stats.remove(Stat.input);
+        stats.remove(Stat.booster);
+
+        for(var cons : consumers){
             if(cons instanceof ConsumeItems itm){
                 for (ItemStack stack : itm.items) {
-                    stats.add(AxStats.boosterItm, (int)((efficiencyBoost -1)*100) + "%" + " To Nearby Ally Blocks If " + stack.item.localizedName + " Is Present\n[lightgray]Costs:[]"+stack.amount * (60f / baseTickRate) + StatUnit.perSecond.localized());
+                    stats.add(Stat.input, par -> par.add(StatValues.displayItem(stack.item, stack.amount, (baseTickRate),true)).left().row());
                 }
+            }else if(cons instanceof ConsumeLiquids liq ){
+                Stat out = (cons.booster && cons.optional) ? Stat.booster : AxStats.boosterItm ;
+                for (LiquidStack stack : liq.liquids) liqTables(stack, style, out);
+            }else if(cons instanceof ConsumeLiquid stack ){
+                Stat out = (cons.booster && cons.optional) ? Stat.booster : AxStats.boosterItm ;
+                liqTables(new LiquidStack(stack.liquid, stack.amount), style, out);
             }
         }
+    }
+
+    public void liqTables(LiquidStack stack, Drawable style, Stat out){
+        stats.add(out, par -> {
+            par.row();
+
+            par.table(style, table -> {
+                table.defaults().left().padLeft(2.5f).padTop(1.5f);
+                table.add( StatValues.displayLiquid(stack.liquid, stack.amount * baseTickRate,true)).left().padBottom(2f).row();
+                table.add("[stat]" + autoFixedCustom((liquidBoost)*100 ) + "% [lightgray]" + Core.bundle.get("stat.boosteffect")).style(Styles.outlineLabel).row();
+                table.add("[stat]" + autoFixedCustom(damage * (60f / (baseTickRate / liquidBoost))) + " [lightgray]" + Core.bundle.get("stat.damage") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add("[stat]" + Core.bundle.format("bullet.buildingdamage", damage * buildingDamageMultiplier * (60f / (baseTickRate / liquidBoost)) ).replace("%" , "").replace("[stat]", "") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add( Core.bundle.format("bullet.healpercent", autoFixedCustom(healPercent * (60f / (baseTickRate / liquidBoost))) ) + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add(Core.bundle.format("bullet.healamount", autoFixedCustom(healAmount  * (60f / (baseTickRate / liquidBoost))) ).replace("%" , "") + StatUnit.perSecond.localized()).style(Styles.outlineLabel).row();
+                table.add("[stat]+" + autoFixedCustom(((bulletSpeedBonus) * 100f) * (60f / (baseTickRate / liquidBoost))) + "% [lightgray]" + "Ally " + Core.bundle.get("stat.bullet") + " " +  Core.bundle.get("stat.speed")).style(Styles.outlineLabel).row();
+                table.add("[stat]" + autoFixedCustom(((bulletSlowdown) * 100f) * (60f / (baseTickRate / liquidBoost))) + "% [lightgray]" + "Enemy " + Core.bundle.get("stat.bullet") + " " + Core.bundle.get("stat.speed")).style(Styles.outlineLabel).row();
+            }).margin(5f);
+        });
+    }
+
+    private static String autoFixedCustom(Float in){
+        return  Strings.autoFixed(in, 2);
     }
 
     @Override
