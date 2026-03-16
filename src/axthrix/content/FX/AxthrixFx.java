@@ -21,6 +21,33 @@ public class AxthrixFx {
     public static final Vec2 v = new Vec2();
     public static final Effect
 
+    blockLaunch = new Effect(60f, e -> {
+        // Get block texture (you can specify which block)
+        TextureRegion blockRegion = mindustry.content.Blocks.copperWall.fullIcon;
+
+        Draw.z(Layer.flyingUnit);
+
+        // Calculate movement
+        float speed = 8f;
+        float distance = speed * e.time;
+
+        // Calculate position along angle
+        float x = e.x + Mathf.cosDeg(e.rotation) * distance;
+        float y = e.y + Mathf.sinDeg(e.rotation) * distance;
+
+        // Spinning rotation
+        float spin = e.time * 12f; // Spin speed
+
+        // Scale up then fade
+        float scale = Mathf.lerp(0.5f, 1f, Math.min(e.finpow(), 0.3f)) * (1f - e.fin());
+
+        Draw.alpha(1f - e.fin());
+        Draw.rect(blockRegion, x, y,
+                blockRegion.width * scale,
+                blockRegion.height * scale,
+                e.rotation + spin);
+    }).layer(Layer.flyingUnit),
+
     ahhimaLiquidNow = new Effect(45f, e -> {
         color(Color.gray, Color.clear, e.fin());
         randLenVectors(e.id, 3, 2.5f + e.fin() * 6f, (x, y) -> Fill.circle(e.x + x, e.y + y, 0.2f + e.fin() * 3f));

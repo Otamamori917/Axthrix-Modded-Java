@@ -1,26 +1,27 @@
 package axthrix.content.FX;
 
 import arc.Core;
+import arc.graphics.Blending;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.geom.Position;
 import arc.struct.IntMap;
 import arc.util.Tmp;
-import mindustry.content.Items;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-
+import mindustry.world.Block;
 
 import java.util.Arrays;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.*;
-import static arc.scene.actions.Actions.alpha;
 import static mindustry.Vars.renderer;
 import static mindustry.content.Fx.rand;
 
@@ -143,6 +144,62 @@ public class AxthrixFfx{
 			Draw.z(z);
 		});
 	}
+
+	public static Effect crystalShatter(Block block, Color iceColor) {
+		float fullSize = block.size * 8f;
+
+		return new Effect(40f, fullSize * 4f, e -> {
+			float z = Draw.z();
+			Draw.z(Layer.effect);
+
+			// 1. THE FLASH: A quick white "impact" circle
+			Draw.color(Color.white, iceColor, e.fin());
+			Lines.stroke(2f * e.fout());
+			Lines.poly(e.x, e.y, 6, fullSize * e.fin(Interp.pow3Out));
+
+			// 2. THE GLASS PANES: 4 big, chunky shards
+			for(int i = 0; i < 4; i++){
+				float angle = (i * 90f) + Mathf.randomSeed(i, -20f, 20f);
+				float move = e.fin(Interp.pow2Out) * 45f * block.size;
+				float rotation = i * 45f + e.fin() * 100f;
+
+				float px = e.x + Angles.trnsx(angle, move);
+				float py = e.y + Angles.trnsy(angle, move);
+
+				// Shard Color: Block color mixed with ice
+				Draw.color(block.mapColor, iceColor, 0.4f);
+				Draw.alpha(e.fout() * 0.5f); // Semi-transparent glass
+
+				// Random jagged triangle
+				Fill.poly(px, py, 3, fullSize * 0.6f, rotation);
+
+				// Shard Shine: A white line on one edge of the glass
+				Draw.color(Color.white);
+				Draw.alpha(e.fout());
+				Lines.stroke(1f);
+				Lines.lineAngle(px, py, rotation, fullSize * 0.4f);
+			}
+
+			// 3. THE FROST DUST: Tiny "glitter" particles
+			Draw.color(iceColor, Color.white, e.fin());
+			for(int i = 0; i < 10; i++){
+				float a = Mathf.randomSeed(i + 99, 360f);
+				float d = e.fin(Interp.pow5Out) * 60f * block.size;
+				float x = e.x + Angles.trnsx(a, d);
+				float y = e.y + Angles.trnsy(a, d);
+
+				Fill.rect(x, y, 1.5f, 1.5f, a); // Tiny square dust
+			}
+
+			Draw.z(z);
+			Draw.reset();
+		});
+	}
+
+
+
+
+
 
 	//apexus trail effects
 	public static Effect energyRoundRadiate(Color color){

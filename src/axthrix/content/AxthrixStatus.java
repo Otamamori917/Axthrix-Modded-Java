@@ -6,6 +6,7 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.abilities.SilveringWeakness;
+import axthrix.world.types.bulletypes.TemperatureBulletType;
 import axthrix.world.types.statuseffects.*;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.LightningBulletType;
@@ -17,6 +18,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 import java.util.HashMap;
 
@@ -34,7 +36,7 @@ public class AxthrixStatus {
             slivered,
             unrepair,grayRepair,repair,
             gravicalSlow,
-            minigame,
+            minigame,burning,freezing,
 
 
     //visual statuses
@@ -70,6 +72,37 @@ public class AxthrixStatus {
             damage = 0.01f;
             charges = 25;
             effect = AxthrixFx.ahhimaLiquidNow;
+        }};
+        burning = new StatusEffect("burning"){
+            @Override
+            public void update(Unit unit, StatusEntry entry){
+                TemperatureBulletType.applyTemperatureUnit(unit, 0.5f); // 0.5 cold per tick
+            }
+            public void setStats(){
+                super.setStats();
+                stats.add(new Stat("aj-heat-add"),"[stat]"+0.5*60+ StatUnit.perSecond.localized());
+            }
+            {
+            color = Color.valueOf("ff6214");
+            damage = 0.3f; // Small DoT
+            effect = mindustry.content.Fx.fire;
+            speedMultiplier = 0.95f;
+        }};
+
+        freezing = new StatusEffect("freezing"){
+
+            @Override
+            public void update(Unit unit, StatusEntry entry){
+                TemperatureBulletType.applyTemperatureUnit(unit, -0.5f); // 0.5 cold per tick
+            }
+            public void setStats(){
+                super.setStats();
+                stats.add(new Stat("aj-cyro-add"),"[stat]"+0.5*60+ StatUnit.perSecond.localized());
+            }
+            {
+            color = Color.valueOf("6ecdec");
+            speedMultiplier = 0.8f;
+            effect = mindustry.content.Fx.freezing;
         }};
 
         vindicationI = new StatusEffect("vindicationI"){{

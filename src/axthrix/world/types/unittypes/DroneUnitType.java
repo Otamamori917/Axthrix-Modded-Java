@@ -10,15 +10,10 @@ import java.util.HashMap;
 
 public class DroneUnitType extends AmmoLifeTimeUnitType {
 
-
-
-
     public HashMap<Unit, Unit> tetherUnit = new HashMap<>();
     public HashMap<Unit, Integer> droneSlot = new HashMap<>();
-    public HashMap<Unit, Float> delay = new HashMap<>();
 
     public boolean isShield = false;
-    public int tetherUnitID = -1;
 
     public DroneUnitType(String name){
         super(name);
@@ -30,22 +25,29 @@ public class DroneUnitType extends AmmoLifeTimeUnitType {
         if (!tetherUnit.containsKey(unit)){
             tetherUnit.put(unit,null);
         }
-        if (!delay.containsKey(unit)){
-            delay.put(unit,0f);
-        }
-        if (tetherUnitID != -1) {
-            if (delay.get(unit) == 0) {
-                tetherUnit.replace(unit, Groups.unit.getByID(tetherUnitID));
-                tetherUnitID = -1;
-            }
-        }
 
         if(tetherUnit.get(unit) == null || !tetherUnit.get(unit).isValid() || tetherUnit.get(unit).team != unit.team){
             Call.unitDespawn(unit.self());
         }
-        if (delay.get(unit) == Float.POSITIVE_INFINITY) {
-            delay.replace(unit, 0f);
+
+        // Shield drones block piercing
+        if(isShield){
+            // Check for nearby bullets that might pierce
+            mindustry.gen.Groups.bullet.intersect(
+                    unit.x - unit.hitSize,
+                    unit.y - unit.hitSize,
+                    unit.hitSize * 2,
+                    unit.hitSize * 2,
+                    bullet -> {
+                        if(bullet.team != unit.team &&
+                                bullet.type.pierce &&
+                                bullet.within(unit, unit.hitSize)){
+                            // This bullet just hit us - remove it to prevent pierce
+                            bullet.type.fragOnAbsorb = false;
+                            bullet.absorb();
+                        }
+                    }
+            );
         }
-        delay.replace(unit,delay.get(unit)+1);
     }
 }

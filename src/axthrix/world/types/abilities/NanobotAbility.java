@@ -21,17 +21,17 @@ import static mindustry.Vars.*;
 public class NanobotAbility extends Ability {
 
     public float damage = 2f;
-    public float healAmount = 2f;
-    public float healPercent = 0.5f;
+    public float healAmount = 1f;
+    public float healPercent = 0.2f;
     public float range = 90f;
     public float tickRate = 5f;
     public float buildingDamageMultiplier = 0.25f;
 
-    public float bulletSpeedBonus = 1.5f;
-    public float bulletSlowdown = 0.6f;
+    public float bulletSpeedBonus = 1.1f;
+    public float bulletSlowdown = 0.9f;
 
     public float efficiencyBoost = 1.5f;
-    public float stackPenalty = 0.5f;
+    public float stackPenalty = 0.8f;
 
     public StatusEffect status = nanodiverge;
     public float statusDuration = 60f * 3f;
@@ -58,14 +58,14 @@ public class NanobotAbility extends Ability {
 
     @Override
     public String localized(){
-        return Core.bundle.format("ability.aj-nanobot-");
+        return Core.bundle.format("ability.aj-nanobot");
     }
 
     @Override
     public void addStats(Table t){
         t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed(damage * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]Building Damage: [white]" + Strings.autoFixed(damage * buildingDamageMultiplier * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
+        t.add("[lightgray]"+Core.bundle.format("stat.aj-building")+ Stat.damage.localized() + ": [white]" + Strings.autoFixed(damage * buildingDamageMultiplier * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
         t.row();
         t.add("[lightgray]" + Stat.healing.localized() + ": [white]" + Strings.autoFixed(healAmount * (60f / tickRate), 2) + " + " +healPercent  * (60f / tickRate) + "% " + StatUnit.perSecond.localized());
         t.row();
@@ -75,20 +75,15 @@ public class NanobotAbility extends Ability {
         float allySpeedIncrease = Mathf.pow(bulletSpeedBonus, 60f / tickRate) - 1f;
         float enemySpeedDecrease = 1f - Mathf.pow(bulletSlowdown, 60f / tickRate);
 
-        t.add("[lightgray]Ally Bullet Speed: [white]+" + (int)(allySpeedIncrease * 100f) + "% " + StatUnit.blocks.localized());
+        t.add("[lightgray]"+Core.bundle.format("stat.aj-ally-blt-spd")+": [white]+" + (int)(allySpeedIncrease * 100f) + "% " + StatUnit.blocks.localized());
         t.row();
-        t.add("[lightgray]Enemy Bullet Slow: [white]-" + (int)(enemySpeedDecrease * 100f) + "% " + StatUnit.blocks.localized());
+        t.add("[lightgray]"+Core.bundle.format("stat.aj-enemy-blt-slw")+": [white]-" + (int)(enemySpeedDecrease * 100f) + "% " + StatUnit.blocks.localized());
         t.row();
-        t.add("[lightgray]Block Efficiency: [white]" + (int)(efficiencyBoost * 100f) + "%");
+        t.add("[lightgray]"+Core.bundle.format("stat.aj-building-bonus")+": [white]" + (int)(efficiencyBoost * 100f) + "%");
         t.row();
     }
 
-    protected boolean hasNanobot(Unit unit){
-        for(Ability ability : unit.abilities){
-            if(ability instanceof NanobotAbility) return true;
-        }
-        return false;
-    }
+
 
     @Override
     public void draw(Unit unit){
@@ -146,7 +141,6 @@ public class NanobotAbility extends Ability {
         params.nanobotSize = nanobotSize;
         params.nanobotSpeed = nanobotSpeed;
         params.team = unit.team;
-        params.hasNanobot = hasNanobot(unit);
         NanobotLogic.updateBoost(unit,params);
 
         NanobotLogic.updateNanobots(unit, params, timer, useAmmo, () -> {

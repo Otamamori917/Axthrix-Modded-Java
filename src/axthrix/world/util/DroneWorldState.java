@@ -32,7 +32,6 @@ public class DroneWorldState {
                                     if (unit == null) return;
                                     stream.writeInt(unit.id);
                                     stream.writeInt(c.id);
-                                    stream.writeFloat(dut.delay.get(unit));
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -53,7 +52,6 @@ public class DroneWorldState {
                     UnitType unittype = Vars.content.units().find(mu -> mu.id == droneId);
                     if (unittype instanceof DroneUnitType dut /*&& unittype.abilities.first() instanceof DroneSpawnAbility abl*/) {
                         dut.tetherUnit.clear();
-                        dut.delay.clear();
                         //abl.aliveUnit.clear();
                         for(;unitsize > 0;unitsize--) {
                             int unitId = stream.readInt();
@@ -62,7 +60,6 @@ public class DroneWorldState {
                             Unit unit = Groups.unit.find(u->u.id == unitId);
                             if (unit == null) continue;
                             dut.tetherUnit.put(unit, Groups.unit.find(u->u.id == unitDid));
-                            dut.delay.put(unit,unitDtic);
                             //abl.aliveUnit.put(Groups.unit.find(u->u.id == unitDid),unit);
                         }
                     }

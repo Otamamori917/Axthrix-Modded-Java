@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.TextureRegion;
 import arc.input.KeyBind;
 import arc.math.Interp;
+import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Strings;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import static mindustry.input.Binding.boost;
 
 public class AfterBurnAbility extends Ability {
+    //draw flame
     public float lightStroke = 40.0F;
     public float oscScl = 1.2F;
     public float oscMag = 0.02F;
@@ -48,14 +50,16 @@ public class AfterBurnAbility extends Ability {
     public float setRot = 45;
     public float setX = 5;
     public float setY = 2;
+    //accel
     public KeyBind PlayerKeybind = boost;
     public HashMap<Unit, Float> warmup = new HashMap<>();
-    protected float fuel;
-    public float fuelUsedPerTick =1.24f;
-    public float fuelRegenPerTick = 0.4f;
-    public int fuelCap = 600;
-    public float boostForce = 5f;
+    public float fuelUsedPerTick =0.8f;
+    public float fuelRegenPerTick = 0.6f;
+    public int fuelCap = 200;
+    public float boostForce = 10f;
     public float forceDirection = 0;
+
+    public float fuel;
 
     public AfterBurnAbility(){
         lengthWidthPans = new float[]{1.12F, 1.3F, 0.32F, 1.0F, 1.0F, 0.3F, 0.8F, 0.9F, 0.2F, 0.5F, 0.8F, 0.15F, 0.25F, 0.7F, 0.1F};
@@ -63,32 +67,38 @@ public class AfterBurnAbility extends Ability {
         lightColor = colors[1].cpy().a(1.0F);
     }
 
+    public String localized(){
+        return Core.bundle.format("ability.aj-afterburner");
+    }
+
     public void addStats(Table t) {
         t.add(Core.bundle.format("stat.afterburner-description", PlayerKeybind.value.key, 2));
         t.row();
         t.add("[#"+colors[4].cpy().a(1.0F).toString()+"]---------------------------------------------");
         t.row();
-        t.add("[lightgray]" + AxStats.refuelRate.localized() + ": [white]" + Strings.autoFixed((fuelRegenPerTick*60), 2) + StatUnit.perSecond.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-refuel-rate") + ": [white]" + Strings.autoFixed((fuelRegenPerTick*60), 2) + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]" + AxStats.maxBoostTime.localized() + ": [white]" + Strings.autoFixed(((1/fuelUsedPerTick)*fuelCap)/60, 2) + " " + StatUnit.seconds.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-max-boost-time") + ": [white]" + Strings.autoFixed(((1/fuelUsedPerTick)*fuelCap)/60, 2) + " " + StatUnit.seconds.localized());
         t.row();
-        t.add("[lightgray]" + AxStats.Fuel.localized() + ": [white]" + Strings.autoFixed(fuelCap, 2)+ " " +StatUnit.liquidUnits.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-fuel") + ": [white]" + Strings.autoFixed(fuelCap, 2)+ " " +StatUnit.liquidUnits.localized());
         t.row();
-        t.add("[lightgray]" + AxStats.unitsOfForce.localized() + ": [white]" + Strings.autoFixed((boostForce), 2) + StatUnit.perSecond.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-units-of-force") + ": [white]" + Strings.autoFixed((boostForce), 2) + StatUnit.perSecond.localized());
         t.row();
     }
 
     public void displayBars(Unit unit, Table bars) {
         bars.add(new Bar(
-                () ->  Core.bundle.format("bar.aj-afterburner-fuel" , Strings.autoFixed((int)fuel, fuelCap)),
+                () ->  Core.bundle.format("bar.aj-afterburner-fuel" ,fuel),
                 () ->  (int)fuel/(fuelCap/5) == 5 ? colors[4].cpy() : colors[(int)fuel/(fuelCap/5)].cpy(),
                 () ->  fuel / fuelCap
         )).row();
     }
     public boolean CheckIfPlayer(Unit unit){
         if (unit.isPlayer()){
+            //Log.info("Player| Key:"+PlayerKeybind+" I:"+Core.input.keyDown(PlayerKeybind));
             return Core.input.keyDown(PlayerKeybind);
         }
+        //Log.info("AI| X:"+unit.aimX()+" Y:"+unit.aimY()+" I:"+unit.within(unit.aimX(), unit.aimY(), 120));
         return unit.within(unit.aimX(), unit.aimY(), 120);
     }
 
@@ -97,7 +107,11 @@ public class AfterBurnAbility extends Ability {
         if(!Vars.state.isPaused()){
             if(fuel > 1 && CheckIfPlayer(unit)){
                 fuel -= fuelUsedPerTick;
-                unit.vel.add(Tmp.v1.trns(unit.rotation+forceDirection, (boostForce/60)));
+
+                // Simply add boost force, let velocity naturally accumulate
+                Tmp.v1.trns(unit.rotation + forceDirection, boostForce / 60f);
+                unit.vel.x += Tmp.v1.x;
+                unit.vel.y += Tmp.v1.y;
             }
             if(!CheckIfPlayer(unit) && !(fuel >= fuelCap)){
                 fuel += fuelRegenPerTick;

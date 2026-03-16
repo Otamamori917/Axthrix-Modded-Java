@@ -99,7 +99,7 @@ public class PayloadProducer extends PayloadBlock{
                             }
                             if(!r.outputBlock.unlockedNow()){
                                 t.image(Icon.lock).color(Pal.darkerGray).size(40);
-                                t.add("@pm-missing-research").center().left();
+                                t.add(Core.bundle.format("stat.aj-missing-research")).center().left();
                                 return;
                             }
 
@@ -410,7 +410,7 @@ public class PayloadProducer extends PayloadBlock{
                 p.update(() -> {
                     p.clear();
                     if(hasRecipe() && recipe().hasInputBlock()){
-                        p.label(() -> Core.bundle.get("pm-requires")).color(Color.lightGray).padRight(2f);
+                        p.label(() -> Core.bundle.get("stat.aj-requires")).color(Color.lightGray).padRight(2f);
                         prev.setDrawable(prevReg.set(recipe().inputBlock.uiIcon));
                         ReqImage r = new ReqImage(prev, () -> payload != null && hasArrived() && payload.block() == recipe().inputBlock);
                         r.setSize(32);

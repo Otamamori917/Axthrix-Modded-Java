@@ -30,6 +30,9 @@ public class Egg extends AxBlock{
     public HashMap<Building, Float> tick = new HashMap<>();
 
 
+
+
+
     public Egg(String name){
         super(name);
         faction.add(AxFactions.ikatusa);
@@ -37,6 +40,10 @@ public class Egg extends AxBlock{
         floating = true;
         solid = false;
         placeableLiquid = true;
+        accumulationResistanceHeat = 0.5f;
+        accumulationResistanceCold = 1.1f;
+        effectResistanceHeat = 0.8f;
+        effectResistanceCold = 2.5f;
     }
 
     @Override
@@ -66,7 +73,7 @@ public class Egg extends AxBlock{
                 tick.put(this,0f);
             }
             if(attributes != null){
-                if(tick.get(this) >= growthTime/4){
+                if(tick.get(this) >= growthTime/8){
                    if(!getValidation(attributes,x,y)){
                        kill();
                    }
@@ -78,9 +85,10 @@ public class Egg extends AxBlock{
 
 
 
-            if(tick.containsValue(growthTime)){
+            if(tick.get(this) == growthTime){
                 Tmp.v1.rnd(Mathf.random(spread));
-                for (int i = 0; i <(Mathf.random(0,spawnAmountRand)+spawnAmount); i++) {
+                int rand = (Mathf.random(0,spawnAmountRand)+spawnAmount);
+                for (int i = 0; i <rand; i++) {
                     Unit u = nextStage.create(team);
                     u.set(x + Tmp.v1.x, y + Tmp.v1.y);
                     u.rotation = faceOutwards ? Tmp.v1.angle() : rotation + Mathf.range(5.0F);

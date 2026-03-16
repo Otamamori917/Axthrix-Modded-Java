@@ -20,7 +20,7 @@ import java.util.*;
 
 import static mindustry.Vars.*;
 
-public class PayloadAmmoBlock extends Block{
+public class PayloadAmmoBlock extends AxBlock{
     public BulletType explosionBullet;
     public int explosions = 1;
     public float explosionArea = 0f;

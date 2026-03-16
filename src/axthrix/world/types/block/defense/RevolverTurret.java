@@ -67,7 +67,7 @@ public class RevolverTurret extends AxItemTurret implements RevolverLogic {
         super.setBars();
 
         addBar("aj-rounds", (RevolverTurretBuild entity) -> new Bar(
-                () ->  (entity.cartridges > 0) ? Core.bundle.format("bar.aj-rounds", Strings.autoFixed(entity.cartridges, 20)) : Core.bundle.format("bar.aj-reload"),
+                () ->  (entity.cartridges > 0) ? Core.bundle.format("bar.aj-rounds", entity.cartridges) : Core.bundle.format("bar.aj-reload"),
                 () ->  (entity.cartridges > 0) ? Pal.ammo : Pal.orangeSpark,
                 () -> (entity.cartridges > 0) ? (float)entity.cartridges / maxCartridges : Math.abs((entity.reloadConCartridges / cartridgeReloadTime) - 1)
         ));

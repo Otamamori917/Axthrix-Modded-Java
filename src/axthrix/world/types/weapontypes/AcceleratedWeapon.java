@@ -1,5 +1,6 @@
 package axthrix.world.types.weapontypes;
 
+import arc.Core;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Strings;
@@ -9,6 +10,7 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.world.meta.StatUnit;
 
 public class AcceleratedWeapon extends Weapon {
     public float accelCooldownTime = 120f;
@@ -36,18 +38,18 @@ public class AcceleratedWeapon extends Weapon {
             float bonusPerSecond = (accelPerSecond / reload) * 100f;
 
             t.row();
-            t.add("[lightgray]Fire Rate Boost: [white]+" + Strings.autoFixed(bonusPerSecond, 1) + "%[lightgray]/sec while firing");
+            t.add("[lightgray]"+ Core.bundle.format("stat.aj-fire-rate") +" "+ Core.bundle.format("stat.aj-bonus")+": [white]+" + Strings.autoFixed(bonusPerSecond, 1) + "%[lightgray] "+ StatUnit.perSecond.localized());
 
             t.row();
             float maxBonus = ((reload / minReload) - 1) * 100f;
-            t.add("[lightgray]Max Fire Rate Bonus: [white]+" + Mathf.round(maxBonus) + "%");
+            t.add("[lightgray]"+ Core.bundle.format("stat.aj-max") +" "+ Core.bundle.format("stat.aj-fire-rate") +" "+ Core.bundle.format("stat.aj-bonus")+": [white]+" + Mathf.round(maxBonus) + "%");
         }
 
         if(canOverheat){
             t.row();
-            t.add("[lightgray]Overheat After: [white]" + Strings.autoFixed(overheatDuration / 60f, 1) + " [lightgray]seconds of firing");
+            t.add("[lightgray]"+ Core.bundle.format("stat.aj-overheat") +" "+ Core.bundle.format("stat.aj-after")+": [white]" + Strings.autoFixed(overheatDuration / 60f, 1) + " [lightgray]"+ StatUnit.seconds.localized());
             t.row();
-            t.add("[lightgray]Overheat Cooldown: [white]" + Strings.autoFixed(overheatCooldown / 60f, 1) + " [lightgray]seconds");
+            t.add("[lightgray]"+ Core.bundle.format("stat.aj-overheat") +" "+ Core.bundle.format("stat.aj-cooldown")+": [white]" + Strings.autoFixed(overheatCooldown / 60f, 1) + " [lightgray]"+ StatUnit.seconds.localized());
         }
     }
 

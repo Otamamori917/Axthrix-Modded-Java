@@ -4,13 +4,15 @@ import arc.Core;
 import arc.struct.Seq;
 import axthrix.world.types.AxFaction;
 import axthrix.world.util.AxStats;
-import mindustry.Vars;
 import mindustry.world.Block;
 
-
-import static mindustry.Vars.state;
-
 public class AxBlock extends Block {
+    public float accumulationResistanceHeat = 1f;
+    public float accumulationResistanceCold = 1f;
+
+
+    public float effectResistanceHeat = 1f;
+    public float effectResistanceCold = 1f;
 
     public Seq<AxFaction> faction = new Seq<>();
     public AxBlock(String name)

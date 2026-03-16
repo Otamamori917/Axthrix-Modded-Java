@@ -6,10 +6,7 @@ import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
 import arc.util.Time;
-import axthrix.content.AxFactions;
-import axthrix.content.AxLiquids;
-import axthrix.content.AxthrixSounds;
-import axthrix.content.AxthrixStatus;
+import axthrix.content.*;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
@@ -69,12 +66,13 @@ public class AxthrixUnits {
             //Support Walkers |Protect|
                 barrier, blockade, palisade, parapet, impediment,
             //Specialist Tanks |Energy/Gem|
-               anagh,akshaj,amitojas,agnitejas,ayustejas,
-        //Air
+               anagh,akshaj,akarsh,arkatejas,ayustejas,
+
+    //Air
             //Assault Helicopters |Storm/Thunder|
-                rai,zyran,tufani,styrmir,corentin,
+                rai,zyran,arashi,styrmir,mjolnir,
             //Support Airships |safety|
-                naji,haven,nagiah,abhayad,sosthenes,
+                naji,haven,nagiah,raksha,sharana,
             //Specialist Flying Mounts |carry|
                 amos,arvad,amasya,rahela,chavash,
                 //TX
@@ -83,9 +81,11 @@ public class AxthrixUnits {
                 aza,enzo,ashur,shiva,vishnu,
                 //TX
                 murugan,
-            //Specialist Spiders | Revolver |
-                sig,colt,caiber,magnum,siegfried;
+            //Berzerker Spiders | Revolver |
+            sig,sindri,sigurd,sighelm,siegfried,
+
     //Core Units |4 units|
+    shale, slate, stele, skarn;
 
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(CptrUnitEntity.class, CptrUnitEntity::new),
@@ -141,12 +141,7 @@ public class AxthrixUnits {
     public static void load(){
         setupID();
         quark = new AxUnitType("quark") {{
-            localizedName = "[orange]Quark";
             factions.add(AxFactions.axthrix);
-            description = """
-                          [orange]A little nant, the Quark is an agile hover.
-                          Quark Fires A Atomic Tri-helix.
-                          """;
             constructor = ElevationMoveUnit::create;
             ammoType = new PowerAmmoType(10);
             flying = false;
@@ -222,12 +217,7 @@ public class AxthrixUnits {
             }});
         }};
         electron = new AxUnitType("electron") {{
-            localizedName = "[orange]Electron";
             factions.add(AxFactions.axthrix);
-            description = """
-                          [orange]A Fast Attacker, Electron always has the first strike.
-                          Electron Fires a burst of super fast charged Particles.
-                          """;
             constructor = ElevationMoveUnit::create;
             ammoType = new PowerAmmoType(15);
             flying = false;
@@ -354,13 +344,7 @@ public class AxthrixUnits {
             }});
         }};
         baryon = new AxUnitType("baryon") {{
-            localizedName = "[orange]Baryon";
             factions.add(AxFactions.axthrix);
-            description = """
-                          [orange]A Large Brawler,Baryon Has 2 pistons on its back that help pump energy and expel heat.
-                          Baryon uses this to expel large amounts of heat damaging any foe that comes too close.
-                          Baryon Fires A Large Atomic Tri-helix, That Explodes Violently On Contact.
-                          """;
             constructor = ElevationMoveUnit::create;
             ammoType = new PowerAmmoType(30);
             flying = false;
@@ -551,14 +535,7 @@ public class AxthrixUnits {
             }});
         }};
         hadron = new AxUnitType("hadron") {{
-            localizedName = "[orange]Hadron";
             factions.add(AxFactions.axthrix);
-            description = """
-                          [orange]An Area defender, Hadron can lay mines behind enemy defences.
-                          Hadron stores up heat and releases it at enemy units.
-                          Hadron Fires A Large Artillery HeatMine, The mines expel heat at enemy units then decays into 4 homing particles.
-                          has 2 automatic assault railguns that slow targets and deals more damage to stuctures.
-                          """;
             constructor = ElevationMoveUnit::create;
             ammoType = new ItemAmmoType(Items.silicon);
             flying = false;
@@ -925,10 +902,6 @@ public class AxthrixUnits {
         photon = new AxUnitType("photon") {{
             localizedName = "[orange]Photon";
             description = """
-                          [white]The Light of the Gods,[orange] Photon has a Experimental light Cannon,  dubed "[white]Baldur[orange]".
-                          Photon stores up heat and releases it at enemy units.
-                          Photon hits its enemies with the light of the gods themselves, Leaving nothing left of the target.
-                          Has 2 Large automatic assault railguns that slow targets and deals more damage to stuctures.
                           """;
             constructor = ElevationMoveUnit::create;
             factions.add(AxFactions.axthrix);
@@ -1427,11 +1400,6 @@ public class AxthrixUnits {
         }};
         //support walkers
         barrier = new AxUnitType("barrier"){{
-            localizedName = "[green]Barrier";
-            description = """
-                          [green].
-                          Barrier Fires A single Nanobot that deals DOT.
-                          """;
             ammoType = new ItemAmmoType(Items.silicon);
             speed = 0.55f;
             hitSize = 6f;
@@ -1441,6 +1409,16 @@ public class AxthrixUnits {
             boostMultiplier = 2.5f;
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
+
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.barriShield, 2, 10f, 12f, 600f));
+            abilities.add(new SwarmIntelligenceAbility(){{
+                armorBonus = 1;
+                speedBonus = 0.06f;
+                healthRegenBonus = 0.15f;
+                buildSpeedBonus = rangeBonus = damageBonus = reloadBonus = 0;
+            }});
+
+
             weapons.add(new Weapon("puw"){{
                 shootSound = Sounds.shootSap;
                 shootY = 2f;
@@ -1492,6 +1470,8 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
 
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 3, 17f, 16f, 300f));
+            abilities.add(new SwarmIntelligenceAbility());
             parts.add(
                     new LightningPart(){{
                         mirror = true;
@@ -1548,13 +1528,6 @@ public class AxthrixUnits {
         }};
 
         palisade = new AxUnitType("palisade"){{
-            localizedName = "[green]Palisade";
-            description = """
-                          [green]A Nimble Walker Deals Heavy Damage at close quarters.
-                          Protects Allies with 3 small but durable shield drones
-                          Palisade Fires A Wave of Nanobots.[]
-                          [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
-                          """;
             ammoType = new ItemAmmoType(Items.silicon);
             armor = 12f;
             speed = 0.8f;
@@ -1569,34 +1542,9 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationIII);
 
-            abilities.add(
-                    new DroneSpawnAbility(){{
-                        spawnTime = 300;
-                        dRot = 90;
-                        dY = 20;
-                        moveY = 10;
-                        drone = AxthrixDrones.paliShield;
-                    }},new DroneSpawnAbility(){{
-                        droneSlot = 1;
-                        spawnTime = 300;
-                        dRot = 330;
-                        dY = -10;
-                        moveY = -5f;
-                        dX = 17.32051f;
-                        moveX = 8.66025f;
-                        drone = AxthrixDrones.paliShield;
-                    }},
-                    new DroneSpawnAbility(){{
-                        droneSlot = 2;
-                        spawnTime = 300;
-                        dRot = -150;
-                        dY = -10;
-                        moveY = -5f;
-                        dX = -17.32051f;
-                        moveX = -8.66025f;
-                        drone = AxthrixDrones.paliShield;
-                    }});
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationI, 400f, 360f, 30){{
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 4, 20f, 16f, 300f));
+            abilities.add(new SwarmIntelligenceAbility(),
+            new SStatusFieldAbility(AxthrixStatus.vindicationI, 400f, 360f, 30){{
                 onShoot = true;
             }});
 
@@ -1668,13 +1616,6 @@ public class AxthrixUnits {
         }};
 
         parapet = new AxUnitType("parapet"){{
-            localizedName = "[green]Parapet";
-            description = """
-                          [green]A Dangerous Adversary known to fire hundreds of Nanobots that can cut though blocks like butter.
-                          Parapet Fires A large Burst of hostile Nanobots.
-                          Has two double shot missile launchers.[]
-                          [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
-                          """;
             ammoType = new ItemAmmoType(Items.silicon);
             armor = 17f;
             speed = 0.70f;
@@ -1689,42 +1630,9 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationIII);
             immunities.add(AxthrixStatus.vindicationI);
 
-            abilities.add(
-                    new DroneSpawnAbility(){{
-                        spawnTime = 350;
-                        dRot = 45;
-                        dY = dX = 17.5f;
-                        moveY = moveX = 17.5f;
-                        drone = AxthrixDrones.paliShield;
-                    }},new DroneSpawnAbility(){{
-                        droneSlot = 1;
-                        spawnTime = 350;
-                        dRot = 315;
-                        dY = -17.5f;
-                        dX = 17.5f;
-                        moveY = -17.5f;
-                        moveX = 17.5f;
-                        drone = AxthrixDrones.paliShield;
-                    }},
-                    new DroneSpawnAbility(){{
-                        droneSlot = 2;
-                        spawnTime = 350;
-                        dRot = 225;
-                        dY = dX = -17.5f;
-                        moveY = moveX = -17.5f;
-                        drone = AxthrixDrones.paliShield;
-                    }},
-                    new DroneSpawnAbility(){{
-                        droneSlot = 3;
-                        spawnTime = 350;
-                        dRot = 135;
-                        dY = 17.5f;
-                        dX = -17.5f;
-                        moveY = 17.5f;
-                        moveX = -17.5f;
-                        drone = AxthrixDrones.paliShield;
-                    }});
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 5, 26f, 16f, 300f));
+            abilities.add(new SwarmIntelligenceAbility(),
+            new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
                 onShoot = true;
             }});
 
@@ -1911,13 +1819,6 @@ public class AxthrixUnits {
             }});
         }};
         impediment = new AxUnitType("impediment"){{
-            localizedName = "[green]Impediment";
-            description = """
-                          [green]A Unit With a Monstrous Long range weaponry.
-                          Impediment Fires 2 Long range Anti tank missiles.
-                          Has a Short range Nanobot field for protection.[]
-                          [#800000]Slows Down And Gives Great resistance To itself and allies when attacking.
-                          """;
             ammoType = new ItemAmmoType(Items.silicon);
             ammoCapacity = 1000;
             armor = 25f;
@@ -1935,23 +1836,11 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.nanodiverge);
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationI);
-            abilities.add(new NanobotAbility(){{
 
-            }});
-
-
-            /*abilities.add(new ShieldArcAbility(){{
-                region = "aj-impediment-shield";
-                radius = 40f;
-                angle = 100f;
-                y = -22f;
-                regen = 0.6f;
-                cooldown = 200f;
-                max = 1000f;
-                width = 14f;
-                whenShooting = false;
-            }});*/
-            abilities.add(new SStatusFieldAbility(AxthrixStatus.vindicationIII, 400f, 360f, 90){{
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 6, 30f, 16f, 300f));
+            abilities.add(new SwarmIntelligenceAbility(),
+            new NanobotAbility(),
+            new SStatusFieldAbility(AxthrixStatus.vindicationIII, 400f, 360f, 90){{
                 onShoot = true;
             }});
 
@@ -2049,13 +1938,6 @@ public class AxthrixUnits {
 
         //special black hole tanks
         anagh = new AxUnitType("anagh") {{
-            localizedName = "[purple]Anagh";
-            description = """
-                          Lead Engineers at [#de9458]Axthrix[] decided not to make anagh a weapon, but make anagh itself the weapon!
-                          Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
-                          get too close and it will rip nearby bullets, units, and buildings apart.
-                          has a special field around Anagh preventing allies from being effected by its Blackhole.
-                          """;
             treadPullOffset = 0;
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
@@ -2101,10 +1983,6 @@ public class AxthrixUnits {
 
         }};
         akshaj = new AxUnitType("akshaj") {{
-            localizedName = "[purple]Akshaj";
-            description = """
-                          
-                          """;
             treadPullOffset = 5;
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(17 - 96f/2f, 10 - 96f/2f, 19, 76)};
@@ -2177,14 +2055,7 @@ public class AxthrixUnits {
                     }});
 
         }};
-        amitojas = new AxUnitType("amitojas") {{
-            localizedName = "[purple]Amitojas";
-            description = """
-                          Lead Engineers at [#de9458]Axthrix[] decided not to make anagh a weapon, but make anagh itself the weapon!
-                          Anagh contains an Miniature Blackhole on its back which pulls in any unit or bullet close to it. 
-                          get too close and it will rip nearby bullets, units, and buildings apart.
-                          has a special field around Anagh preventing allies from being effected by its Blackhole.
-                          """;
+        akarsh = new AxUnitType("akarsh") {{
             treadPullOffset = 0;
             itemCapacity = 0;
             treadRects = new Rect[]{new Rect(12 - 32f, 8 - 32f, 11, 50)};
@@ -2258,11 +2129,6 @@ public class AxthrixUnits {
         }};
         //assault helicopters
         rai = new CopterUnitType("rai") {{
-            localizedName = "[orange]Rai";
-            description = """
-                          [orange]A Quick Helicopter, Rai is rather fast compared to other fliers but much less durable.
-                          Rai Has A Coil Up Tesla Weapon Needs to Ramp up to top Firerate and Cooldown to stop firing.
-                          """;
             itemCapacity = 0;
             factions.add(AxFactions.axthrix);
             health = 250;
@@ -2331,11 +2197,6 @@ public class AxthrixUnits {
             );
         }};
         zyran = new CopterUnitType("zyran") {{
-            localizedName = "[orange]Zyran";
-            description = """
-                          [orange]Fast As Thunder, Zyran Is a fast and agile Helicopter.
-                          Releases Static Energy at enemy blocks with power, can recharge at ally Power Nodes, or over time.
-                          """;
             itemCapacity = 0;
             factions.add(AxFactions.axthrix);
             health = 680;
@@ -2486,11 +2347,6 @@ public class AxthrixUnits {
         }};
         //support airships
         naji = new CopterUnitType("naji") {{
-            localizedName = "[green]Naji";
-            description = """
-                          [green]A Slow Moving Airship, Naji Supports its allies With a healing burst.
-                          Naji Deploys an Ivy Sentry that defends the area its in for a short while.
-                          """;
             itemCapacity = 40;
             factions.add(AxFactions.axthrix);
             float unitRange = 28 * tilesize;
@@ -2622,11 +2478,6 @@ public class AxthrixUnits {
         }};
 
         haven = new CopterUnitType("haven") {{
-            localizedName = "[green]Haven";
-            description = """
-                          [green]A Slow Moving Airship, Naji Supports its allies With a healing burst.
-                          Naji Deploys an Ivy Sentry that defends the area its in for a short while.
-                          """;
             itemCapacity = 40;
             factions.add(AxFactions.axthrix);
             float unitRange = 28 * tilesize;
@@ -2722,12 +2573,6 @@ public class AxthrixUnits {
         //amos,arvad,amasya,anuvaha,ambuvahini,
         amos = new MountUnitType("amos")
         {{
-            localizedName = "Amos";
-            description = """
-                          Can pick up and use any 1x1 Turret.
-                          Unit Item Storage will restock current attached turret.
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
 
             constructor = PayloadUnit::create;
             health = 600;
@@ -2754,13 +2599,6 @@ public class AxthrixUnits {
         }};
         arvad = new MountUnitType("arvad")
         {{
-            localizedName = "arvad";
-            description = """
-                          Can pick up and use any 2x2 Turret or smaller.
-                          Unit Item Storage will restock current attached turret.[]
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
-
             constructor = PayloadUnit::create;
             health = 1800;
             armor = 5;
@@ -2786,13 +2624,6 @@ public class AxthrixUnits {
         }};
         amasya = new MountUnitType("amasya")
         {{
-            localizedName = "amasya";
-            description = """
-                          Can pick up and use any 3x3 Turret or smaller.
-                          Unit Item Storage will restock current attached turret.[]
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
-
             constructor = PayloadUnit::create;
             health = 5400;
             armor = 8;
@@ -2820,12 +2651,7 @@ public class AxthrixUnits {
         }};
         rahela = new MountUnitType("rahela")
         {{
-            localizedName = "Rahela";
-            description = """
-                          Can pick up and use any 4x4 Turret or smaller.
-                          Unit Item Storage will restock current attached turret.[]
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
+
 
             constructor = PayloadUnit::create;
             health = 16200;
@@ -2861,12 +2687,6 @@ public class AxthrixUnits {
         }};
         chavash = new MountUnitType("chavash")
         {{
-            localizedName = "chavash";
-            description = """
-                          Can pick up and use any 5x5 Turret or smaller.
-                          Unit Item Storage will restock current attached turret.[]
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
 
             constructor = PayloadUnit::create;
             health = 32500;
@@ -2891,15 +2711,6 @@ public class AxthrixUnits {
         }};
         atlas = new MountUnitType("atlas")//Todo Might have weapons or abilities
         {{
-            localizedName = "atlas";
-            description = """
-                          [orange]|Teir X Unit|
-                          (This Means This Is A Boss)[]
-                          --------------------------------------------------
-                          Can pick up and use any 6x6 Turret or smaller.
-                          Unit Item Storage will restock current attached turret.[]
-                          [#800000]Only the first turret picked up will be operational.
-                          """;
 
             constructor = PayloadUnit::create;
             health = 65000;
@@ -2957,37 +2768,41 @@ public class AxthrixUnits {
             );
             abilities.add(
                     new DroneSpawnAbility(){{
-                        spawnTime = 350;
+                        spawnTime = 50;
+                        spawnOnShoot = true;
                         dRot = 45;
-                        dY = dX = 17.5f;
-                        moveY = moveX = 17.5f;
+                        dY = dX = 1f;
+                        moveY = moveX = 4f;
                         drone = AxthrixDrones.wattGround;
                     }},new DroneSpawnAbility(){{
                         droneSlot = 1;
-                        spawnTime = 350;
+                        spawnTime = 50;
+                        spawnOnShoot = true;
                         dRot = 315;
-                        dY = -17.5f;
-                        dX = 17.5f;
-                        moveY = -17.5f;
-                        moveX = 17.5f;
+                        dY = -1f;
+                        dX = 1f;
+                        moveY = -4f;
+                        moveX = 4f;
                         drone = AxthrixDrones.wattFlame;
                     }},
                     new DroneSpawnAbility(){{
                         droneSlot = 2;
-                        spawnTime = 350;
+                        spawnTime = 50;
+                        spawnOnShoot = true;
                         dRot = 225;
-                        dY = dX = -17.5f;
-                        moveY = moveX = -17.5f;
+                        dY = dX = -1f;
+                        moveY = moveX = -4f;
                         drone = AxthrixDrones.wattAir;
                     }},
                     new DroneSpawnAbility(){{
                         droneSlot = 3;
-                        spawnTime = 350;
+                        spawnTime = 50;
+                        spawnOnShoot = true;
                         dRot = 135;
-                        dY = 17.5f;
-                        dX = -17.5f;
-                        moveY = 17.5f;
-                        moveX = -17.5f;
+                        dY = 1f;
+                        dX = -1f;
+                        moveY = 4f;
+                        moveX = -4f;
                         drone = AxthrixDrones.wattIce;
                     }});
 
@@ -3145,6 +2960,113 @@ public class AxthrixUnits {
                     }});
             }
         };
+        shale = new UnitType("shale"){{
+            constructor = PayloadUnit::create;
+
+            flying = true;
+            speed = 2f;
+            drag = 0.08f;
+            accel = 0.1f;
+            rotateSpeed = 3f;
+
+            health = 800;
+            armor = 5f;
+            hitSize = 14f;
+            itemCapacity = 8*12;
+
+            // Payload capacity
+            payloadCapacity = tilePayload * (8 * 2);
+            pickupUnits = false;
+
+            buildSpeed = 1.5f;
+
+            abilities.addAll(
+                    // Two side drones that help build
+                    new DroneSpawnAbility(){{
+                        drone = AxthrixDrones.builderDrone;
+                        spawnTime = 180f;
+                        dX = -22f;
+                        dRot = -90;
+                        moveX = moveY = 0f;
+                        number = 2;
+                    }},
+                    new DroneSpawnAbility(){{
+                        droneSlot = 1;
+                        drone = AxthrixDrones.builderDrone;;
+                        spawnTime = 180f;
+                        dX = 22f;
+                        dRot = 90;
+                        moveX = moveY = 0f;
+                        display = false;
+                    }},
+                    new SwarmIntelligenceAbility(){{
+                        damageBonus = reloadBonus = rangeBonus = speedBonus  = armorBonus = shieldRegenBonus = 0f;
+                        healthRegenBonus = 0.1f;
+                        buildSpeedBonus = 0.2f;
+                    }},
+                    new ScrapCollectorAbility(){{
+                        collectionRange = 240f;
+                        itemType = AxItems.ingot;
+                        armorMultiplier = 1.2f; // Gets 1.5x enemy armor as scrap
+                    }},
+
+                    new PayloadCrafterAbility(){{
+                        ticksPerCost = 10;
+                        itemType = AxItems.ingot;
+                        addBlock(Blocks.copperWall, 8,false);
+                        addBlock(Blocks.copperWallLarge, 24,false);
+                        addUnit(barrier,64,true);
+                        addUnit(rai,96,true);
+                    }}
+            );
+
+
+            weapons.add(new Weapon("block-launcher"){{
+                reload = 1f;
+                x = 0f;
+                y = 8f;
+                shoot.firstShotDelay = AxthrixFx.blockLaunch.lifetime;
+
+                shootSound = Sounds.padLaunch;
+
+                bullet = new BasicBulletType(){{
+                    chargeEffect = AxthrixFx.blockLaunch;
+                    sprite = "block-copper-wall"; // Use block sprite
+
+                    speed = 8f;
+                    damage = 80f;
+                    lifetime = 30f;
+
+                    width = 8f;
+                    height = 8f;
+                    shrinkY = 0f;
+
+                    // Spinning effect
+                    spin = 12f; // Rotations per second
+
+                    splashDamage = 50f;
+                    splashDamageRadius = 20f;
+
+                    hitEffect = Fx.flakExplosion;
+                    despawnEffect = Fx.blockCrash;
+
+                    // Make it look like a flying block
+                    pierce = false;
+                    pierceBuilding = true;
+
+                    fragBullets = 3;
+                    fragBullet = new BasicBulletType(){{
+                        sprite = "block-copper-wall-large";
+                        speed = 3f;
+                        lifetime = 20f;
+                        damage = 20f;
+                        width = 4f;
+                        height = 4f;
+                        spin = 8f;
+                    }};
+                }};
+            }});
+        }};
 
         immuneUnits.add(
                 anagh
@@ -3153,10 +3075,10 @@ public class AxthrixUnits {
                 akshaj
         );
         immuneUnits.add(
-                amitojas
+                akarsh
         );
         immuneUnits.add(
-                agnitejas
+                arkatejas
         );
         immuneUnits.add(
                 ayustejas

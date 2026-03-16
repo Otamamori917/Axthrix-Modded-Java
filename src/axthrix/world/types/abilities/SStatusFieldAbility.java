@@ -40,6 +40,14 @@ public class SStatusFieldAbility extends Ability{
     }
     @Override
     public void addStats(Table t){
+        if (atNotShoot){
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-not-shoot"));
+            t.row();
+        }
+        if (onShoot){
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-on-shoot"));
+            t.row();
+        }
         t.add("[lightgray]" + Stat.reload.localized() + ": [white]" + Strings.autoFixed(60f / reload, 2) + " " + StatUnit.perSecond.localized());
         t.row();
         t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(range / tilesize, 2) + " " + StatUnit.blocks.localized());

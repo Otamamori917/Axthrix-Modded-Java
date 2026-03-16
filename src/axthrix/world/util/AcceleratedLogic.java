@@ -32,19 +32,14 @@ public interface AcceleratedLogic {
     default void addAcceleratedStats(Stats stats) {
         if(getAcceleratedBonus() != 1){
             stats.add(AxStats.maxFireRateBonus,
-                    60.0F / getReload() * getShootShots() * (getAcceleratedBonus() * getAcceleratedSteps() - 1) + "/sec ~ [stat]" +
-                            ((getAcceleratedBonus() - 1) * getAcceleratedSteps()) * 100 + "% []Bonus",
+                    60.0F / getReload() * getShootShots() * (getAcceleratedBonus() * getAcceleratedSteps() - 1) + StatUnit.perSecond.localized()+" ~ [stat]" +
+                            ((getAcceleratedBonus() - 1) * getAcceleratedSteps()) * 100 + "% []"+Core.bundle.format("stat.aj-bonus"),
                     StatUnit.none);
             stats.add(AxStats.timeForMaxBonus, (getAcceleratedDelay() * getAcceleratedSteps()) / 60, StatUnit.seconds);
         }
         if (burnsOut()){
             stats.add(AxStats.overheat, ((getAcceleratedDelay() * getAcceleratedSteps()) + getBurnoutDelay()) / 60, StatUnit.seconds);
             stats.add(AxStats.timeToCool, getCooldownDelay() / 60, StatUnit.seconds);
-        }
-        if (getCoolant() != null) {
-            stats.remove(Stat.booster);
-            stats.add(Stat.booster, StatValues.boosters(getReload(), ((mindustry.type.LiquidStack)getCoolant()).amount,
-                    getCoolantMultiplier(), true, (l) -> ((mindustry.type.Liquid)l).coolant && consumesLiquid(l)));
         }
     }
 

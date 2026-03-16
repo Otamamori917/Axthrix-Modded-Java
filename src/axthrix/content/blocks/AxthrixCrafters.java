@@ -5,23 +5,18 @@ import arc.struct.Seq;
 import axthrix.content.AxFactions;
 import axthrix.content.AxItems;
 import axthrix.content.AxLiquids;
+import axthrix.content.units.AxthrixUnits;
 import axthrix.world.types.block.LiquidDeposit;
+import axthrix.world.types.block.effect.GeneratorCoreBlock;
 import axthrix.world.types.block.effect.NanobotProjector;
-import axthrix.world.types.block.production.AxGenericCrafter;
-import axthrix.world.types.block.production.AxMulticrafter;
-import axthrix.world.types.block.production.AxSeparator;
-import axthrix.world.types.block.production.PayloadProducer;
+import axthrix.world.types.block.production.*;
 import axthrix.world.util.AxRecipe;
 import axthrix.world.util.AxRecipeSelector;
 import mindustry.content.*;
 import mindustry.gen.Sounds;
 import mindustry.type.*;
 import mindustry.world.Block;
-import mindustry.world.blocks.environment.Floor;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.production.Separator;
 import mindustry.world.draw.*;
-import mindustry.world.meta.BlockGroup;
 import multicraft.*;
 
 import static axthrix.content.blocks.PayloadAmmoBlocks.*;
@@ -29,8 +24,9 @@ import static mindustry.type.ItemStack.with;
 
 public class AxthrixCrafters {
 	public static Block
-
+            heatGenerator,cryoForge,
 			nanobotProjector,nanobotDome,nanobotRealm,
+            lithicCore, cratonCore, deltaicCore, batholithCore,
 
     //multicrafters
     centrifugalAccelerator,componentPrinter,pCoilPress,
@@ -50,23 +46,73 @@ public class AxthrixCrafters {
 
 
     public static void load() {
+		// Power generator
+		heatGenerator = new TemperaturePowerGenerator("heat-generator"){{
+			size = 2;
+			minTemperature = 50f;
+			maxTemperature = 100f;
+			powerProduction = 15f;
+			requiresHeat = true;
+			effectResistanceHeat = 0.2f;
+			accumulationResistanceCold = 0.4f;
+			requirements(Category.power, with(
+					Items.copper, 75,
+					Items.lead, 100));
+		}};
+
+        // Crafter
+		cryoForge = new TemperatureCrafter("cryo-forge"){{
+			size = 3;
+			minTemperature = 40f;
+			maxTemperature = 100f;
+			requiresHeat = false; // Needs cold
+			effectResistanceCold = 0;
+			accumulationResistanceHeat = 0.4f;
+
+			consumeItems(ItemStack.with(AxItems.tungstenCoil, 8, AxItems.iodine, 4, AxItems.silverCoil,10));
+			outputItem = new ItemStack(AxItems.coolingAssembly, 2);
+			craftTime = 120f;
+			requirements(Category.crafting, with(
+					Items.copper, 75,
+					Items.lead, 100));
+
+		}};
+		lithicCore = new GeneratorCoreBlock("lithic-core"){{
+			size = 3;
+			health = 3500;
+
+			powerProduction = 12f / 60f;
+			costRate = 235f;
+
+
+			addBoost(AxItems.sulfur, 16f);
+			faction = Seq.with(AxFactions.axthrix);
+
+			unitType = AxthrixUnits.shale;
+			itemCapacity = 10000;
+			requirements(Category.effect, with(
+					Items.copper, 75,
+					Items.lead, 100));
+
+		}};
 		nanobotProjector = new NanobotProjector("nanobot-projector"){{
-			size = 1;
-			health = 40;
-			range = 9*8f;
+			size = 2;
+			health = 280;
+			range = 10*8f;
 			damage = 5;
 			buildingDamageMultiplier = 0.10f;
 			baseTickRate = 30f;
-			liquidBoost = 3.45f;
-			healAmount = 2f;
-			healPercent = 0.08f;
-			bulletSpeedBonus = 1.03f;
+			itemTickRate = 60f;
+			liquidBoost = 3f;
+			healAmount = 2.5f;
+			healPercent = 0.09f;
+			bulletSpeedBonus = 1.02f;
 			bulletSlowdown = 0.995f;
 			statusDuration = baseTickRate;
-			efficiencyBoost = 1.2f;
-			nanobotSize = 0.25f;
+			efficiencyBoost = 1.25f;
+			nanobotSize = 0.4f;
 			nanobotSpeed = 2.5f;
-			nanobotCount = 6;
+			nanobotCount = 12;
 			stackPenalty = 0.8f;
 
 			faction = Seq.with(AxFactions.axthrix);
@@ -76,14 +122,75 @@ public class AxthrixCrafters {
 					Items.lead, 100));
 
 			consumePower(1.5f);
-			consumeItem(AxItems.sulfur, 4);
+			consumeItem(AxItems.sulfur, 1);
 			consumeLiquid(AxLiquids.mercury, 0.2f).boost();
+		}};
+		nanobotDome = new NanobotProjector("nanobot-dome"){{
+			size = 3;
+			health = 380;
+			range = 18*8f;
+			damage = 8;
+			buildingDamageMultiplier = 0.10f;
+			baseTickRate = 25f;
+			itemTickRate = 40f;
+			liquidBoost = 2.5f;
+			healAmount = 4f;
+			healPercent = 0.1f;
+			bulletSpeedBonus = 1.03f;
+			bulletSlowdown = 0.992f;
+			statusDuration = baseTickRate;
+			efficiencyBoost = 1.45f;
+			nanobotSize = 0.6f;
+			nanobotSpeed = 3f;
+			nanobotCount = 18;
+			stackPenalty = 0.8f;
+
+			faction = Seq.with(AxFactions.axthrix);
+
+			requirements(Category.effect, with(
+					Items.copper, 75,
+					Items.lead, 100));
+
+			consumePower(4.25f);
+			consumeItem(AxItems.sulfur, 1);
+			consumeLiquid(AxLiquids.mercury, 0.4f).boost();
+		}};
+		nanobotRealm = new NanobotProjector("nanobot-realm"){{
+			size = 5;
+			health = 890;
+			range = 45*8f;
+			damage = 18;
+			buildingDamageMultiplier = 0.05f;
+			baseTickRate = 20f;
+			itemTickRate = 40f;
+			liquidBoost = 2f;
+			healAmount = 3f;
+			healPercent = 0.1f;
+			bulletSpeedBonus = 1.05f;
+			bulletSlowdown = 0.990f;
+			statusDuration = baseTickRate;
+			efficiencyBoost = 1.8f;
+			nanobotSize = 0.9f;
+			nanobotSpeed = 2f;
+			nanobotCount = 28;
+			stackPenalty = 0.8f;
+
+			faction = Seq.with(AxFactions.axthrix);
+
+			requirements(Category.effect, with(
+					Items.copper, 75,
+					Items.lead, 100));
+
+			consumePower(8f);
+			consumeItem(AxItems.sulfur, 2);
+			consumeLiquid(AxLiquids.mercury, 0.8f).boost();
 		}};
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
 			size = 4;
+			selector = AxRecipeSelector.Simple;
 			resolvedRecipes = Seq.with(
 					new AxRecipe(
 							//IOEntry input
@@ -127,7 +234,7 @@ public class AxthrixCrafters {
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
-			selector = AxRecipeSelector.Detailed;
+			selector = AxRecipeSelector.Simple;
 			size = 2;
 			resolvedRecipes = Seq.with(
 					new AxRecipe(
@@ -146,25 +253,25 @@ public class AxthrixCrafters {
 							),
 							//float craftTime in ticks
 							120f
-					),
-
-					new AxRecipe(
-							//IOEntry input
-							new IOEntry(
-									//item input
-									Seq.with(ItemStack.with(AxItems.tungstenCoil, 2, AxItems.copperCoil, 4, AxItems.silverCoil,1)),
-									//Liquid input
-									Seq.with(LiquidStack.with(Liquids.cryofluid, 0.265f))
-							),
-							//IOEntry output
-							new IOEntry(
-									Seq.with(ItemStack.with(AxItems.coolingAssembly, 1)),
-									//output fluids, again, it can be empty
-									Seq.with()
-							),
-							//float craftTime in ticks
-							260f
-					)
+				    )//,
+//
+//					new AxRecipe(
+//							//IOEntry input
+//							new IOEntry(
+//									//item input
+//									Seq.with(ItemStack.with(AxItems.tungstenCoil, 2, AxItems.copperCoil, 4, AxItems.silverCoil,1)),
+//									//Liquid input
+//									Seq.with(LiquidStack.with(Liquids.cryofluid, 0.265f))
+//							),
+//							//IOEntry output
+//							new IOEntry(
+//									Seq.with(ItemStack.with(AxItems.coolingAssembly, 1)),
+//									//output fluids, again, it can be empty
+//									Seq.with()
+//							),
+//							//float craftTime in ticks
+//							260f
+//					)
 			);
 			craftEffect = Fx.bubble;
 		}};
@@ -172,7 +279,7 @@ public class AxthrixCrafters {
 		{{
 			faction = Seq.with(AxFactions.axthrix);
 			requirements(Category.crafting, with(Items.copper,1));
-			selector = AxRecipeSelector.Detailed;
+			selector = AxRecipeSelector.Simple;
 			size = 1;
 			drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
@@ -260,7 +367,7 @@ public class AxthrixCrafters {
 
 		chemicalSeparator = new AxSeparator("chemical-separator"){{
 			faction = Seq.with(AxFactions.axthrix);
-			localizedName = "Chemical Separator";
+
 			requirements(Category.crafting, with(Items.copper, 1));
 			results = with(
 					AxItems.sulfur, 8,

@@ -72,33 +72,33 @@ public class AttractionFieldAbility extends Ability {
     @Override
     public void addStats(Table t){
         if (whenNotShooting){
-            t.add("[lightgray]Active only While Not Shooting");
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-not-shoot"));
             t.row();
         }
         if (whenShooting){
-            t.add("[lightgray]Active only While Shooting");
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-on-shoot"));
             t.row();
         }
         t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed(30f * damage, 2) + " " + StatUnit.perSecond.localized());
         t.row();
         if (damageRadius != suctionRadius) {
-            t.add("[lightgray]Attack " + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(damageRadius / tilesize, 2) + " " + StatUnit.blocks.localized());
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-attack") + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(damageRadius / tilesize, 2) + " " + StatUnit.blocks.localized());
             t.row();
-            t.add("[lightgray]Attraction " + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(suctionRadius / tilesize, 2) + " " + StatUnit.blocks.localized());
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-attraction") + ": [white]" +  Strings.autoFixed(suctionRadius / tilesize, 2) + " " + StatUnit.blocks.localized());
             t.row();
         }else{
             t.add("[lightgray]" + Stat.shootRange.localized() + ": [white]" +  Strings.autoFixed(suctionRadius / tilesize, 2) + " " + StatUnit.blocks.localized());
             t.row();
         }
         if (!repel){
-            t.add("[lightgray]Attracting Force");
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-Art"));
             t.row();
         } else {
-            t.add("[lightgray]Repelling Force");
+            t.add("[lightgray]"+Core.bundle.format("stat.aj-Rpl"));
             t.row();
         }
 
-        t.add("[#800000]will cancel out other's gravity based forces but not the damage");
+        t.add("[#800000]"+Core.bundle.format("stat.aj-cb-warning"));
         t.row();
     }
 

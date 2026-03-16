@@ -7,10 +7,13 @@ import arc.math.geom.Vec2;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.world.types.abilities.NanobotAbility;
+import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
+import mindustry.entities.abilities.Ability;
 import mindustry.gen.*;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
@@ -22,12 +25,12 @@ import static mindustry.Vars.*;
 
 public class NanobotLogic {
 
-    // Static map for nanobots - supports both units and buildings
+
     private static final HashMap<Object, Seq<Nanobot>> ownerNanobots = new HashMap<>();
 
-    // Shared parameters
+
     public static class NanobotParams {
-        public float x, y; // Position
+        public float x, y;
         public float damage = 2f;
         public float healAmount = 3f;
         public float healPercent = 1f;
@@ -39,7 +42,7 @@ public class NanobotLogic {
         public float bulletSlowdown = 0.6f;
 
         public float efficiencyBoost = 1.5f;
-        public float stackPenalty = 0.5f;
+        public float stackPenalty = 0.8f;
 
         public StatusEffect status;
         public float statusDuration = 60f * 3f;
@@ -53,7 +56,6 @@ public class NanobotLogic {
         public float nanobotSpeed = 2f;
 
         public mindustry.game.Team team;
-        public boolean hasNanobot = false; // For anti-stacking check
     }
 
     public static void initNanobots(Object owner, float x, float y, int count){
@@ -109,19 +111,25 @@ public class NanobotLogic {
 
         Draw.reset();
     }
+    public static boolean hasNanobot(Unit unit){
+        for(Ability ability : unit.abilities){
+            if(ability instanceof NanobotAbility) return true;
+        }
+        return false;
+    }
 
     public static void updateNanobots(Object owner, NanobotParams params, float timer, boolean useAmmo, Runnable consumeAmmo){
         Seq<Nanobot> nanobots = ownerNanobots.get(owner);
         if(nanobots == null) return;
 
-        // Apply effects every tickRate
+
         if(timer >= params.tickRate && (!useAmmo || consumeAmmo == null)){
 
-            // Heal/damage units
+
             Units.nearby(null, params.x, params.y, params.range, other -> {
                 if(other.team == params.team){
                     if(other.damaged()){
-                        float healMultiplier = params.hasNanobot ? params.stackPenalty : 1f;
+                        float healMultiplier = hasNanobot(other) || other.type instanceof DroneUnitType ? params.stackPenalty : 1f;
                         float totalHeal = (params.healAmount + (other.maxHealth * params.healPercent / 100f)) * healMultiplier;
                         other.heal(totalHeal);
                         params.healEffect.at(other.x, other.y, 0f, params.color);
@@ -135,7 +143,6 @@ public class NanobotLogic {
                 }
             });
 
-            // Heal/damage buildings
             indexer.eachBlock(null, params.x, params.y, params.range, other -> true, building -> {
                 if(building.team == params.team){
                     if(building.damaged()){
@@ -151,7 +158,7 @@ public class NanobotLogic {
                 }
             });
 
-            // Affect bullets
+
             Groups.bullet.intersect(params.x - params.range, params.y - params.range, params.range * 2, params.range * 2, bullet -> {
                 if(bullet.within(params.x, params.y, params.range)){
                     if(bullet.team == params.team){

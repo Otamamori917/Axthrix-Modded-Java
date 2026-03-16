@@ -198,7 +198,7 @@ public class IkatusaUnitType extends AxUnitType{
             }
 
         }else{
-            throw new ClassCastException("Its Supposed to be an egg doofus");
+            throw new ClassCastException(Core.bundle.format("error.aj-egg"));
         }
     }
 }

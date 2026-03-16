@@ -58,12 +58,12 @@ public class ChargingShotgunTurret extends AxItemTurret {
 
 
 
-        stats.add(Stat.inaccuracy, minSpread + " - " + maxSpread+ " degrees");
-        stats.add(Stat.charge, Strings.autoFixed(maxChargeTime / 60f, 1) + " seconds");
-        stats.add(Stat.reload, "Min: " + 60.0F / reload + "/sec" +
-                " - Max: " + 60.0F / (reload + maxChargeTime) + "/sec");
-        stats.add(Stat.shootRange, "Min: " + AxUtil.GetRange(4f, 10 * minLifetimeMultiplier) + " blocks" +
-                " - Max: " + AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier) + " blocks");
+        stats.add(Stat.inaccuracy, minSpread + " - " + maxSpread +" "+ StatUnit.degrees.localized());
+        stats.add(Stat.charge, Strings.autoFixed(maxChargeTime / 60f, 1) + " "+ StatUnit.seconds.localized());
+        stats.add(Stat.reload, Core.bundle.format("stat.aj-min") +": " + 60.0F / reload + " "+ StatUnit.perSecond.localized() +
+                " - "+Core.bundle.format("stat.aj-max") +": " + 60.0F / (reload + maxChargeTime) + " "+ StatUnit.perSecond.localized());
+        stats.add(Stat.shootRange, Core.bundle.format("stat.aj-min") +": " + AxUtil.GetRange(4f, 10 * minLifetimeMultiplier) + " " + StatUnit.blocks.localized() +
+                " - "+Core.bundle.format("stat.aj-max") +": " + AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier) + " "+ StatUnit.blocks.localized());
     }
 
     public class ChargingShotgunBuild extends ItemTurretBuild {

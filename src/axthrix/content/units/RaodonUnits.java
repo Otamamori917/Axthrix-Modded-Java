@@ -202,7 +202,12 @@ public class RaodonUnits {
 
             targetFlags = new BlockFlag[]{BlockFlag.battery,BlockFlag.generator, null};
 
-            abilities.add(new AfterBurnAbility());
+            abilities.add(new AfterBurnAbility(){{
+                fuelCap = 40;
+                boostForce = 60;
+                fuelRegenPerTick = 1;
+                fuelUsedPerTick = 1;
+            }});
 
             weapons.add(new Weapon(){{
                 x = y = 0f;

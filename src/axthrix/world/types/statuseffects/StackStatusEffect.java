@@ -1,4 +1,5 @@
 package axthrix.world.types.statuseffects;
+import arc.Core;
 import arc.Events;
 import arc.math.Mathf;
 import arc.util.Time;
@@ -43,38 +44,38 @@ public class StackStatusEffect extends AxStatusEffect {
         if (setStatsInfinity) {
             if (statsStatic.get(0) != 1) {
                 stats.addPercent(Stat.damageMultiplier, statsStatic.get(0));
-                if (charges != 1)stats.add(AxStats.maxDamageMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxDamageMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
             if(statsStatic.get(1) != 1) {
                 stats.addPercent(Stat.healthMultiplier, statsStatic.get(1));
-                if (charges != 1)stats.add(AxStats.maxHealthMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxHealthMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
             if(statsStatic.get(2) != 1) {
                 stats.addPercent(Stat.speedMultiplier, statsStatic.get(2));
-                if (charges != 1)stats.add(AxStats.maxSpeedMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxSpeedMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
             if(statsStatic.get(3) != 1) {
                 stats.addPercent(Stat.reloadMultiplier, statsStatic.get(3));
-                if (charges != 1)stats.add(AxStats.maxReloadSpeedMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxReloadSpeedMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
             if(statsStatic.get(4) != 1) {
                 stats.addPercent(Stat.buildSpeedMultiplier, statsStatic.get(4));
-                if (charges != 1)stats.add(AxStats.maxBuildSpeedMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxBuildSpeedMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
             if(statsStatic.get(4) != 1) {
                 stats.addPercent(AxStats.dragMultiplier, statsStatic.get(5));
-                if (charges != 1)stats.add(AxStats.maxDragMultiplier, "Infinity%");
+                if (charges != 1)stats.add(AxStats.maxDragMultiplier, Core.bundle.format("stat.aj-infinity")+"%");
             }
 
             if(damage > 0) {
                 stats.add(Stat.damage, damage * 60f, StatUnit.perSecond);
-                if (charges != 1)stats.add(AxStats.maxDamage, "Infinity", StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxDamage, Core.bundle.format("stat.aj-infinity"), StatUnit.perSecond);
             }
             else if(damage < 0) {
                 stats.add(Stat.healing, -damage * 60f, StatUnit.perSecond);
-                if (charges != 1)stats.add(AxStats.maxHealing, "Infinity", StatUnit.perSecond);
+                if (charges != 1)stats.add(AxStats.maxHealing, Core.bundle.format("stat.aj-infinity"), StatUnit.perSecond);
             }
-            if (charges != 1)stats.add(AxStats.maxCharges,"Infinity");
+            if (charges != 1)stats.add(AxStats.maxCharges, Core.bundle.format("stat.aj-infinity"));
         }else{
             if (statsStatic.get(0) != 1) {
                 stats.addPercent(Stat.damageMultiplier, statsStatic.get(0));

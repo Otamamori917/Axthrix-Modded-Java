@@ -6,6 +6,7 @@ import mindustry.entities.units.StatusEntry;
 import mindustry.gen.Unit;
 import mindustry.type.StatusEffect;
 import axthrix.world.util.AxStats;
+import mindustry.world.meta.StatUnit;
 
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public class AxStatusEffect extends StatusEffect {
     public void setStats(){
         super.setStats();
         if (shield != 0) {
-            stats.add(AxStats.shield, shield * 60 + "/sec");
+            stats.add(AxStats.shield, shield * 60 + " "+ StatUnit.perSecond.localized());
             stats.add(AxStats.maxShield, maxShield + "");
         }
     }

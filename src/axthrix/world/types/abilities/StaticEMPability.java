@@ -11,6 +11,7 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.core.Renderer;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
@@ -45,7 +46,7 @@ public class StaticEMPability extends Ability {
 
     public void displayBars(Unit unit, Table bars) {
         bars.add(new Bar(
-                () ->  Core.bundle.format("bar.aj-static-power" , Strings.autoFixed(currentCharge.get(unit), maxPower)),
+                () ->  Core.bundle.format("bar.aj-static-power" ,currentCharge.get(unit)),
                 () ->  (currentCharge.get(unit)>minimumPowerToDischarge) ? color.cpy().add(Color.darkGray) :color.cpy().add(Color.black),
                 () ->  (float)currentCharge.get(unit) / maxPower
         )).row();
@@ -56,28 +57,28 @@ public class StaticEMPability extends Ability {
     }
 
     public void addStats(Table t) {
-        t.add("[white]" +AxStats.staticShock.localized());
+        t.add("[white]" +Core.bundle.format("stat.aj-static-shock"));
         t.row();
         t.add("[#"+color.toString()+"]---------------------------------------------");
         t.row();
-        t.add("[lightgray]" + AxStats.chargeTimePas.localized() + ": [white]" + Strings.autoFixed(((1/passiveCharge)*maxPower)/60, 2) + " " + StatUnit.seconds.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-charge-time-pas") + ": [white]" + Strings.autoFixed(((1/passiveCharge)*maxPower)/60, 2) + " " + StatUnit.seconds.localized());
         t.row();
-        t.add("[lightgray]" + AxStats.chargeTimePow.localized() + ": [white]" + Strings.autoFixed(((1/(passiveCharge+poweredCharge))*maxPower)/60, 2) + " " + StatUnit.seconds.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-charge-time-pow") + ": [white]" + Strings.autoFixed(((1/(passiveCharge+poweredCharge))*maxPower)/60, 2) + " " + StatUnit.seconds.localized());
         t.row();
         t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed((minimumPowerToDischarge*baseDamage), 2)+ "~" +Strings.autoFixed(maxPower*baseDamage, 2));
         t.row();
         t.add("[lightgray]" + Stat.powerCapacity.localized() + ": [white]" + Strings.autoFixed(maxPower, 2)+ " " +StatUnit.powerUnits.localized());
         t.row();
-        t.add("[lightgray]" + AxStats.minimumPowerToDischarge.localized() + ": [white]" + Strings.autoFixed(minimumPowerToDischarge, 2)+ " " +StatUnit.powerUnits.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-minimum-to-discharge") + ": [white]" + Strings.autoFixed(minimumPowerToDischarge, 2)+ " " +StatUnit.powerUnits.localized());
         t.row();
 
         if(emp){
-            t.add("[lightgray]" + AxStats.emp.localized());
+            t.add("[lightgray]" + Core.bundle.format("stat.aj-emp"));
             t.row();
             t.table( u -> {
-                u.add("[lightgray]   " + AxStats.empPower.localized() + ": [red]-" + Strings.autoFixed(100*empPower, 2) + StatUnit.percent.localized()).left();
+                u.add("[lightgray]   " + Core.bundle.format("stat.aj-emp-power") + ": [red]-" + Strings.autoFixed(100*empPower, 2) + StatUnit.percent.localized()).left();
                 u.row();
-                u.add("[lightgray]   " + AxStats.empDuration.localized() + ": [white]" + Strings.autoFixed(empDuration/60, 2) + " " + StatUnit.seconds.localized()).left();
+                u.add("[lightgray]   " + Core.bundle.format("stat.aj-emp-duration") + ": [white]" + Strings.autoFixed(empDuration/60, 2) + " " + StatUnit.seconds.localized()).left();
                 u.row();
             });
         }
@@ -95,16 +96,12 @@ public class StaticEMPability extends Ability {
         if (!redirected.containsKey(unit)){
             redirected.put(unit, false);
         }
-        Units.nearbyBuildings(unit.x, unit.y, range, b -> {
-            if (b.team() == unit.team() && b.block instanceof PowerNode) {
-                if(b.power != null && b.power.graph.getLastPowerProduced() > 0.0F) {
-                    if (!(currentCharge.get(unit) >= maxPower)) {
-                        chargingFloat.replace(unit, chargingFloat.get(unit) + poweredCharge);
-                    }
-
-                }
+        PowerNode.PowerNodeBuild node = getNearestPowerNode(unit);
+        if(node != null){
+            if (!(currentCharge.get(unit) >= maxPower)) {
+                chargingFloat.replace(unit, chargingFloat.get(unit) + poweredCharge);
             }
-        });
+        }
         if (!(currentCharge.get(unit) >= maxPower)) {
             chargingFloat.replace(unit,chargingFloat.get(unit)+passiveCharge);
         }
@@ -165,6 +162,28 @@ public class StaticEMPability extends Ability {
         });
 
     }
+
+    protected PowerNode.PowerNodeBuild getNearestPowerNode(Unit unit){
+        final PowerNode.PowerNodeBuild[] nearest = {null};
+        final float[] closestDist = {Float.MAX_VALUE};
+
+        Units.nearbyBuildings(unit.x, unit.y, range, b -> {
+            if(b.team == unit.team && b.block instanceof PowerNode){
+                if(b.power != null && b.power.graph.getLastPowerProduced() > 0.0f){
+                    if(b instanceof PowerNode.PowerNodeBuild node){
+                        float dst = unit.dst(b);
+                        if(dst < closestDist[0]){
+                            nearest[0] = node;
+                            closestDist[0] = dst;
+                        }
+                    }
+                }
+            }
+        });
+
+        return nearest[0];
+    }
+
     @Override
     public void draw(Unit unit) {
         Draw.z(layer);
@@ -175,6 +194,16 @@ public class StaticEMPability extends Ability {
             Draw.color(color);
             Drawf.circles(rx,ry, range);
         }
+        PowerNode.PowerNodeBuild node = getNearestPowerNode(unit);
+        if(node != null){
+            if(node.block instanceof PowerNode nodeb) {
+                Draw.z(nodeb.powerLayer);
+                Draw.color(Tmp.c1.set(nodeb.laserColor1).lerp(nodeb.laserColor2, (1f - node.power.graph.getSatisfaction()) * 0.86f + Mathf.absin(3f, 0.1f)).a(Renderer.laserOpacity));
+                nodeb.drawLaser(unit.x,unit.y, node.x, node.y, 0, node.block.size);
+                Draw.reset();
+            }
+        }
+
     }
 
     public String localized() {return Core.bundle.format("ability.aj-static-energy");}

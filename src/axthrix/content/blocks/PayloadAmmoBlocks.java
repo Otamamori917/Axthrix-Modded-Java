@@ -28,10 +28,6 @@ public class PayloadAmmoBlocks {
 
     public static void load(){
         empty1mCaliber = new PayloadAmmoBlock("empty-1m-caliber"){{
-            localizedName = "Empty 1m round";
-            description = """ 
-                          An empty 1m round.
-                          """;
             buildCost(
                 Items.copper, 40,
                 Items.lead, 20
@@ -51,11 +47,6 @@ public class PayloadAmmoBlocks {
         }};
         //basic rounds
         basic1mCaliber = new PayloadAmmoBlock("basic-1m-caliber"){{
-            localizedName = "1m Round";
-            description = """
-                          An 1m round.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                 Items.copper, 10,
                 Items.graphite, 10
@@ -110,11 +101,6 @@ public class PayloadAmmoBlocks {
             }};
         }};
         arcane1mCaliber = new PayloadAmmoBlock("arcane-1m-caliber"){{
-            localizedName = "1m Arcane Round";
-            description = """ 
-                          An 1m Arcane round, creates a blast of energy on impact.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.copper, 10,
                     Items.phaseFabric, 10
@@ -158,11 +144,6 @@ public class PayloadAmmoBlocks {
 
         //solid rounds
         frostbite1mCaliber = new PayloadAmmoBlock("frost-1m-caliber"){{
-            localizedName = "1m Frost Round";
-            description = """ 
-                          An 1m Frost round, creates an area of ice that slows targets.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.titanium, 20,
                     Items.graphite, 10
@@ -212,16 +193,6 @@ public class PayloadAmmoBlocks {
             }};
         }};
         incendiary1mCaliber = new PayloadAmmoBlock("incin-1m-caliber"){{
-            localizedName = "1m Incendiary Round";
-            description = """ 
-                          An 1m Incendiary round, heat up targets and melts their armor.
-                          load into payload turrets to fire.
-                          """;
-            details = """ 
-                      Why is it [orange]Spicy[]
-                      Enemy spotted in that direction
-                      [orange]Spicy bullet[]: Got it burning that direction
-                      """;
             buildCost(
                     Items.pyratite, 20,
                     Items.graphite, 10
@@ -290,11 +261,6 @@ public class PayloadAmmoBlocks {
             }};
         }};
         quicksilver1mCaliber = new PayloadAmmoBlock("silver-1m-caliber"){{
-            localizedName = "1m QuickSilver Round";
-            description = """ 
-                          An 1m QuickSilver round, a fast moving bullet with high penetration.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.surgeAlloy, 4,
                     Items.plastanium, 5
@@ -352,11 +318,6 @@ public class PayloadAmmoBlocks {
 
         //energy rounds
         void1mCaliber = new PayloadAmmoBlock("void-1m-caliber"){{
-            localizedName = "1m Void Round";
-            description = """ 
-                          An 1m Void round, Implodes and drags nearby targets into its point of detonation.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.thorium, 400,
                     Items.phaseFabric, 10
@@ -402,11 +363,6 @@ public class PayloadAmmoBlocks {
             }};
         }};
         sonicwave1mCaliber = new PayloadAmmoBlock("sonic-1m-caliber"){{
-            localizedName = "1m Sonic Round";
-            description = """ 
-                          An 1m Sonic round, Explodes and launches nearby targets away.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.metaglass, 100,
                     Items.phaseFabric, 10
@@ -422,11 +378,6 @@ public class PayloadAmmoBlocks {
 
         }};
         tempest1mCaliber = new PayloadAmmoBlock("tempest-1m-caliber"){{
-            localizedName = "1m Tempest Round";
-            description = """ 
-                          An 1m Tempest round, creates a burst of lightning at point of detonation.
-                          load into payload turrets to fire.
-                          """;
             buildCost(
                     Items.surgeAlloy, 40,
                     Items.phaseFabric, 20

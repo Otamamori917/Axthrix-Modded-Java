@@ -55,9 +55,9 @@ public class AxthrixTurrets{
 
     //special
 
-    nado, aratiri, gravitation, morta,
+    vatya, aratiri, gravitation, morta,
 
-    multitest,viper,coiner,pop,
+    karma,viper,coiner,pop,
 
     //payload
     apex,//Small apexus? but autocannon possibly
@@ -593,11 +593,11 @@ public class AxthrixTurrets{
                         new RegionPart("-main"){{layerOffset = 2;}});*/
             }};
         }};
-        nado = new AxPowerTurret("nado"){{
+        vatya = new AxPowerTurret("vatya"){{
             outlineColor = Color.valueOf("#181a1b");
             range = 8*50;
             size = 3;
-            reload = 280;
+            reload = 480;
             inaccuracy =  0f;
             requirements(Category.turret, with(
                     Items.silicon, 325,
@@ -1425,47 +1425,8 @@ public class AxthrixTurrets{
                 trailColor = Color.valueOf("#d0af54");
             }};
         }};
-        pop = new AxItemTurret("pop"){{
+        karma = new MultiTurretType("karma"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "pop";
-            range = 8*23;
-            size = 2;
-            reload = 300;
-            coolantMultiplier = 2f;
-            requirements(Category.turret, with(
-                    Items.silicon, 325,
-                    Items.titanium, 350
-            ));
-            faction.add(AxFactions.raodon);
-            coolant = consumeCoolant(1);
-            health = 800;
-            shootSound = Sounds.none;
-            ammo(
-                    Items.titanium, new AnimationBulletType(){{
-                        speed = 0.5f;
-                        lifetime = (49*12)-20;
-                        damage = 100000;
-                        name = "aj-pop";
-                        lightColor = Color.clear;
-                        frames = 49;
-                        width = height = 50;
-                        frameTime = 12;
-                        loop = true;
-                        shootSound = AxthrixSounds.pop;
-                        pierce = true;
-                        pierceCap = 1000;
-                        customAngle = 0;
-                    }}
-            );
-            drawer = new DrawTurret("crystalized-");
-        }};
-        multitest = new MultiTurretType("multi"){{
-            outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Karma";
-            description = """
-                  Fires sticky grenades that attach to enemies.
-                  rifle shot detonates all attached grenades for massive damage.
-                  """;
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
             buildCostMultiplier = 0.1f;
@@ -1534,18 +1495,59 @@ public class AxthrixTurrets{
                     }}
             );
         }};
+        pop = new AxItemTurret("pop"){{
+            outlineColor = Color.valueOf("#181a1b");
+            range = 8*23;
+            size = 2;
+            reload = 200;
+            coolantMultiplier = 2f;
+            requirements(Category.turret, with(
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+            faction.add(AxFactions.axthrix);
+            coolant = consumeCoolant(1);
+            health = 800;
+            ammo(
+                    Items.copper, new TemperatureBulletType(4,10){{
+                        temperaturePerHit = 20f; // +20 heat per tick
+                    }},
+                    Items.lead, new TemperatureBulletType(4,10){{
+                        temperaturePerHit = -20f; // -20 (cold) per tick
+                    }},
+                    // Heat laser (positive temperature)
+                    Items.silicon,new LensingLaserBulletType(){{
+                        temperaturePerHit = 2f; // +2 heat per tick
+                        colors = new Color[]{Color.red.cpy().a(0.4f), Color.orange, Color.yellow, Color.white};
+                        damage = 15f;
+                    }},
+
+                                     // Cold laser (negative temperature)
+                    Items.titanium,new LensingLaserBulletType(){{
+                        temperaturePerHit = -2f; // -2 (cold) per tick
+                        colors = new Color[]{Color.cyan.cpy().a(0.4f), Color.sky, Color.white, Color.white};
+                        damage = 15f;
+                    }},
+
+                                       //Heat burst
+                    Items.plastanium,new BurstLaserBulletType(){{
+                        temperaturePerHit = 10f; // +10 heat per hit
+                        colors = new Color[]{Color.red.cpy().a(0.4f), Color.orange, Color.yellow, Color.white};
+                    }},
+
+                           // Freeze burst
+                    Items.surgeAlloy,new BurstLaserBulletType(){{
+                        temperaturePerHit = -10f; // -10 (cold) per hit
+                        colors = new Color[]{Color.cyan.cpy().a(0.4f), Color.sky, Color.white, Color.white};
+                    }}
+            );
+            drawer = new DrawTurret("crystalized-");
+        }};
 
     }
     public static void loadRaodon(){
         asmot = new AxItemTurret("asmot"){{
             outlineColor = Color.valueOf("#181a1b");
-            localizedName = "Asmot";
-            description = """
-                          Short range High damage Machinegun.
-                          Great for point blank and high speed targets
-                          Due to design has high spread and is very ammo hungry
-                          [stat]External Storage recomended.
-                          """;
             range = 8*23;
             size = 2;
             reload = 10;

@@ -26,6 +26,7 @@ public class InfFragBulletType extends BasicBulletType {
 
     {
         despawnHit = true;
+        fragBullet = new BulletType();
     }
 
     @Override

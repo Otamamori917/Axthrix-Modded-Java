@@ -1,5 +1,8 @@
 package axthrix.world.util;
 
+import arc.scene.ui.TextField;
+import axthrix.world.types.abilities.DroneSpawnAbility;
+import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.entities.bullet.*;
 import mindustry.type.*;
 import arc.*;
@@ -19,7 +22,23 @@ import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 import mindustry.world.*;
+import arc.func.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
+import arc.scene.ui.TextField.*;
+import arc.scene.ui.layout.*;
+import arc.scene.utils.*;
+import arc.util.*;
+import mindustry.game.*;
+import mindustry.gen.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.world.meta.*;
+
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 import static mindustry.Vars.*;
 
@@ -40,10 +59,75 @@ public class AxUtil {
 
     public static String GetName(String added)
     {
-        return "ax-"+added;
+        return "aj-"+added;
     }
     public static float GetDamage(float DPS, float fireRate){
         return DPS/fireRate;
+    }
+    ///  a simple call to make shape to wall drone formations
+    public static Seq<DroneSpawnAbility> generateDroneCircle(DroneUnitType droneType, int droneCount, float radius, float spacing, float spawnTimem) {
+        Seq<DroneSpawnAbility> abilities = new Seq<>();
+
+        float angleStep = 360f / droneCount;
+        float startAngle = (droneCount % 2 == 0) ? angleStep / 2f : 0f;
+
+        for(int i = 0; i < droneCount; i++){
+            int slot = i;
+            boolean isFirst = (i == 0);
+            float angle = startAngle + (angleStep * i);
+            float startX = radius * Mathf.sinDeg(angle);
+            float startY = radius * Mathf.cosDeg(angle);
+            float normalizedAngle = angle % 360f;
+            if(normalizedAngle > 180f) normalizedAngle -= 360f;
+            float positionIndex = -normalizedAngle / angleStep;
+            float finalX = positionIndex * spacing;
+            float curveDepth = Math.abs(positionIndex) * 1.5f;
+            float finalY = (radius + 5f) - curveDepth;
+            float moveXm = finalX - startX;
+            float moveYm = finalY - startY;
+            float targetRotation = (positionIndex * 10f);
+            float rotationDelta = targetRotation - angle;
+            while(rotationDelta > 180f) rotationDelta -= 360f;
+            while(rotationDelta < -180f) rotationDelta += 360f;
+
+            float moveRotm = rotationDelta;
+
+            abilities.add(new DroneSpawnAbility(){{
+                droneSlot = slot;
+                spawnTime = spawnTimem;
+                dRot = angle;
+                dX = startX;
+                dY = startY;
+                moveY = moveYm;
+                moveX = moveXm;
+                moveRot = moveRotm;
+                drone = droneType;
+
+                if(isFirst){
+                    number = droneCount;
+                }else{
+                    display = false;
+                }
+            }});
+        }
+
+        return abilities;
+    }
+
+    /** Not a setting, but rather a space between settings. */
+    public static class Separator extends Setting{
+        float height;
+
+        public Separator(float height){
+            super("");
+            this.height = height;
+        }
+
+        @Override
+        public void add(SettingsTable table){
+            table.image(Tex.clear).height(height).padTop(3f);
+            table.row();
+        }
     }
 
     public static float bulletDamage(BulletType b, float lifetime){

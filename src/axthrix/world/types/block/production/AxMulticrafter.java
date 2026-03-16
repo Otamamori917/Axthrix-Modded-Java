@@ -1,5 +1,6 @@
 package axthrix.world.types.block.production;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -115,7 +116,7 @@ public class AxMulticrafter extends AxBlock {
         configurable = true;
         saveConfig = true;
         ambientSoundVolume = 0.03F;
-        config(Integer.class, multicraft.MultiCrafter.MultiCrafterBuild::setCurRecipeIndexFromRemote);
+        config(Integer.class, AxMulticrafter.MultiCrafterBuild::setCurRecipeIndexFromRemote);
         Log.info("MultiCrafter[" + name + "] loaded.");
     }
 
@@ -140,7 +141,7 @@ public class AxMulticrafter extends AxBlock {
             setupConsumers();
             super.init();
         } else {
-            throw new ArcRuntimeException(MultiCrafterAnalyzer.genName(this) + " has no recipe! It's perhaps because all recipes didn't find items or fluids they need. Check your `last_log.txt` to obtain more information.");
+            throw new ArcRuntimeException(MultiCrafterAnalyzer.genName(this) + Core.bundle.format("error.aj-multicrafter"));
         }
     }
 

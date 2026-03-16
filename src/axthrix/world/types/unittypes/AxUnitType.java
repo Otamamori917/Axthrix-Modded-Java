@@ -8,13 +8,22 @@ import axthrix.world.util.AxStats;
 import mindustry.Vars;
 import mindustry.game.Gamemode;
 import mindustry.type.UnitType;
+import mindustry.world.meta.Env;
 
 public class AxUnitType extends UnitType {
+    public float accumulationResistanceHeat = 1f;
+    public float accumulationResistanceCold = 1f;
+
+
+    public float effectResistanceHeat = 1f;
+    public float effectResistanceCold = 1f;
+
     public Seq<AxFaction> factions = new Seq<>();
     public AxUnitType(String name)
     {
         super(name);
         outlineColor = Color.valueOf("#181a1b");
+        envDisabled = Env.none;
     }
 
     @Override
