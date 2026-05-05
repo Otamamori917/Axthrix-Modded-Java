@@ -6,7 +6,7 @@ import arc.struct.Seq;
 import arc.util.*;
 import arc.util.io.*;
 import axthrix.world.types.AxFaction;
-import mindustry.Vars;
+import axthrix.world.util.draw.DrawIPayloadTurret;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -18,12 +18,9 @@ import axthrix.world.util.*;
 
 import static mindustry.Vars.*;
 
-public class PayloadTurretType extends PayloadAmmoTurret{
+public class PayloadTurretType extends AxPayloadAmmoTurret{
     public float payloadSpeed = 0.7f;
     public float minLoadWarmup = 1f;
-
-    public Seq<AxFaction> faction = new Seq<>();
-    public boolean blackListFactions = false;
 
 
     public PayloadTurretType(String name){
@@ -39,10 +36,6 @@ public class PayloadTurretType extends PayloadAmmoTurret{
     @Override
     public void setStats(){
         super.setStats();
-
-        if(faction.any()){
-            stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
-        }
 
         stats.remove(Stat.ammo);
         stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes, true));
@@ -64,7 +57,7 @@ public class PayloadTurretType extends PayloadAmmoTurret{
         }
     }
 
-    public class PayloadTurretTypeBuild extends PayloadTurretBuild{
+    public class PayloadTurretTypeBuild extends AxPayloadTurretBuild{
         public Payload payload;
         public float payLen;
         public Vec2 payVector = new Vec2();

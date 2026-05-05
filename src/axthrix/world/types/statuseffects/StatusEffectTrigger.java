@@ -10,8 +10,7 @@ import mindustry.type.StatusEffect;
 public class StatusEffectTrigger extends AxStatusEffect {
     public boolean activationRepair = false, Reap = false;
     public StatusEffect activationStatusFx = AxthrixStatus.bFx;
-    ///by percentage  1.25/75%  2/50%  3.33/30%  4/25%  5/20%  6.66/15%  10/10%
-    public float activationThreshold = 2, ActivationRepairAmount = 2,
+    public float activationThreshold = 0.5f, ActivationRepairAmount = 0.5f,
 
                  activationResistanceTime = 60;
 
@@ -19,13 +18,13 @@ public class StatusEffectTrigger extends AxStatusEffect {
 
     @Override
     public void update(Unit unit, StatusEntry entry) {
-        if (unit.health < unit.maxHealth() / activationThreshold) {
+        if (unit.health < unit.maxHealth() * activationThreshold) {
             unit.apply(activationStatusFx);
             if(Reap){
                 unit.kill();
             }else{
                 if (activationRepair) {
-                    unit.health = unit.maxHealth() / ActivationRepairAmount;
+                    unit.health = unit.maxHealth() * ActivationRepairAmount;
                 }
                 unit.add();
                 unit.dead = false;

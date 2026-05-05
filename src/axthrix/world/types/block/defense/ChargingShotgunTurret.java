@@ -27,8 +27,7 @@ public class ChargingShotgunTurret extends AxItemTurret {
     public float chargingEffectInterval = 15f;
     public float chargeEffectOffset = 0f;
     ///How close the enemy must be to start not fully charging.
-    ///By percentage  1.25/75%  2/50%  3.33/30%  4/25%  5/20%  6.66/15%  10/10%
-    public float aiChargeThreshold = 2;
+    public float aiChargeThreshold = 0.5f;
 
     public ChargingShotgunTurret(String name){
         super(name);
@@ -66,7 +65,7 @@ public class ChargingShotgunTurret extends AxItemTurret {
                 " - "+Core.bundle.format("stat.aj-max") +": " + AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier) + " "+ StatUnit.blocks.localized());
     }
 
-    public class ChargingShotgunBuild extends ItemTurretBuild {
+    public class ChargingShotgunBuild extends AxItemTurretBuild {
         public float chargeTime = 0f;
         public float chargeProgress = 0f;
         public boolean charging = false;
@@ -124,7 +123,7 @@ public class ChargingShotgunTurret extends AxItemTurret {
                         currentSpread = Mathf.lerp(maxSpread, minSpread, chargeProgress);
                         currentLifetimeMultiplier = Mathf.lerp(minLifetimeMultiplier, maxLifetimeMultiplier, chargeProgress);
                     }else{
-                        float desiredCharge = Mathf.clamp(dst(target) / (range()/aiChargeThreshold));
+                        float desiredCharge = Mathf.clamp(dst(target) / (range()*aiChargeThreshold));
                         float desiredChargeTime = desiredCharge * maxChargeTime;
 
                         if(chargeTime < desiredChargeTime){

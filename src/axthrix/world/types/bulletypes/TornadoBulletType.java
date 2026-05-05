@@ -6,27 +6,21 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.util.Nullable;
 import axthrix.AxthrixLoader;
-import axthrix.content.AxthrixSounds;
 import axthrix.content.AxthrixStatus;
 import axthrix.world.util.importedcode.DrawPseudo3d;
 import blackhole.entities.abilities.BlackHoleAbility;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import blackhole.entities.effect.SwirlEffect;
-import blackhole.graphics.BHDrawf;
 import blackhole.graphics.BHLayer;
-import blackhole.graphics.BlackHoleRenderer;
 import blackhole.utils.BlackHoleUtils;
 import mindustry.Vars;
 import mindustry.audio.SoundLoop;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.BulletType;
-import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
-
-import java.util.HashMap;
 
 public class TornadoBulletType extends BulletType {
     public float width;

@@ -1,9 +1,11 @@
 package axthrix.world.types.bulletypes;
 
+import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Time;
@@ -27,7 +29,6 @@ public class GravityWellBulletType extends BasicBulletType {
     public float continuousDamage = 5f;
     // Extra damage multiplier for flying units
     public float flyingDamageMultiplier = 2f;
-    public String craterSprite = "aj-gravity-well";
 
     public GravityWellBulletType() {
         speed = 100f;
@@ -52,8 +53,8 @@ public class GravityWellBulletType extends BasicBulletType {
     }
 
     @Override
-    public void hit(Bullet b, float x, float y) {
-        super.hit(b, x, y);
+    public void hit(Bullet b, float x, float y,boolean createFrags) {
+        super.hit(b, x, y, createFrags);
 
         Team bulletTeam = b.team;
 
@@ -61,11 +62,13 @@ public class GravityWellBulletType extends BasicBulletType {
 
             float pulse = Mathf.absin(Time.time, 2f, 1f);
 
-            if (!craterSprite.isEmpty()) {
+            TextureRegion craterRegion = Core.atlas.find("aj-gravity-well");
+
+            if (craterRegion.found()) {
                 Draw.z(Layer.floor);
                 Draw.color(Color.white);
                 Draw.alpha((1f - e.fin()));
-                Draw.rect(craterSprite, e.x, e.y, gravityRadius * 2f, gravityRadius * 2f);
+                Draw.rect(craterRegion, e.x, e.y, gravityRadius * 2f, gravityRadius * 2f);
                 Draw.z(Layer.effect);
                 Draw.reset();
             }
@@ -97,9 +100,7 @@ public class GravityWellBulletType extends BasicBulletType {
 
                     if (unit.isFlying()) {
                         unit.apply(StatusEffects.unmoving, gravityDuration/2);
-                        if (Mathf.chance(0.05)) {
-                            unit.damage(continuousDamage * flyingDamageMultiplier);
-                        }
+                        unit.damage(continuousDamage * flyingDamageMultiplier);
                     } else {
 
                         if (Mathf.chance(0.05)) {

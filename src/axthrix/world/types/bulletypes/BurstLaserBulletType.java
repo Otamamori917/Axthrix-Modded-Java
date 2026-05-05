@@ -7,6 +7,7 @@ import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import axthrix.world.util.logics.TemperatureLogic;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Bullet;
@@ -87,10 +88,10 @@ public class BurstLaserBulletType extends TemperatureBulletType {
                             if(angleDiff > 180f) angleDiff = 360f - angleDiff;
 
                             if(angleDiff < 5f){
-                                applyTemperatureUnit(unit, temperaturePerHit);
+                                TemperatureLogic.applyTemperatureUnit(unit, temperaturePerHit);
 
                                 float finalDamage = damage;
-                                float temp = getTemperatureUnit(unit);
+                                float temp = TemperatureLogic.getTemperatureUnit(unit);
                                 if(temp > 0){
                                     finalDamage *= (1f + (temp * 0.01f));
                                 }
@@ -123,10 +124,10 @@ public class BurstLaserBulletType extends TemperatureBulletType {
                         if(angleDiff > 180f) angleDiff = 360f - angleDiff;
 
                         if(dst <= laserLength && angleDiff < 10f){
-                            applyTemperatureBuilding(build, temperaturePerHit);
+                            TemperatureLogic.applyTemperatureBuilding(build, temperaturePerHit);
 
                             float finalDamage = damage;
-                            float temp = getTemperatureBuilding(build);
+                            float temp = TemperatureLogic.getTemperatureBuilding(build);
                             if(temp > 0){
                                 finalDamage *= (1f + (temp * 0.01f));
                             }
@@ -180,7 +181,7 @@ public class BurstLaserBulletType extends TemperatureBulletType {
                 explosionRadius * 2, explosionRadius * 2,
                 unit -> {
                     if(unit.team != b.team && unit.within(x, y, explosionRadius)){
-                        applyTemperatureUnit(unit, temperaturePerHit * 2f);
+                        TemperatureLogic.applyTemperatureUnit(unit, temperaturePerHit * 2f);
                     }
                 }
         );

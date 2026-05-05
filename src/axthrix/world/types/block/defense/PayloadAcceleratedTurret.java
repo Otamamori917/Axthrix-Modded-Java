@@ -1,8 +1,7 @@
 package axthrix.world.types.block.defense;
 
-import axthrix.world.util.AcceleratedLogic;
-import axthrix.world.util.DrawAcceleratedPayloadTurret;
-import axthrix.world.util.DrawIPayloadTurret;
+import axthrix.world.util.logics.AcceleratedLogic;
+import axthrix.world.util.draw.DrawAcceleratedPayloadTurret;
 
 public class PayloadAcceleratedTurret extends PayloadTurretType implements AcceleratedLogic {
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;

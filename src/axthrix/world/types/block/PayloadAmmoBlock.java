@@ -48,7 +48,6 @@ public class PayloadAmmoBlock extends AxBlock{
         category = Category.units;
         health = 50; //volatile, do not destroy
         researchCostMultiplier = 5f;
-        solid = true;
         update = true;
         rotate = true;
         rotateDraw = true;
@@ -120,7 +119,7 @@ public class PayloadAmmoBlock extends AxBlock{
         return state.isEditor() || state.rules.infiniteResources;
     }
 
-    public class MissileBuild extends Building{
+    public class MissileBuild extends AxBlockBuild{
         boolean exploded = false; //Temporary measure against setting a `killShooter = true` bullet as the explosion bullet.
 
         @Override

@@ -9,19 +9,24 @@ import arc.util.Time;
 import axthrix.content.*;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
+import axthrix.world.types.abilities.heatbased.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.entities.comp.ProductionUnit;
 import axthrix.world.types.entities.comp.StealthUnit;
+import axthrix.world.types.entities.comp.WorldUnit;
 import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
+import axthrix.world.types.sea.unit.SubmarineAi;
+import axthrix.world.types.sea.unit.SubmarineUnitType;
 import axthrix.world.types.unittypes.*;
 import axthrix.world.types.weapontypes.AcceleratedWeapon;
 import axthrix.world.types.weapontypes.RevolverWeapon;
 import axthrix.world.types.weapontypes.WeaponHelix;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxUtil;
+import axthrix.world.util.importedcode.BallisticMissileBulletType;
 import blackhole.entities.part.BlackHolePart;
 
 import static arc.math.Interp.pow10Out;
@@ -43,7 +48,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.ammo.PowerAmmoType;
-import mindustry.type.unit.*;
 import mindustry.content.*;
 import arc.func.Prov;
 import arc.graphics.Color;
@@ -85,14 +89,16 @@ public class AxthrixUnits {
             sig,sindri,sigurd,sighelm,siegfried,
 
     //Core Units |4 units|
-    shale, slate, stele, skarn;
+    shale, slate, stele, skarn, limir,vestage, sbr;
 
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(CptrUnitEntity.class, CptrUnitEntity::new),
             prov(StealthUnit.class, StealthUnit::new),
             prov(ProductionUnit.class, ProductionUnit::new),
-            prov(LeggedWaterEntity.class, LeggedWaterEntity::new)
+            prov(LeggedWaterEntity.class, LeggedWaterEntity::new),
+            prov(WorldUnit.class, WorldUnit::new),
     };
+
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
 
@@ -140,6 +146,16 @@ public class AxthrixUnits {
 
     public static void load(){
         setupID();
+
+        sbr = new AxUnitType("sbr"){{
+            speed = 1f;
+            hitSize = 6f;
+            health = 340;
+            armor = 2f;
+            constructor = MechUnit::create;
+            drawCell = outlines = drawSoftShadow = false;
+        }};
+
         quark = new AxUnitType("quark") {{
             factions.add(AxFactions.axthrix);
             constructor = ElevationMoveUnit::create;
@@ -154,6 +170,8 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
+            abilities.add(new HeatSparkAbility());
+            effectResistanceHeat = 0;
             parts.add(
             new RegionPart("-blade"){{
                 mirror = under = true;
@@ -230,6 +248,10 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
+            abilities.add(new ThermalDashAbility(){{
+                collideEffect = AxthrixFfx.lightningArc;
+            }});
+            effectResistanceHeat = 0;
             parts.add(
                     new RegionPart("-arm"){{
                         mirror = under = true;
@@ -357,7 +379,10 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
-            abilities.add(new HeatWaveAbility(600,80,600,Color.valueOf("de9458")));
+            effectResistanceHeat = 0;
+            //abilities.add(new HeatWaveAbility(600,80,600,Color.valueOf("de9458")));
+            abilities.add(new PressurizedBurstAbility());
+            effectResistanceHeat = 0;
             //hover/mechanical parts
             parts.add(
                     new RegionPart("-pin"){{
@@ -548,7 +573,9 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
-            abilities.add(new HeatWaveAbility(600,160,800,Color.valueOf("de9458")));
+            //abilities.add(new HeatWaveAbility(600,160,800,Color.valueOf("de9458")));
+            abilities.add(new HeatPipeNetworkAbility());
+            effectResistanceHeat = 0;
             //hover/mechanical parts
             parts.addAll(
                     new RegionPart("-pin"){{
@@ -664,7 +691,9 @@ public class AxthrixUnits {
                 reload = 100f;
                 shootY = 2f;
                 inaccuracy = 0;
-                bullet = new ArtilleryBulletType(5f, 0){{
+                predictTarget = false;
+                bullet = new GluonBulletType();
+                /*bullet = new ArtilleryBulletType(5f, 0){{
                     width = 8;
                     height = 8;
                     lifetime = 109;
@@ -849,7 +878,7 @@ public class AxthrixUnits {
                             }});
                         }};
                     }};
-                }};
+                }};*/
             }});
             weapons.add(new Weapon("aj-assault-railgun"){{
                 float brange = range = 400f;
@@ -900,9 +929,6 @@ public class AxthrixUnits {
             }});
         }};
         photon = new AxUnitType("photon") {{
-            localizedName = "[orange]Photon";
-            description = """
-                          """;
             constructor = ElevationMoveUnit::create;
             factions.add(AxFactions.axthrix);
             ammoType = new PowerAmmoType(50);
@@ -917,7 +943,51 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
-            abilities.add(new HeatWaveAbility(600,240,1000,Color.valueOf("de9458")));
+            abilities.addAll(
+                    new ThermalRadiationAbility(){{
+                        bytickHeatLoss = 0.8f;
+                    }},
+
+                    new HeatPipeNetworkAbility(){{
+                        idleHeatGain = 0;
+                        networkRadius = 180;
+                        maxTargets = 12;
+                        pipeSpeed = 60;
+                        chainWidthScale = 1.2f;
+                        bytickHeatLoss = 0.2f;
+                    }},
+
+                    new PressurizedBurstAbility(){{
+                        idleHeatGain = 0;
+                        chargeTime = 300;
+                        burstRadius = 160f;
+                        knockback = 14;
+                        burstDamage = 120;
+                    }},
+
+                    new ThermalDashAbility(){{
+                        collideEffect = AxthrixFfx.lightArc;
+                        dashSpeed = 200;
+                        dashDistance = 1.5f;
+                        dodgeDistance = 0.5f;
+                        cooldown = 360;
+                        idleHeatGain = 0;
+                        burstRadius = 140;
+                        dashColor = Color.white;
+                        singleTickHeatLoss = 0.3f;
+                        bytickHeatLoss = 0f;
+                    }},
+
+                    new HeatSparkAbility(){{
+                        idleHeatGain = 0;
+                        heatRadius = 120;
+                        heatDamage = 450;
+                        damageThreshold = 250;
+                        singleTickHeatLoss = 0.02f;
+                    }}
+            );
+            effectResistanceHeat = 0;
+            //abilities.add(new HeatWaveAbility(600,240,1000,Color.valueOf("de9458")));
             //hover/mechanical parts
             parts.addAll(
                     new RegionPart("-bar"){{
@@ -1226,7 +1296,8 @@ public class AxthrixUnits {
 
                 bullet = new ContinuousFlameBulletType() {{
                     damage = 150.0F;
-                    reflectable = false;
+                    reflectable = absorbable = false;
+                    status = AxthrixStatus.burning;
                     //lengthInterp = Interp.reverse;
                     lengthInterp = v -> (float) Math.sqrt((double)(1.0F - v * v * v));
                     lifetime = 900;
@@ -1410,7 +1481,7 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
 
-            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.barriShield, 2, 10f, 12f, 600f));
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.barriShield, 2, 10f, 12f, 600f,0));
             abilities.add(new SwarmIntelligenceAbility(){{
                 armorBonus = 1;
                 speedBonus = 0.06f;
@@ -1429,23 +1500,34 @@ public class AxthrixUnits {
                 reload = 200;
                 heatColor = Pal.heal;
                 immunities.add(AxthrixStatus.nanodiverge);
-                bullet = new BasicBulletType(){{
+                bullet = new NanobotBulletType(3f, 2f) {{
+                    lingersOnHit = true;
+                    activeWhileFlying = false;
+                    lingerDuration = 880f;
+                    lingerRange = 80f;
+                    lingerTickRate = 30;
+                    lingerNanobotSize = 0.8f;
+                    lingerNanobotCount = 7;
+                    lingerNanobotMoveSpeed = 0.01f;
+                    lingerNanobotOrbitSpeed = 0.1f;
+                    lingerNanoDamage = 10;
+                    lingerNanoHealAmount = 2;
+                    lingerNanoHealPercent = 0.2f;
+
                     homingRange = 40f;
                     homingPower = 4f;
                     homingDelay = 5f;
-                    width = 0.5f;
-                    height = 0.5f;
-                    damage = 2;
-                    lifetime = 40;
-                    speed = 3;
-                    healPercent = 1;
+                    width = 2f;
+                    height = 2f;
+                    lifetime = 40f;
+                    healPercent = 1f;
                     collidesTeam = true;
                     trailEffect = Fx.none;
                     trailInterval = 3f;
                     trailParam = 4f;
                     trailColor = Pal.heal;
-                    trailLength = 4;
-                    trailWidth = 0.5f;
+                    trailLength = 2;
+                    trailWidth = 1f;
                     status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
@@ -1454,11 +1536,6 @@ public class AxthrixUnits {
         }};
 
         blockade = new AxUnitType("blockade"){{
-            localizedName = "[green]Blockade";
-            description = """
-                          [green]Blocks Damage and Deals Great Damage at Medium range.
-                          Blockade Fires ForceFields in quick succession.
-                          """;
             ammoType = new ItemAmmoType(Items.silicon);
             armor = 5f;
             speed = 0.7f;
@@ -1470,7 +1547,7 @@ public class AxthrixUnits {
             constructor = MechUnit::create;
             factions.add(AxFactions.axthrix);
 
-            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 3, 17f, 16f, 300f));
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 3, 17f, 16f, 300f,0));
             abilities.add(new SwarmIntelligenceAbility());
             parts.add(
                     new LightningPart(){{
@@ -1523,6 +1600,8 @@ public class AxthrixUnits {
                 bullet = new SheildArcBullet(60,"aj-blockade-shield"){{
                     lifetime = 140;
                     damage = 25;
+                    sticky = true;
+                    stickyExtraLifetime = 60;
                 }};
             }});
         }};
@@ -1542,7 +1621,7 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationIII);
 
-            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 4, 20f, 16f, 300f));
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 4, 20f, 16f, 300f,0));
             abilities.add(new SwarmIntelligenceAbility(),
             new SStatusFieldAbility(AxthrixStatus.vindicationI, 400f, 360f, 30){{
                 onShoot = true;
@@ -1561,7 +1640,7 @@ public class AxthrixUnits {
                 top = false;
                 reload = 120;
                 inaccuracy = 50;
-                shoot.shots = 60;
+                shoot.shots = 30;
                 shoot.shotDelay = 0;
                 heatColor = Pal.heal;
                 immunities.add(AxthrixStatus.nanodiverge);
@@ -1593,21 +1672,30 @@ public class AxthrixUnits {
                     }});
                 }});
 
-                bullet = new BasicBulletType(4f, 40){{
+                bullet = new NanobotBulletType(3f, 80f) {{
+                    lingersOnHit = drawDefaultBullet = false;
+                    activeWhileFlying = true;
+                    flyingRange = 25f;
+                    flyingNanobotCount = 4;
+                    flyingNanobotSize = 0.9f;
+                    flyingNanobotMoveSpeed = 3;
+                    flyingNanobotOrbitSpeed = 8;
+                    flyingTickRate = 1;
+                    flyingNanoDamage = (100/25)/30;     //100 damage by every bullet over their lifetime
+                    flyingNanoHealAmount = (100/75)/30; // heals 100 hp every 3ish shots
+                    flyingNanoHealPercent = (1/100)/30;  // heals 1% every 4ish shots
+                    flyingStackPenalty = 0.4f;          // heavy penalty any other nanobot user (and drones) receives 60% less healing
+                    flyingNanobotSpread = 0.4f;
+
+
                     homingRange = 40f;
                     homingPower = 4f;
                     homingDelay = 2f;
                     width = 0.5f;
                     height = 0.5f;
-                    lifetime = 20;
-                    healPercent = 1;
+                    lifetime = 25f;
+                    healPercent = 1/30f;
                     collidesTeam = true;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.heal;
-                    trailLength = 4;
-                    trailWidth = 0.5f;
                     status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
@@ -1630,7 +1718,7 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationIII);
             immunities.add(AxthrixStatus.vindicationI);
 
-            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 5, 26f, 16f, 300f));
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 5, 26f, 16f, 300f,0));
             abilities.add(new SwarmIntelligenceAbility(),
             new SStatusFieldAbility(AxthrixStatus.vindicationII, 400f, 360f, 60){{
                 onShoot = true;
@@ -1647,8 +1735,8 @@ public class AxthrixUnits {
                 alternate = false;
                 reload = 220;
                 inaccuracy = 50;
-                shoot.shots = 80;
-                shoot.shotDelay = 1;
+                shoot.shots = 40;
+                shoot.shotDelay = 2;
                 heatColor = Pal.heal;
                 parts.add(
                 new RegionPart("-blade"){{
@@ -1671,23 +1759,42 @@ public class AxthrixUnits {
                     }});
                 }});
 
-                bullet = new BasicBulletType(2f, 9){{
+                bullet = new NanobotBulletType(3f, 36f) {{
+                    lingersOnHit = true;
+                    activeWhileFlying = true;
+                    drawDefaultBullet = false;
+
+                    lingerDuration = 1280f;
+                    lingerRange = 160f;
+                    lingerTickRate = 15;
+                    lingerNanobotSize = 0.6f;
+                    lingerNanobotCount = 6;
+                    lingerNanobotMoveSpeed = 0.1f;
+                    lingerNanobotOrbitSpeed = 0.1f;
+                    lingerNanoDamage = 10;
+                    lingerNanoHealAmount = 2;
+                    lingerNanoHealPercent = 0.2f;
+
+                    flyingRange = 25f;
+                    flyingNanobotCount = 4;
+                    flyingNanobotSize = 0.9f;
+                    flyingNanobotMoveSpeed = 3;
+                    flyingNanobotOrbitSpeed = 8;
+                    flyingTickRate = 1;
+                    flyingNanoDamage = (380/40)/40;     //380 damage by every bullet over their lifetime
+                    flyingNanoHealAmount = (150/120)/40; // heals 150 hp every 3ish shots
+                    flyingNanoHealPercent = (3/160)/40;  // heals 3% every 4ish shots
+                    flyingStackPenalty = 0.4f;          // heavy penalty any other nanobot user (and drones) receives 60% less healing
+                    flyingNanobotSpread = 0.4f;
+
                     homingRange = 40f;
                     homingPower = 4f;
                     homingDelay = 5f;
                     width = 0.5f;
                     height = 0.5f;
-                    damage = 18;
-                    lifetime = 40;
-                    speed = 3;
-                    healPercent = 1;
+                    lifetime = 40f;
+                    healPercent = 1.5f/40f;
                     collidesTeam = true;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.heal;
-                    trailLength = 4;
-                    trailWidth = 0.5f;
                     status = AxthrixStatus.nanodiverge;
                     backColor = Pal.heal;
                     frontColor = Color.white;
@@ -1702,6 +1809,7 @@ public class AxthrixUnits {
                 x = 8.2f;
                 y = -3f;
                 rotate = true;
+                rotateSpeed = 2;
                 mirror = false;
                 reload = 80;
                 inaccuracy = 0;
@@ -1764,6 +1872,7 @@ public class AxthrixUnits {
                 x = -8.2f;
                 y = -3f;
                 rotate = true;
+                rotateSpeed = 2;
                 mirror = false;
                 reload = 80;
                 inaccuracy = 0;
@@ -1837,7 +1946,7 @@ public class AxthrixUnits {
             immunities.add(AxthrixStatus.vindicationII);
             immunities.add(AxthrixStatus.vindicationI);
 
-            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 6, 30f, 16f, 300f));
+            abilities.addAll(AxUtil.generateDroneCircle(AxthrixDrones.paliShield, 6, 40f, 16f, 300f,0));
             abilities.add(new SwarmIntelligenceAbility(),
             new NanobotAbility(),
             new SStatusFieldAbility(AxthrixStatus.vindicationIII, 400f, 360f, 90){{
@@ -1935,7 +2044,6 @@ public class AxthrixUnits {
                 }};
             }});
         }};
-
         //special black hole tanks
         anagh = new AxUnitType("anagh") {{
             treadPullOffset = 0;
@@ -2438,7 +2546,7 @@ public class AxthrixUnits {
                     healAmount = 30;
                     healPercent = 1f;
                     fragBullet = new FirePuddleBulletType(15,20,true){{
-                        specialEffect = AxthrixFx.PlasmaFlame1;
+                        specialEffect = AxthrixFx.PlasmaFlame2;
                         healAmount = 30;
                         healPercent = 1f;
 
@@ -3066,6 +3174,68 @@ public class AxthrixUnits {
                     }};
                 }};
             }});
+        }};
+        limir = new SubmarineUnitType("limir"){{
+            constructor = UnitWaterMove::create;
+
+
+            speed = 1.25f;
+            drag = 0.08f;
+            accel = 0.1f;
+            rotateSpeed = 8f;
+
+            health = 200;
+            armor = 2f;
+            hitSize = 14f;
+            itemCapacity = 8*12;
+
+            buildSpeed = 1.5f;
+
+        }};
+
+        vestage = new SubmarineUnitType("vestage"){{
+            constructor = UnitWaterMove::create;
+
+
+            speed = 2f;
+            drag = 0.08f;
+            accel = 0.1f;
+            rotateSpeed = 4f;
+
+            health = 800;
+            armor = 5f;
+            hitSize = 14f;
+            itemCapacity = 0;
+
+            weapons.add(new Weapon("bay"){{
+                shootSound = Sounds.shootMissileLong;
+                shootY = 2f;
+                x = 0f;
+                y = -4f;
+                mirror = false;
+                rotate = true;
+                rotateSpeed = 2;
+                top = false;
+                reload = 240;
+                heatColor = Pal.heal;
+                immunities.add(AxthrixStatus.nanodiverge);
+                bullet = new BallisticMissileBulletType(("small-icbm")){{
+                    splashDamage = 123f;
+                    splashDamageRadius = 73f;
+                    buildingDamageMultiplier = 0.5f;
+                    hitShake = 1f;
+                    homingRange = 24;
+                    homingPower = 0.03f;
+                    speed = 8;
+                    lifetime = 20;
+                    height = 24f;
+                    //tfec
+                    trailLength = 25;
+                    trailWidth = 1f;
+                    trailColor = targetColor = Color.yellow;
+                }};
+            }});
+
         }};
 
         immuneUnits.add(

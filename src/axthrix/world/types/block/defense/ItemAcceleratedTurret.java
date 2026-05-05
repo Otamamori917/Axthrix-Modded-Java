@@ -1,6 +1,6 @@
 package axthrix.world.types.block.defense;
 
-import axthrix.world.util.AcceleratedLogic;
+import axthrix.world.util.logics.AcceleratedLogic;
 
 public class ItemAcceleratedTurret extends AxItemTurret implements AcceleratedLogic {
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
@@ -43,7 +43,7 @@ public class ItemAcceleratedTurret extends AxItemTurret implements AcceleratedLo
         addAcceleratedStats(stats); // stats is already of type Stats, this should work now
     }
 
-    public class ItemAcceleratedTurretBuild extends ItemTurretBuild implements AcceleratedLogic.AcceleratedTurretBuild {
+    public class ItemAcceleratedTurretBuild extends AxItemTurretBuild implements AcceleratedLogic.AcceleratedTurretBuild {
         public float accelBoost = 1, accelCounter, coolBonus;
         public int accelCount;
         public float lastReloadCounter = 0;

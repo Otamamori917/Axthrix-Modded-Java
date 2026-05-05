@@ -3,11 +3,10 @@ package axthrix.world.types.abilities;
 import arc.*;
 import arc.audio.Sound;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
-import axthrix.world.util.NanobotLogic;
+import axthrix.world.util.logics.NanobotLogic;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -39,7 +38,8 @@ public class NanobotAbility extends Ability {
     public Color color = Pal.heal;
     public int nanobotCount = 15;
     public float nanobotSize = 0.5f;
-    public float nanobotSpeed = 2f;
+    public float nanobotOrbitSpeed = 2f;
+    public float nanobotMoveSpeed = 0.05f;
 
     public boolean useAmmo = false;
 
@@ -48,26 +48,26 @@ public class NanobotAbility extends Ability {
     protected Sound ambientSound = Sounds.loopFlux;
     protected float soundVolume = 0.3f;
 
-    public NanobotAbility(){}
+    public NanobotAbility() {}
 
-    public NanobotAbility(float damage, float healAmount, float range){
+    public NanobotAbility(float damage, float healAmount, float range) {
         this.damage = damage;
         this.healAmount = healAmount;
         this.range = range;
     }
 
     @Override
-    public String localized(){
+    public String localized() {
         return Core.bundle.format("ability.aj-nanobot");
     }
 
     @Override
-    public void addStats(Table t){
+    public void addStats(Table t) {
         t.add("[lightgray]" + Stat.damage.localized() + ": [white]" + Strings.autoFixed(damage * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]"+Core.bundle.format("stat.aj-building")+ Stat.damage.localized() + ": [white]" + Strings.autoFixed(damage * buildingDamageMultiplier * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-building") + Stat.damage.localized() + ": [white]" + Strings.autoFixed(damage * buildingDamageMultiplier * (60f / tickRate), 2) + " " + StatUnit.perSecond.localized());
         t.row();
-        t.add("[lightgray]" + Stat.healing.localized() + ": [white]" + Strings.autoFixed(healAmount * (60f / tickRate), 2) + " + " +healPercent  * (60f / tickRate) + "% " + StatUnit.perSecond.localized());
+        t.add("[lightgray]" + Stat.healing.localized() + ": [white]" + Strings.autoFixed(healAmount * (60f / tickRate), 2) + " + " + healPercent * (60f / tickRate) + "% " + StatUnit.perSecond.localized());
         t.row();
         t.add("[lightgray]" + Stat.range.localized() + ": [white]" + Strings.autoFixed(range / tilesize, 2) + " " + StatUnit.blocks.localized());
         t.row();
@@ -75,21 +75,19 @@ public class NanobotAbility extends Ability {
         float allySpeedIncrease = Mathf.pow(bulletSpeedBonus, 60f / tickRate) - 1f;
         float enemySpeedDecrease = 1f - Mathf.pow(bulletSlowdown, 60f / tickRate);
 
-        t.add("[lightgray]"+Core.bundle.format("stat.aj-ally-blt-spd")+": [white]+" + (int)(allySpeedIncrease * 100f) + "% " + StatUnit.blocks.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-ally-blt-spd") + ": [white]+" + (int)(allySpeedIncrease * 100f) + "% " + StatUnit.blocks.localized());
         t.row();
-        t.add("[lightgray]"+Core.bundle.format("stat.aj-enemy-blt-slw")+": [white]-" + (int)(enemySpeedDecrease * 100f) + "% " + StatUnit.blocks.localized());
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-enemy-blt-slw") + ": [white]-" + (int)(enemySpeedDecrease * 100f) + "% " + StatUnit.blocks.localized());
         t.row();
-        t.add("[lightgray]"+Core.bundle.format("stat.aj-building-bonus")+": [white]" + (int)(efficiencyBoost * 100f) + "%");
+        t.add("[lightgray]" + Core.bundle.format("stat.aj-building-bonus") + ": [white]" + (int)(efficiencyBoost * 100f) + "%");
         t.row();
     }
 
-
-
     @Override
-    public void draw(Unit unit){
+    public void draw(Unit unit) {
         super.draw(unit);
 
-        if(NanobotLogic.getNanobots(unit) == null){
+        if (NanobotLogic.getNanobots(unit) == null) {
             NanobotLogic.initNanobots(unit, unit.x, unit.y, nanobotCount);
         }
 
@@ -100,14 +98,15 @@ public class NanobotAbility extends Ability {
         params.color = color;
         params.nanobotCount = nanobotCount;
         params.nanobotSize = nanobotSize;
-        params.nanobotSpeed = nanobotSpeed;
+        params.nanobotOrbitSpeed = nanobotOrbitSpeed;
+        params.nanobotMoveSpeed = nanobotMoveSpeed;
 
         NanobotLogic.drawNanobots(unit, params);
     }
 
     @Override
-    public void update(Unit unit){
-        if(NanobotLogic.getNanobots(unit) == null){
+    public void update(Unit unit) {
+        if (NanobotLogic.getNanobots(unit) == null) {
             NanobotLogic.initNanobots(unit, unit.x, unit.y, nanobotCount);
         }
 
@@ -116,7 +115,7 @@ public class NanobotAbility extends Ability {
         timer += Time.delta;
         soundTimer += Time.delta;
 
-        if(soundTimer >= 30f){
+        if (soundTimer >= 30f) {
             ambientSound.at(unit.x, unit.y, 1f, soundVolume);
             soundTimer = 0f;
         }
@@ -139,12 +138,14 @@ public class NanobotAbility extends Ability {
         params.color = color;
         params.nanobotCount = nanobotCount;
         params.nanobotSize = nanobotSize;
-        params.nanobotSpeed = nanobotSpeed;
+        params.nanobotOrbitSpeed = nanobotOrbitSpeed;
+        params.nanobotMoveSpeed = nanobotMoveSpeed;
         params.team = unit.team;
-        NanobotLogic.updateBoost(unit,params);
+
+        NanobotLogic.updateBoost(unit, params, 6);
 
         NanobotLogic.updateNanobots(unit, params, timer, useAmmo, () -> {
-            if(useAmmo && state.rules.unitAmmo){
+            if (useAmmo && state.rules.unitAmmo) {
                 unit.ammo--;
             }
             timer = 0f;
@@ -152,7 +153,7 @@ public class NanobotAbility extends Ability {
     }
 
     @Override
-    public void death(Unit unit){
+    public void death(Unit unit) {
         NanobotLogic.removeNanobots(unit);
     }
 }

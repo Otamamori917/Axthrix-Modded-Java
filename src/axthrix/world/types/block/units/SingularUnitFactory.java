@@ -49,7 +49,7 @@ public class SingularUnitFactory extends AxBlock {
     return new TextureRegion[]{region, topRegion};
   }
 
-  public class SingularUnitFactoryBuild extends Building {
+  public class SingularUnitFactoryBuild extends AxBlockBuild {
     public float progress, totalProgress, warmup;
     public boolean canCreate() {
       Seq<Building> otherFactories = team.data().getBuildings(block);

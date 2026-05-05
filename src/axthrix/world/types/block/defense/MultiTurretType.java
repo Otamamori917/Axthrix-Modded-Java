@@ -2,12 +2,13 @@ package axthrix.world.types.block.defense;
 
 import arc.graphics.g2d.*;
 import arc.struct.Seq;
+import axthrix.world.types.sea.block.SeaTurret;
 import axthrix.world.types.weapontypes.BlockWeapon;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 
-public class MultiTurretType extends Turret {
+public class MultiTurretType extends SeaTurret {
 
     public DrawBlock drawer;
 
@@ -55,7 +56,7 @@ public class MultiTurretType extends Turret {
         this.drawer.getRegionsToOutline(this, out);
     }
 
-    public class MultiTurretTypeBuild extends TurretBuild {
+    public class MultiTurretTypeBuild extends SeaTurretBuild {
         Seq<BlockWeapon.BlockWeaponMount> weaponMounds = new Seq<>();
 
         @Override

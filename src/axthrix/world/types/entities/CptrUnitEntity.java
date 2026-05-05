@@ -40,25 +40,26 @@ public class CptrUnitEntity extends UnitEntity {
 	@Override
 	public void update() {
 		super.update();
-		CopterUnitType type = (CopterUnitType) this.type;
-		float rX = x + Angles.trnsx(rotation - 90, type.fallSmokeX, type.fallSmokeY);
-		float rY = y + Angles.trnsy(rotation - 90, type.fallSmokeX, type.fallSmokeY);
+		if(this.type instanceof CopterUnitType ct){
+			float rX = x + Angles.trnsx(rotation - 90, ct.fallSmokeX, ct.fallSmokeY);
+			float rY = y + Angles.trnsy(rotation - 90, ct.fallSmokeX, ct.fallSmokeY);
 
-		// Slows down rotor when dying
-		if (dead || health() <= 0) {
-			rotation += Time.delta * (type.spinningFallSpeed * vel().len()) * Mathf.signs[id % 2];
-			if (Mathf.chanceDelta(type.fallSmokeChance)) {
-				Fx.fallSmoke.at(rX, rY);
-				Fx.burning.at(rX, rY);
+			// Slows down rotor when dying
+			if (dead || health() <= 0) {
+				rotation += Time.delta * (ct.spinningFallSpeed * vel().len()) * Mathf.signs[id % 2];
+				if (Mathf.chanceDelta(ct.fallSmokeChance)) {
+					Fx.fallSmoke.at(rX, rY);
+					Fx.burning.at(rX, rY);
+				}
+				rotorSpeedScl = Mathf.lerpDelta(rotorSpeedScl, 0f, ct.rotorDeathSlowdown);
+			} else {
+				rotorSpeedScl = Mathf.lerpDelta(rotorSpeedScl, 1f, ct.rotorDeathSlowdown);
 			}
-			rotorSpeedScl = Mathf.lerpDelta(rotorSpeedScl, 0f, type.rotorDeathSlowdown);
-		} else {
-			rotorSpeedScl = Mathf.lerpDelta(rotorSpeedScl, 1f, type.rotorDeathSlowdown);
-		}
 
-		for (PropellerMount propeller : propellers) {
-			propeller.rotorRotation += ((propeller.propeller.rotorSpeed * rotorSpeedScl) + propeller.propeller.minimumRotorSpeed) * Time.delta;
+			for (PropellerMount propeller : propellers) {
+				propeller.rotorRotation += ((propeller.propeller.rotorSpeed * rotorSpeedScl) + propeller.propeller.minimumRotorSpeed) * Time.delta;
+			}
+			ct.fallSpeed = 0.006f;
 		}
-		type.fallSpeed = 0.006f;
 	}
 }

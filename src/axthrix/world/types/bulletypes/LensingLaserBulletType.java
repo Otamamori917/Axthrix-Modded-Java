@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.world.util.logics.TemperatureLogic;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.gen.Bullet;
@@ -69,10 +70,10 @@ public class LensingLaserBulletType extends TemperatureBulletType {
                             if(angleDiff > 180f) angleDiff = 360f - angleDiff;
 
                             if(angleDiff < 5f && b.dst(unit) <= laserLength){
-                                applyTemperatureUnit(unit, temperaturePerHit);
+                                TemperatureLogic.applyTemperatureUnit(unit, temperaturePerHit);
 
                                 float tickDamage = isFinalTick ? damage * finalDamageMultiplier : damage;
-                                float temp = getTemperatureUnit(unit);
+                                float temp = TemperatureLogic.getTemperatureUnit(unit);
                                 if(temp > 0){
                                     tickDamage *= (1f + (temp * 0.01f));
                                 }
@@ -103,10 +104,10 @@ public class LensingLaserBulletType extends TemperatureBulletType {
                             if(angleDiff > 180f) angleDiff = 360f - angleDiff;
 
                             if(angleDiff < 10f && b.dst(build) <= laserLength){
-                                applyTemperatureBuilding(build, temperaturePerHit);
+                                TemperatureLogic.applyTemperatureBuilding(build, temperaturePerHit);
 
                                 float tickDamage = isFinalTick ? damage * finalDamageMultiplier : damage;
-                                float temp = getTemperatureBuilding(build);
+                                float temp = TemperatureLogic.getTemperatureBuilding(build);
                                 if(temp > 0){
                                     tickDamage *= (1f + (temp * 0.01f));
                                 }

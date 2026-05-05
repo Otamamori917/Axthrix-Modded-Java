@@ -2,9 +2,9 @@ package axthrix.world.types.bulletypes;
 
 import arc.graphics.*;
 import arc.math.*;
-import axthrix.world.util.*;
+import axthrix.world.util.draw.Bolt;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.*;
 
 public class BoltBulletType extends BulletType {

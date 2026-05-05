@@ -11,7 +11,11 @@ import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.struct.IntMap;
+import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.world.util.AxShaders;
+import mindustry.Vars;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -112,6 +116,71 @@ public class AxthrixFfx{
 		}
 	});
 
+	public static Effect lightningArc = new Effect(20f, e -> {
+		Draw.z(29f);
+		Draw.color(Color.cyan, Color.white, e.fin());
+		Draw.alpha(1f - e.fin());
+
+		Lines.stroke(2f * (1f - e.fin()));
+
+		float x1 = e.x;
+		float y1 = e.y;
+		float x2 = e.data instanceof float[] ? ((float[])e.data)[0] : e.x;
+		float y2 = e.data instanceof float[] ? ((float[])e.data)[1] : e.y;
+
+		int segments = 8;
+		for(int i = 0; i < segments; i++){
+			float progress = (float)i / segments;
+			float nextProgress = (float)(i + 1) / segments;
+
+			Tmp.v1.set(x2, y2).sub(x1, y1);
+			float perpAngle = Tmp.v1.angle() + 90f;
+
+			float offset1 = Mathf.random(-3f, 3f);
+			float offset2 = Mathf.random(-3f, 3f);
+
+			Tmp.v2.set(x1, y1).lerp(x2, y2, progress).add(Tmp.v1.setAngle(perpAngle).scl(offset1));
+			Tmp.v3.set(x1, y1).lerp(x2, y2, nextProgress).add(Tmp.v1.setAngle(perpAngle).scl(offset2));
+
+			Lines.line(Tmp.v2.x, Tmp.v2.y, Tmp.v3.x, Tmp.v3.y);
+		}
+	});
+
+	public static Effect lightArc = new Effect(25f, e -> {
+		float x2 = e.data instanceof float[] ? ((float[])e.data)[0] : e.x;
+		float y2 = e.data instanceof float[] ? ((float[])e.data)[1] : e.y;
+
+		Draw.z(Layer.effect);
+
+
+		Draw.color(Color.white);
+		Draw.alpha(0.6f * e.fout());
+		Lines.stroke(5f * e.fout());
+		Lines.line(e.x, e.y, x2, y2);
+
+		// 2. The Main Beam (Bright white/yellow core)
+		Draw.color(Color.white, Color.lightGray, e.fin());
+		Draw.alpha(e.fout());
+		Lines.stroke(2f * e.fout());
+		Lines.line(e.x, e.y, x2, y2);
+
+		// 3. Impact Flares (Circles at start and end)
+		Fill.circle(e.x, e.y, 4f * e.fout());
+		Fill.circle(x2, y2, 6f * e.fout());
+
+		// 4. "Photon" Particles along the line
+		int particles = 6;
+		for(int i = 0; i < particles; i++){
+			float progress = (i / (float)particles);
+			// Particles move slightly toward the target
+			float px = Mathf.lerp(e.x, x2, (progress + e.fin()) % 1f);
+			float py = Mathf.lerp(e.y, y2, (progress + e.fin()) % 1f);
+
+			Draw.color(Color.white);
+			Fill.square(px, py, 1.5f * e.fout(), 45f);
+		}
+	});
+
 	public static Effect staticShock(float radius) {
 		return new Effect(80f, 100f, e -> {
 			color(Color.white, e.color, e.fin());
@@ -144,6 +213,7 @@ public class AxthrixFfx{
 			Draw.z(z);
 		});
 	}
+
 
 	public static Effect crystalShatter(Block block, Color iceColor) {
 		float fullSize = block.size * 8f;
@@ -195,6 +265,7 @@ public class AxthrixFfx{
 			Draw.reset();
 		});
 	}
+
 
 
 

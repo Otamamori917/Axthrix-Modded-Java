@@ -42,6 +42,7 @@ public class StatusEffectAbility extends AxStatusEffect {
     public void start(Unit unit) {
         super.start(unit);
         Ability cpy = ability.copy();
+        if (unit.abilities.length == 1)
         if (scaleAbility) {
             if (ability instanceof ShieldArcAbility a) {
                 ShieldArcAbility c = (ShieldArcAbility) cpy;

@@ -3,7 +3,6 @@ package axthrix.world.types.bulletypes;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Mathf;
-import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
 import arc.util.Nullable;
 import arc.util.Time;

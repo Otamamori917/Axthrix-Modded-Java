@@ -35,11 +35,6 @@ public class CnSUnitType extends AxUnitType {
     super(name);
     vulnerabilityTime = vulnerabilitytime;
     cloaks = true;
-    if(AxthrixLoader.screwStealthFlyers){
-      deathSound = AxthrixSounds.Death;
-      loopSound = AxthrixSounds.Stank;
-      loopSoundVolume = 0.5f;
-    }
 
   }
 

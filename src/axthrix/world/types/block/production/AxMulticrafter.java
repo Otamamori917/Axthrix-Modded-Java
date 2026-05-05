@@ -109,7 +109,6 @@ public class AxMulticrafter extends AxBlock {
         warmupRate = 0.15F;
         showNameTooltip = false;
         update = true;
-        solid = true;
         sync = true;
         flags = EnumSet.of(new BlockFlag[]{BlockFlag.factory});
         ambientSound = Sounds.loopMachine;
@@ -424,7 +423,7 @@ public class AxMulticrafter extends AxBlock {
 
     }
 
-    public class MultiCrafterBuild extends Building implements HeatBlock, HeatConsumer {
+    public class MultiCrafterBuild extends AxBlockBuild implements HeatBlock, HeatConsumer {
         public float[] sideHeat = new float[4];
         public float heat = 0.0F;
         public float craftingTime;

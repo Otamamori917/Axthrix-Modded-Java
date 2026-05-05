@@ -7,6 +7,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.*;
 import arc.struct.Seq;
+import mindustry.gen.Player;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
 
@@ -32,6 +33,9 @@ public class CopterUnitType extends AxUnitType {
 
 	// Drawing Rotors
 	public void drawPropeller(Unit unit) {
+
+
+
 		float z = unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
 		applyColor(unit);
 		if (unit instanceof CptrUnitEntity cptr) {

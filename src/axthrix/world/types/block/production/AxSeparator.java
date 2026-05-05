@@ -28,11 +28,4 @@ public class AxSeparator extends Separator {
         }
 
     }
-
-    @Override
-    public void loadIcon(){
-        super.loadIcon();
-        fullIcon = Core.atlas.find(name + "-full",fullIcon);
-        uiIcon = Core.atlas.find(name + "-ui",fullIcon);
-    }
 }

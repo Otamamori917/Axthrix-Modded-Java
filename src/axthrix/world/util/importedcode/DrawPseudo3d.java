@@ -12,8 +12,6 @@ import arc.math.Angles;
 import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.world.types.bulletypes.TornadoBulletType;
-import blackhole.entities.bullet.BlackHoleBulletType;
-import blackhole.entities.effect.SwirlEffect;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.gen.Bullet;

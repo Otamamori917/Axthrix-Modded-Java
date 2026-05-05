@@ -14,7 +14,7 @@ import mindustry.world.blocks.defense.*;
 
 import static mindustry.Vars.world;
 
-public class MineBulletType extends BulletType{
+public class MineBulletType extends BulletType {
     public Block mine;
     public Sound creationSound = Sounds.blockPlace2, creationFailureSound = Sounds.explosion;
 

@@ -5,7 +5,6 @@ import arc.audio.Sound;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Time;
 import axthrix.AxthrixLoader;
-import axthrix.world.types.block.defense.RevolverTurret;
 import axthrix.world.util.AxPartParms;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -13,7 +12,7 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.type.Weapon;
-import axthrix.world.util.RevolverLogic;
+import axthrix.world.util.logics.RevolverLogic;
 
 import static axthrix.content.AxthrixSounds.RevolverEmpty;
 import static axthrix.content.AxthrixSounds.RevolverReload;

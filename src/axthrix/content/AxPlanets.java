@@ -4,41 +4,33 @@ import arc.graphics.Color;
 import mindustry.content.Planets;
 import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.HexMesh;
-import mindustry.maps.planet.SerpuloPlanetGenerator;
 import mindustry.type.Planet;
 
-import static mindustry.Vars.content;
-
 public class AxPlanets {
-    public static Planet
-            Tharaxia
-            ;
-    public static void load()
-    {
-        //content.planets().each(p->p.hiddenItems.addAll(PvItems.TharaxiaOnlyItems));
-        Tharaxia = new Planet("Tharaxia", Planets.sun,1f,2)
-        {{
-            generator = new SerpuloPlanetGenerator();
+    public static Planet Tharaxia;
+
+    public static void load() {
+        Tharaxia = new Planet("Tharaxia", Planets.sun, 1f, 2) {{
+            generator = new ThraxiaPlanetGenerator();
             localizedName = "Tharaxia";
-            lightColor = Color.valueOf("ffffff");
+            lightColor = Color.valueOf("aaaaaa");
             alwaysUnlocked = true;
             tidalLock = false;
             accessible = true;
             meshLoader = () -> new HexMesh(this, 5);
-            atmosphereColor = Color.valueOf("ffffff");
+            // Deep purple atmosphere to match the ocean
+            atmosphereColor = Color.valueOf("1e0f3d");
             startSector = 15;
             totalRadius = 50f;
             clipRadius = 4;
-            lightColor = Color.valueOf("aaaaaa");
             atmosphereRadIn = -0.01f;
             atmosphereRadOut = 0.5f;
-            landCloudColor = Color.valueOf("ffffff");
+            // Dark purple-tinted clouds
+            landCloudColor = Color.valueOf("2d1a52");
             bloom = true;
-            //hiddenItems.addAll(content.items()).removeAll(PvItems.TharaxiaItems);
-            iconColor = atmosphereColor = Pal.heal;
+            iconColor = Color.valueOf("1e0f3d");
             alwaysUnlocked = true;
-            ruleSetter = r -> {
-            };
+            ruleSetter = r -> {};
         }};
     }
 }

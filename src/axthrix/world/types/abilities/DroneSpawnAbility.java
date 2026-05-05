@@ -7,7 +7,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.*;
 import axthrix.world.types.unittypes.DroneUnitType;
-import axthrix.world.util.AxDrawf;
+import axthrix.world.util.draw.AxDrawf;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -17,7 +17,6 @@ import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Call;
 import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
 import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -37,7 +36,7 @@ public class DroneSpawnAbility extends Ability {
 
     public HashMap<Unit, Unit> aliveUnit = new HashMap<>();
     public HashMap<Unit, Float> warmup = new HashMap<>();
-    protected float timer;
+    public float timer;
     protected boolean hasKamikaze = false;
     protected SacrificeProtocolAbility kamikazeAbility = null;
     public float dY;

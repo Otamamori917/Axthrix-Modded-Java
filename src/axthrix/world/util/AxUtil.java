@@ -4,6 +4,8 @@ import arc.scene.ui.TextField;
 import axthrix.world.types.abilities.DroneSpawnAbility;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.DrawPart;
+import mindustry.entities.part.RegionPart;
 import mindustry.type.*;
 import arc.*;
 import arc.func.*;
@@ -22,6 +24,7 @@ import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import mindustry.world.*;
 import arc.func.*;
@@ -35,6 +38,8 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.draw.DrawTurret;
 import mindustry.world.meta.*;
 
 import static arc.Core.*;
@@ -64,27 +69,45 @@ public class AxUtil {
     public static float GetDamage(float DPS, float fireRate){
         return DPS/fireRate;
     }
-    ///  a simple call to make shape to wall drone formations
-    public static Seq<DroneSpawnAbility> generateDroneCircle(DroneUnitType droneType, int droneCount, float radius, float spacing, float spawnTimem) {
+    /**
+     * A helper utility to generate drone formations that transition from a circular orbit
+     * to a structured wall when the parent unit is shooting.
+     *
+     * @author Otamamori
+     * @param droneType   The type of drone unit to be spawned.
+     * @param droneCount  The total number of drones in this specific formation group.
+     * @param radius      The distance from the parent unit's center for the idle circular orbit.
+     * @param spacing     The horizontal distance between each drone when in the "wall" formation.
+     * @param spawnTimem  The time (in ticks) it takes for drones to respawn after being destroyed.
+     * @param startSlot   The starting index in the unit's ability list (used to offset multiple drone groups).
+     *
+     * @return A sequence of configured DroneSpawnAbilities ready to be added to a UnitType.
+     */
+    public static Seq<DroneSpawnAbility> generateDroneCircle(DroneUnitType droneType, int droneCount, float radius, float spacing, float spawnTimem, int startSlot) {
         Seq<DroneSpawnAbility> abilities = new Seq<>();
 
         float angleStep = 360f / droneCount;
         float startAngle = (droneCount % 2 == 0) ? angleStep / 2f : 0f;
 
         for(int i = 0; i < droneCount; i++){
-            int slot = i;
+            int slot = startSlot + i;
             boolean isFirst = (i == 0);
+
             float angle = startAngle + (angleStep * i);
             float startX = radius * Mathf.sinDeg(angle);
             float startY = radius * Mathf.cosDeg(angle);
+
             float normalizedAngle = angle % 360f;
             if(normalizedAngle > 180f) normalizedAngle -= 360f;
-            float positionIndex = -normalizedAngle / angleStep;
+            float positionIndex = -(-normalizedAngle / angleStep);
+
             float finalX = positionIndex * spacing;
             float curveDepth = Math.abs(positionIndex) * 1.5f;
             float finalY = (radius + 5f) - curveDepth;
+
             float moveXm = finalX - startX;
             float moveYm = finalY - startY;
+
             float targetRotation = (positionIndex * 10f);
             float rotationDelta = targetRotation - angle;
             while(rotationDelta > 180f) rotationDelta -= 360f;
@@ -114,6 +137,60 @@ public class AxUtil {
         return abilities;
     }
 
+
+    public static float[] generateBarrels(int count, float totalWidth, float yOffset) {
+        float[] barrels = new float[count * 3];
+        for (int i = 0; i < count; i++) {
+            // Calculate X to center the barrels around 0
+            float x = (count <= 1) ? 0 : (i * (totalWidth / (count - 1))) - (totalWidth / 2f);
+            barrels[i * 3] = x;
+            barrels[i * 3 + 1] = yOffset;
+            barrels[i * 3 + 2] = 0f; // Angle
+        }
+        return barrels;
+    }
+
+    public static Seq<DrawPart> generateRevolvingParts(int count, float radius, float baseSpeed, String partSuffix) {
+        Seq<DrawPart> parts = new Seq<>();
+
+        for (int i = 0; i < count; i++) {
+            int index = i;
+            float offsetAngle = (360f / count) * i;
+
+            parts.add(new RegionPart(partSuffix) {{
+                progress = PartProgress.warmup;
+                heatProgress = AxPartParms.AxPartProgress.secondaryHeat; // Sync heat color
+
+                y = 4.5f;
+                moveY = 3f;
+                recoilIndex = index;
+                layerOffset = 2;
+                turretHeatLayer = 54;
+
+                // Using a custom PartMove to handle the dynamic rotation
+                moves.add(new PartMove(PartProgress.warmup, 0f, 0f, 0f) {{
+                    // We use the 'secondaryHeat' to multiply the rotation speed
+                    // Rotation = Offset + (Time * Speed * RampUp)
+                    float currentRot = offsetAngle + (Time.time * baseSpeed * AxPartParms.AxPartProgress.secondaryHeat.get(DrawPart.params));
+
+                    x = radius * Mathf.sinDeg(currentRot);
+
+                    // Depth logic: if it's "behind" (cos < 0), drop the layer
+                    float cos = Mathf.cosDeg(currentRot);
+                    layerOffset = cos < 0 ? 1.9f : 2.1f;
+
+                    // Optional: Slight scale change to simulate 3D perspective
+                    // Shrinks it to 80% size when at the "back"
+                    mixColor = Color.black;
+                    mixColor.a = Mathf.clamp(-cos * 0.3f); // Darken it slightly when in back
+                }});
+            }});
+        }
+        return parts;
+    }
+
+
+
     /** Not a setting, but rather a space between settings. */
     public static class Separator extends Setting{
         float height;
@@ -129,6 +206,39 @@ public class AxUtil {
             table.row();
         }
     }
+
+    public static class Header extends Setting {
+        float height;
+        String title;
+        boolean left, line;
+
+        public Header(String title, float height, boolean left, boolean line) {
+            super(""); // No key needed for a header
+            this.title = title;
+            this.height = height;
+            this.left = left;
+            this.line = line;
+        }
+
+        @Override
+        public void add(SettingsTable table) {
+            table.table(t -> {
+                var label = t.add(title).color(Pal.accent).style(Styles.outlineLabel).padTop(height / 2f);
+                if (left) t.left(); else t.center();
+            }).growX().padTop(3f);
+            table.row();
+
+            if (line) {
+                // Using Tex.whiteui with a height of 2f creates a clean line.
+                // For the dashed look in your image, use a very small height or a specific texture.
+                table.image(Tex.whiteui).color(Pal.accent).growX().height(2f).padTop(2f).padBottom(5f);
+                table.row();
+            }
+        }
+    }
+
+
+
 
     public static float bulletDamage(BulletType b, float lifetime){
         if(b.spawnUnit != null){ //Missile unit damage

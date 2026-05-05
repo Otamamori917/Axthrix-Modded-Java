@@ -18,9 +18,16 @@ public class AxItems {
             //printing coils
     carbonCoil, copperCoil, tungstenCoil, silverCoil, leadCoil,
             //misc
-    ingot, fossilizedIkatusa
+    ingot, fossilizedIkatusa,
+           //waste material
+    stone,ice,dirt
     ;
     public static void load() {
+        //pratically useless
+        stone = new Item("stone") {{
+            color = Color.gray;
+            hideDetails = false;
+        }};
         //components
         RDC = new Item("RDC") {{
             color = Color.purple;

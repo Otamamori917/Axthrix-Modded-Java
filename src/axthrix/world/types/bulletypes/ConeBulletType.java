@@ -7,13 +7,13 @@ import arc.util.*;
 import axthrix.world.util.AxUtil;
 import mindustry.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-public class ConeBulletType extends BulletType{
+public class ConeBulletType extends BulletType {
     public float cone = 45f;
     public float length = 250f;
     public int scanAccuracy = 30;

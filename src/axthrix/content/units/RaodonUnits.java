@@ -204,8 +204,8 @@ public class RaodonUnits {
 
             abilities.add(new AfterBurnAbility(){{
                 fuelCap = 40;
-                boostForce = 60;
-                fuelRegenPerTick = 1;
+                boostForce = 30;
+                fuelRegenPerTick = 0.5f;
                 fuelUsedPerTick = 1;
             }});
 

@@ -1,6 +1,5 @@
 package axthrix.content.blocks;
 
-import arc.util.Time;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxFactions;
 
@@ -13,8 +12,8 @@ import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.weapontypes.BlockWeapon;
 import axthrix.world.util.*;
+import axthrix.world.util.draw.*;
 import blackhole.entities.bullet.BlackHoleBulletType;
-import blackhole.entities.part.BlackHolePart;
 import mindustry.content.*;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.effect.MultiEffect;
@@ -30,8 +29,6 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 
 import static axthrix.content.blocks.PayloadAmmoBlocks.*;
-import static blackhole.utils.BlackHoleUtils.immuneBulletTypes;
-import static blackhole.utils.BlackHoleUtils.immuneBullets;
 import static mindustry.type.ItemStack.*;
 
 public class AxthrixTurrets{
@@ -57,7 +54,7 @@ public class AxthrixTurrets{
 
     vatya, aratiri, gravitation, morta,
 
-    karma,viper,coiner,pop,
+    karma,viper,coiner,pop, hematite,
 
     //payload
     apex,//Small apexus? but autocannon possibly
@@ -101,7 +98,7 @@ public class AxthrixTurrets{
                     new ShootBarrel(){{
                         barrels = new float[]{
                                 -1.5f, 15, 0,
-                                 1.5f, 15, 0
+                                1.5f, 15, 0
                         };
                     }},
                     new ShootHelix(){{
@@ -109,21 +106,21 @@ public class AxthrixTurrets{
                         scl = 0.1f;
                     }});
             ammo(
-                Items.titanium, new BasicBulletType(4f, 15){{
-                    homingPower = 0.09f;
-                    homingRange = 200;
-                    homingDelay = 40f;
-                    width = 2f;
-                    height = 4f;
-                    hitSize = 2f;
-                    lifetime = 100f;
-                    trailEffect = Fx.none;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.tungstenShot;
-                    trailLength = 5;
-                    trailWidth = 1f;
-                }}
+                    Items.titanium, new BasicBulletType(4f, 15){{
+                        homingPower = 0.09f;
+                        homingRange = 200;
+                        homingDelay = 40f;
+                        width = 2f;
+                        height = 4f;
+                        hitSize = 2f;
+                        lifetime = 100f;
+                        trailEffect = Fx.none;
+                        trailInterval = 3f;
+                        trailParam = 4f;
+                        trailColor = Pal.tungstenShot;
+                        trailLength = 5;
+                        trailWidth = 1f;
+                    }}
             );
             inaccuracy = 0f;
             drawer = new DrawAcceleratedTurret("crystalized-"){{
@@ -425,7 +422,7 @@ public class AxthrixTurrets{
             maxSpread = 40;
             inaccuracy = 0;
             maxLifetimeMultiplier = 12f;
-            aiChargeThreshold = 3.33f;
+            aiChargeThreshold = 0.33f;
             range = (AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier)*8);
             ammo(
                     Items.titanium, new BasicBulletType(){{
@@ -448,6 +445,7 @@ public class AxthrixTurrets{
         aratiri = new PowerAcceleratedTurret("aratiri"){{
             drawer = new DrawAcceleratedTurret("crystalized-");
             outlineColor = Color.valueOf("#181a1b");
+
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
             //custom varibles
             acceleratedDelay = 45f;
@@ -593,12 +591,15 @@ public class AxthrixTurrets{
                         new RegionPart("-main"){{layerOffset = 2;}});*/
             }};
         }};
-        vatya = new AxPowerTurret("vatya"){{
+        vatya = new TemperatureTurret("vatya"){{
             outlineColor = Color.valueOf("#181a1b");
             range = 8*50;
             size = 3;
             reload = 480;
             inaccuracy =  0f;
+            minTemperature = 20f;
+            maxTemperature = 40f;
+            requiresCold = requiresHeat = true;
             requirements(Category.turret, with(
                     Items.silicon, 325,
                     Items.titanium, 350
@@ -1545,6 +1546,43 @@ public class AxthrixTurrets{
         }};
 
     }
+    public static void loadIkatusa(){
+        hematite = new TransformingTurret("hematite") {{
+
+            forms = new Form[]{
+
+                    new Form("form-1", "Harpoon", "Chain Harpoon",
+                            new HarpoonBulletType(),
+                            230f, 5f, 85f, 10f
+                    ) {{
+                        parts = new FormPart[]{
+                                new FormPart("harpoon") {{ recoilAmount = 5f; heatLerp = 1.0f; }},
+                                new FormPart("chain") {{ pulseSpeed = 6f; }}
+                        };
+                    }},
+                    new Form("form-2", "Jaws", "Bite",
+                            new GrabBulletType(){{
+                                holdDistance = 10;
+                            }},
+                            28f, 4f, 75f, 13f
+                    ) {{
+                        parts = new FormPart[]{
+                                new FormPart("jaw") {{ recoilAmount = 8f; heatLerp = 1.4f; }},
+                                new FormPart("teeth") {{ heatLerp = 0.9f; }}
+                        };
+                    }},
+                    new Form("form-3", "Rend", "Flesh Rend",
+                            new RendBulletType(),
+                            70f, 8f, 42f, 15f
+                    ) {{
+                        parts = new FormPart[]{
+                                new FormPart("blade") {{ recoilAmount = 9f; heatLerp = 1.5f; }},
+                                new FormPart("slash") {{ pulseSpeed = 5f; }}
+                        };
+                    }}
+            };
+        }};
+    }
     public static void loadRaodon(){
         asmot = new AxItemTurret("asmot"){{
             outlineColor = Color.valueOf("#181a1b");
@@ -1750,6 +1788,7 @@ public class AxthrixTurrets{
                     }}
 
             );
+
             drawer = new DrawRevolverTurret("reinforced-"){{
                 parts.add(
                         new RegionPart("-barrel"){{

@@ -12,25 +12,18 @@ import arc.scene.ui.layout.Table;
 import arc.util.Log;
 import arc.util.Scaling;
 import arc.util.Time;
-import arc.util.Tmp;
 import arc.util.noise.Simplex;
 import axthrix.content.AxLiquids;
-import axthrix.world.types.block.LiquidDeposit;
+import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.defense.PayloadTurretType;
-import axthrix.world.util.DrawIPayloadTurret;
-import com.sun.nio.sctp.MessageInfo;
+import axthrix.world.util.draw.DrawIPayloadTurret;
 import mindustry.Vars;
-import mindustry.ai.types.LogicAI;
-import mindustry.content.Blocks;
 import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
-import mindustry.core.UI;
 import mindustry.entities.Puddles;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.part.DrawPart;
 import mindustry.gen.Building;
-import mindustry.gen.Iconc;
 import mindustry.gen.Payloadc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
@@ -38,7 +31,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
-import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.ForceProjector;
 import mindustry.world.blocks.defense.MendProjector;
@@ -361,7 +353,7 @@ public class MountUnitType extends AxUnitType {
                 }
         }
     }
-    public void tickEnd(Building build,Unit unit){
+    public void tickEnd(Building build, Unit unit){
         if (build.block.consumesPower && build.power != null) {
             if (Validation.get(unit)) {
                 build.power.status = 1;
@@ -376,21 +368,21 @@ public class MountUnitType extends AxUnitType {
                 build.power.status = 0f;
             }
 
-            powTick.replace(unit,powTick.get(unit)+1);
+            powTick.replace(unit, powTick.get(unit) + 1);
             if (amosPowerDebug){
-                Log.info("unit:"+ unit+"  Tick:"+powTick.get(unit)+"  Rate:"+DelpeltionRate.get(unit)+"  Valid?:"+Validation.get(unit));
+                Log.info("unit:" + unit + "  Tick:" + powTick.get(unit) + "  Rate:" + DelpeltionRate.get(unit) + "  Valid?:" + Validation.get(unit));
             }
         }
+
         if(build.block.hasLiquids && build.liquids != null) {
             if (liquidAmount.get(unit) == 0){
                 liquidType.replace(unit, AxLiquids.nothingness);
             }
             if (amosLiquidDebug){
-                Log.info("unit:"+ unit+"  liquid:"+liquidType.get(unit)+"  liquid amount:"+liquidAmount.get(unit));
+                Log.info("unit:" + unit + "  liquid:" + liquidType.get(unit) + "  liquid amount:" + liquidAmount.get(unit));
             }
         }
         build.update();
-        build.warmup();
     }
     public void existCheck(Unit unit){
         if (!powTick.containsKey(unit)){
@@ -416,16 +408,17 @@ public class MountUnitType extends AxUnitType {
         }
     }
 
-    public void drawBuild(Building build,Unit unit,float layer){
+    public void drawBuild(Building build, Unit unit, float layer){
         Turret turret = (Turret)build.block;
         Turret.TurretBuild tb = (Turret.TurretBuild)build;
         DrawTurret drawer = (DrawTurret)turret.drawer;
+
         if(drawer instanceof DrawIPayloadTurret dpt){
-            Draw.rect(drawer.base, build.x, build.y,unit.rotation);
+            Draw.rect(drawer.base, build.x, build.y, unit.rotation);
             Draw.z(layer + 2000f);
             Draw.rect(dpt.cover, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, unit.rotation);
         }else{
-            Draw.rect(drawer.base, build.x, build.y,unit.rotation);
+            Draw.rect(drawer.base, build.x, build.y, unit.rotation);
         }
         Draw.color();
 
@@ -439,7 +432,6 @@ public class MountUnitType extends AxUnitType {
 
         if(drawer.parts.size > 0){
             if(drawer.outline.found()){
-                //draw outline under everything when parts are involved
                 Draw.z(layer + 4.99f);
                 Draw.rect(drawer.outline, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, tb.drawrot());
                 Draw.z(layer + 5);
@@ -447,9 +439,7 @@ public class MountUnitType extends AxUnitType {
 
             float progress = tb.progress();
 
-            //TODO no smooth reload
-            var params = DrawPart.params.set(build.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
-            build.warmup();
+            var params = DrawPart.params.set(tb.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
 
             for(var part : drawer.parts){
                 params.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);

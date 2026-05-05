@@ -3,13 +3,13 @@ package axthrix.content.units;
 import arc.graphics.Color;
 import axthrix.content.AxItems;
 import axthrix.content.FX.AxthrixFfx;
-import axthrix.content.blocks.AxthrixCrafters;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.block.Egg;
+import axthrix.world.types.block.defense.JormungandrNest;
 import axthrix.world.types.bulletypes.GrabBulletType;
-import axthrix.world.types.entities.comp.ExtensionUnit;
 import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.unittypes.IkatusaUnitType;
+import axthrix.world.types.unittypes.JormungandrUnitType;
 import axthrix.world.types.unittypes.LeggedWaterUnit;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
@@ -17,577 +17,317 @@ import mindustry.content.Items;
 import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.ExplosionBulletType;
 import mindustry.gen.ElevationMoveUnit;
-import mindustry.gen.LegsUnit;
-import mindustry.gen.UnitWaterMove;
 import mindustry.graphics.Layer;
 import mindustry.type.Category;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.Block;
-import mindustry.world.meta.Attribute;
-
-import java.awt.geom.Ellipse2D;
 
 import static mindustry.type.ItemStack.with;
 
 public class IkatusaUnits {
     public static UnitType
-    //Ikatusa |undetermined| + 1 TX
+            // Jelly - Iyiminin
+            YoungJelly, JuvenileJelly, AdultJelly, ElderJelly,
 
-        //Jelly - Iyiminin
-        YoungJelly, JuvenileJelly, AdultJelly, ElderJelly,
+    // Stopper - Mlombala
+    YoungStopper, JuvenileStopper, AdultStopper,
 
-        //Stopper - Mlombala Juvenile(male 40%/female 60%) Adult (male/female)
-        YoungStopper, JuvenileStopper, AdultStopper,
+    // Crocit - Rakdos
+    YoungCrocit, FemaleAdultCrocit, MaleAdultCrocit,
 
-        //Crocit - Rakdos Adult (male 45%/female 55%)
-        YoungCrocit, FemaleAdultCrocit, MaleAdultCrocit;
+    // Snake - Gandr
+    // Vorryn (Hatchling) → Vorryn-Kath (Juvenile) → Keth-Vorryn (Adult) → Jormungandr (Elder)
+    GandrHatchling, GandrJuvenile, GandrAdult, GandrElder;
 
     public static Block
-            //Jelly - Iyiminin
+            // Jelly
             SpawnJelly,
-            //Stopper - Mlombala
-            EggStopper,
-            //Crocit - Rakdos Adult (male 45%/female 55%)
-            EggCrocit
+    // Stopper
+    EggStopper,
+    // Crocit
+    EggCrocit,
+    // Snake
+    GandrEgg,
+            GandrNestYoung,
+            GandrNestJuvenile,
+            GandrNestAdult,
+            GandrNestElder;
 
-
-            ;
     public static void load() {
+
         ElderJelly = new IkatusaUnitType("iyiminin-elder") {{
             localizedName = "Elder Iyiminin";
-            description = """
-                         
-                          """;
-            constructor = ExtensionUnit::create;
-
-            finalStage = true;
-            growthTime = 3280;
-            maturityTime = 1;
-            cooldown = 1200;
-            asexual = true;
-            spawnAmount = 2;
-            spawnAmountRand = 1;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                        x = 0;
-                    }});*/
-
-            weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
-                }};
+            description = ""; constructor = ElevationMoveUnit::create;
+            finalStage = true; growthTime = 3280; maturityTime = 1;
+            cooldown = 1200; asexual = true; spawnAmount = 2; spawnAmountRand = 1;
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new ExplosionBulletType(100,80){{ killShooter = false;
+                    shootEffect = AxthrixFfx.circleOut(10,80,2,Layer.blockOver,Color.valueOf("481257")); }};
             }});
         }};
 
         AdultJelly = new IkatusaUnitType("iyiminin-adult") {{
-            localizedName = "Iyiminin";
-            description = """
-                         
-                          """;
-            constructor = ExtensionUnit::create;
-
-            nextStage = ElderJelly;
-            growthTime = 2880;
-            maturityTime = 1;
-            cooldown = 800;
-            asexual = true;
-            spawnAmount = 3;
-            spawnAmountRand = 3;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                        x = 0;
-                    }});*/
-
-            weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
-                }};
+            localizedName = "Iyiminin"; description = ""; constructor = ElevationMoveUnit::create;
+            nextStage = ElderJelly; growthTime = 2880; maturityTime = 1; cooldown = 800;
+            asexual = true; spawnAmount = 3; spawnAmountRand = 3;
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new ExplosionBulletType(100,80){{ killShooter = false;
+                    shootEffect = AxthrixFfx.circleOut(10,80,2,Layer.blockOver,Color.valueOf("481257")); }};
             }});
         }};
 
         JuvenileJelly = new IkatusaUnitType("iyiminin-juvenile") {{
-            localizedName = "Juvenile Iyiminin";
-            description = """
-                         
-                          """;
-
-
-            nextStage = AdultJelly;
-            growthTime = maturityTime = 860;
-            constructor = ExtensionUnit::create;
-
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                        x = 0;
-                    }});*/
-
-            weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
-                }};
+            localizedName = "Juvenile Iyiminin"; description = "";
+            nextStage = AdultJelly; growthTime = maturityTime = 860;
+            constructor = ElevationMoveUnit::create;
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new ExplosionBulletType(100,80){{ killShooter = false;
+                    shootEffect = AxthrixFfx.circleOut(10,80,2,Layer.blockOver,Color.valueOf("481257")); }};
             }});
         }};
 
         YoungJelly = new IkatusaUnitType("iyiminin-young") {{
-            localizedName = "Young Iyiminin";
-            description = """
-                         
-                          """;
-
-            nextStage = JuvenileJelly;
-            growthTime = maturityTime = 650;
-            constructor = ExtensionUnit::create;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                        x = 0;
-                    }});*/
-
-            weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
-                }};
+            localizedName = "Young Iyiminin"; description = "";
+            nextStage = JuvenileJelly; growthTime = maturityTime = 650;
+            constructor = ElevationMoveUnit::create;
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new ExplosionBulletType(100,80){{ killShooter = false;
+                    shootEffect = AxthrixFfx.circleOut(10,80,2,Layer.blockOver,Color.valueOf("481257")); }};
             }});
         }};
 
         SpawnJelly = new Egg("iyiminin-egg") {{
-            size = 1;
-            spawnAmount = 2;
-            spawnAmountRand = 6;
-            growthTime = 440;
+            size = 1; spawnAmount = 2; spawnAmountRand = 6; growthTime = 440;
             nextStage = YoungJelly;
             ((IkatusaUnitType)ElderJelly).egg = this;
             ((IkatusaUnitType)AdultJelly).egg = this;
-            attributes.addAll(Blocks.water,Blocks.deepwater,Blocks.deepTaintedWater,Blocks.sandWater,Blocks.darksandWater,Blocks.darksandTaintedWater);
-            requirements(Category.units, with(
-                    AxItems.fossilizedIkatusa, 10
-            ));
+            attributes.addAll(Blocks.water,Blocks.deepwater,Blocks.deepTaintedWater,
+                    Blocks.sandWater,Blocks.darksandWater,Blocks.darksandTaintedWater);
+            requirements(Category.units, with(AxItems.fossilizedIkatusa, 10));
         }};
 
         MaleAdultCrocit = new LeggedWaterUnit("rakdosm") {{
-            localizedName = "Male Rakdos";
-            description = """
-                         
-                          """;
+            localizedName = "Male Rakdos"; description = "";
             constructor = LeggedWaterEntity::create;
-            legCount = 4;
-            boostUsesNaval = naval = true;
+            legCount = 4; boostUsesNaval = naval = true;
             showLegsOnDeepLiquid = showLegsOnLiquid = false;
+            finalStage = true; growthTime = 12500; ismale = true;
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
 
-            finalStage = true;
-            growthTime = 12500;
-            ismale = true;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                       x = 0;
-                    }});*/
-
+            preyTypes.add(
+                    YoungJelly,
+                    JuvenileJelly,
+                    AdultJelly,
+                    ElderJelly
+            );
             weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
+                mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new GrabBulletType(){{
+                    holdDistance = 8.5f;
+                    grabDuration = 205f; damage = 10f; maxSizeRatio = 1.5f;
+                    canGrabFlying = false; failEffect = Fx.smoke;
+                    grabEffect = Fx.blastExplosion; grabColor = Color.valueOf("ff0000");
                 }};
             }});
         }};
 
         FemaleAdultCrocit = new LeggedWaterUnit("rakdosf") {{
-            localizedName = "Female Rakdos";
-            description = """
-                         
-                          """;
+            localizedName = "Female Rakdos"; description = "";
             constructor = LeggedWaterEntity::create;
-            legCount = 4;
-            boostUsesNaval = naval = true;
-            finalStage = true;
-            growthTime = 12500;
+            legCount = 4; boostUsesNaval = naval = true;
+            finalStage = true; growthTime = 12500;
             oppositeGender = MaleAdultCrocit;
             ((IkatusaUnitType)MaleAdultCrocit).oppositeGender = this;
-            legCount = 4;
             showLegsOnDeepLiquid = showLegsOnLiquid = false;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                       x = 0;
-                    }});*/
-
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            preyTypes.add(
+                    YoungJelly,
+                    JuvenileJelly,
+                    AdultJelly
+            );
             weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
-                bullet = new ExplosionBulletType(100,80){{
-                    killShooter = false;
-                    shootEffect = AxthrixFfx.circleOut(10,80, 2,Layer.blockOver,Color.valueOf("481257"));
+                mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
+                bullet = new GrabBulletType(){{
+                    holdDistance = 8;
+                    grabDuration = 200f; damage = 10f; maxSizeRatio = 1.5f;
+                    canGrabFlying = false; failEffect = Fx.smoke;
+                    grabEffect = Fx.blastExplosion; grabColor = Color.valueOf("ff0000");
                 }};
             }});
         }};
 
         YoungCrocit = new LeggedWaterUnit("rakdos-young") {{
-            localizedName = "Young Rakdos";
-            description = """
-                         
-                          """;
+            localizedName = "Young Rakdos"; description = "";
             constructor = LeggedWaterEntity::create;
-            legCount = 4;
-            boostUsesNaval = naval = true;
-            canDrown = false;
+            legCount = 4; boostUsesNaval = naval = true; canDrown = false;
             showLegsOnDeepLiquid = showLegsOnLiquid = false;
-
-            maleStage = MaleAdultCrocit;
-            femaleStage = FemaleAdultCrocit;
+            maleStage = MaleAdultCrocit; femaleStage = FemaleAdultCrocit;
             growthTime = 6500;
-
-            flying = false;
-            speed = 8.3f/7.5f;
-            drag = 0.13f;
-            hitSize = 10f;
-            health = 275;
-            armor = 3;
-            accel = 0.6f;
-            rotateSpeed = 3.3f;
-            faceTarget = true;
-            hovering = true;
-            /*parts.add(
-                    new RegionPart("-blade"){{
-                        mirror = under = true;
-                        weaponIndex = 0;
-                        moveY = -2;
-                        moveX = -2;
-                    }},
-                    new HoverPart(){{
-                        x = 0f;
-                        y = 0f;
-                        mirror = false;
-                        radius = 18f;
-                        phase = 60f;
-                        stroke = 5f;
-                        layerOffset = -0.05f;
-                        color = Color.valueOf("de9458");
-                    }},
-                    new HaloPart(){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        weaponIndex = 0;
-                        color = Color.valueOf("de9458");
-                        sides = 10;
-                        hollow = true;
-                        shapes = 2;
-                        stroke = 0.2f;
-                        strokeTo = 0.8f;
-                        radius = 2f;
-                        haloRadius = 9f;
-                        haloRotateSpeed = 4;
-                        layer = Layer.effect;
-                        y = 0;
-                       x = 0;
-                    }});*/
-
+            flying = false; speed = 8.3f/7.5f; drag = 0.13f;
+            hitSize = 10f; health = 275; armor = 3;
+            accel = 0.6f; rotateSpeed = 3.3f; faceTarget = true; hovering = true;
+            preyTypes.add(
+                    YoungJelly,
+                    JuvenileJelly
+            );
             weapons.add(new Weapon(){{
-                mirror = false;
-                x = 0;
-                y = 0;
-                reload = 60f/0.8f;
-                shootStatus = StatusEffects.unmoving;
-                shootStatusDuration = 15;
+                mirror = false; x = 0; y = 0; reload = 60f/0.8f;
+                shootStatus = StatusEffects.unmoving; shootStatusDuration = 15;
                 bullet = new GrabBulletType(){{
-                    grabDuration = 180f;
-                    damage = 10f;
-
-                    maxSizeRatio = 1.5f; // Can only grab units up to 18 hitSize
-                    canGrabFlying = false; // Cannot grab flying units
-
-                    failEffect = Fx.smoke; // Show smoke when grab fails
-                    grabEffect = Fx.blastExplosion;
-                    grabColor = Color.valueOf("ff0000");
+                    holdDistance = 5;
+                    grabDuration = 180f; damage = 10f; maxSizeRatio = 1.5f;
+                    canGrabFlying = false; failEffect = Fx.smoke;
+                    grabEffect = Fx.blastExplosion; grabColor = Color.valueOf("ff0000");
                 }};
             }});
         }};
 
         EggCrocit = new Egg("rakdos-egg") {{
-            size = 1;
-            spawnAmount = 3;
-            spawnAmountRand = 2;
-            growthTime = 1840;
+            size = 1; spawnAmount = 3; spawnAmountRand = 2; growthTime = 1840;
             nextStage = YoungCrocit;
             ((IkatusaUnitType)FemaleAdultCrocit).egg = this;
             attributes.add(AxthrixEnvironment.crimsonSandDeepFloor);
-            requirements(Category.units, with(
-                    AxItems.fossilizedIkatusa, 10, Items.sand, 10
-            ));
+            requirements(Category.units, with(AxItems.fossilizedIkatusa, 10, Items.sand, 10));
         }};
+
+        GandrElder = new JormungandrUnitType("gandr-elder") {{
+            localizedName = "Jormungandr";
+            description = "An ancient serpent of immense size. Rarely seen, never forgotten.";
+            constructor = ElevationMoveUnit::create;
+            finalStage = true;
+            canNest = true;
+            isHatchling = false;
+            stageTime = 14400f;
+            resourceProgressValue = 30f;
+            nestSeekRange = 280f;
+            eggBatchCount = 3;
+            eggSpread = 50f;
+            bodySegments = 28; segmentSpacing = 10f;
+            lungeRange = 120f;
+            flying = false; speed = 0.7f; drag = 0.13f;
+            hitSize = 22f; health = 1200; armor = 12;
+            accel = 0.4f; rotateSpeed = 1.5f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 45f;
+                bullet = new ExplosionBulletType(120,100){{ killShooter = false;
+                    status = StatusEffects.corroded; statusDuration = 240f; }};
+            }});
+        }};
+
+        // ---- Adult (Keth-Vorryn) ----
+
+        GandrAdult = new JormungandrUnitType("gandr-adult") {{
+            localizedName = "Keth-Vorryn";
+            description = "A mature Vorryn serpent. Highly venomous — armour offers little protection.";
+            constructor = ElevationMoveUnit::create;
+            nextStage = (JormungandrUnitType) GandrElder;
+            chanceToAge = 0.15f;
+            canNest = true;
+            isHatchling = false;
+            stageTime = 10800f;
+            resourceProgressValue = 60f;
+            eggBatchCount = 2;
+            eggSpread = 40f;
+            bodySegments = 8; segmentSpacing = 7f;
+            lungeRange = 95f;
+            flying = false; speed = 0.9f; drag = 0.13f;
+            hitSize = 14f; health = 500; armor = 7;
+            accel = 0.5f; rotateSpeed = 2.0f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 55f;
+                bullet = new ExplosionBulletType(70,75){{ killShooter = false;
+                    status = StatusEffects.corroded; statusDuration = 120f; }};
+            }});
+        }};
+
+        // ---- Juvenile (Vorryn-Kath) ----
+
+        GandrJuvenile = new JormungandrUnitType("gandr-juvenile") {{
+            localizedName = "Vorryn-Kath";
+            description = "A growing Vorryn serpent. Beginning to show its venom.";
+            constructor = ElevationMoveUnit::create;
+            nextStage = (JormungandrUnitType) GandrAdult;
+            canNest = true;
+            isHatchling = false;
+            stageTime = 7200f;
+            resourceProgressValue = 50f;
+            bodySegments = 5; segmentSpacing = 6f;
+            lungeRange = 75f;
+            flying = false; speed = 1.1f; drag = 0.13f;
+            hitSize = 9f; health = 260; armor = 3;
+            accel = 0.58f; rotateSpeed = 2.6f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 63f;
+                bullet = new ExplosionBulletType(40,50){{ killShooter = false;
+                    status = StatusEffects.corroded; statusDuration = 45f; }};
+            }});
+        }};
+
+        // ---- Hatchling (Vorryn) ----
+
+        GandrHatchling = new JormungandrUnitType("gandr-hatchling") {{
+            localizedName = "Vorryn";
+            description = "A freshly hatched Vorryn serpent. Small, skittish, but already venomous.";
+            constructor = ElevationMoveUnit::create;
+            nextStage = (JormungandrUnitType) GandrJuvenile;
+            canNest = true;
+            isHatchling = true;
+            stageTime = 3600f;
+            resourceProgressValue = 40f;
+            bodySegments = 3; segmentSpacing = 5f;
+            lungeRange = 55f;
+            minScale = 0.2f;
+            flying = false; speed = 1.25f; drag = 0.13f;
+            hitSize = 5f; health = 130; armor = 0;
+            accel = 0.64f; rotateSpeed = 3.2f; faceTarget = true; hovering = true;
+            weapons.add(new Weapon(){{ mirror = false; x = 0; y = 0; reload = 75f;
+                bullet = new ExplosionBulletType(15,25){{ killShooter = false;
+                    status = StatusEffects.corroded; statusDuration = 15f; }};
+            }});
+        }};
+        GandrNestYoung = new JormungandrNest.JormungandrNestYoung("gandr-nest-young");
+        ((JormungandrUnitType) GandrHatchling).nestBlock = GandrNestYoung;
+
+        GandrNestJuvenile = new JormungandrNest.JormungandrNestJuvenile("gandr-nest-juvenile");
+        ((JormungandrUnitType) GandrJuvenile).nestBlock = GandrNestJuvenile;
+
+        GandrNestAdult = new JormungandrNest.JormungandrNestAdult("gandr-nest-adult");
+        ((JormungandrUnitType) GandrAdult).nestBlock = GandrNestAdult;
+
+        GandrNestElder = new JormungandrNest.JormungandrNestElder("gandr-nest-elder");
+        ((JormungandrUnitType) GandrElder).nestBlock = GandrNestElder;
+
+        GandrEgg = new Egg("gandr-egg") {{
+            size           = 1;
+            spawnAmount    = 6;
+            spawnAmountRand = 0;
+            growthTime     = 720f;
+            badEggChance   = 0.30f;
+            nextStage      = GandrHatchling;
+            attributes.addAll(Blocks.stone, Blocks.metalFloor);
+        }};
+
+        ((JormungandrUnitType) GandrAdult).eggBlock  = GandrEgg;
+        ((JormungandrUnitType) GandrElder).eggBlock  = GandrEgg;
     }
 }

@@ -21,7 +21,7 @@ public class AxthrixFx {
     public static final Vec2 v = new Vec2();
     public static final Effect
 
-    blockLaunch = new Effect(60f, e -> {
+            blockLaunch = new Effect(60f, e -> {
         // Get block texture (you can specify which block)
         TextureRegion blockRegion = mindustry.content.Blocks.copperWall.fullIcon;
 
@@ -84,7 +84,7 @@ public class AxthrixFx {
 
 
     unitBreakdown = new Effect(100f, e -> {
-        if(!(e.data instanceof Unit select) || select.type == null) return;
+        if (!(e.data instanceof Unit select) || select.type == null) return;
 
         float scl = e.fout(Interp.pow2Out);
         float p = Draw.scl;
@@ -99,7 +99,7 @@ public class AxthrixFx {
         Draw.scl = p;
     }),
 
-    failedMake =  new Effect(30f, e -> {
+    failedMake = new Effect(30f, e -> {
         color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
         alpha(e.fout(0.5f));
         e.scaled(7f, s -> {
@@ -115,46 +115,46 @@ public class AxthrixFx {
     }).layer(Layer.bullet),
 
     bolt = new Effect(12f, 1300f, e -> {
-        if(!(e.data instanceof Seq)) return;
+        if (!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
-        int n = Mathf.clamp(1 + (int)(e.fin() * lines.size), 1, lines.size);
-        for(int i = 2; i >= 0; i--){
+        int n = Mathf.clamp(1 + (int) (e.fin() * lines.size), 1, lines.size);
+        for (int i = 2; i >= 0; i--) {
             stroke(4.5f * (i / 2f + 1f));
             color(i == 0 ? Color.white : e.color);
             alpha(i == 2 ? 0.5f : 1f);
 
             beginLine();
-            for(int j = 0; j < n; j++){
+            for (int j = 0; j < n; j++) {
                 linePoint(lines.get(j).x, lines.get(j).y);
             }
             endLine(false);
         }
 
-        if(renderer.lights.enabled()){
-            for(int i = 0; i < n - 1; i++){
-                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f);
+        if (renderer.lights.enabled()) {
+            for (int i = 0; i < n - 1; i++) {
+                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i + 1).x, lines.get(i + 1).y, 40f, e.color, 0.9f);
             }
         }
     }),
 
     boltFade = new Effect(80f, 1300f, e -> {
-        if(!(e.data instanceof Seq)) return;
+        if (!(e.data instanceof Seq)) return;
         Seq<Vec2> lines = e.data();
-        for(int i = 2; i >= 0; i--){
+        for (int i = 2; i >= 0; i--) {
             stroke(4.5f * (i / 2f + 1f) * e.fout());
             color(i == 0 ? Color.white : e.color);
             alpha((i == 2 ? 0.5f : 1f) * e.fout());
 
             beginLine();
-            for(Vec2 p : lines){
+            for (Vec2 p : lines) {
                 linePoint(p.x, p.y);
             }
             endLine(false);
         }
 
-        if(renderer.lights.enabled()){
-            for(int i = 0; i < lines.size - 1; i++){
-                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i+1).x, lines.get(i+1).y, 40f, e.color, 0.9f * e.fout());
+        if (renderer.lights.enabled()) {
+            for (int i = 0; i < lines.size - 1; i++) {
+                Drawf.light(lines.get(i).x, lines.get(i).y, lines.get(i + 1).x, lines.get(i + 1).y, 40f, e.color, 0.9f * e.fout());
             }
         }
     }),
@@ -162,11 +162,11 @@ public class AxthrixFx {
     boltStrike = new Effect(80f, 100f, e -> {
         color(Color.white, e.color, e.fin());
 
-        for(int i = 2; i >= 0; i--){
+        for (int i = 2; i >= 0; i--) {
             float s = 4.5f * (i / 2f + 1f) * e.fout();
             color(i == 0 ? Color.white : e.color);
             alpha((i == 2 ? 0.5f : 1f) * e.fout());
-            for(int j = 0; j < 3; j++){
+            for (int j = 0; j < 3; j++) {
                 Drawf.tri(e.x, e.y, 2f * s, (s + 65f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), e.rotation + Mathf.randomSeedRange(e.id + j, 80f) + 180f);
             }
         }
@@ -176,17 +176,17 @@ public class AxthrixFx {
         float r = 55f * e.finpow();
         Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
         circle(e.x, e.y, r);
-        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
+        if (renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f),
 
-    shootSmokeMiniTitan = new Effect(70.0F/3, (e) -> {
-        rand.setSeed((long)e.id);
+    shootSmokeMiniTitan = new Effect(70.0F / 3, (e) -> {
+        rand.setSeed((long) e.id);
 
-        for(int i = 0; i < 13; ++i) {
-            v.trns(e.rotation + rand.range(30.0F/3), rand.random(e.finpow() * 40.0F/3));
-            e.scaled(e.lifetime * rand.random(0.3F/3, 1.0F), (b) -> {
+        for (int i = 0; i < 13; ++i) {
+            v.trns(e.rotation + rand.range(30.0F / 3), rand.random(e.finpow() * 40.0F / 3));
+            e.scaled(e.lifetime * rand.random(0.3F / 3, 1.0F), (b) -> {
                 Draw.color(e.color, Pal.lightishGray, b.fin());
-                Fill.circle(e.x + v.x, e.y + v.y, b.fout() * 3.4F/3 + 0.3F/3);
+                Fill.circle(e.x + v.x, e.y + v.y, b.fout() * 3.4F / 3 + 0.3F / 3);
             });
         }
 
@@ -195,11 +195,11 @@ public class AxthrixFx {
     boltHit = new Effect(80f, 100f, e -> {
         color(Color.white, e.color, e.fin());
 
-        for(int i = 2; i >= 0; i--){
+        for (int i = 2; i >= 0; i--) {
             float s = 4.5f * (i / 2f + 1f) * e.fout();
             color(i == 0 ? Color.white : e.color);
             alpha((i == 2 ? 0.5f : 1f) * e.fout());
-            for(int j = 0; j < 6; j++){
+            for (int j = 0; j < 6; j++) {
                 Drawf.tri(e.x, e.y, 2f * s, (s + 35f + Mathf.randomSeed(e.id - j, 95f)) * e.fout(), Mathf.randomSeedRange(e.id + j, 360f));
             }
         }
@@ -209,88 +209,194 @@ public class AxthrixFx {
         float r = 55f * e.finpow();
         Fill.light(e.x, e.y, circleVertices(r), r, Tmp.c4.set(e.color).a(0f), Tmp.c3.set(e.color).a(e.fout()));
         circle(e.x, e.y, r);
-        if(renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
+        if (renderer.lights.enabled()) Drawf.light(e.x, e.y, r * 3.5f, e.color, e.fout(0.5f));
     }).layer(Layer.effect + 0.001f),
 
-    instSmallShoot = new Effect(24.0F/2, (e) -> {
-        e.scaled(10.0F/2, (b) -> {
+    instSmallShoot = new Effect(24.0F / 2, (e) -> {
+        e.scaled(10.0F / 2, (b) -> {
             Draw.color(Color.white, Pal.bulletYellowBack, b.fin());
-            Lines.stroke(b.fout() * 3.0F/2 + 0.2F);
-            Lines.circle(b.x, b.y, b.fin() * 50.0F/2);
+            Lines.stroke(b.fout() * 3.0F / 2 + 0.2F);
+            Lines.circle(b.x, b.y, b.fin() * 50.0F / 2);
         });
         Draw.color(Pal.bulletYellowBack);
 
-        for(int i : Mathf.signs) {
-            Drawf.tri(e.x, e.y, 13.0F/2 * e.fout(), 85.0F/2, e.rotation + 90.0F * (float)i);
-            Drawf.tri(e.x, e.y, 13.0F/2 * e.fout(), 50.0F/2, e.rotation + 20.0F * (float)i);
+        for (int i : Mathf.signs) {
+            Drawf.tri(e.x, e.y, 13.0F / 2 * e.fout(), 85.0F / 2, e.rotation + 90.0F * (float) i);
+            Drawf.tri(e.x, e.y, 13.0F / 2 * e.fout(), 50.0F / 2, e.rotation + 20.0F * (float) i);
         }
 
-        Drawf.light(e.x, e.y, 180.0F/2, Pal.bulletYellowBack, 0.9F * e.fout());
+        Drawf.light(e.x, e.y, 180.0F / 2, Pal.bulletYellowBack, 0.9F * e.fout());
     }),
 
-    instSmallHit = new Effect(20.0F/2, 200.0F/2, (e) -> {
+    instSmallHit = new Effect(20.0F / 2, 200.0F / 2, (e) -> {
         Draw.color(Pal.bulletYellowBack);
 
-        for(int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 2; ++i) {
             Draw.color(i == 0 ? Pal.bulletYellowBack : Pal.bulletYellow);
             float m = i == 0 ? 1.0F : 0.5F;
 
-            for(int j = 0; j < 5; ++j) {
-                float rot = e.rotation + Mathf.randomSeedRange((long)(e.id + j), 50.0F);
-                float w = 23.0F/2 * e.fout() * m;
-                Drawf.tri(e.x, e.y, w, (80.0F/2 + Mathf.randomSeedRange((long)(e.id + j), 40.0F/2)) * m, rot);
-                Drawf.tri(e.x, e.y, w, 20.0F/2 * m, rot + 180.0F);
+            for (int j = 0; j < 5; ++j) {
+                float rot = e.rotation + Mathf.randomSeedRange((long) (e.id + j), 50.0F);
+                float w = 23.0F / 2 * e.fout() * m;
+                Drawf.tri(e.x, e.y, w, (80.0F / 2 + Mathf.randomSeedRange((long) (e.id + j), 40.0F / 2)) * m, rot);
+                Drawf.tri(e.x, e.y, w, 20.0F / 2 * m, rot + 180.0F);
             }
         }
 
-        e.scaled(10.0F/2, (c) -> {
+        e.scaled(10.0F / 2, (c) -> {
             Draw.color(Pal.bulletYellow);
             Lines.stroke(c.fout() * 1 + 0.2F);
-            Lines.circle(e.x, e.y, c.fin() * 30.0F/2);
+            Lines.circle(e.x, e.y, c.fin() * 30.0F / 2);
         });
-        e.scaled(12.0F/2, (c) -> {
+        e.scaled(12.0F / 2, (c) -> {
             Draw.color(Pal.bulletYellowBack);
-            Angles.randLenVectors((long)e.id, 25, 5.0F/2 + e.fin() * 80.0F/2, e.rotation, 60.0F/2, (x, y) -> Fill.square(e.x + x, e.y + y, c.fout() * 3.0F/2, 45.0F));
+            Angles.randLenVectors((long) e.id, 25, 5.0F / 2 + e.fin() * 80.0F / 2, e.rotation, 60.0F / 2, (x, y) -> Fill.square(e.x + x, e.y + y, c.fout() * 3.0F / 2, 45.0F));
         });
     }),
 
-    railSmallHit = new Effect(18.0F/2, 200.0F/2, (e) -> {
+    railSmallHit = new Effect(18.0F / 2, 200.0F / 2, (e) -> {
         Draw.color(Pal.orangeSpark);
 
-        for(int i : Mathf.signs) {
-            Drawf.tri(e.x, e.y, 10.0F/2 * e.fout(), 60.0F/2, e.rotation + 140.0F * (float)i);
+        for (int i : Mathf.signs) {
+            Drawf.tri(e.x, e.y, 10.0F / 2 * e.fout(), 60.0F / 2, e.rotation + 140.0F * (float) i);
         }
 
     }),
 
-    instSmallTrail = new Effect(30.0F/2, (e) -> {
-        for(int i = 0; i < 2; ++i) {
+    instSmallTrail = new Effect(30.0F / 2, (e) -> {
+        for (int i = 0; i < 2; ++i) {
             Draw.color(i == 0 ? Pal.bulletYellowBack : Pal.bulletYellow);
             float m = i == 0 ? 1.0F : 0.5F;
             float rot = e.rotation + 180.0F;
-            float w = 15.0F/2 * e.fout() * m;
-            Drawf.tri(e.x, e.y, w, (30.0F/2 + Mathf.randomSeedRange((long)e.id, 15.0F/2)) * m, rot);
-            Drawf.tri(e.x, e.y, w, 10.0F/2 * m, rot + 180.0F);
+            float w = 15.0F / 2 * e.fout() * m;
+            Drawf.tri(e.x, e.y, w, (30.0F / 2 + Mathf.randomSeedRange((long) e.id, 15.0F / 2)) * m, rot);
+            Drawf.tri(e.x, e.y, w, 10.0F / 2 * m, rot + 180.0F);
         }
 
-        Drawf.light(e.x, e.y, 60.0F/2, Pal.bulletYellowBack, 0.6F * e.fout());
+        Drawf.light(e.x, e.y, 60.0F / 2, Pal.bulletYellowBack, 0.6F * e.fout());
     }),
 
-    instSmallBomb = new Effect(15.0F/2, 100.0F/2, (e) -> {
+    instSmallBomb = new Effect(15.0F / 2, 100.0F / 2, (e) -> {
         Draw.color(Pal.bulletYellowBack);
-        Lines.stroke(e.fout() * 4.0F/2);
-        Lines.circle(e.x, e.y, 4.0F/2 + e.finpow() * 20.0F/2);
+        Lines.stroke(e.fout() * 4.0F / 2);
+        Lines.circle(e.x, e.y, 4.0F / 2 + e.finpow() * 20.0F / 2);
 
-        for(int i = 0; i < 4; ++i) {
-            Drawf.tri(e.x, e.y, 6.0F/2, 80.0F/2 * e.fout(), (float)(i * 90 + 45));
+        for (int i = 0; i < 4; ++i) {
+            Drawf.tri(e.x, e.y, 6.0F / 2, 80.0F / 2 * e.fout(), (float) (i * 90 + 45));
         }
         Draw.color();
 
-        for(int i = 0; i < 4; ++i) {
-            Drawf.tri(e.x, e.y, 3.0F/2, 30.0F/2 * e.fout(), (float)(i * 90 + 45));
+        for (int i = 0; i < 4; ++i) {
+            Drawf.tri(e.x, e.y, 3.0F / 2, 30.0F / 2 * e.fout(), (float) (i * 90 + 45));
         }
 
-        Drawf.light(e.x, e.y, 150.0F/2, Pal.bulletYellowBack, 0.9F * e.fout());
+        Drawf.light(e.x, e.y, 150.0F / 2, Pal.bulletYellowBack, 0.9F * e.fout());
+    });
+
+    public static final Effect gluonTrail = new Effect(16.0F, (e) -> {
+        // Calculate a high-speed jitter offset for this frame
+        float jitter = 2.5f; // Intensity of the wiggle
+        float offX = Mathf.randomSeedRange((long) (e.id + Time.time), jitter);
+        float offY = Mathf.randomSeedRange((long) (e.id + Time.time + 1), jitter);
+
+        for (int i = 0; i < 2; ++i) {
+            Draw.color(i == 0 ? Pal.sapBulletBack : Pal.sapBullet);
+
+            float m = i == 0 ? 1.0F : 0.5F;
+            float rot = e.rotation + 180.0F;
+
+            // Randomize the width and length slightly per frame for "flicker"
+            float flicker = 1f + Mathf.randomSeedRange((long) (e.id + Time.time), 0.2f);
+            float w = (12.0F / 2 * e.fout() * m) * flicker;
+            float len = (25.0F / 2 + Mathf.randomSeedRange((long) e.id, 10.0F / 2)) * m;
+
+            // Draw with the jittered coordinates
+            Drawf.tri(e.x + offX, e.y + offY, w, len * flicker, rot);
+
+            // Small "head" triangle also jitters
+            Drawf.tri(e.x + offX, e.y + offY, w, (8.0F / 2 * m), rot + 180.0F);
+        }
+
+        // Glowing purple core light
+        Drawf.light(e.x + offX, e.y + offY, 40.0F / 2, Pal.sapBulletBack, 0.5F * e.fout());
+    });
+
+    public static final Effect gluonDissipate = new Effect(25f, (e) -> {
+        Draw.color(Pal.sapBulletBack, Color.white, e.fout());
+
+        // Create several "shards" that fly outward from the center
+        for (int i = 0; i < 4; i++) {
+            float rot = e.rotation + i * 90f + Mathf.randomSeedRange(e.id + i, 20f);
+            float len = 15f * e.fout();
+            Drawf.tri(e.x, e.y, 3f * e.fout(), len, rot);
+            Drawf.tri(e.x, e.y, 3f * e.fout(), len / 2f, rot + 180f);
+        }
+
+        // Small fading circle of light
+        Fill.circle(e.x, e.y, 4f * e.fout());
+    });
+    public static final Effect gluonFire = new Effect(20f, (e) -> {
+        Draw.color(Pal.sapBullet, Color.white, e.fout());
+
+        // Large "muzzle" triangles
+        for (int i = 0; i < 2; i++) {
+            float m = i == 0 ? 1f : 0.5f;
+            Drawf.tri(e.x, e.y, 6f * m * e.fout(), 18f * m * e.fout(), e.rotation);
+            Drawf.tri(e.x, e.y, 6f * m * e.fout(), 8f * m * e.fout(), e.rotation + 180f);
+        }
+
+        // Fading glow circle
+        Lines.stroke(2f * e.fout());
+        Lines.circle(e.x, e.y, 4f + e.fin() * 10f);
+    });
+
+    public static final Effect gluonFireAdvanced = new Effect(15f, (e) -> {
+        Draw.color(Pal.sapBullet, Color.white, e.fout());
+
+        // Main muzzle spike
+        for(int i = 0; i < 2; i++){
+            float m = i == 0 ? 1f : 0.6f;
+            Drawf.tri(e.x, e.y, 8f * m * e.fout(), 22f * m * e.fout(), e.rotation);
+            Drawf.tri(e.x, e.y, 5f * m * e.fout(), 10f * m * e.fout(), e.rotation + 180f);
+        }
+
+        // Side "venting" sparks
+        for(int i : Mathf.signs){
+            Drawf.tri(e.x, e.y, 3f * e.fout(), 12f * e.fout(), e.rotation + 45f * i);
+        }
+    });
+
+
+    public static final Effect gluonHit = new Effect(25f, (e) -> {
+        // 1. SAP LIGHTNING ARCS: Randomly jumping small bolts
+        Draw.color(Pal.sapBulletBack);
+        for (int i = 0; i < 4; i++) {
+            float ang = e.rotation + Mathf.randomSeedRange(e.id + i, 360f);
+            // Uses randomSeedRange to keep the lightning "frozen" but jittery
+            Lines.stroke(1.2f * e.fout());
+            Lines.spikes(e.x, e.y, 2f + 8f * e.fin(), 4f * e.fout(), 4, ang);
+        }
+
+        // 2. SHATTERING TRIANGLES: Sharp shards flying outward
+        Draw.color(Color.white, Pal.sapBullet, e.fin());
+        for (int i = 0; i < 6; i++) {
+            float rot = e.rotation + Mathf.randomSeedRange(e.id + i + 10, 360f);
+            float len = 12f * e.fout();
+            float w = 3f * e.fout();
+            // Forward shard
+            Drawf.tri(e.x, e.y, w, len, rot);
+            // Smaller backward "pinch"
+            Drawf.tri(e.x, e.y, w, len / 2f, rot + 180f);
+        }
+
+        // 3. THE CORE: A bright white flash that shrinks into a purple ring
+        Draw.color(Color.white, Pal.sapBulletBack, e.fin());
+        Lines.stroke(2f * e.fout());
+        Lines.circle(e.x, e.y, 3f + 10f * e.fin()); // Expanding ring
+        Fill.circle(e.x, e.y, 5f * e.fout()); // Solid shrinking core
+
+        // 4. SECONDARY GLOW: A soft purple aura
+        Drawf.light(e.x, e.y, 45f * e.fout(), Pal.sapBulletBack, 0.7f);
     });
 }
 

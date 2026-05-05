@@ -2,15 +2,13 @@ package axthrix.world.types.block.defense;
 
 import arc.Core;
 import arc.audio.Sound;
-import arc.graphics.*;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.*;
 import arc.util.*;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxthrixSounds;
-import axthrix.world.util.RevolverLogic;
+import axthrix.world.util.logics.RevolverLogic;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -74,7 +72,7 @@ public class RevolverTurret extends AxItemTurret implements RevolverLogic {
         removeBar("ammo");
     }
 
-    public class RevolverTurretBuild extends ItemTurretBuild implements RevolverLogic.RevolverBuild {
+    public class RevolverTurretBuild extends AxItemTurretBuild implements RevolverLogic.RevolverBuild {
         public int cartridges = maxCartridges;
         public float reloadConCartridges = 0;
         public float secondarySmoothReload;

@@ -10,10 +10,11 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.world.meta.Attribute;
 
 public class AxthrixWeathers {
-    public static Weather lightHeat, heavyHeat, lightCyro, heavyCyro;
+    public static Weather lightHeat, heavyHeat, lightCyro, heavyCyro, heatWave, blizzard, thermalStorm;
     public static void load(){
         lightHeat = new TemperatureWeather("light-heat"){{
             color =  Color.valueOf("currents");
+            temperaturePerSecond = 10f;
             noiseColor = Color.orange;
             color = Color.coral;
             noiseLayers = 3;
@@ -38,6 +39,7 @@ public class AxthrixWeathers {
             duration = 1.2f * Time.toMinutes;
         }};
         lightCyro = new TemperatureWeather("heavy-cryo"){{
+            temperaturePerSecond = -20f;
             color = noiseColor = Color.cyan;
             particleRegion = "particle";
             drawNoise = true;
@@ -56,6 +58,36 @@ public class AxthrixWeathers {
             status = AxthrixStatus.freezing;
             soundVol = 0.8f;
             duration = 7f * Time.toMinutes;
+        }};
+
+        heatWave = new TemperatureWeather("heat-wave"){{
+            temperaturePerSecond = 5f; // +5° per second
+            color = Color.valueOf("ff6214");
+            particleRegion = "particle";
+            sizeMax = 6f;
+            sizeMin = 2f;
+            density = 1200f;
+            baseSpeed = 4.6f;
+        }};
+
+        blizzard = new TemperatureWeather("blizzard"){{
+            temperaturePerSecond = -5f; // -5° per second (cold)
+            color = Color.valueOf("6ecdec");
+            particleRegion = "particle";
+            sizeMax = 8f;
+            sizeMin = 3f;
+            density = 1800f;
+            baseSpeed = 5.5f;
+        }};
+
+        thermalStorm = new TemperatureWeather("thermal-storm"){{
+            temperaturePerSecond = 10f; // Extreme heat
+            color = Color.valueOf("ff3214");
+            particleRegion = "particle";
+            sizeMax = 10f;
+            sizeMin = 4f;
+            density = 2400f;
+            baseSpeed = 7f;
         }};
     }
 }

@@ -6,8 +6,10 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.FX.AxthrixFx;
 import axthrix.world.types.abilities.ChainHealAbility;
 import axthrix.world.types.abilities.SilveringWeakness;
-import axthrix.world.types.bulletypes.TemperatureBulletType;
 import axthrix.world.types.statuseffects.*;
+import axthrix.world.util.TempUnit;
+import axthrix.world.util.logics.TemperatureLogic;
+import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.bullet.LightningBulletType;
 import mindustry.entities.effect.MultiEffect;
@@ -66,7 +68,6 @@ public class AxthrixStatus {
             parentizeApplyEffect = true;
             show = false;
         }};
-
         melting = new StackStatusEffect("melting"){{
             color = Color.valueOf("ff2a00");
             damage = 0.01f;
@@ -76,34 +77,56 @@ public class AxthrixStatus {
         burning = new StatusEffect("burning"){
             @Override
             public void update(Unit unit, StatusEntry entry){
-                TemperatureBulletType.applyTemperatureUnit(unit, 0.5f); // 0.5 cold per tick
+                TemperatureLogic.applyTemperatureUnit(unit, 0.01f);
             }
             public void setStats(){
                 super.setStats();
-                stats.add(new Stat("aj-heat-add"),"[stat]"+0.5*60+ StatUnit.perSecond.localized());
+                stats.add(new Stat("aj-heat-add"), table -> {
+                    float valPerSec = 0.01f * 60f; // Calculate the raw value (0.6)
+
+                    // Use formatDelta because this is a RATE, not a specific temp
+                    // We make it positive for the display text ("0.6" instead of "-0.6")
+                    String formatted = TempUnit.formatDelta(valPerSec);
+
+                    table.add("[lightgray] -" + formatted + StatUnit.perSecond.localized());
+                });
             }
             {
             color = Color.valueOf("ff6214");
             damage = 0.3f; // Small DoT
-            effect = mindustry.content.Fx.fire;
+            effect = Fx.fire;
             speedMultiplier = 0.95f;
         }};
 
         freezing = new StatusEffect("freezing"){
-
             @Override
             public void update(Unit unit, StatusEntry entry){
-                TemperatureBulletType.applyTemperatureUnit(unit, -0.5f); // 0.5 cold per tick
+                TemperatureLogic.applyTemperatureUnit(unit, -0.01f);
             }
+
+            @Override
             public void setStats(){
                 super.setStats();
-                stats.add(new Stat("aj-cyro-add"),"[stat]"+0.5*60+ StatUnit.perSecond.localized());
+
+                // Use a Lambda (table -> {}) instead of a String
+                stats.add(new Stat("aj-cyro-add"), table -> {
+                    float valPerSec = 0.01f * 60f; // Calculate the raw value (0.6)
+
+                    // Use formatDelta because this is a RATE, not a specific temp
+                    // We make it positive for the display text ("0.6" instead of "-0.6")
+                    String formatted = TempUnit.formatDelta(valPerSec);
+
+                    table.add("[lightgray] -" + formatted + StatUnit.perSecond.localized());
+                });
             }
+
             {
-            color = Color.valueOf("6ecdec");
-            speedMultiplier = 0.8f;
-            effect = mindustry.content.Fx.freezing;
-        }};
+                color = Color.valueOf("6ecdec");
+                speedMultiplier = 0.8f;
+                effect = Fx.freezing;
+            }
+        };
+
 
         vindicationI = new StatusEffect("vindicationI"){{
             color = Pal.heal;
@@ -163,7 +186,7 @@ public class AxthrixStatus {
                     color = Color.valueOf("80ffb8");
                 }
                 if(unit.hasEffect(unrepair)){
-                    StackStatusEffect.stackRemove(unit,4,unrepair);
+                    StackStatusEffect.stackRemove(unit,0.25f,unrepair);
                     AxthrixFfx.circleOut(120, 30, 4,Layer.blockOver,Color.valueOf("80ffb8")).at(unit.x,unit.y);
                     if(unit.health+(unit.maxHealth() / 6.66f) >= unit.maxHealth() || unit.health == unit.maxHealth()){
                         unit.health = unit.maxHealth();
@@ -403,7 +426,7 @@ public class AxthrixStatus {
 
         finalStand = new StatusEffectTrigger("final-stand"){{
             activationStatusFx = standFx;
-            activationThreshold = 4f;
+            activationThreshold = 0.25f;
             activationResistanceTime = 180f;
             permanent = true;
         }};
@@ -411,7 +434,7 @@ public class AxthrixStatus {
             activationStatusFx = ReapFx;
             color = Color.valueOf("972020");
             Reap = true;
-            activationThreshold = 5f;
+            activationThreshold = 0.20f;
             permanent = false;
         }};
 

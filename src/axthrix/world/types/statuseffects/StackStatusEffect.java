@@ -190,9 +190,8 @@ public class StackStatusEffect extends AxStatusEffect {
     }
 
     public static void stackRemove(Unit unit, float amount,StatusEffect status)
-        /*by percentage  1.25/75%  2/50%  3.33/30%  4/25%  5/20%  6.66/15%  10/10%*/
     {
-        float percent = unitCharges.get(unit) / amount;
+        float percent = unitCharges.get(unit) * amount;
         int finalPercent = (int) percent + 10;
         if(unitCharges.get(unit) <= finalPercent){
             unit.unapply(status);
