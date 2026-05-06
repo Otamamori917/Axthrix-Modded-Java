@@ -196,6 +196,8 @@ public class AxthrixLoader extends Mod{
                     TemperatureLogic.applyTemperatureFromFloors(building);
                 });
             }
+
+            StaticFeildBulletType.updateFields();
         });
 
 
@@ -221,6 +223,8 @@ public class AxthrixLoader extends Mod{
             content.units().each(u -> u.weapons.each(w -> {
                 if (w.bullet instanceof NanobotBulletType nb) nb.drawClouds();
             }));
+
+            StaticFeildBulletType.drawFields();
         });
 
 
