@@ -1,12 +1,6 @@
 package axthrix.world.types.block.defense;
 
-import arc.Core;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
-import axthrix.world.types.AxFaction;
-import axthrix.world.types.sea.block.SeaTurret;
-import axthrix.world.util.AxStats;
-import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.World;
 import mindustry.entities.Fires;
@@ -18,8 +12,6 @@ import mindustry.logic.LAccess;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.world.Tile;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
-import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.consumers.ConsumeLiquidFilter;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
@@ -27,7 +19,7 @@ import mindustry.world.meta.Stats;
 
 import static mindustry.Vars.*;
 
-public class AxLiquidTurret extends SeaTurret {
+public class AxLiquidTurret extends HeadTurretClass {
     public ObjectMap<Liquid, BulletType> ammoTypes = new ObjectMap<>();
     public boolean extinguish = true;
 
@@ -74,7 +66,7 @@ public class AxLiquidTurret extends SeaTurret {
         super.init();
     }
 
-    public class AxLiquidTurretBuild extends SeaTurretBuild{
+    public class AxLiquidTurretBuild extends HeadTurretBuild{
 
         @Override
         public boolean shouldActiveSound(){

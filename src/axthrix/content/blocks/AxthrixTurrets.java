@@ -10,6 +10,7 @@ import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.types.block.defense.*;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
+import axthrix.world.types.perks.BulletPerk;
 import axthrix.world.types.weapontypes.BlockWeapon;
 import axthrix.world.util.*;
 import axthrix.world.util.draw.*;
@@ -33,32 +34,31 @@ import static mindustry.type.ItemStack.*;
 
 public class AxthrixTurrets{
     public static Block
-    //Axthrix
+            //Axthrix
 
-    //Bendy miniguns
-
-    kramola,
+            //Bendy miniguns
+            kramola,
 
     //Artillery
-
     kisten,
 
     //shotguns
-
     fragmentation,parser,
 
     //revolvers
     emily,corvo,nagual,lucifer,athena,
 
     //special
-
     vatya, aratiri, gravitation, morta,
 
     karma,viper,coiner,pop, hematite,
 
+    //perk turrets
+    charon,
+
     //payload
     apex,//Small apexus? but autocannon possibly
-    apexus,
+            apexus,
 
     //Raodon
     venture,asmot,rektios;
@@ -73,8 +73,6 @@ public class AxthrixTurrets{
             acceleratedSteps = 16;
             burnoutDelay = 240;
             cooldownDelay = 360f;
-
-
 
             cooldownTime = 120f;
             recoils = 2;
@@ -166,242 +164,240 @@ public class AxthrixTurrets{
                 stats.add(AxStats.image, AxStatValues.kisten());
             }
             {
-            outlineColor = Color.valueOf("#181a1b");
-            requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
+                outlineColor = Color.valueOf("#181a1b");
+                requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));
 
-            buildCostMultiplier = 0.1f;
-            size = 4;
-            scaledHealth = 320f;
-            reload = 600f;
-            range = 760f;
-            maxAmmo = 20;
-            ammoPerShot = 10;
-            recoil = 3f;
-            shootCone = 45;
-            rotateSpeed = 2f;
-            targetAir = true;
-            targetGround = true;
-            shootY = -2f;
-            shootSound = Sounds.shootSalvo;
-            minWarmup = 0.94f;
-            shootWarmupSpeed = 0.05f;
-            faction.add(AxFactions.axthrix);
-            shoot = new SpiralPattern(4f, 2f){{
-                shots = 10;
-            }};
-            ammo(
-                Items.pyratite, new MissileBulletType(4f, 100){{
-                    damage = 200f;
-                    makeFire = true;
-                    homingPower = 3f;
-                    homingRange = 80;
-                    homingDelay = 60f;
-                    width = 6f;
-                    height = 12f;
-                    hitSize = 6f;
-                    lifetime = 200f;
-                    trailEffect = Fx.burning;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.darkFlame;
-                    status = StatusEffects.burning;
-                    trailLength = 16;
-                    trailWidth = 2f;
-                    backColor = Pal.darkFlame;
-                    frontColor = Pal.techBlue;
-                }},
+                buildCostMultiplier = 0.1f;
+                size = 4;
+                scaledHealth = 320f;
+                reload = 600f;
+                range = 760f;
+                maxAmmo = 20;
+                ammoPerShot = 10;
+                recoil = 3f;
+                shootCone = 45;
+                rotateSpeed = 2f;
+                targetAir = true;
+                targetGround = true;
+                shootY = -2f;
+                shootSound = Sounds.shootSalvo;
+                minWarmup = 0.94f;
+                shootWarmupSpeed = 0.05f;
+                faction.add(AxFactions.axthrix);
+                shoot = new SpiralPattern(4f, 2f){{
+                    shots = 10;
+                }};
+                ammo(
+                        Items.pyratite, new MissileBulletType(4f, 100){{
+                            damage = 200f;
+                            makeFire = true;
+                            homingPower = 3f;
+                            homingRange = 80;
+                            homingDelay = 60f;
+                            width = 6f;
+                            height = 12f;
+                            hitSize = 6f;
+                            lifetime = 200f;
+                            trailEffect = Fx.burning;
+                            trailInterval = 3f;
+                            trailParam = 4f;
+                            trailColor = Pal.darkFlame;
+                            status = StatusEffects.burning;
+                            trailLength = 16;
+                            trailWidth = 2f;
+                            backColor = Pal.darkFlame;
+                            frontColor = Pal.techBlue;
+                        }},
 
-                Items.titanium, new MissileBulletType(4f, 100){{
-                    damage = 250f;
-                    homingPower = 3f;
-                    homingRange = 80;
-                    homingDelay = 60f;
-                    width = 6f;
-                    height = 12f;
-                    hitSize = 6f;
-                    lifetime = 200f;
-                    trailEffect = Fx.freezing;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.techBlue;
-                    status = StatusEffects.freezing;
-                    trailLength = 16;
-                    trailWidth = 2f;
-                    reloadMultiplier = 1.4f;
-                    backColor = Pal.techBlue;
-                    frontColor = Pal.techBlue;
-                }},
+                        Items.titanium, new MissileBulletType(4f, 100){{
+                            damage = 250f;
+                            homingPower = 3f;
+                            homingRange = 80;
+                            homingDelay = 60f;
+                            width = 6f;
+                            height = 12f;
+                            hitSize = 6f;
+                            lifetime = 200f;
+                            trailEffect = Fx.freezing;
+                            trailInterval = 3f;
+                            trailParam = 4f;
+                            trailColor = Pal.techBlue;
+                            status = StatusEffects.freezing;
+                            trailLength = 16;
+                            trailWidth = 2f;
+                            reloadMultiplier = 1.4f;
+                            backColor = Pal.techBlue;
+                            frontColor = Pal.techBlue;
+                        }},
 
-                Items.surgeAlloy, new MissileBulletType(4f, 100){{
-                    damage = 300f;
-                    homingPower = 3f;
-                    homingRange = 80;
-                    homingDelay = 60f;
-                    lightning = 2;
-                    lightningLength = 15;
-                    lightningLengthRand = 10;
-                    lightningDamage = 50;
-                    lightningColor = Pal.surge;
-                    width = 6f;
-                    height = 12f;
-                    hitSize = 6f;
-                    lifetime = 200f;
-                    trailEffect = Fx.lightning;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.surge;
-                    status = StatusEffects.shocked;
-                    trailLength = 16;
-                    trailWidth = 2f;
-                    backColor = Pal.surge;
-                    frontColor = Pal.techBlue;
-                }},
+                        Items.surgeAlloy, new MissileBulletType(4f, 100){{
+                            damage = 300f;
+                            homingPower = 3f;
+                            homingRange = 80;
+                            homingDelay = 60f;
+                            lightning = 2;
+                            lightningLength = 15;
+                            lightningLengthRand = 10;
+                            lightningDamage = 50;
+                            lightningColor = Pal.surge;
+                            width = 6f;
+                            height = 12f;
+                            hitSize = 6f;
+                            lifetime = 200f;
+                            trailEffect = Fx.lightning;
+                            trailInterval = 3f;
+                            trailParam = 4f;
+                            trailColor = Pal.surge;
+                            status = StatusEffects.shocked;
+                            trailLength = 16;
+                            trailWidth = 2f;
+                            backColor = Pal.surge;
+                            frontColor = Pal.techBlue;
+                        }},
 
-                Items.metaglass, new MissileBulletType(4f, 100){{
-                    damage = 150f;
-                    homingPower = 3f;
-                    homingRange = 80;
-                    homingDelay = 60f;
-                    width = 6f;
-                    height = 12f;
-                    hitSize = 6f;
-                    lifetime = 200f;
-                    knockback = 7.5f;
-                    trailEffect = Fx.unitDust;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.tungstenShot;
-                    trailLength = 16;
-                    trailWidth = 2f;
-                    reloadMultiplier = 1.8f;
-                    backColor = Pal.tungstenShot;
-                    frontColor = Pal.techBlue;
-                }},
+                        Items.metaglass, new MissileBulletType(4f, 100){{
+                            damage = 150f;
+                            homingPower = 3f;
+                            homingRange = 80;
+                            homingDelay = 60f;
+                            width = 6f;
+                            height = 12f;
+                            hitSize = 6f;
+                            lifetime = 200f;
+                            knockback = 7.5f;
+                            trailEffect = Fx.unitDust;
+                            trailInterval = 3f;
+                            trailParam = 4f;
+                            trailColor = Pal.tungstenShot;
+                            trailLength = 16;
+                            trailWidth = 2f;
+                            reloadMultiplier = 1.8f;
+                            backColor = Pal.tungstenShot;
+                            frontColor = Pal.techBlue;
+                        }},
 
-                Items.thorium, new MissileBulletType(4f, 100){{
-                    damage = 600f;
-                    homingPower = 0.01f;
-                    homingRange = 20;
-                    homingDelay = 120f;
-                    width = 6f;
-                    height = 12f;
-                    hitSize = 6f;
-                    lifetime = 200f;
-                    trailEffect = Fx.sapped;
-                    trailInterval = 3f;
-                    trailParam = 4f;
-                    trailColor = Pal.sap;
-                    status = StatusEffects.sapped;
-                    trailLength = 16;
-                    trailWidth = 2f;
-                    reloadMultiplier = 0.9f;
-                    backColor = Pal.sap;
-                    frontColor = Pal.techBlue;
-                }}
-            );
-            inaccuracy = 0f;
-            coolant = consumeCoolant(0.2f);
-            recoilTime = 400f;
+                        Items.thorium, new MissileBulletType(4f, 100){{
+                            damage = 600f;
+                            homingPower = 0.01f;
+                            homingRange = 20;
+                            homingDelay = 120f;
+                            width = 6f;
+                            height = 12f;
+                            hitSize = 6f;
+                            lifetime = 200f;
+                            trailEffect = Fx.sapped;
+                            trailInterval = 3f;
+                            trailParam = 4f;
+                            trailColor = Pal.sap;
+                            status = StatusEffects.sapped;
+                            trailLength = 16;
+                            trailWidth = 2f;
+                            reloadMultiplier = 0.9f;
+                            backColor = Pal.sap;
+                            frontColor = Pal.techBlue;
+                        }}
+                );
+                inaccuracy = 0f;
+                coolant = consumeCoolant(0.2f);
+                recoilTime = 400f;
 
-            drawer = new DrawTurret("crystalized-"){{
-                parts.add(new RegionPart("-blade"){{
-                    progress = PartProgress.warmup;
-                    heatProgress = PartProgress.warmup;
-                    heatColor = Pal.techBlue;
-                    moveRot = -18f;
-                    moveX = 4f;
-                    moveY = 5f;
-                    mirror = true;
-                    under = true;
-                    layerOffset = 2.2f;
-                    outlineLayerOffset = -1f;
+                drawer = new DrawTurret("crystalized-"){{
+                    parts.add(new RegionPart("-blade"){{
+                                  progress = PartProgress.warmup;
+                                  heatProgress = PartProgress.warmup;
+                                  heatColor = Pal.techBlue;
+                                  moveRot = -18f;
+                                  moveX = 4f;
+                                  moveY = 5f;
+                                  mirror = true;
+                                  under = true;
+                                  layerOffset = 2.2f;
+                                  outlineLayerOffset = -1f;
 
-                    children.add(new RegionPart("-joint"){{
-                        progress = PartProgress.warmup.delay(0.6f);
-                        heatProgress = PartProgress.recoil;
-                        heatColor = Pal.techBlue;
-                        mirror = true;
-                        under = true;
-                        moveRot = -4f;
-                        moveY = 1f;
-                        moveX = 2f;
-                        layerOffset = 2.2f;
+                                  children.add(new RegionPart("-joint"){{
+                                      progress = PartProgress.warmup.delay(0.6f);
+                                      heatProgress = PartProgress.recoil;
+                                      heatColor = Pal.techBlue;
+                                      mirror = true;
+                                      under = true;
+                                      moveRot = -4f;
+                                      moveY = 1f;
+                                      moveX = 2f;
+                                      layerOffset = 2.2f;
 
-                        moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -20f));
-                        children.add(new RegionPart("-plate"){{
-                            progress = PartProgress.warmup.delay(0.6f);
-                            heatProgress = PartProgress.recoil;
-                            heatColor = Pal.techBlue;
-                            mirror = true;
-                            under = true;
-                            moveRot = -6f;
-                            moveY = 1.5f;
-                            moveX = 2.5f;
+                                      moves.add(new PartMove(PartProgress.recoil, -1f, 6f, -20f));
+                                      children.add(new RegionPart("-plate"){{
+                                          progress = PartProgress.warmup.delay(0.6f);
+                                          heatProgress = PartProgress.recoil;
+                                          heatColor = Pal.techBlue;
+                                          mirror = true;
+                                          under = true;
+                                          moveRot = -6f;
+                                          moveY = 1.5f;
+                                          moveX = 2.5f;
 
-                            layerOffset = 1.8f;
+                                          layerOffset = 1.8f;
 
-                            moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
-                            children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup;
-                                heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                          moves.add(new PartMove(PartProgress.recoil, -2f, 6f, -40f));
+                                          children.add(new RegionPart("-wing"){{
+                                              progress = PartProgress.warmup;
+                                              heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                              heatColor = Pal.techBlue;
+                                              mirror = true;
+                                              under = true;
+                                              moveRot = 40f;
+                                              x = 8f;
+                                              moveY = 3f;
+                                              moveX = 9.5f;
+
+                                              layerOffset = 1.8f;
+
+                                              moves.add(new PartMove(PartProgress.recoil, 2f, 9f, 90f));
+                                          }});
+
+                                          children.add(new RegionPart("-wing"){{
+                                              progress = PartProgress.warmup;
+                                              heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
+                                              heatColor = Pal.techBlue;
+                                              mirror = true;
+                                              under = true;
+                                              moveRot = 40f;
+                                              x = 8f;
+                                              moveY = -2f;
+                                              moveX = 5f;
+
+                                              layerOffset = 1.8f;
+
+                                              moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 70f));
+                                          }});
+                                      }});
+                                  }});
+                              }},
+                            new RegionPart("-mid"){{
+                                progress = PartProgress.recoil;
+                                heatProgress = PartProgress.recoil;
                                 heatColor = Pal.techBlue;
-                                mirror = true;
+                                mirror = false;
                                 under = true;
-                                moveRot = 40f;
-                                x = 8f;
-                                moveY = 3f;
-                                moveX = 9.5f;
+                                moveY = -5f;
+                                layerOffset = 2f;
+                                children.add(new RegionPart("-missile") {{
+                                    progress = PartProgress.reload.curve(Interp.pow2In);
 
-                                layerOffset = 1.8f;
+                                    colorTo = new Color(1f, 1f, 1f, 0f);
+                                    color = Color.white;
+                                    mixColorTo = Pal.accent;
+                                    mixColor = new Color(1f, 1f, 1f, 0f);
+                                    outline = false;
+                                    under = true;
 
-                                moves.add(new PartMove(PartProgress.recoil, 2f, 9f, 90f));      
-                            }}); 
+                                    layerOffset = 1.8f;
 
-                            children.add(new RegionPart("-wing"){{
-                                progress = PartProgress.warmup;
-                                heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
-                                heatColor = Pal.techBlue;
-                                mirror = true;
-                                under = true;
-                                moveRot = 40f;
-                                x = 8f;
-                                moveY = -2f;
-                                moveX = 5f;
-
-                                layerOffset = 1.8f;
-
-                                moves.add(new PartMove(PartProgress.recoil, 0f, 8f, 70f));      
-                            }});     
-                        }});
-                    }});
-                }}, 
-                new RegionPart("-mid"){{
-                    progress = PartProgress.recoil;
-                    heatProgress = PartProgress.recoil;
-                    heatColor = Pal.techBlue;
-                    mirror = false;
-                    under = true;
-                    moveY = -5f;
-                    layerOffset = 2f;
-                    children.add(new RegionPart("-missile") {{
-                        progress = PartProgress.reload.curve(Interp.pow2In);
-
-                        colorTo = new Color(1f, 1f, 1f, 0f);
-                        color = Color.white;
-                        mixColorTo = Pal.accent;
-                        mixColor = new Color(1f, 1f, 1f, 0f);
-                        outline = false;
-                        under = true;
-
-
-
-                        layerOffset = 1.8f;
-
-                        moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
-                    }});
-                }});
+                                    moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                                }});
+                            }});
+                }};
             }};
-        }};
         parser = new ChargingShotgunTurret("parser"){{
             outlineColor = Color.valueOf("#181a1b");
             hideDetails = false;
@@ -434,10 +430,10 @@ public class AxthrixTurrets{
             );
             drawer = new DrawChargingShotgunTurret("crystalized-"){{
                 parts.add(
-                    new RegionPart("-main"){{
-                        progress = AxPartParms.AxPartProgress.secondaryReload;
-                        moveY = 10;
-                    }}
+                        new RegionPart("-main"){{
+                            progress = AxPartParms.AxPartProgress.secondaryReload;
+                            moveY = 10;
+                        }}
                 );
             }};
 
@@ -540,55 +536,9 @@ public class AxthrixTurrets{
             consumePower(405/60);
             health = 1300;
             shootType = new SheildArcBullet(240,"aj-morta-sheild"){{
-                    lifetime = 240;
+                lifetime = 240;
             }};
             drawer = new DrawTurret("crystalized-"){{
-                /*parts.add(
-                        new RegionPart("-shell-l"){{
-                            progress = PartProgress.reload.inv();;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveX = -1.5f;
-                            moveY = -2f;
-                            moveRot = -15f;
-                            layerOffset = 2;
-                            moves.add(new PartMove(PartProgress.reload, 1f, -2f, -5f));
-                            children.add(new RegionPart("-piston-l"){{
-                                progress = PartProgress.reload.inv();
-                                heatProgress = PartProgress.recoil;
-                                heatColor = Pal.heal;
-                                mirror = false;
-                                moveY = -1f;
-                                moveX = 1f;
-                                layerOffset = 2;
-                                moves.add(new PartMove(PartProgress.reload, -1f, 1f, 0f));
-                            }});
-                        }},
-                        new RegionPart("-shell-r"){{
-                            progress = PartProgress.reload.inv();;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveX = 1.5f;
-                            moveY = -2f;
-                            moveRot = 15f;
-                            layerOffset = 2;
-                            moves.add(new PartMove(PartProgress.reload, -1f, -2f, 5f));
-                            children.add(new RegionPart("-piston-r"){{
-                                progress = PartProgress.reload.inv();
-                                heatProgress = PartProgress.recoil;
-                                heatColor = Pal.heal;
-                                mirror = false;
-                                moveY = -1f;
-                                moveX = -1f;
-                                layerOffset = 2;
-                                moves.add(new PartMove(PartProgress.reload, 1f, 1f, 0f));
-                            }});
-                        }},
-                        new RegionPart("-main"){{layerOffset = 2;}});*/
             }};
         }};
         vatya = new TemperatureTurret("vatya"){{
@@ -609,52 +559,6 @@ public class AxthrixTurrets{
             health = 1300;
             shootType = new TornadoBulletType(800,7,35);
             drawer = new DrawTurret("crystalized-"){{
-                /*parts.add(
-                        new RegionPart("-shell-l"){{
-                            progress = PartProgress.reload.inv();;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveX = -1.5f;
-                            moveY = -2f;
-                            moveRot = -15f;
-                            layerOffset = 2;
-                            moves.add(new PartMove(PartProgress.reload, 1f, -2f, -5f));
-                            children.add(new RegionPart("-piston-l"){{
-                                progress = PartProgress.reload.inv();
-                                heatProgress = PartProgress.recoil;
-                                heatColor = Pal.heal;
-                                mirror = false;
-                                moveY = -1f;
-                                moveX = 1f;
-                                layerOffset = 2;
-                                moves.add(new PartMove(PartProgress.reload, -1f, 1f, 0f));
-                            }});
-                        }},
-                        new RegionPart("-shell-r"){{
-                            progress = PartProgress.reload.inv();;
-                            heatProgress = PartProgress.warmup;
-                            heatColor = Pal.heal;
-                            mirror = false;
-                            under = false;
-                            moveX = 1.5f;
-                            moveY = -2f;
-                            moveRot = 15f;
-                            layerOffset = 2;
-                            moves.add(new PartMove(PartProgress.reload, -1f, -2f, 5f));
-                            children.add(new RegionPart("-piston-r"){{
-                                progress = PartProgress.reload.inv();
-                                heatProgress = PartProgress.recoil;
-                                heatColor = Pal.heal;
-                                mirror = false;
-                                moveY = -1f;
-                                moveX = -1f;
-                                layerOffset = 2;
-                                moves.add(new PartMove(PartProgress.reload, 1f, 1f, 0f));
-                            }});
-                        }},
-                        new RegionPart("-main"){{layerOffset = 2;}});*/
             }};
         }};
         viper = new AxLiquidTurret("viper"){{
@@ -698,29 +602,127 @@ public class AxthrixTurrets{
                         statusDuration = 360;
                     }}
             );
-            drawer = new DrawTurret("crystalized-")/*{{
-                parts.add(
-                        new RegionPart("-shell-r"){{
-                            progress = PartProgress.recoil;
-                            moveY = 0.5f;
-                            layerOffset = 2;
-                            moves.add(
-                                    new PartMove(PartProgress.smoothReload, -1f, -1f, 15f)
-                            );
-
-                        }},
-                        new RegionPart("-shell-l"){{
-                            progress = PartProgress.recoil;
-                            moveY = 0.5f;
-                            layerOffset = 2;
-                            moves.add(
-                                    new PartMove(PartProgress.smoothReload, 1f, -1f, -15f)
-                            );
-                        }},
-                        new RegionPart("-main"){{layerOffset = 2;}});
-
-            }}*/;
+            drawer = new DrawTurret("crystalized-");
         }};
+
+        // ---- Charon — perk-based long-range sniper turret ----
+        charon = new PerkTurretType("charon") {{
+            outlineColor = Color.valueOf("#181a1b");
+            requirements(Category.turret, with(
+                    Items.surgeAlloy,  400,
+                    Items.phaseFabric, 200,
+                    Items.silicon, 350,
+                    Items.titanium, 300
+            ));
+            faction.add(AxFactions.axthrix);
+
+            size = 3;
+            scaledHealth = 380f;
+            range = (AxUtil.GetRange(22f, 55f)*8);
+            reload = 55f;
+            recoil = 4f;
+            rotateSpeed = 1.8f;
+            inaccuracy = 0f;
+            shootY = 8f;
+            targetAir = true;
+            targetGround = true;
+            shootSound = Sounds.shootBreach;
+            consumePower(8f);
+
+            shootType = new BasicBulletType(22f, 180) {
+                @Override
+                public void hitEntity(Bullet b, Hitboxc entity, float health) {
+                    super.hitEntity(b, entity, health);
+                    if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                        build.onHit(entity.x(), entity.y());
+                    }
+                }
+
+                @Override
+                public void despawned(Bullet b) {
+                    super.despawned(b);
+                    if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                        build.onMiss();
+                    }
+                }
+                {
+                    width = 4f;
+                    height = 16f;
+                    hitSize = 4f;
+                    lifetime = 55f;
+                    pierce = true;
+                    pierceCap = 2;
+                    pierceBuilding = false;
+                    collidesAir = true;
+                    collidesGround = true;
+                    shrinkX = 0f;
+                    shrinkY = 0.7f;
+                    trailLength = 12;
+                    trailWidth = 1.5f;
+                    frontColor = Color.valueOf("e8d8ff");
+                    backColor = Color.valueOf("9955ff");
+                    trailColor = Color.valueOf("7733cc");
+            }};
+            perks.add(
+                    new BulletPerk() {{
+                        name = "Charon-perk";
+                        hitsPerStack = 1;
+                        maxStacks = 2;
+                        minRange = 20f * 8f;
+                        decaysOnMiss = true;
+                        decaysOverTime = false;
+                        consumesOnActivate = true;
+                        glowColor = Color.valueOf("ff9944");
+                        glowRadius = 20f;
+                        bullet = new StaticFieldBulletType() {{
+                            speed = 22f;
+                            lifetime = 70f;
+                            damage = 35f;
+                            frontColor = Color.valueOf("ffaa55");
+                            backColor = Color.valueOf("ff6622");
+                            width = 6f;
+                            height = 14f;
+
+                            fieldRadius = 200f;
+                            fieldDuration = 300f;
+                            fieldDamagePerPulse = 28f;
+                            fieldPulseInterval = 45f;
+                            fieldStatusDuration = 100f;
+                            minHealthFraction = 0.05f;
+                            fieldColor = Color.valueOf("ff9944");
+                            nodeCount = 200;
+                            crossArcCount = 10;
+                            arcThickness = 1.6f;
+
+                            shrinkX = 0f;
+                            shrinkY = 0.7f;
+                            trailLength = 12;
+                            trailWidth = 1.5f;
+                            frontColor = Color.valueOf("e8d8ff");
+                            backColor = Color.valueOf("9955ff");
+                            trailColor = Color.valueOf("7733cc");
+                        }};
+
+                    }}
+            );
+
+            drawer = new DrawPerkTurretType("crystalized-") {{
+                parts.add(
+                        new RegionPart("-barrel") {{
+                            progress = DrawPart.PartProgress.warmup;
+                            heatProgress = AxPartParms.PerkPartProgress.perkProgress;
+                            heatColor = Color.valueOf("ff9944");
+                            layerOffset  = 2f;
+                            moveY = 3f;
+                            moves.add(new PartMove(DrawPart.PartProgress.recoil, 0f, -4f, 0f));
+                        }},
+                        new RegionPart("-main") {{
+                            layerOffset = 2f;
+                        }}
+                );
+            }};
+        }};
+
         apex = new PayloadAcceleratedTurret("apex"){{
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(
@@ -1075,233 +1077,233 @@ public class AxthrixTurrets{
                     Items.titanium, 350
             ));
             faction.add(AxFactions.axthrix);
-                ammo(
-                        basic1mCaliber, new BasicBulletType(){{
-                            var CoLor = Items.copper.color;
-                            lifetime = AxUtil.GetLifetime(20f,100);
-                            speed = 20f;
+            ammo(
+                    basic1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.copper.color;
+                        lifetime = AxUtil.GetLifetime(20f,100);
+                        speed = 20f;
+                        knockback = pierceCap = 4;
+                        damage = 200;
+                        splashDamageRadius = 40;
+                        splashDamage = 200;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 2;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 4;
+                        fragBullet = intervalBullet = new FlakBulletType(){{
+                            explodeDelay = 10f;
+                            lifetime = AxUtil.GetLifetime(6f,5);
+                            speed = 6f;
                             knockback = pierceCap = 4;
-                            damage = 200;
-                            splashDamageRadius = 40;
-                            splashDamage = 200;
+                            splashDamageRadius = explodeRange = 40;
+                            splashDamage = 100;
+                            scaledSplashDamage = true;
                             impact = pierce = pierceBuilding = true;
                             buildingDamageMultiplier = 0.3f;
                             collidesAir = true;
                             collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            bulletInterval = 3;
-                            intervalBullets = 2;
                             trailLength = 40;
                             trailWidth = 2;
                             trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
                             trailRotation = true;
-                            fragBullets = 4;
-                            fragBullet = intervalBullet = new FlakBulletType(){{
-                                explodeDelay = 10f;
-                                lifetime = AxUtil.GetLifetime(6f,5);
-                                speed = 6f;
-                                knockback = pierceCap = 4;
-                                splashDamageRadius = explodeRange = 40;
-                                splashDamage = 100;
-                                scaledSplashDamage = true;
-                                impact = pierce = pierceBuilding = true;
-                                buildingDamageMultiplier = 0.3f;
-                                collidesAir = true;
-                                collidesGround = true;
-                                trailLength = 40;
-                                trailWidth = 2;
-                                trailColor = lightColor = backColor = CoLor;
-                                trailRotation = true;
-                            }};
-                        }},
-                        frostbite1mCaliber, new BasicBulletType(){{
-                            var CoLor = Items.titanium.color;
-                            lifetime = AxUtil.GetLifetime(20f,100);
-                            speed = 20f;
-                            knockback = pierceCap = 4;
-                            damage = 200;
-                            splashDamageRadius = 40;
-                            splashDamage = 200;
-                            impact = pierce = pierceBuilding = true;
+                        }};
+                    }},
+                    frostbite1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.titanium.color;
+                        lifetime = AxUtil.GetLifetime(20f,100);
+                        speed = 20f;
+                        knockback = pierceCap = 4;
+                        damage = 200;
+                        splashDamageRadius = 40;
+                        splashDamage = 200;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 2;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 1;
+                        fragVelocityMax = 0;
+                        fragBullet = new AfterShockBulletType(100, 60){{
+                            splashDelay = 20;
+                            splashAmount = 6;
+                            status = StatusEffects.freezing;
+                            statusDuration = 80;
                             buildingDamageMultiplier = 0.3f;
-                            collidesAir = true;
-                            collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            bulletInterval = 3;
-                            intervalBullets = 2;
-                            trailLength = 40;
-                            trailWidth = 2;
+                            frontColor = CoLor.cpy().a(0.4f);
+                            particleColor = bottomColor = backColor = CoLor;
+                        }};
+                    }},
+                    incendiary1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.pyratite.color;
+                        lifetime = AxUtil.GetLifetime(20f,100);
+                        speed = 20f;
+                        knockback = pierceCap = 4;
+                        damage = 400;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 0.5f;
+                        intervalDelay = AxUtil.GetLifetime(20f,25);
+                        intervalBullets = 6;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 12;
+                        fragBullet = intervalBullet = new FireBulletType(){{
+                            speed = 6f;
+                            radius = 5;
+                            velMin = 0.8f;
+                            velMax = 6;
+                            hittable = false;
+                            keepVelocity = false;
+                            collidesAir = false;
+                            hitEffect = Fx.hitFlameSmall;
+                            despawnEffect = Fx.none;
                             trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
-                            trailRotation = true;
-                            fragBullets = 1;
-                            fragVelocityMax = 0;
-                            fragBullet = new AfterShockBulletType(100, 60){{
-                                splashDelay = 20;
-                                splashAmount = 6;
-                                status = StatusEffects.freezing;
-                                statusDuration = 80;
-                                buildingDamageMultiplier = 0.3f;
-                                frontColor = CoLor.cpy().a(0.4f);
-                                particleColor = bottomColor = backColor = CoLor;
-                            }};
-                        }},
-                        incendiary1mCaliber, new BasicBulletType(){{
-                            var CoLor = Items.pyratite.color;
-                            lifetime = AxUtil.GetLifetime(20f,100);
-                            speed = 20f;
-                            knockback = pierceCap = 4;
-                            damage = 400;
-                            impact = pierce = pierceBuilding = true;
-                            buildingDamageMultiplier = 0.3f;
-                            collidesAir = true;
-                            collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            bulletInterval = 0.5f;
-                            intervalDelay = AxUtil.GetLifetime(20f,25);
-                            intervalBullets = 6;
-                            trailLength = 40;
-                            trailWidth = 2;
-                            trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
-                            trailRotation = true;
-                            fragBullets = 12;
-                            fragBullet = intervalBullet = new FireBulletType(){{
-                                speed = 6f;
-                                radius = 5;
-                                velMin = 0.8f;
-                                velMax = 6;
-                                hittable = false;
-                                keepVelocity = false;
-                                collidesAir = false;
-                                hitEffect = Fx.hitFlameSmall;
-                                despawnEffect = Fx.none;
-                                trailColor = lightColor = backColor = CoLor;
-                                fragRandomSpread = 0f;
-                                fragSpread = 5f;
-                                fragVelocityMin = 1f;
-                                fragBullets = 10;
-                                fragBullet = new BulletType(4.2f, 8f) {{
-                                    hitSize = 7f;
-                                    lifetime = 13f;
-                                    pierce = true;
-                                    pierceBuilding = true;
-                                    pierceCap = 2;
-                                    trailColor = lightColor = backColor = CoLor;
-                                    statusDuration = 60f * 4;
-                                    shootEffect = Fx.shootSmallFlame;
-                                    hitEffect = Fx.hitFlameSmall;
-                                    despawnEffect = Fx.none;
-                                    status = StatusEffects.melting;
-                                    keepVelocity = false;
-                                    hittable = false;
-                                }};
-                            }};
-                        }},
-                        quicksilver1mCaliber, new BasicBulletType(){{
-                            var CoLor = Color.valueOf("8b8696");
-                            lifetime = AxUtil.GetLifetime(30f,100);
-                            speed = 30f;
-                            knockback =2;
-                            pierceCap = 12;
-                            damage = 200;
-                            impact = pierce = pierceBuilding = true;
-                            collidesAir = true;
-                            collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            bulletInterval = 3;
-                            trailLength = 40;
-                            trailWidth = 2;
-                            trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
-                            trailRotation = true;
-                            status = AxthrixStatus.slivered;
-                            statusDuration = 300;
-                            bulletInterval = 0.5f;
-                            intervalBullets = 6;
+                            fragRandomSpread = 0f;
+                            fragSpread = 5f;
+                            fragVelocityMin = 1f;
                             fragBullets = 10;
-                            fragBullet = intervalBullet = new BulletType(4.2f, 8f) {{
+                            fragBullet = new BulletType(4.2f, 8f) {{
                                 hitSize = 7f;
                                 lifetime = 13f;
                                 pierce = true;
                                 pierceBuilding = true;
                                 pierceCap = 2;
                                 trailColor = lightColor = backColor = CoLor;
-                                shootEffect = Fx.none;
-                                hitEffect = Fx.none;
+                                statusDuration = 60f * 4;
+                                shootEffect = Fx.shootSmallFlame;
+                                hitEffect = Fx.hitFlameSmall;
                                 despawnEffect = Fx.none;
-                                status = AxthrixStatus.slivered;
-                                statusDuration = 300;
+                                status = StatusEffects.melting;
                                 keepVelocity = false;
                                 hittable = false;
                             }};
-                        }},
-                        //energy rounds
-                        arcane1mCaliber, new BasicBulletType(){{
-                            var CoLor = Items.phaseFabric.color;
-                            lifetime = AxUtil.GetLifetime(20,100);
-                            speed = 20f;
-                            knockback = pierceCap = 4;
-                            damage = 600;
-                            impact = pierce = pierceBuilding = true;
-                            buildingDamageMultiplier = 0.3f;
-                            collidesAir = true;
-                            collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            bulletInterval = 3;
-                            intervalBullets = 2;
-                            trailLength = 40;
-                            trailWidth = 2;
+                        }};
+                    }},
+                    quicksilver1mCaliber, new BasicBulletType(){{
+                        var CoLor = Color.valueOf("8b8696");
+                        lifetime = AxUtil.GetLifetime(30f,100);
+                        speed = 30f;
+                        knockback =2;
+                        pierceCap = 12;
+                        damage = 200;
+                        impact = pierce = pierceBuilding = true;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.solidRoundRadiate(CoLor);
+                        trailRotation = true;
+                        status = AxthrixStatus.slivered;
+                        statusDuration = 300;
+                        bulletInterval = 0.5f;
+                        intervalBullets = 6;
+                        fragBullets = 10;
+                        fragBullet = intervalBullet = new BulletType(4.2f, 8f) {{
+                            hitSize = 7f;
+                            lifetime = 13f;
+                            pierce = true;
+                            pierceBuilding = true;
+                            pierceCap = 2;
                             trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
-                            trailRotation = true;
-                            fragBullets = 4;
-                            fragBullet = intervalBullet = new LaserBulletType(){{
-                                colors = new Color[]{CoLor.cpy().a(0.4f), CoLor, Color.white};
-                                damage = 38;
-                                length = 24;
-                            }};
-                        }},
-                        void1mCaliber, new BasicBulletType(){{
-                            var CoLor = Color.valueOf("7b1c9b");
-                            lifetime = AxUtil.GetLifetime(15,100);
-                            speed = 15f;
-                            damage = 600;
-                            impact = pierce = pierceBuilding = true;
+                            shootEffect = Fx.none;
+                            hitEffect = Fx.none;
+                            despawnEffect = Fx.none;
+                            status = AxthrixStatus.slivered;
+                            statusDuration = 300;
+                            keepVelocity = false;
+                            hittable = false;
+                        }};
+                    }},
+                    //energy rounds
+                    arcane1mCaliber, new BasicBulletType(){{
+                        var CoLor = Items.phaseFabric.color;
+                        lifetime = AxUtil.GetLifetime(20,100);
+                        speed = 20f;
+                        knockback = pierceCap = 4;
+                        damage = 600;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        bulletInterval = 3;
+                        intervalBullets = 2;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
+                        trailRotation = true;
+                        fragBullets = 4;
+                        fragBullet = intervalBullet = new LaserBulletType(){{
+                            colors = new Color[]{CoLor.cpy().a(0.4f), CoLor, Color.white};
+                            damage = 38;
+                            length = 24;
+                        }};
+                    }},
+                    void1mCaliber, new BasicBulletType(){{
+                        var CoLor = Color.valueOf("7b1c9b");
+                        lifetime = AxUtil.GetLifetime(15,100);
+                        speed = 15f;
+                        damage = 600;
+                        impact = pierce = pierceBuilding = true;
+                        buildingDamageMultiplier = 0.3f;
+                        collidesAir = true;
+                        collidesGround = true;
+                        trailInterval = 0;
+                        trailChance = Integer.MAX_VALUE;
+                        trailLength = 40;
+                        trailWidth = 2;
+                        trailColor = lightColor = backColor = CoLor;
+                        trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
+                        fragOnHit = false;
+                        trailRotation = true;
+                        fragBullets = 1;
+                        fragVelocityMax = 0;
+                        fragBullet = new BlackHoleBulletType(){{
                             buildingDamageMultiplier = 0.3f;
-                            collidesAir = true;
-                            collidesGround = true;
-                            trailInterval = 0;
-                            trailChance = Integer.MAX_VALUE;
-                            trailLength = 40;
-                            trailWidth = 2;
-                            trailColor = lightColor = backColor = CoLor;
-                            trailEffect = AxthrixFfx.energyRoundRadiate(CoLor);
-                            fragOnHit = false;
-                            trailRotation = true;
-                            fragBullets = 1;
-                            fragVelocityMax = 0;
-                            fragBullet = new BlackHoleBulletType(){{
-                                buildingDamageMultiplier = 0.3f;
-                                lifetime = 400;
-                                damage = 150;
-                                speed = 0;
-                                horizonRadius = 10;
-                                lensingRadius = 240;
-                                damageRadius = 120;
-                                suctionRadius = 480;
-                                scaledForce = 2400;
-                                force = 40;
-                                color = CoLor;
-                            }};
-                        }}
-                );
+                            lifetime = 400;
+                            damage = 150;
+                            speed = 0;
+                            horizonRadius = 10;
+                            lensingRadius = 240;
+                            damageRadius = 120;
+                            suctionRadius = 480;
+                            scaledForce = 2400;
+                            force = 40;
+                            color = CoLor;
+                        }};
+                    }}
+            );
             if(AxthrixLoader.funibullet){
                 ammoTypes.put(Blocks.router, new InfFragBulletType(){{
                     var CoLor = Color.gray;
@@ -1325,56 +1327,56 @@ public class AxthrixTurrets{
             }
             drawer = new DrawIPayloadTurret(true, "crystalized-"){{
                 parts.add(
-                    new RegionPart("-main"){{
-                       layerOffset = 2;
-                       outlineLayerOffset = -2f;
-                       y = -10;
-                        turretHeatLayer = 52.8f;
-                       children.add(
-                           new RegionPart("-barrel"){{
-                               layerOffset = 2;
-                               outlineLayerOffset = -2f;
-                               y = 12;
-                               moves.add(
-                                       new PartMove(PartProgress.recoil.inv(), 0f, 6f, 0f, 0f, 0)
-                               );
-                               turretHeatLayer = 52.8f;
-                               children.add(
-                                       new RegionPart("-barrel-end"){{
-                                           layerOffset = 2;
-                                           outlineLayerOffset = -2f;
-                                           y = 11;
-                                           moves.add(
-                                                   new PartMove(PartProgress.recoil.inv(), 0f, 2f, 0f, 0f, 0)
-                                           );
-                                           turretHeatLayer = 52.8f;
-                                       }},
-                                       new RegionPart("-air"){{
-                                           mirror = false;
-                                           x = 6f;
-                                           y = -6f;
+                        new RegionPart("-main"){{
+                            layerOffset = 2;
+                            outlineLayerOffset = -2f;
+                            y = -10;
+                            turretHeatLayer = 52.8f;
+                            children.add(
+                                    new RegionPart("-barrel"){{
+                                        layerOffset = 2;
+                                        outlineLayerOffset = -2f;
+                                        y = 12;
+                                        moves.add(
+                                                new PartMove(PartProgress.recoil.inv(), 0f, 6f, 0f, 0f, 0)
+                                        );
+                                        turretHeatLayer = 52.8f;
+                                        children.add(
+                                                new RegionPart("-barrel-end"){{
+                                                    layerOffset = 2;
+                                                    outlineLayerOffset = -2f;
+                                                    y = 11;
+                                                    moves.add(
+                                                            new PartMove(PartProgress.recoil.inv(), 0f, 2f, 0f, 0f, 0)
+                                                    );
+                                                    turretHeatLayer = 52.8f;
+                                                }},
+                                                new RegionPart("-air"){{
+                                                    mirror = false;
+                                                    x = 6f;
+                                                    y = -6f;
 
-                                           moves.add(
-                                                   new PartMove(PartProgress.recoil.inv().delay(0.2f), -6f, 8, 0f, 0f, 0)
+                                                    moves.add(
+                                                            new PartMove(PartProgress.recoil.inv().delay(0.2f), -6f, 8, 0f, 0f, 0)
 
-                                           );
+                                                    );
 
 
-                                           children.add(
-                                                   new DrawIPayloadAmmo(){{
-                                                       matProgress = PartProgress.recoil.inv();
-                                                       x = 0f;
-                                                       y = 0;
-                                                       layer = 51f;
-                                                       materialize = true;
-                                                       rotation = 90f;
-                                                   }}
-                                           );
-                                       }}
-                               );
-                           }}
-                       );
-                    }}
+                                                    children.add(
+                                                            new DrawIPayloadAmmo(){{
+                                                                matProgress = PartProgress.recoil.inv();
+                                                                x = 0f;
+                                                                y = 0;
+                                                                layer = 51f;
+                                                                materialize = true;
+                                                                rotation = 90f;
+                                                            }}
+                                                    );
+                                                }}
+                                        );
+                                    }}
+                            );
+                        }}
                 );
             }};
             maxAmmo = 12;
@@ -1437,7 +1439,7 @@ public class AxthrixTurrets{
             //faction.add(AxFactions.axthrix);
 
             AttachmentGrenadeBulletType grenadeBullet = new AttachmentGrenadeBulletType(){{
-                attachDuration = 120f; // 2 seconds
+                attachDuration = 120f;
                 speed = 2.5f;
                 lifetime = 120f;
                 damage = 15f;
@@ -1446,18 +1448,15 @@ public class AxthrixTurrets{
                 knockback = 0.8F;
                 width = height = 4f;
 
-                // Detonation properties
                 detonationDamage = 80f;
                 detonationRadius = 50f;
                 detonationEffect = Fx.massiveExplosion;
 
-                // Visual
                 grenadeColor = Color.orange;
                 attachEffect = Fx.hitBulletColor;
             }};
 
             weapons.add(
-                    // Grenade launcher weapon
                     new BlockWeapon("nader"){{
                         shootY = 2f;
                         x = 4f;
@@ -1468,7 +1467,6 @@ public class AxthrixTurrets{
                         shootSound = AxthrixSounds.nadeshoot;
                         bullet = grenadeBullet;
                     }},
-                    // Detonator sniper weapon
                     new BlockWeapon("rifler"){{
                         shootY = 2f;
                         x = -4f;
@@ -1478,14 +1476,13 @@ public class AxthrixTurrets{
                         itemCost = Items.thorium;
                         shootSound = Sounds.shootBreach;
                         bullet = new DetonatorBulletType(){{
-                            grenadeType = grenadeBullet; // Link to the grenade bullet
+                            grenadeType = grenadeBullet;
 
                             speed = 25f;
                             lifetime = 12f;
                             damage = 40f;
                             baseHitDamage = 40f;
 
-                            // Visual - fast sniper shot
                             width = 8f;
                             height = 12f;
                             shrinkY = 0f;
@@ -1511,34 +1508,27 @@ public class AxthrixTurrets{
             health = 800;
             ammo(
                     Items.copper, new TemperatureBulletType(4,10){{
-                        temperaturePerHit = 20f; // +20 heat per tick
+                        temperaturePerHit = 20f;
                     }},
                     Items.lead, new TemperatureBulletType(4,10){{
-                        temperaturePerHit = -20f; // -20 (cold) per tick
+                        temperaturePerHit = -20f;
                     }},
-                    // Heat laser (positive temperature)
                     Items.silicon,new LensingLaserBulletType(){{
-                        temperaturePerHit = 2f; // +2 heat per tick
+                        temperaturePerHit = 2f;
                         colors = new Color[]{Color.red.cpy().a(0.4f), Color.orange, Color.yellow, Color.white};
                         damage = 15f;
                     }},
-
-                                     // Cold laser (negative temperature)
                     Items.titanium,new LensingLaserBulletType(){{
-                        temperaturePerHit = -2f; // -2 (cold) per tick
+                        temperaturePerHit = -2f;
                         colors = new Color[]{Color.cyan.cpy().a(0.4f), Color.sky, Color.white, Color.white};
                         damage = 15f;
                     }},
-
-                                       //Heat burst
                     Items.plastanium,new BurstLaserBulletType(){{
-                        temperaturePerHit = 10f; // +10 heat per hit
+                        temperaturePerHit = 10f;
                         colors = new Color[]{Color.red.cpy().a(0.4f), Color.orange, Color.yellow, Color.white};
                     }},
-
-                           // Freeze burst
                     Items.surgeAlloy,new BurstLaserBulletType(){{
-                        temperaturePerHit = -10f; // -10 (cold) per hit
+                        temperaturePerHit = -10f;
                         colors = new Color[]{Color.cyan.cpy().a(0.4f), Color.sky, Color.white, Color.white};
                     }}
             );
@@ -1776,16 +1766,16 @@ public class AxthrixTurrets{
                             }
                         }
                         {
-                        lifetime = 80;
-                        speed = 6;
-                        damage = 150;
-                        trailInterval = 1;
-                        trailLength = 1;
-                        width = 1;
-                        height = 3;
-                        homingPower = 0;
-                        trailColor = frontColor = backColor = Color.darkGray;
-                    }}
+                            lifetime = 80;
+                            speed = 6;
+                            damage = 150;
+                            trailInterval = 1;
+                            trailLength = 1;
+                            width = 1;
+                            height = 3;
+                            homingPower = 0;
+                            trailColor = frontColor = backColor = Color.darkGray;
+                        }}
 
             );
 

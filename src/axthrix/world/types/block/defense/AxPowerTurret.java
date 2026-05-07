@@ -1,21 +1,12 @@
 package axthrix.world.types.block.defense;
 
-import arc.Core;
 import arc.struct.ObjectMap;
-import arc.struct.Seq;
-import axthrix.world.types.AxFaction;
-import axthrix.world.types.sea.block.SeaTurret;
-import axthrix.world.util.AxStats;
-import mindustry.Vars;
 import mindustry.entities.bullet.BulletType;
 import mindustry.logic.LAccess;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 
-import static mindustry.Vars.state;
-
-public class AxPowerTurret extends SeaTurret {
+public class AxPowerTurret extends HeadTurretClass {
     public BulletType shootType;
 
     public AxPowerTurret(String name){
@@ -33,7 +24,7 @@ public class AxPowerTurret extends SeaTurret {
         limitRange(shootType, margin);
     }
 
-    public class AxPowerTurretBuild extends SeaTurretBuild{
+    public class AxPowerTurretBuild extends HeadTurretBuild{
 
         @Override
         public void updateTile(){

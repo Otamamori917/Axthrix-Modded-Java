@@ -1,4 +1,4 @@
-package axthrix.world.types.sea.block;
+package axthrix.world.types.block.defense;
 
 import arc.Core;
 import arc.graphics.Color;
@@ -15,24 +15,26 @@ import axthrix.world.util.AxStats;
 import mindustry.content.Blocks;
 import mindustry.entities.Sized;
 import mindustry.entities.Units;
-import mindustry.entities.part.RegionPart;
 import mindustry.game.Team;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.draw.DrawTurret;
 
-public class SeaTurret extends Turret {
+public class HeadTurretClass extends Turret {
     /** Whether this turret exists in the submerged layer. */
     public boolean waterBlock;
     /** If true, this turret can target units on both the surface AND underwater. */
     public boolean seeOutsideLayer = false;
+
+
+
+
     /** Factions this block belongs to. */
     public Seq<AxFaction> faction = new Seq<>();
 
-    public SeaTurret(String name) {
+    public HeadTurretClass(String name) {
         super(name);
         update = true;
         solid = false;
@@ -76,7 +78,7 @@ public class SeaTurret extends Turret {
         return !LayerManager.isPlayerSubmerged() && super.canPlaceOn(tile, team, rotation);
     }
 
-    public class SeaTurretBuild extends TurretBuild {
+    public class HeadTurretBuild extends TurretBuild {
         @Override
         public void draw() {
             if(AxthrixLoader.drawEnchancedShadows){

@@ -5,7 +5,7 @@ import axthrix.world.util.AxPartParms;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawTurret;
 
-public class DrawChargingShotgunTurret extends DrawTurret{
+public class DrawChargingShotgunTurret extends DrawPerkTurretType{
 
     public DrawChargingShotgunTurret(String basePrefix) {
         this.basePrefix = basePrefix;

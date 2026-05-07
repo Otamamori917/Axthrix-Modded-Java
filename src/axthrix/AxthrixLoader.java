@@ -197,7 +197,7 @@ public class AxthrixLoader extends Mod{
                 });
             }
 
-            StaticFeildBulletType.updateFields();
+            StaticFieldBulletType.updateFields();
         });
 
 
@@ -224,7 +224,7 @@ public class AxthrixLoader extends Mod{
                 if (w.bullet instanceof NanobotBulletType nb) nb.drawClouds();
             }));
 
-            StaticFeildBulletType.drawFields();
+            StaticFieldBulletType.drawFields();
         });
 
 

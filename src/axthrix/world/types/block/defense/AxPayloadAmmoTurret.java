@@ -4,21 +4,19 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.io.*;
-import axthrix.world.types.sea.block.SeaTurret;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class AxPayloadAmmoTurret extends SeaTurret {
+public class AxPayloadAmmoTurret extends HeadTurretClass {
     public ObjectMap<UnlockableContent, BulletType> ammoTypes = new ObjectMap<>();
 
     protected UnlockableContent[] ammoKeys;
@@ -91,7 +89,7 @@ public class AxPayloadAmmoTurret extends SeaTurret {
         super.init();
     }
 
-    public class AxPayloadTurretBuild extends SeaTurretBuild{
+    public class AxPayloadTurretBuild extends HeadTurretBuild{
         public PayloadSeq payloads = new PayloadSeq();
 
         public UnlockableContent currentAmmo(){

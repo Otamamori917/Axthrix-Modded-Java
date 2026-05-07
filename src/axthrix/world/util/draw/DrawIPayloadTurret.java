@@ -15,7 +15,7 @@ import mindustry.world.draw.*;
 import axthrix.world.types.block.defense.*;
 import axthrix.world.types.block.defense.PayloadTurretType.*;
 
-public class DrawIPayloadTurret extends DrawTurret{
+public class DrawIPayloadTurret extends DrawPerkTurretType{
     public String paySuffix = "";
     public boolean drawTurret;
     public TextureRegion in, cover;

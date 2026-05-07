@@ -5,7 +5,7 @@ import axthrix.world.util.logics.AcceleratedLogic;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawTurret;
 
-public class DrawAcceleratedTurret extends DrawTurret {
+public class DrawAcceleratedTurret extends DrawPerkTurretType {
 
     public DrawAcceleratedTurret(String basePrefix) {
         super(basePrefix);

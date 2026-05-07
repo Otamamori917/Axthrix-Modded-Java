@@ -1,6 +1,5 @@
 package axthrix.world.types.block.defense;
 
-import axthrix.world.types.sea.block.SeaTurret;
 import mindustry.Vars;
 import arc.*;
 import arc.scene.ui.*;
@@ -20,7 +19,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 /** raw copy of ItemTurret but extending sea turret for ease of implemenation*/
-public class AxItemTurret extends SeaTurret {
+public class AxItemTurret extends HeadTurretClass {
     public ObjectMap<Item, BulletType> ammoTypes = new OrderedMap<>();
 
     public AxItemTurret(String name){
@@ -99,7 +98,7 @@ public class AxItemTurret extends SeaTurret {
         super.init();
     }
 
-    public class AxItemTurretBuild extends SeaTurretBuild{
+    public class AxItemTurretBuild extends HeadTurretBuild{
 
         @Override
         public void onProximityAdded(){

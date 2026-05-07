@@ -3,14 +3,12 @@ package axthrix.world.types.block.defense;
 import arc.struct.Seq;
 import axthrix.world.types.perks.Perk;
 import mindustry.gen.Bullet;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
 
 /**
  * A power turret that supports the modular perk system.
  * Perks are defined on the turret block and each build instance gets deep-copied independent perk states.
  */
-public class PerkTurretType extends PowerTurret {
-
+public class PerkTurretType extends AxPowerTurret {
     // ---- Configuration ----
 
     /**
@@ -42,7 +40,7 @@ public class PerkTurretType extends PowerTurret {
 
     // ---- Build Class ----
 
-    public class PerkTurretTypeBuild extends PowerTurretBuild {
+    public class PerkTurretTypeBuild extends AxPowerTurretBuild {
 
         /** Per-build deep copies of all perk states. */
         public Seq<Perk> perkStates = new Seq<>();
@@ -79,7 +77,7 @@ public class PerkTurretType extends PowerTurret {
         }
 
         /**
-         * Call from your bullet type's hitEntity() when a bullet from this turret hits an enemy.
+         * Call from hitEntity() when a bullet from this turret hits an enemy.
          * @param targetX World X of the hit target.
          * @param targetY World Y of the hit target.
          */
@@ -91,7 +89,7 @@ public class PerkTurretType extends PowerTurret {
         }
 
         /**
-         * Call from your bullet type's despawned() when a bullet from this turret misses.
+         * Call from despawned() when a bullet from this turret misses.
          */
         public void onMiss() {
             for(Perk state : perkStates) {
@@ -99,19 +97,11 @@ public class PerkTurretType extends PowerTurret {
             }
         }
 
-        /**
-         * Returns perk charge progress for the primary perk. Range: 0.0 to 1.0.
-         * Used by DrawPerkTurret to set AxPartParms.perkparams.
-         */
         public float getPerkProgress() {
             Perk primary = getPrimaryPerk();
             return primary != null ? primary.getProgress() : 0f;
         }
 
-        /**
-         * Returns 1f if the primary perk is at max stacks, 0f otherwise.
-         * Used by DrawPerkTurret to set AxPartParms.perkparams.
-         */
         public float getPerkActivated() {
             Perk primary = getPrimaryPerk();
             return primary != null ? primary.getActivatedParam() : 0f;

@@ -10,8 +10,7 @@ import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.AxLayers;
-import axthrix.world.types.block.AxBlock;
-import axthrix.world.types.sea.block.SeaTurret;
+import axthrix.world.types.block.defense.HeadTurretClass;
 import axthrix.world.types.sea.block.SubmergedOre;
 import axthrix.world.types.sea.unit.SubmarineUnitType;
 import mindustry.*;
@@ -219,11 +218,11 @@ public class SubmergedUpdaterAndRenderer {
     }
     /// void shade with certain turret implementations
     private static void drawVoidInternal(float fade, int x1, int y1, int x2, int y2) {
-        Seq<SeaTurret.SeaTurretBuild> scanners = new Seq<>();
+        Seq<HeadTurretClass.HeadTurretBuild> scanners = new Seq<>();
 
         indexer.eachBlock(null, Core.camera.position.x, Core.camera.position.y, Core.camera.width,
-                b -> b instanceof SeaTurret.SeaTurretBuild st && ((SeaTurret)st.block).seeOutsideLayer,
-                b -> scanners.add((SeaTurret.SeaTurretBuild)b)
+                b -> b instanceof HeadTurretClass.HeadTurretBuild st && ((HeadTurretClass)st.block).seeOutsideLayer,
+                b -> scanners.add((HeadTurretClass.HeadTurretBuild)b)
         );
 
         for (int x = x1; x <= x2; x++) {
