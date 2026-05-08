@@ -8,7 +8,7 @@ import mindustry.gen.Bullet;
  * A power turret that supports the modular perk system.
  * Perks are defined on the turret block and each build instance gets deep-copied independent perk states.
  */
-public class PerkTurretType extends AxPowerTurret {
+public class PerkTurretType extends HeadTurretClass {
     // ---- Configuration ----
 
     /**
@@ -40,7 +40,7 @@ public class PerkTurretType extends AxPowerTurret {
 
     // ---- Build Class ----
 
-    public class PerkTurretTypeBuild extends AxPowerTurretBuild {
+    public class PerkTurretTypeBuild extends HeadTurretBuild {
 
         /** Per-build deep copies of all perk states. */
         public Seq<Perk> perkStates = new Seq<>();

@@ -15,7 +15,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 
-public class TransformingTurret extends PowerTurret {
+public class TransformingTurret extends AxPowerTurret {
 
     public Form[] forms;
     public Form baseForm = new Form("base", "Base", "None", null, 0f, 0f, 0f, 0f);
@@ -120,7 +120,7 @@ public class TransformingTurret extends PowerTurret {
         }
     }
 
-    public class TransformingTurretBuild extends PowerTurretBuild {
+    public class TransformingTurretBuild extends AxPowerTurretBuild {
         public int currentForm = 0;
         public int targetForm = 0;
         public float transitionTime = 0f;

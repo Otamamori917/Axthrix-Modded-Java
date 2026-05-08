@@ -19,7 +19,7 @@ import mindustry.world.meta.Stats;
 
 import static mindustry.Vars.*;
 
-public class AxLiquidTurret extends HeadTurretClass {
+public class AxLiquidTurret extends PerkTurretType {
     public ObjectMap<Liquid, BulletType> ammoTypes = new ObjectMap<>();
     public boolean extinguish = true;
 
@@ -66,7 +66,7 @@ public class AxLiquidTurret extends HeadTurretClass {
         super.init();
     }
 
-    public class AxLiquidTurretBuild extends HeadTurretBuild{
+    public class AxLiquidTurretBuild extends PerkTurretTypeBuild{
 
         @Override
         public boolean shouldActiveSound(){

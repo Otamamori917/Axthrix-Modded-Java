@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Posc;
@@ -31,13 +32,6 @@ public class BulletPerk extends Perk {
     // ---- Constructor ----
 
     public BulletPerk() {
-        name = "Bullet";
-        hitsPerStack = 2;
-        maxStacks = 1;
-        minRange = 50f * 8f; // 50 tiles in world units (8 units per tile)
-        decaysOnMiss = true;
-        decaysOverTime = false;
-        consumesOnActivate = true;
     }
 
     // ---- Perk Callbacks ----
@@ -65,12 +59,12 @@ public class BulletPerk extends Perk {
             team = turret.team;
             owner = turret;
         } else {
+            Log.info("failed");
             return;
         }
 
         float angle = Mathf.angle(targetX - shooterX, targetY - shooterY);
 
-        // Spawn the perk projectile — matches the pattern used in HarpoonBulletType
         bullet.create(owner, team, shooterX, shooterY, angle);
     }
 

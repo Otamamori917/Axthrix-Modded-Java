@@ -77,7 +77,6 @@ public class LayerManager {
         );
     }
 
-
     /** Sets a building's submerged state. */
     public static void setSubmerged(Building build, boolean submerged) {
         if (submerged) submergedBuilds.add(build);

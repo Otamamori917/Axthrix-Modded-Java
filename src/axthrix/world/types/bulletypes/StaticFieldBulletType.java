@@ -11,10 +11,13 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.content.StatusEffects;
 import mindustry.entities.bullet.BasicBulletType;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Groups;
 import mindustry.gen.Hitboxc;
 import mindustry.graphics.Layer;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A bullet that travels to a target and on hit spawns a persistent pulsing static field.
@@ -125,8 +128,8 @@ public class StaticFieldBulletType extends BasicBulletType {
     }
 
     @Override
-    public void hit(Bullet b, float x, float y) {
-        super.hit(b, x, y);
+    public void hit(Bullet b, float x, float y, boolean createFrags) {
+        super.hit(b, x, y, createFrags);
         spawnField(x, y, b.team);
     }
 
@@ -164,7 +167,7 @@ public class StaticFieldBulletType extends BasicBulletType {
 
     public static class StaticField {
         public float x, y;
-        public mindustry.game.Team team;
+        public Team team;
         public float timeLeft;
         public float radius;
         public float damagePerPulse;
@@ -218,12 +221,23 @@ public class StaticFieldBulletType extends BasicBulletType {
         }
 
         private void pulse() {
+
+
             Groups.unit.each(unit -> {
-                if(unit.team == team) return;
-                if(unit.dst(x, y) > radius) return;
-                if(unit.healthf() < minHealthFraction) return;
-                unit.damage(damagePerPulse);
+                if (unit.team == team) return;
+                if (unit.dst(x, y) > radius) return;
+                if (unit.healthf() < minHealthFraction) return;
+
+                unit.damagePierce(damagePerPulse);
                 unit.apply(StatusEffects.slow, statusDuration);
+            });
+
+
+            Groups.build.each(build -> {
+                if (build.team == team) return;
+                if (build.dst(x, y) > radius + 4f) return;
+                if (build.healthf() < minHealthFraction) return;
+                build.damagePierce(damagePerPulse);
             });
         }
 
@@ -234,42 +248,35 @@ public class StaticFieldBulletType extends BasicBulletType {
 
             Draw.z(Layer.effect + 0.3f);
 
-            // ---- Bubble fill ----
             Draw.color(color, alpha * 0.07f);
             Fill.circle(x, y, r);
 
-            // ---- Bubble rim ----
             Draw.color(color, alpha * 0.35f);
             Lines.stroke(1.6f);
             Lines.circle(x, y, r);
 
-            // ---- Lightning net ----
-            // Compute node positions on the bubble surface.
-            // Nodes drift slowly so the cage appears to rotate.
             float[] nx = new float[nodeCount];
             float[] ny = new float[nodeCount];
-            float rotOffset = Time.time * 8f; // slow global rotation
+            float rotOffset = Time.time * 8f;
             for(int i = 0; i < nodeCount; i++) {
                 float angle = (360f / nodeCount) * i + rotOffset + nodePhaseOffsets[i] * 0.05f;
                 nx[i] = x + Mathf.cosDeg(angle) * r;
                 ny[i] = y + Mathf.sinDeg(angle) * r;
             }
 
-            // Draw arcs between adjacent nodes (the "fence" edges)
             for(int i = 0; i < nodeCount; i++) {
                 int next = (i + 1) % nodeCount;
                 drawLightningArc(
                         nx[i], ny[i], nx[next], ny[next],
                         color, alpha, arcThickness,
-                        (i * 1000L + (int)(Time.time / 4))  // reseed every ~4 ticks for flicker
+                        (i * 1000L + (int)(Time.time / 4))
                 );
             }
 
-            // Draw cross-arcs between non-adjacent random node pairs for net density
-            rand.setSeed((long)(Time.time / 6)); // reseed slowly so cross-arcs change gradually
+            rand.setSeed((long)(Time.time / 6));
             for(int c = 0; c < crossArcCount; c++) {
                 int a = rand.nextInt(nodeCount);
-                int b = (a + 2 + rand.nextInt(nodeCount - 3)) % nodeCount; // skip immediate neighbours
+                int b = (a + 2 + rand.nextInt(nodeCount - 3)) % nodeCount;
                 float crossAlpha = alpha * (0.3f + 0.3f * Mathf.sin(Time.time * 5f + c));
                 drawLightningArc(
                         nx[a], ny[a], nx[b], ny[b],

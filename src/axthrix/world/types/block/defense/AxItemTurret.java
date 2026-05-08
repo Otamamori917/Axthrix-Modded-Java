@@ -19,7 +19,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 /** raw copy of ItemTurret but extending sea turret for ease of implemenation*/
-public class AxItemTurret extends HeadTurretClass {
+public class AxItemTurret extends PerkTurretType {
     public ObjectMap<Item, BulletType> ammoTypes = new OrderedMap<>();
 
     public AxItemTurret(String name){
@@ -98,7 +98,7 @@ public class AxItemTurret extends HeadTurretClass {
         super.init();
     }
 
-    public class AxItemTurretBuild extends HeadTurretBuild{
+    public class AxItemTurretBuild extends PerkTurretTypeBuild{
 
         @Override
         public void onProximityAdded(){

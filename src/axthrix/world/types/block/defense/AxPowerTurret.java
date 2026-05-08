@@ -6,7 +6,7 @@ import mindustry.logic.LAccess;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 
-public class AxPowerTurret extends HeadTurretClass {
+public class AxPowerTurret extends PerkTurretType {
     public BulletType shootType;
 
     public AxPowerTurret(String name){
@@ -24,7 +24,7 @@ public class AxPowerTurret extends HeadTurretClass {
         limitRange(shootType, margin);
     }
 
-    public class AxPowerTurretBuild extends HeadTurretBuild{
+    public class AxPowerTurretBuild extends PerkTurretTypeBuild{
 
         @Override
         public void updateTile(){

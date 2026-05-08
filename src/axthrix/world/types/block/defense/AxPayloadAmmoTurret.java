@@ -16,7 +16,7 @@ import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
-public class AxPayloadAmmoTurret extends HeadTurretClass {
+public class AxPayloadAmmoTurret extends PerkTurretType {
     public ObjectMap<UnlockableContent, BulletType> ammoTypes = new ObjectMap<>();
 
     protected UnlockableContent[] ammoKeys;
@@ -89,7 +89,7 @@ public class AxPayloadAmmoTurret extends HeadTurretClass {
         super.init();
     }
 
-    public class AxPayloadTurretBuild extends HeadTurretBuild{
+    public class AxPayloadTurretBuild extends PerkTurretTypeBuild{
         public PayloadSeq payloads = new PayloadSeq();
 
         public UnlockableContent currentAmmo(){

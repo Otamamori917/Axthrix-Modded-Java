@@ -1,5 +1,6 @@
 package axthrix.content.blocks;
 
+import arc.util.Log;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxFactions;
 
@@ -12,6 +13,7 @@ import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.perks.BulletPerk;
 import axthrix.world.types.weapontypes.BlockWeapon;
+import axthrix.world.types.weapontypes.PerkWeapon;
 import axthrix.world.util.*;
 import axthrix.world.util.draw.*;
 import blackhole.entities.bullet.BlackHoleBulletType;
@@ -606,7 +608,7 @@ public class AxthrixTurrets{
         }};
 
         // ---- Charon — perk-based long-range sniper turret ----
-        charon = new PerkTurretType("charon") {{
+        charon = new AxPowerTurret("charon") {{
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(
                     Items.surgeAlloy,  400,
@@ -627,21 +629,32 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootSound = Sounds.shootBreach;
+            seeOutsideLayer = true;
             consumePower(8f);
 
             shootType = new BasicBulletType(22f, 180) {
+//                @Override
+//                public void hitEntity(Bullet b, Hitboxc entity, float health) {
+//                    super.hitEntity(b, entity, health);
+//                    // hitEntity fires for unit hits
+//                    if (b.owner() instanceof HeadTurretClass.HeadTurretBuild build) {
+//                        build.onHit(entity.x(), entity.y());
+//                    }
+//                }
+
                 @Override
-                public void hitEntity(Bullet b, Hitboxc entity, float health) {
-                    super.hitEntity(b, entity, health);
-                    if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
-                        build.onHit(entity.x(), entity.y());
+                public void hit(Bullet b, float x, float y, boolean createFrags) {
+                    super.hit(b, x, y, createFrags);
+                    if (b.owner() instanceof PerkTurretTypeBuild build) {
+                        build.onHit(x, y);
+                        Log.info("Hit! stacks:@   HFS:@  timer:@  active:@ ",build.getPrimaryPerk().currentStacks,build.getPrimaryPerk().hitProgress,build.getPrimaryPerk().idleTimer,build.getPrimaryPerk().isActivated);
                     }
                 }
 
                 @Override
                 public void despawned(Bullet b) {
                     super.despawned(b);
-                    if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                    if (b.owner() instanceof PerkTurretTypeBuild build) {
                         build.onMiss();
                     }
                 }
@@ -666,9 +679,9 @@ public class AxthrixTurrets{
             perks.add(
                     new BulletPerk() {{
                         name = "Charon-perk";
-                        hitsPerStack = 1;
-                        maxStacks = 2;
-                        minRange = 20f * 8f;
+                        hitsPerStack = 2;
+                        maxStacks = 1;
+                        minRange = 0;
                         decaysOnMiss = true;
                         decaysOverTime = false;
                         consumesOnActivate = true;

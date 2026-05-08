@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
 import axthrix.AxthrixLoader;
@@ -81,7 +82,7 @@ public class HeadTurretClass extends Turret {
     public class HeadTurretBuild extends TurretBuild {
         @Override
         public void draw() {
-            if(AxthrixLoader.drawEnchancedShadows){
+            if (AxthrixLoader.drawEnchancedShadows) {
                 super.draw();
                 return;
             }
@@ -118,8 +119,7 @@ public class HeadTurretClass extends Turret {
                     Draw.rect(dt.preview, x + recoilOffset.x + ox, y + recoilOffset.y + oy, drawrot());
                 }
                 Draw.reset();
-            }
-            else if (isNativeWater) {
+            } else if (isNativeWater) {
                 // STATE: NATIVE UNDERWATER (Hue shifted floor tint)
                 Color floorCol = tile.floor().mapColor;
                 Tmp.c1.set(Color.white).lerp(Tmp.c2.set(floorCol).add(0.2f, 0.2f, 0.2f, 0f), intensity);
@@ -133,7 +133,6 @@ public class HeadTurretClass extends Turret {
                 super.draw();
             }
         }
-
 
 
         @Override
@@ -154,11 +153,16 @@ public class HeadTurretClass extends Turret {
             float minLen = (block.size * 4f) + (unit.hitSize / 2f);
 
             if (len < minLen) {
-                if (len == 0) { dx = 0.1f; len = 0.1f; }
-                dx /= len; dy /= len;
+                if (len == 0) {
+                    dx = 0.1f;
+                    len = 0.1f;
+                }
+                dx /= len;
+                dy /= len;
                 float push = (minLen - len) + 0.2f;
                 unit.vel.add(dx * push * 0.1f, dy * push * 0.1f);
-                unit.x += dx * push; unit.y += dy * push;
+                unit.x += dx * push;
+                unit.y += dy * push;
             }
         }
 
@@ -166,18 +170,19 @@ public class HeadTurretClass extends Turret {
         @Override
         protected void findTarget() {
             target = null;
-            final float[] closest = {range + 1f}; // Track the closest distance
+            final float[] closest = {range + 1f};
 
             Units.nearbyEnemies(this.team, x, y, range, other -> {
+                if (!SeaDetection(other)) return;
+                if (!canSee(this.team, other)) return;   // <-- NEW SKIP
+
                 float distance = dst(other);
 
-                if (SeaDetection(other)) {
-                    float priorityDist = other.type.coreUnitDock ? -1f : distance;
+                float priorityDist = other.type.coreUnitDock ? -1f : distance;
 
-                    if (priorityDist < closest[0]) {
-                        target = other;
-                        closest[0] = priorityDist;
-                    }
+                if (priorityDist < closest[0]) {
+                    target = other;
+                    closest[0] = priorityDist;
                 }
             });
 
@@ -196,38 +201,61 @@ public class HeadTurretClass extends Turret {
                     }
                 });
             }
-        }
 
-
-        public boolean SeaDetection(Posc target){
-            if (waterBlock == LayerManager.isSubmerged(target)){
-                return true;
+            // Fallback to vanilla if nothing found
+            if (target == null) {
+                super.findTarget();
             }
-            return seeOutsideLayer;
         }
-
 
         @Override
         protected boolean validateTarget() {
-            boolean valid = !invalidateTarget(target, canHeal() ? Team.derelict : team, x, y, range) || isControlled() || logicControlled();
-            if (seeOutsideLayer) return valid;
-
-            if (valid) {
-                return LayerManager.isSubmerged(target) == waterBlock;
+            // Clear invalid target so it can search again next frame
+            if (target != null && invalidateTarget(target, canHeal() ? Team.derelict : team, x, y, range)) {
+                target = null;
             }
-            return valid;
+
+            if (target == null) return false;
+
+            // Player / logic control
+            if (isControlled() || logicControlled()) {
+                return target.within(this, range + (target instanceof Sized s ? s.hitSize()/2f : 0f));
+            }
+
+            // Normal validation
+            boolean inRange = target.within(this, range + (target instanceof Sized s ? s.hitSize()/2f : 0f));
+            if (!inRange) return false;
+
+            if (!SeaDetection(target)) return false;
+
+            if (target instanceof Unit u) {
+                boolean submerged = LayerManager.isSubmerged(u);
+                if (submerged) {
+                    return u.isValid();
+                } else {
+                    return u.targetable(team) && u.isValid();
+                }
+            }
+
+            return target instanceof Healthc h && h.isValid();
         }
 
-        public boolean invalidateTarget(Posc target, Team team, float x, float y, float range){
 
+        public boolean invalidateTarget(Posc target, Team team, float x, float y, float range) {
             return target == null ||
                     (range != Float.MAX_VALUE && !target.within(x, y, range + (target instanceof Sized hb ? hb.hitSize()/2f : 0f))) ||
                     (target instanceof Teamc t && t.team() == team) ||
                     (target instanceof Healthc h && !h.isValid()) ||
-                    (target instanceof Unit u && !canSee(team,u));
+                    (target instanceof Unit u && !canSee(team, u));
         }
 
-        public boolean canSee(Team team, Unit unit){
+        public boolean SeaDetection(Posc target) {
+            if (target == null) return false;
+            if (seeOutsideLayer) return true;
+            return waterBlock == LayerManager.isSubmerged(target);
+        }
+
+        public boolean canSee(Team team, Unit unit) {
             return LayerManager.isSubmerged(unit) || unit.targetable(team);
         }
     }
