@@ -1,5 +1,8 @@
 package axthrix.world.types.perks;
 
+import arc.math.Mathf;
+import arc.util.Time;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
 
@@ -65,6 +68,12 @@ public abstract class Perk {
      */
     public boolean consumesOnActivate = true;
 
+    /**
+     * How fast smoothProgress lerps toward the raw target progress value per tick.
+     * Range: 0.0 to 1.0. Default: 0.05f.
+     */
+    public float smoothSpeed = 0.05f;
+
     // ---- Runtime State (per instance via copy()) ----
 
     /** Current stack count. Range: 0 to maxStacks. */
@@ -78,6 +87,27 @@ public abstract class Perk {
 
     /** Whether this perk is currently at max stacks. */
     public boolean isActivated = false;
+
+    /**
+     * Whether this perk has a shot queued to replace the turret's next normal shot.
+     * Set to true in onMaxStack by subclasses that use shot-replacement behavior.
+     * Cleared automatically by PerkTurretTypeBuild after the perk shot fires via useAmmo().
+     */
+    public boolean pendingShot = false;
+
+    /**
+     * Smoothed progress value that lerps toward getProgress() each tick.
+     * Use this for part params and visuals instead of getProgress() directly.
+     * Range: 0.0 to 1.0.
+     */
+    public float smoothProgress = 0f;
+
+    /**
+     * Smoothed activated value that lerps toward getActivatedTarget() each tick.
+     * Use this for the activated part param instead of getActivatedParam() directly.
+     * Range: 0.0 to 1.0.
+     */
+    public float smoothActivated = 0f;
 
     // ---- Abstract Methods ----
 
@@ -111,8 +141,15 @@ public abstract class Perk {
 
     /**
      * Per-tick update. Called every game tick from the weapon/turret update.
+     * Always call super.update() from subclasses to keep smoothProgress ticking.
      */
-    public void update(Unit unit, Turret.TurretBuild turret) {}
+    public void update(Unit unit, Turret.TurretBuild turret) {
+        float targetProgress = getProgress();
+        float targetActivated = (isActivated || pendingShot) ? 1f : 0f;
+        float step = smoothSpeed * Time.delta;
+        smoothProgress = Mathf.approachDelta(smoothProgress, targetProgress, step);
+        smoothActivated = Mathf.approachDelta(smoothActivated, targetActivated, step);
+    }
 
     /**
      * Draw hook for custom visuals tied to this perk's state.
@@ -123,16 +160,26 @@ public abstract class Perk {
      */
     public void draw(float x, float y, float rotation) {}
 
-    // ---- Concrete Logic ----
+    // ---- Shot replacement hooks ----
 
     /**
-     * Register a valid hit. Increments hit progress and may add a stack or trigger max-stack.
-     * @param unit Owner unit. Null if turret.
-     * @param turret Owner turret. Null if unit.
-     * @param targetX World X of hit target.
-     * @param targetY World Y of hit target.
-     * @param distance World-unit distance from shooter to target.
+     * Returns the BulletType that should replace the turret's next normal shot,
+     * or null if this perk does not use shot replacement.
+     * Only queried when pendingShot is true.
      */
+    public BulletType getPendingBullet() {
+        return null;
+    }
+
+    /**
+     * Called by PerkTurretTypeBuild immediately after the pending perk shot fires via useAmmo().
+     * Override to apply post-shot effects such as a reload speed boost.
+     * @param turret The turret build that fired the perk shot.
+     */
+    public void onPendingShotFired(Turret.TurretBuild turret) {}
+
+    // ---- Concrete Logic ----
+
     public void registerHit(Unit unit, Turret.TurretBuild turret, float targetX, float targetY, float distance) {
         if(distance < minRange || distance > maxRange) return;
 
@@ -158,9 +205,6 @@ public abstract class Perk {
         }
     }
 
-    /**
-     * Register a miss. Reduces stacks by 1 if decaysOnMiss is true.
-     */
     public void registerMiss(Unit unit, Turret.TurretBuild turret) {
         if(!decaysOnMiss || currentStacks <= 0) return;
         currentStacks--;
@@ -169,10 +213,6 @@ public abstract class Perk {
         onMiss(unit, turret);
     }
 
-    /**
-     * Tick the idle timer and handle time-based full decay. Call every game tick.
-     * @param fired Whether the weapon fired this tick.
-     */
     public void tickTimer(Unit unit, Turret.TurretBuild turret, boolean fired) {
         if(!decaysOverTime) return;
         if(fired) {
@@ -185,43 +225,38 @@ public abstract class Perk {
         }
     }
 
-    /**
-     * Fully resets stacks and progress to zero.
-     */
     public void reset(Unit unit, Turret.TurretBuild turret) {
         currentStacks = 0;
         hitProgress = 0;
         idleTimer = 0f;
         isActivated = false;
+        pendingShot = false;
         onReset(unit, turret);
+        // smoothProgress and smoothActivated lerp back down naturally via update()
     }
 
     /**
-     * Returns perk charge progress as a 0-1 float.
-     * Combines stack count and intra-stack hit progress for smooth visual feedback.
+     * Returns the raw perk charge progress as a 0-1 float.
+     * Combines stack count and intra-stack hit progress.
+     * For visuals and part params, use smoothProgress instead.
      */
     public float getProgress() {
         if(maxStacks <= 0) return 0f;
-        float stackFraction = (float) currentStacks / maxStacks;
-        float hitFraction = (hitsPerStack <= 0) ? 0f : ((float) hitProgress / hitsPerStack) / maxStacks;
+        float stackFraction = (float)currentStacks / maxStacks;
+        float hitFraction = (hitsPerStack <= 0) ? 0f : ((float)hitProgress / hitsPerStack) / maxStacks;
         return Math.min(1f, stackFraction + hitFraction);
     }
 
     /**
-     * Returns 1f if at max stacks (activated), 0f otherwise.
-     * Used for part params.
+     * Returns smoothActivated for use as a part param.
+     * Lerps to 1f when activated or pendingShot, back to 0f otherwise.
      */
     public float getActivatedParam() {
-        return isActivated ? 1f : 0f;
+        return smoothActivated;
     }
 
-    /**
-     * Creates a deep copy of this perk for use on a new unit/turret instance.
-     * Subclasses must copy all configuration fields.
-     */
     public abstract Perk copy();
 
-    /** Copies all base WeaponPerk fields into the target perk. Call from subclass copy(). */
     protected void copyBaseTo(Perk target) {
         target.name = name;
         target.hitsPerStack = hitsPerStack;
@@ -232,5 +267,6 @@ public abstract class Perk {
         target.decaysOverTime = decaysOverTime;
         target.decayTime = decayTime;
         target.consumesOnActivate = consumesOnActivate;
+        target.smoothSpeed = smoothSpeed;
     }
 }

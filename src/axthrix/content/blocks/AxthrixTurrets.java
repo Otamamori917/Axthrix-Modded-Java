@@ -607,20 +607,19 @@ public class AxthrixTurrets{
             drawer = new DrawTurret("crystalized-");
         }};
 
-        // ---- Charon — perk-based long-range sniper turret ----
         charon = new AxPowerTurret("charon") {{
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(
                     Items.surgeAlloy,  400,
                     Items.phaseFabric, 200,
-                    Items.silicon, 350,
-                    Items.titanium, 300
+                    Items.silicon,     350,
+                    Items.titanium,    300
             ));
             faction.add(AxFactions.axthrix);
 
             size = 3;
             scaledHealth = 380f;
-            range = (AxUtil.GetRange(22f, 55f)*8);
+            range = AxUtil.GetRange(22f, 55f) * 8;
             reload = 55f;
             recoil = 4f;
             rotateSpeed = 1.8f;
@@ -629,33 +628,25 @@ public class AxthrixTurrets{
             targetAir = true;
             targetGround = true;
             shootSound = Sounds.shootBreach;
-            seeOutsideLayer = true;
             consumePower(8f);
 
             shootType = new BasicBulletType(22f, 180) {
-//                @Override
-//                public void hitEntity(Bullet b, Hitboxc entity, float health) {
-//                    super.hitEntity(b, entity, health);
-//                    // hitEntity fires for unit hits
-//                    if (b.owner() instanceof HeadTurretClass.HeadTurretBuild build) {
-//                        build.onHit(entity.x(), entity.y());
-//                    }
-//                }
-
                 @Override
                 public void hit(Bullet b, float x, float y, boolean createFrags) {
-                    super.hit(b, x, y, createFrags);
-                    if (b.owner() instanceof PerkTurretTypeBuild build) {
+                    super.hit(b, x, y,createFrags);
+                    if (b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                        b.data = Boolean.TRUE;
                         build.onHit(x, y);
-                        Log.info("Hit! stacks:@   HFS:@  timer:@  active:@ ",build.getPrimaryPerk().currentStacks,build.getPrimaryPerk().hitProgress,build.getPrimaryPerk().idleTimer,build.getPrimaryPerk().isActivated);
                     }
                 }
 
                 @Override
                 public void despawned(Bullet b) {
                     super.despawned(b);
-                    if (b.owner() instanceof PerkTurretTypeBuild build) {
-                        build.onMiss();
+                    if (b.data != Boolean.TRUE) {
+                        if (b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                            build.onMiss();
+                        }
                     }
                 }
                 {
@@ -675,49 +666,45 @@ public class AxthrixTurrets{
                     frontColor = Color.valueOf("e8d8ff");
                     backColor = Color.valueOf("9955ff");
                     trailColor = Color.valueOf("7733cc");
-            }};
-            perks.add(
-                    new BulletPerk() {{
-                        name = "Charon-perk";
-                        hitsPerStack = 2;
-                        maxStacks = 1;
-                        minRange = 0;
-                        decaysOnMiss = true;
-                        decaysOverTime = false;
-                        consumesOnActivate = true;
-                        glowColor = Color.valueOf("ff9944");
-                        glowRadius = 20f;
-                        bullet = new StaticFieldBulletType() {{
-                            speed = 22f;
-                            lifetime = 70f;
-                            damage = 35f;
-                            frontColor = Color.valueOf("ffaa55");
-                            backColor = Color.valueOf("ff6622");
-                            width = 6f;
-                            height = 14f;
+                }
+            };
 
-                            fieldRadius = 200f;
-                            fieldDuration = 300f;
-                            fieldDamagePerPulse = 28f;
-                            fieldPulseInterval = 45f;
-                            fieldStatusDuration = 100f;
-                            minHealthFraction = 0.05f;
-                            fieldColor = Color.valueOf("ff9944");
-                            nodeCount = 200;
-                            crossArcCount = 10;
-                            arcThickness = 1.6f;
+            perks.add(new BulletPerk() {{
+                name = "Charon-perk";
+                hitsPerStack = 1;
+                maxStacks = 2;
+                minRange = 20f * 8f;
+                decaysOnMiss = true;
+                decaysOverTime = false;
+                consumesOnActivate = true;
+                glowColor = Color.valueOf("ff9944");
+                glowRadius = 20f;
+                bullet = new StaticFieldBulletType() {{
+                    speed = 22f;
+                    lifetime = 70f;
+                    damage = 35f;
+                    frontColor = Color.valueOf("e8d8ff");
+                    backColor = Color.valueOf("9955ff");
+                    trailColor = Color.valueOf("7733cc");
+                    width = 6f;
+                    height = 14f;
+                    shrinkX = 0f;
+                    shrinkY = 0.7f;
+                    trailLength = 12;
+                    trailWidth = 1.5f;
 
-                            shrinkX = 0f;
-                            shrinkY = 0.7f;
-                            trailLength = 12;
-                            trailWidth = 1.5f;
-                            frontColor = Color.valueOf("e8d8ff");
-                            backColor = Color.valueOf("9955ff");
-                            trailColor = Color.valueOf("7733cc");
-                        }};
-
-                    }}
-            );
+                    fieldRadius = 200f;
+                    fieldDuration = 300f;
+                    fieldDamagePerPulse = 28f;
+                    fieldPulseInterval = 45f;
+                    fieldStatusDuration = 100f;
+                    minHealthFraction = 0.05f;
+                    fieldColor = Color.valueOf("ff9944");
+                    nodeCount = 200;
+                    crossArcCount = 10;
+                    arcThickness = 1.6f;
+                }};
+            }});
 
             drawer = new DrawPerkTurretType("crystalized-") {{
                 parts.add(
@@ -725,7 +712,7 @@ public class AxthrixTurrets{
                             progress = DrawPart.PartProgress.warmup;
                             heatProgress = AxPartParms.PerkPartProgress.perkProgress;
                             heatColor = Color.valueOf("ff9944");
-                            layerOffset  = 2f;
+                            layerOffset = 2f;
                             moveY = 3f;
                             moves.add(new PartMove(DrawPart.PartProgress.recoil, 0f, -4f, 0f));
                         }},

@@ -2,51 +2,42 @@ package axthrix.world.types.block.defense;
 
 import arc.struct.Seq;
 import axthrix.world.types.perks.Perk;
+import axthrix.world.util.AxPartParms;
+import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
+import mindustry.world.draw.DrawTurret;
 
-/**
- * A power turret that supports the modular perk system.
- * Perks are defined on the turret block and each build instance gets deep-copied independent perk states.
- */
 public class PerkTurretType extends HeadTurretClass {
-    // ---- Configuration ----
 
-    /**
-     * Perks attached to this turret type.
-     */
     public Seq<Perk> perks = new Seq<>();
 
     /**
-     * Index into perks that drives AxPartParms.perkparams (part params 0 and 1).
+     * Index into perks that drives AxPartParms.perkparams for DrawPerkTurretType.
+     * Param 0 = smoothProgress (0.0-1.0), param 1 = smoothActivated (0.0-1.0).
      * Defaults to 0. Clamped to valid range automatically.
      */
     public int primaryPerkIndex = 0;
-
-    // ---- Constructor ----
 
     public PerkTurretType(String name) {
         super(name);
     }
 
-    // ---- Perk Registration Helper ----
-
-    /**
-     * Adds a perk to this turret. Returns this for chaining.
-     */
     public PerkTurretType withPerk(Perk perk) {
         perks.add(perk);
         return this;
     }
 
-    // ---- Build Class ----
-
     public class PerkTurretTypeBuild extends HeadTurretBuild {
 
-        /** Per-build deep copies of all perk states. */
         public Seq<Perk> perkStates = new Seq<>();
-
-        /** Whether the turret fired during the last update tick. */
         public boolean firedLastTick = false;
+
+        /**
+         * Reload multiplier for the shot immediately after a perk shot fires.
+         * Set by BulletPerk.onPendingShotFired(). Values < 1.0 = faster reload. 1.0 = no boost.
+         */
+        public float pendingReloadMultiplier = 1f;
+        private boolean applyingReloadBoost = false;
 
         @Override
         public void created() {
@@ -59,6 +50,16 @@ public class PerkTurretType extends HeadTurretClass {
 
         @Override
         public void updateTile() {
+            // Apply post-perk reload boost by advancing the reload counter
+            if(applyingReloadBoost && pendingReloadMultiplier < 1f) {
+                float extraProgress = reloadCounter * (1f / pendingReloadMultiplier - 1f) * arc.util.Time.delta / reload;
+                reloadCounter = Math.min(reloadCounter + extraProgress, reload);
+                if(reloadCounter >= reload) {
+                    applyingReloadBoost = false;
+                    pendingReloadMultiplier = 1f;
+                }
+            }
+
             super.updateTile();
 
             boolean firedThisTick = firedLastTick;
@@ -68,6 +69,15 @@ public class PerkTurretType extends HeadTurretClass {
                 state.update(null, this);
                 state.tickTimer(null, this, firedThisTick);
             }
+
+            // Feed smoothed part params for DrawPerkTurretType
+            if(drawer instanceof DrawTurret dt && dt.parts.size > 0) {
+                Perk primary = getPrimaryPerk();
+                AxPartParms.perkparams.set(
+                        primary != null ? primary.smoothProgress : 0f,
+                        primary != null ? primary.smoothActivated : 0f
+                );
+            }
         }
 
         @Override
@@ -76,11 +86,44 @@ public class PerkTurretType extends HeadTurretClass {
             firedLastTick = true;
         }
 
-        /**
-         * Call from hitEntity() when a bullet from this turret hits an enemy.
-         * @param targetX World X of the hit target.
-         * @param targetY World Y of the hit target.
-         */
+        // ---- Shot replacement via ammo system ----
+
+        @Override
+        public BulletType peekAmmo() {
+            BulletType perk = getPendingPerkBullet();
+            return perk != null ? perk : super.peekAmmo();
+        }
+
+        @Override
+        public BulletType useAmmo() {
+            for(Perk state : perkStates) {
+                if(state.pendingShot) {
+                    BulletType bt = state.getPendingBullet();
+                    if(bt != null) {
+                        state.pendingShot = false;
+                        state.onPendingShotFired(this);
+                        if(pendingReloadMultiplier < 1f) {
+                            applyingReloadBoost = true;
+                        }
+                        return bt;
+                    }
+                }
+            }
+            return super.useAmmo();
+        }
+
+        private BulletType getPendingPerkBullet() {
+            for(Perk state : perkStates) {
+                if(state.pendingShot) {
+                    BulletType bt = state.getPendingBullet();
+                    if(bt != null) return bt;
+                }
+            }
+            return null;
+        }
+
+        // ---- Perk hit/miss routing ----
+
         public void onHit(float targetX, float targetY) {
             float dist = arc.math.Mathf.dst(x, y, targetX, targetY);
             for(Perk state : perkStates) {
@@ -88,26 +131,24 @@ public class PerkTurretType extends HeadTurretClass {
             }
         }
 
-        /**
-         * Call from despawned() when a bullet from this turret misses.
-         */
         public void onMiss() {
             for(Perk state : perkStates) {
                 state.registerMiss(null, this);
             }
         }
 
+        // ---- Perk param accessors (used by DrawPerkTurretType) ----
+
         public float getPerkProgress() {
             Perk primary = getPrimaryPerk();
-            return primary != null ? primary.getProgress() : 0f;
+            return primary != null ? primary.smoothProgress : 0f;
         }
 
         public float getPerkActivated() {
             Perk primary = getPrimaryPerk();
-            return primary != null ? primary.getActivatedParam() : 0f;
+            return primary != null ? primary.smoothActivated : 0f;
         }
 
-        /** Returns the primary perk state, or null if none. */
         public Perk getPrimaryPerk() {
             if(perkStates.isEmpty()) return null;
             int idx = Math.min(primaryPerkIndex, perkStates.size - 1);
