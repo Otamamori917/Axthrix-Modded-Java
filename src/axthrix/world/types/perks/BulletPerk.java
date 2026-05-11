@@ -11,9 +11,13 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
 
+/**
+ * Fires a special bullet to replace the turret's next normal shot when max stacks is reached.
+ * After the perk shot fires, optionally applies a reload speed boost to the following normal shot.
+ *
+ * Supports all TriggerModes via the Perk base.
+ */
 public class BulletPerk extends Perk {
-
-    // ---- Configuration ----
 
     /**
      * The bullet type to fire when the perk activates.
@@ -23,18 +27,16 @@ public class BulletPerk extends Perk {
 
     /**
      * Reload speed multiplier applied to the shot immediately after the perk shot fires.
-     * Values below 1.0 make the follow-up shot faster (e.g. 0.4 = reload takes 40% of normal time).
+     * Values below 1.0 make the follow-up shot faster (e.g. 0.4 = 40% of normal reload time).
      * Set to 1.0 to disable. Range: > 0.
      */
-    public float postPerkReloadMultiplier = 0.4f;
+    public float postPerkReloadMultiplier = 1f;
 
-    /** Glow radius drawn around the turret when charged. Range: >= 0. */
+    /** Glow radius drawn around the turret barrel when charged. Range: >= 0. */
     public float glowRadius = 18f;
 
     /** Color of the glow when charged. */
     public Color glowColor = Color.valueOf("ff9944");
-
-    // ---- Constructor ----
 
     public BulletPerk() {
         name = "Bullet";
@@ -46,18 +48,13 @@ public class BulletPerk extends Perk {
         consumesOnActivate = true;
     }
 
-    // ---- Perk Callbacks ----
-
     @Override
     public void onStack(Unit unit, Turret.TurretBuild turret) {}
 
     @Override
     public void onMaxStack(Unit unit, Turret.TurretBuild turret, float targetX, float targetY) {
-        // Queue the shot to replace the turret's next normal fire — do not fire immediately
         pendingShot = true;
     }
-
-    // ---- Shot replacement ----
 
     @Override
     public BulletType getPendingBullet() {
@@ -66,16 +63,13 @@ public class BulletPerk extends Perk {
 
     @Override
     public void onPendingShotFired(Turret.TurretBuild turret) {
-        if(turret instanceof PerkTurretType.PerkTurretTypeBuild build) {
+        if(postPerkReloadMultiplier < 1f && turret instanceof PerkTurretType.PerkTurretTypeBuild build) {
             build.pendingReloadMultiplier = postPerkReloadMultiplier;
         }
     }
 
-    // ---- Draw ----
-
     @Override
     public void draw(float x, float y, float rotation) {
-        // Use smoothProgress so the glow lerps in and out rather than snapping
         if(smoothProgress <= 0.01f) return;
 
         float alpha = smoothProgress * 0.50f;
@@ -85,10 +79,8 @@ public class BulletPerk extends Perk {
         Draw.color(glowColor, alpha);
         Fill.circle(x, y, radius * breathe);
 
-        // Ring appears as smoothProgress approaches 1 (not a hard snap)
         if(smoothProgress >= 0.8f) {
-            float ringAlpha = (smoothProgress - 0.8f) / 0.2f; // fade in over last 20%
-            ringAlpha *= 0.75f + 0.25f * Mathf.sin(Time.time * 7f);
+            float ringAlpha = ((smoothProgress - 0.8f) / 0.2f) * (0.75f + 0.25f * Mathf.sin(Time.time * 7f));
             Draw.color(glowColor, ringAlpha);
             Lines.stroke(1.8f);
             Lines.circle(x, y, radius * breathe);
@@ -100,8 +92,6 @@ public class BulletPerk extends Perk {
 
         Draw.reset();
     }
-
-    // ---- Copy ----
 
     @Override
     public Perk copy() {
