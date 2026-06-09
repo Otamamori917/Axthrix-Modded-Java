@@ -47,14 +47,12 @@ import mindustry.entities.pattern.ShootSpread;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.ammo.PowerAmmoType;
 import mindustry.content.*;
 import arc.func.Prov;
 import arc.graphics.Color;
 import arc.struct.*;
 import arc.struct.ObjectMap.Entry;
 import mindustry.graphics.Pal;
-import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.BlockFlag;
 
 import static mindustry.Vars.*;
@@ -159,7 +157,6 @@ public class AxthrixUnits {
         quark = new AxUnitType("quark") {{
             factions.add(AxFactions.axthrix);
             constructor = ElevationMoveUnit::create;
-            ammoType = new PowerAmmoType(10);
             flying = false;
             speed = 8.3f/7.5f;
             drag = 0.13f;
@@ -237,7 +234,6 @@ public class AxthrixUnits {
         electron = new AxUnitType("electron") {{
             factions.add(AxFactions.axthrix);
             constructor = ElevationMoveUnit::create;
-            ammoType = new PowerAmmoType(15);
             flying = false;
             speed = 7.9f/7.5f;
             drag = 0.13f;
@@ -368,7 +364,6 @@ public class AxthrixUnits {
         baryon = new AxUnitType("baryon") {{
             factions.add(AxFactions.axthrix);
             constructor = ElevationMoveUnit::create;
-            ammoType = new PowerAmmoType(30);
             flying = false;
             speed = 6.3f/7.5f;
             drag = 0.13f;
@@ -562,7 +557,6 @@ public class AxthrixUnits {
         hadron = new AxUnitType("hadron") {{
             factions.add(AxFactions.axthrix);
             constructor = ElevationMoveUnit::create;
-            ammoType = new ItemAmmoType(Items.silicon);
             flying = false;
             speed = 5.6f/7.5f;
             drag = 0.13f;
@@ -930,9 +924,7 @@ public class AxthrixUnits {
         }};
         photon = new AxUnitType("photon") {{
             constructor = ElevationMoveUnit::create;
-            factions.add(AxFactions.axthrix);
-            ammoType = new PowerAmmoType(50);
-            flying = false;
+            factions.add(AxFactions.axthrix);flying = false;
             speed = 4f/7.5f;
             drag = 0.13f;
             hitSize = 44f;
@@ -1471,7 +1463,6 @@ public class AxthrixUnits {
         }};
         //support walkers
         barrier = new AxUnitType("barrier"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             speed = 0.55f;
             hitSize = 6f;
             health = 340;
@@ -1536,7 +1527,6 @@ public class AxthrixUnits {
         }};
 
         blockade = new AxUnitType("blockade"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             armor = 5f;
             speed = 0.7f;
             hitSize = 11f;
@@ -1607,7 +1597,6 @@ public class AxthrixUnits {
         }};
 
         palisade = new AxUnitType("palisade"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             armor = 12f;
             speed = 0.8f;
             hitSize = 13;
@@ -1704,7 +1693,6 @@ public class AxthrixUnits {
         }};
 
         parapet = new AxUnitType("parapet"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             armor = 17f;
             speed = 0.70f;
             hitSize = 24f;
@@ -1928,7 +1916,6 @@ public class AxthrixUnits {
             }});
         }};
         impediment = new AxUnitType("impediment"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             ammoCapacity = 1000;
             armor = 25f;
             speed = 0.60f;
@@ -2247,7 +2234,6 @@ public class AxthrixUnits {
             drag = 0.016f;
             rotateSpeed = 5.5f;
 
-            ammoType = new PowerAmmoType(10);
 
             circleTarget = true;
             lowAltitude = true;
@@ -2328,7 +2314,6 @@ public class AxthrixUnits {
                     }}
             );
 
-            ammoType = new PowerAmmoType(10);
 
             circleTarget = true;
             lowAltitude = true;
@@ -2470,7 +2455,6 @@ public class AxthrixUnits {
             outlines = true;
             outlineRadius = 0;
 
-            ammoType = new ItemAmmoType(Items.silicon, 10);
 
             circleTarget = false;
             lowAltitude = true;
@@ -2600,7 +2584,6 @@ public class AxthrixUnits {
             buildSpeed = 2f;
             outlines = false;
 
-            ammoType = new ItemAmmoType(Items.silicon, 10);
 
             circleTarget = false;
             lowAltitude = true;
@@ -2858,7 +2841,6 @@ public class AxthrixUnits {
             flying = true;
             hitSize = 2*2;
             engineColor = Color.valueOf("95abd9");
-            ammoType = new ItemAmmoType(Items.silicon, 20);
             itemCapacity = 300;
             itemOffsetY = 6;
             speed = 20f / 7.5f;

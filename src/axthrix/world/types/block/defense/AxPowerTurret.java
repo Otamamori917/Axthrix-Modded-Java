@@ -9,33 +9,32 @@ import mindustry.world.meta.StatValues;
 public class AxPowerTurret extends PerkTurretType {
     public BulletType shootType;
 
-    public AxPowerTurret(String name){
+    public AxPowerTurret(String name) {
         super(name);
         hasPower = true;
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
         stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
     }
 
-    public void limitRange(float margin){
+    public void limitRange(float margin) {
         limitRange(shootType, margin);
     }
 
-    public class AxPowerTurretBuild extends PerkTurretTypeBuild{
+    public class AxPowerTurretBuild extends PerkTurretTypeBuild {
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             unit.ammo(power == null ? 0f : power.status * unit.type().ammoCapacity);
-
             super.updateTile();
         }
 
         @Override
-        public double sense(LAccess sensor){
-            return switch(sensor){
+        public double sense(LAccess sensor) {
+            return switch(sensor) {
                 case ammo -> power == null ? 0f : power.status;
                 case ammoCapacity -> 1;
                 default -> super.sense(sensor);
@@ -43,20 +42,23 @@ public class AxPowerTurret extends PerkTurretType {
         }
 
         @Override
-        public BulletType useAmmo(){
-            //nothing used directly
+        public BulletType useAmmo() {
+            // Check for pending perk shot first — if one is queued, fire it instead
+            BulletType perk = consumePerkShot();
+            if(perk != null) return perk;
             return shootType;
         }
 
         @Override
-        public boolean hasAmmo(){
-            //you can always rotate, but never shoot if there's no power
+        public boolean hasAmmo() {
             return true;
         }
 
         @Override
-        public BulletType peekAmmo(){
-            return shootType;
+        public BulletType peekAmmo() {
+            // Show perk bullet in peek if one is pending, else normal shoot type
+            BulletType pending = getPendingPerkBullet();
+            return pending != null ? pending : shootType;
         }
     }
 }

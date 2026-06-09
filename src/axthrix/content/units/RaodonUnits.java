@@ -16,7 +16,6 @@ import mindustry.gen.MechUnit;
 import mindustry.gen.Sounds;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.BlockFlag;
 
 public class RaodonUnits {
@@ -33,7 +32,6 @@ public class RaodonUnits {
     public static void load(){
 
         asta = new AxUnitType("asta"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             speed = 0.55f;
             hitSize = 6f;
             health = 340;
@@ -72,7 +70,6 @@ public class RaodonUnits {
             }});
         }};
         adira = new AxUnitType("adira"){{
-            ammoType = new ItemAmmoType(Items.silicon);
             speed = 0.55f;
             hitSize = 6f;
             health = 340;

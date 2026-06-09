@@ -6,7 +6,34 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
 
+import java.util.HashMap;
+
 public abstract class Perk {
+
+    // ---- Static state storage ----
+
+    /**
+     * Universal state map: ownerID -> (perkName -> PerkStateData).
+     * Keyed by the building/unit ID so bullet callbacks can look up state
+     * without needing Boolean flags on the bullet itself.
+     */
+    public static final HashMap<Integer, HashMap<String, PerkStateData>> stateMap = new HashMap<>();
+
+    /**
+     * Gets or creates the PerkStateData for a given owner ID and perk name.
+     */
+    public static PerkStateData getState(int ownerId, String perkName) {
+        return stateMap
+                .computeIfAbsent(ownerId, k -> new HashMap<>())
+                .computeIfAbsent(perkName, k -> new PerkStateData());
+    }
+
+    /**
+     * Removes all perk state for a given owner. Call when a turret/unit is destroyed.
+     */
+    public static void clearState(int ownerId) {
+        stateMap.remove(ownerId);
+    }
 
     // ---- Configuration ----
 
@@ -32,123 +59,82 @@ public abstract class Perk {
 
     public boolean consumesOnActivate = true;
 
-    /**
-     * How this perk accumulates stacks.
-     * HITS: landing hits. RECEIVE_HITS: taking damage. DISTANCE: traveling (units only).
-     */
+    /** How this perk accumulates stacks. */
     public TriggerMode triggerMode = TriggerMode.HITS;
 
-    /**
-     * World units of travel required to gain one stack (DISTANCE mode only).
-     */
+    /** World units of travel required to gain one stack (DISTANCE mode only). */
     public float distancePerStack = 8f * 20f;
 
-    /** Lerp speed for smoothProgress and smoothActivated per tick. Range: 0.0-1.0. */
+    /** Lerp speed for smoothProgress and smoothActivated per tick. */
     public float smoothSpeed = 0.05f;
 
-    /**
-     * Reload speed reduction as a fraction per application.
-     * Range: 0.0-1.0.
-     */
+    // ---- Buff fields ----
+
+    /** Reload speed reduction as a fraction per application. Range: 0.0-1.0. */
     public float reloadBuff = 0f;
 
-    /**
-     * Damage boost as a fraction per application.
-     */
+    /** Damage boost as a fraction per application. Range: >= 0. */
     public float damageBuff = 0f;
 
-    /**
-     * Flat armor added per application (units only).
-     */
+    /** Flat armor added per application (units only). Range: >= 0. */
     public float resistanceBuff = 0f;
 
-    /**
-     * Range boost in world units per application (turrets only).
-     */
+    /** Range boost in world units per application (turrets only). Range: >= 0. */
     public float rangeBuff = 0f;
 
-    /**
-     * Speed multiplier boost per application (units only).
-     */
+    /** Speed multiplier boost per application (units only). Range: >= 0. */
     public float speedBuff = 0f;
-
-    // ---- Runtime State ----
-
-    public int currentStacks = 0;
-    public int hitProgress = 0;
-    public float idleTimer = 0f;
-    public boolean isActivated = false;
-    public boolean pendingShot = false;
-
-    /** Smoothed progress (0.0-1.0). Use for part params and visuals. */
-    public float smoothProgress = 0f;
-
-    /** Smoothed activated value (0.0-1.0). Use for the activated part param. */
-    public float smoothActivated = 0f;
-
-    // Internal distance tracking
-    private float lastX = Float.NaN, lastY = Float.NaN;
-    private float distanceAccum = 0f;
 
     // ---- Abstract Methods ----
 
-    public abstract void onStack(Unit unit, Turret.TurretBuild turret);
-    public abstract void onMaxStack(Unit unit, Turret.TurretBuild turret, float targetX, float targetY);
-    public void onMiss(Unit unit, Turret.TurretBuild turret) {}
-    public void onReset(Unit unit, Turret.TurretBuild turret) {}
+    public abstract void onStack(Unit unit, Turret.TurretBuild turret, PerkStateData s);
+    public abstract void onMaxStack(Unit unit, Turret.TurretBuild turret, PerkStateData s, float targetX, float targetY);
+    public void onMiss(Unit unit, Turret.TurretBuild turret, PerkStateData s) {}
+    public void onReset(Unit unit, Turret.TurretBuild turret, PerkStateData s) {}
 
     /**
      * Per-tick update. Always call super.update() from subclasses.
-     * Handles smoothing, distance tracking, and idle timer.
      */
-    public void update(Unit unit, Turret.TurretBuild turret) {
+    public void update(Unit unit, Turret.TurretBuild turret, PerkStateData s) {
         // Distance tracking
         if(triggerMode == TriggerMode.DISTANCE && unit != null) {
-            if(!Float.isNaN(lastX)) {
-                float dx = unit.x - lastX;
-                float dy = unit.y - lastY;
-                distanceAccum += Mathf.len(dx, dy);
-                while(distanceAccum >= distancePerStack) {
-                    distanceAccum -= distancePerStack;
-                    gainStack(unit, turret, unit.x, unit.y);
+            if(!Float.isNaN(s.lastX)) {
+                float dx = unit.x - s.lastX;
+                float dy = unit.y - s.lastY;
+                s.distanceAccum += Mathf.len(dx, dy);
+                while(s.distanceAccum >= distancePerStack) {
+                    s.distanceAccum -= distancePerStack;
+                    gainStack(unit, turret, s, unit.x, unit.y);
                 }
             }
-            lastX = unit.x;
-            lastY = unit.y;
+            s.lastX = unit.x;
+            s.lastY = unit.y;
         }
 
         // Smooth progress lerp
         float step = smoothSpeed * Time.delta;
-        smoothProgress = Mathf.approachDelta(smoothProgress, getProgress(), step);
-        smoothActivated = Mathf.approachDelta(smoothActivated, (isActivated || pendingShot) ? 1f : 0f, step);
+        s.smoothProgress = Mathf.approachDelta(s.smoothProgress, getProgress(s), step);
+        s.smoothActivated = Mathf.approachDelta(s.smoothActivated, (s.isActivated || s.pendingShot) ? 1f : 0f, step);
     }
 
-    public void draw(float x, float y, float rotation) {}
+    public void draw(float x, float y, float rotation, PerkStateData s) {}
 
     // ---- Shot replacement hooks ----
 
     public BulletType getPendingBullet() { return null; }
-    public void onPendingShotFired(Turret.TurretBuild turret) {}
+
+    public void onPendingShotFired(Turret.TurretBuild turret, PerkStateData s) {}
 
     // ---- Buff application helpers ----
 
-    /**
-     * Applies stacking buffs to a unit scaled by stacks * buff fields.
-     * Call from subclass update() for stacking perks.
-     */
-    protected void applyStackingBuffsToUnit(Unit unit) {
-        if(unit == null || currentStacks <= 0) return;
-        if(reloadBuff > 0f) unit.reloadMultiplier *= Math.max(0.1f, 1f - reloadBuff * currentStacks);
-        if(damageBuff > 0f) unit.damageMultiplier += damageBuff * currentStacks;
-        if(resistanceBuff > 0f) unit.armor += resistanceBuff * currentStacks;
-        if(speedBuff > 0f) unit.speedMultiplier += speedBuff * currentStacks;
+    protected void applyStackingBuffsToUnit(Unit unit, PerkStateData s) {
+        if(unit == null || s.currentStacks <= 0) return;
+        if(reloadBuff > 0f) unit.reloadMultiplier *= Math.max(0.1f, 1f - reloadBuff * s.currentStacks);
+        if(damageBuff > 0f) unit.damageMultiplier += damageBuff * s.currentStacks;
+        if(resistanceBuff > 0f) unit.armor += resistanceBuff * s.currentStacks;
+        if(speedBuff > 0f) unit.speedMultiplier += speedBuff * s.currentStacks;
     }
 
-    /**
-     * Applies flat (non-stacking) buffs to a unit at full buff field value scaled by t (0-1).
-     * Call from subclass update() for non-stacking perks.
-     * @param t Scale factor 0.0-1.0 (1.0 = full buff, 0.5 = half, etc.)
-     */
     protected void applyFlatBuffsToUnit(Unit unit, float t) {
         if(unit == null || t <= 0f) return;
         if(reloadBuff > 0f) unit.reloadMultiplier *= Math.max(0.1f, 1f - reloadBuff * t);
@@ -157,46 +143,26 @@ public abstract class Perk {
         if(speedBuff > 0f) unit.speedMultiplier += speedBuff * t;
     }
 
-    /**
-     * Returns the stacking reload multiplier for turrets (stacking perks).
-     * 1.0 = no boost. Used by PerkTurretTypeBuild.
-     */
-    public float getTurretReloadMultiplier() {
-        if(reloadBuff <= 0f || currentStacks <= 0) return 1f;
-        return Math.max(0.1f, 1f - reloadBuff * currentStacks);
+    public float getTurretReloadMultiplier(PerkStateData s) {
+        if(reloadBuff <= 0f || s.currentStacks <= 0) return 1f;
+        return Math.max(0.1f, 1f - reloadBuff * s.currentStacks);
     }
 
-    /**
-     * Returns the stacking damage multiplier for turrets (stacking perks).
-     * 1.0 = no boost. Used by PerkTurretTypeBuild.
-     */
-    public float getTurretDamageMultiplier() {
-        if(damageBuff <= 0f || currentStacks <= 0) return 1f;
-        return 1f + damageBuff * currentStacks;
+    public float getTurretDamageMultiplier(PerkStateData s) {
+        if(damageBuff <= 0f || s.currentStacks <= 0) return 1f;
+        return 1f + damageBuff * s.currentStacks;
     }
 
-    /**
-     * Returns the flat reload multiplier for turrets scaled by t (non-stacking perks).
-     * 1.0 = no boost. Used by PerkTurretTypeBuild.
-     */
     public float getTurretReloadMultiplierFlat(float t) {
         if(reloadBuff <= 0f || t <= 0f) return 1f;
         return Math.max(0.1f, 1f - reloadBuff * t);
     }
 
-    /**
-     * Returns the flat damage multiplier for turrets scaled by t (non-stacking perks).
-     * 1.0 = no boost. Used by PerkTurretTypeBuild.
-     */
     public float getTurretDamageMultiplierFlat(float t) {
         if(damageBuff <= 0f || t <= 0f) return 1f;
         return 1f + damageBuff * t;
     }
 
-    /**
-     * Returns the range bonus in world units for turrets scaled by t.
-     * Used by PerkTurretTypeBuild.
-     */
     public float getTurretRangeBonus(float t) {
         if(rangeBuff <= 0f || t <= 0f) return 0f;
         return rangeBuff * t;
@@ -204,73 +170,66 @@ public abstract class Perk {
 
     // ---- Trigger routing ----
 
-    public void registerHit(Unit unit, Turret.TurretBuild turret, float targetX, float targetY, float distance) {
+    public void registerHit(Unit unit, Turret.TurretBuild turret, PerkStateData s, float targetX, float targetY, float distance) {
         if(triggerMode != TriggerMode.HITS) return;
         if(distance < minRange || distance > maxRange) return;
-        idleTimer = 0f;
-        advanceProgress(unit, turret, targetX, targetY);
+        s.idleTimer = 0f;
+        advanceProgress(unit, turret, s, targetX, targetY);
     }
 
-    public void registerReceivedHit(Unit unit, Turret.TurretBuild turret) {
+    public void registerReceivedHit(Unit unit, Turret.TurretBuild turret, PerkStateData s) {
         if(triggerMode != TriggerMode.RECEIVE_HITS) return;
         float cx = unit != null ? unit.x : turret.x;
         float cy = unit != null ? unit.y : turret.y;
-        advanceProgress(unit, turret, cx, cy);
+        advanceProgress(unit, turret, s, cx, cy);
     }
 
-    public void registerMiss(Unit unit, Turret.TurretBuild turret) {
+    public void registerMiss(Unit unit, Turret.TurretBuild turret, PerkStateData s) {
         if(triggerMode == TriggerMode.DISTANCE) return;
-        if(!decaysOnMiss || currentStacks <= 0) return;
-        currentStacks--;
-        hitProgress = 0;
-        isActivated = false;
-        onMiss(unit, turret);
+        if(!decaysOnMiss || s.currentStacks <= 0) return;
+        s.currentStacks--;
+        s.hitProgress = 0;
+        s.isActivated = false;
+        onMiss(unit, turret, s);
     }
 
-    public void tickTimer(Unit unit, Turret.TurretBuild turret, boolean fired) {
+    public void tickTimer(Unit unit, Turret.TurretBuild turret, PerkStateData s, boolean fired) {
         if(!decaysOverTime) return;
         if(fired) {
-            idleTimer = 0f;
+            s.idleTimer = 0f;
         } else {
-            idleTimer += arc.Core.graphics.getDeltaTime();
-            if(idleTimer >= decayTime && currentStacks > 0) reset(unit, turret);
+            s.idleTimer += arc.Core.graphics.getDeltaTime();
+            if(s.idleTimer >= decayTime && s.currentStacks > 0) reset(unit, turret, s);
         }
     }
 
-    public void reset(Unit unit, Turret.TurretBuild turret) {
-        currentStacks = 0;
-        hitProgress = 0;
-        idleTimer = 0f;
-        isActivated = false;
-        pendingShot = false;
-        distanceAccum = 0f;
-        lastX = Float.NaN;
-        lastY = Float.NaN;
-        onReset(unit, turret);
+    public void reset(Unit unit, Turret.TurretBuild turret, PerkStateData s) {
+        s.reset();
+        onReset(unit, turret, s);
     }
 
     // ---- Internal ----
 
-    private void advanceProgress(Unit unit, Turret.TurretBuild turret, float tx, float ty) {
-        hitProgress++;
-        if(hitProgress >= hitsPerStack) {
-            hitProgress = 0;
-            gainStack(unit, turret, tx, ty);
+    private void advanceProgress(Unit unit, Turret.TurretBuild turret, PerkStateData s, float tx, float ty) {
+        s.hitProgress++;
+        if(s.hitProgress >= hitsPerStack) {
+            s.hitProgress = 0;
+            gainStack(unit, turret, s, tx, ty);
         }
     }
 
-    private void gainStack(Unit unit, Turret.TurretBuild turret, float tx, float ty) {
-        if(currentStacks < maxStacks) currentStacks++;
-        isActivated = currentStacks >= maxStacks;
+    private void gainStack(Unit unit, Turret.TurretBuild turret, PerkStateData s, float tx, float ty) {
+        if(s.currentStacks < maxStacks) s.currentStacks++;
+        s.isActivated = s.currentStacks >= maxStacks;
 
-        if(isActivated) {
-            onMaxStack(unit, turret, tx, ty);
+        if(s.isActivated) {
+            onMaxStack(unit, turret, s, tx, ty);
             if(consumesOnActivate) {
-                currentStacks = 0;
-                isActivated = false;
+                s.currentStacks = 0;
+                s.isActivated = false;
             }
         } else {
-            onStack(unit, turret);
+            onStack(unit, turret, s);
         }
     }
 
@@ -287,14 +246,14 @@ public abstract class Perk {
         DISTANCE
     }
 
-    public float getProgress() {
+    public float getProgress(PerkStateData s) {
         if(maxStacks <= 0) return 0f;
-        float stackFraction = (float)currentStacks / maxStacks;
-        float hitFraction = (hitsPerStack <= 0) ? 0f : ((float)hitProgress / hitsPerStack) / maxStacks;
+        float stackFraction = (float)s.currentStacks / maxStacks;
+        float hitFraction = (hitsPerStack <= 0) ? 0f : ((float)s.hitProgress / hitsPerStack) / maxStacks;
         return Math.min(1f, stackFraction + hitFraction);
     }
 
-    public float getActivatedParam() { return smoothActivated; }
+    public float getActivatedParam(PerkStateData s) { return s.smoothActivated; }
 
     public abstract Perk copy();
 

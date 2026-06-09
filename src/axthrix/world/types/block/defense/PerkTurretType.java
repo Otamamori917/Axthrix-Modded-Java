@@ -29,36 +29,39 @@ public class PerkTurretType extends HeadTurretClass {
 
     public class PerkTurretTypeBuild extends HeadTurretBuild {
 
-        public Seq<Perk> perkStates = new Seq<>();
         public boolean firedLastTick = false;
 
         /**
          * Reload multiplier for the shot immediately after a perk shot fires.
-         * Set by BulletPerk.onPendingShotFired(). Values < 1.0 = faster reload. 1.0 = no boost.
+         * Set by BulletPerk.onPendingShotFired(). Values < 1.0 = faster reload.
          */
         public float pendingReloadMultiplier = 1f;
         private boolean applyingReloadBoost = false;
 
         private float combinedDamageMultiplier = 1f;
-
-        // Base range stored on created() to restore after range buffs
         private float baseRange = 0f;
+
+        /** Gets PerkStateData for a given perk using this building's id as the owner key. */
+        public PerkStateData getState(Perk perk) {
+            return Perk.getState(id, perk.name);
+        }
 
         @Override
         public void created() {
             super.created();
-            perkStates.clear();
-            for(Perk perk : perks) {
-                perkStates.add(perk.copy());
-            }
             baseRange = range;
         }
 
         @Override
+        public void onRemoved() {
+            super.onRemoved();
+            Perk.clearState(id);
+        }
+
+        @Override
         public void updateTile() {
-            // Apply post-perk reload boost
             if(applyingReloadBoost && pendingReloadMultiplier < 1f) {
-                float extraProgress = reloadCounter * (1f / pendingReloadMultiplier - 1f) * Time.delta / reload;
+                float extraProgress = (1f / pendingReloadMultiplier - 1f) * Time.delta;
                 reloadCounter = Math.min(reloadCounter + extraProgress, reload);
                 if(reloadCounter >= reload) {
                     applyingReloadBoost = false;
@@ -71,61 +74,50 @@ public class PerkTurretType extends HeadTurretClass {
             boolean firedThisTick = firedLastTick;
             firedLastTick = false;
 
-            // Reset combined buffs each tick before recalculating
-            // Cached combined turret buff values — recalculated each tick
             float combinedReloadMultiplier = 1f;
             combinedDamageMultiplier = 1f;
             float combinedRangeBonus = 0f;
 
-            for(Perk state : perkStates) {
-                state.update(null, this);
-                state.tickTimer(null, this, firedThisTick);
+            for(Perk perk : perks) {
+                PerkStateData s = getState(perk);
+                perk.update(null, this, s);
+                perk.tickTimer(null, this, s, firedThisTick);
 
-                // Aggregate turret-side buffs from each perk type
-                if(state instanceof ShotBuffPerk sb) {
-                    combinedReloadMultiplier *= sb.getShotReloadMultiplier();
-                    combinedDamageMultiplier *= sb.getShotDamageMultiplier();
-                } else if(state instanceof DurationPerk dp) {
-                    float s = dp.getBuffScale();
-                    if(s > 0f) {
-                        combinedReloadMultiplier *= dp.getTurretReloadMultiplierFlat(s);
-                        combinedDamageMultiplier *= dp.getTurretDamageMultiplierFlat(s);
-                        combinedRangeBonus += dp.getTurretRangeBonus(s);
+                if(perk instanceof ShotBuffPerk sb) {
+                    combinedReloadMultiplier *= sb.getShotReloadMultiplier(s);
+                    combinedDamageMultiplier *= sb.getShotDamageMultiplier(s);
+                } else if(perk instanceof DurationPerk dp) {
+                    float sc = dp.getBuffScale(s);
+                    if(sc > 0f) {
+                        combinedReloadMultiplier *= dp.getTurretReloadMultiplierFlat(sc);
+                        combinedDamageMultiplier *= dp.getTurretDamageMultiplierFlat(sc);
+                        combinedRangeBonus += dp.getTurretRangeBonus(sc);
                     }
-                //} else if(state instanceof RangePerk rp) {
-                //    rp.updateForTurret(this);
-                //    float s = rp.getCurrentScale();
-                //    combinedReloadMultiplier *= rp.getTurretReloadMultiplierFlat(s);
-                //    combinedDamageMultiplier *= rp.getTurretDamageMultiplierFlat(s);
-                //    combinedRangeBonus += rp.getTurretRangeBonus(s);
-                } else if(state instanceof DistancePerk dist) {
-                    // DistancePerk applies consumed buffs at shoot time via useAmmo()
-                    // Range bonus applied here if stacks were recently consumed
-                    combinedRangeBonus += dist.getConsumedRangeBonus();
+                //} else if(perk instanceof RangePerk rp) {
+                //    rp.updateForTurret(this, s);
+                //    float sc = rp.getCurrentScale(s);
+                //    combinedReloadMultiplier *= rp.getTurretReloadMultiplierFlat(sc);
+                //    combinedDamageMultiplier *= rp.getTurretDamageMultiplierFlat(sc);
+                //    combinedRangeBonus += rp.getTurretRangeBonus(sc);
+                } else if(perk instanceof DistancePerk dist) {
+                    combinedRangeBonus += dist.getConsumedRangeBonus(s);
                 } else {
-                    // Generic stacking perk — apply stacking turret buffs
-                    combinedReloadMultiplier *= state.getTurretReloadMultiplier();
-                    combinedDamageMultiplier *= state.getTurretDamageMultiplier();
+                    combinedReloadMultiplier *= perk.getTurretReloadMultiplier(s);
+                    combinedDamageMultiplier *= perk.getTurretDamageMultiplier(s);
                 }
             }
 
-            // Apply reload multiplier by modifying reloadCounter advancement
-            // (we scale the counter increment rather than the reload field itself)
             if(combinedReloadMultiplier < 1f) {
-                float bonus = reloadCounter * (1f / combinedReloadMultiplier - 1f) * Time.delta / reload;
+                float bonus = (1f / combinedReloadMultiplier - 1f) * Time.delta;
                 reloadCounter = Math.min(reloadCounter + bonus, reload);
             }
 
-            // Apply range bonus
             range = baseRange + combinedRangeBonus;
 
-            // Feed smoothed part params for DrawPerkTurretType
-            if(drawer instanceof DrawTurret dt && dt.parts.size > 0) {
-                Perk primary = getPrimaryPerk();
-                AxPartParms.perkparams.set(
-                        primary != null ? primary.smoothProgress : 0f,
-                        primary != null ? primary.smoothActivated : 0f
-                );
+            if(drawer instanceof DrawTurret dt && dt.parts.size > 0 && !perks.isEmpty()) {
+                Perk primary = perks.get(Math.min(primaryPerkIndex, perks.size - 1));
+                PerkStateData ps = getState(primary);
+                AxPartParms.perkparams.set(ps.smoothProgress, ps.smoothActivated);
             }
         }
 
@@ -133,39 +125,47 @@ public class PerkTurretType extends HeadTurretClass {
         public void handleBullet(Bullet bullet, float offsetX, float offsetY, float angleOffset) {
             super.handleBullet(bullet, offsetX, offsetY, angleOffset);
             firedLastTick = true;
-            // Apply combined damage multiplier to the bullet
             if(combinedDamageMultiplier != 1f) {
                 bullet.damage *= combinedDamageMultiplier;
             }
-            // Notify ShotBuffPerks with resetOnShot=true
-            for(Perk state : perkStates) {
-                if(state instanceof ShotBuffPerk sb && sb.resetOnShot) {
-                    sb.consumeShot(null, this);
+            for(Perk perk : perks) {
+                PerkStateData s = getState(perk);
+                if(perk instanceof ShotBuffPerk sb && sb.resetOnShot) {
+                    sb.consumeShot(null, this, s);
                 }
-                if(state instanceof DistancePerk dist) {
-                    dist.onShoot(null, this);
-                    // Apply consumed distance buff to this bullet
-                    bullet.damage *= dist.getConsumedDamageMultiplier();
+                if(perk instanceof DistancePerk dist) {
+                    dist.onShoot(null, this, s);
+                    bullet.damage *= dist.getConsumedDamageMultiplier(s);
                 }
             }
         }
 
-        // ---- Shot replacement via ammo system ----
+        // ---- Shot replacement ----
 
-        @Override
-        public BulletType peekAmmo() {
-            BulletType perk = getPendingPerkBullet();
-            return perk != null ? perk : super.peekAmmo();
+        /** Returns a pending perk bullet if any perk has one queued, else null. */
+        public BulletType getPendingPerkBullet() {
+            for(Perk perk : perks) {
+                PerkStateData s = getState(perk);
+                if(s.pendingShot) {
+                    BulletType bt = perk.getPendingBullet();
+                    if(bt != null) return bt;
+                }
+            }
+            return null;
         }
 
-        @Override
-        public BulletType useAmmo() {
-            for(Perk state : perkStates) {
-                if(state.pendingShot) {
-                    BulletType bt = state.getPendingBullet();
+        /**
+         * Consumes the first pending perk shot and returns its bullet type, or null.
+         * Called from AxPowerTurretBuild.useAmmo().
+         */
+        public BulletType consumePerkShot() {
+            for(Perk perk : perks) {
+                PerkStateData s = getState(perk);
+                if(s.pendingShot) {
+                    BulletType bt = perk.getPendingBullet();
                     if(bt != null) {
-                        state.pendingShot = false;
-                        state.onPendingShotFired(this);
+                        s.pendingShot = false;
+                        perk.onPendingShotFired(this, s);
                         if(pendingReloadMultiplier < 1f) {
                             applyingReloadBoost = true;
                         }
@@ -173,60 +173,40 @@ public class PerkTurretType extends HeadTurretClass {
                     }
                 }
             }
-            return super.useAmmo();
-        }
-
-        private BulletType getPendingPerkBullet() {
-            for(Perk state : perkStates) {
-                if(state.pendingShot) {
-                    BulletType bt = state.getPendingBullet();
-                    if(bt != null) return bt;
-                }
-            }
             return null;
         }
 
-        // ---- Perk hit/miss/received-hit routing ----
+        // ---- Hit / miss / received-hit routing ----
 
         public void onHit(float targetX, float targetY) {
             float dist = arc.math.Mathf.dst(x, y, targetX, targetY);
-            for(Perk state : perkStates) {
-                state.registerHit(null, this, targetX, targetY, dist);
+            for(Perk perk : perks) {
+                perk.registerHit(null, this, getState(perk), targetX, targetY, dist);
             }
         }
 
         public void onMiss() {
-            for(Perk state : perkStates) {
-                state.registerMiss(null, this);
+            for(Perk perk : perks) {
+                perk.registerMiss(null, this, getState(perk));
             }
         }
 
-        /**
-         * Call when this turret takes damage from an enemy bullet.
-         * Routes into RECEIVE_HITS perks.
-         */
         public void onReceivedHit() {
-            for(Perk state : perkStates) {
-                state.registerReceivedHit(null, this);
+            for(Perk perk : perks) {
+                perk.registerReceivedHit(null, this, getState(perk));
             }
         }
 
         // ---- Perk param accessors ----
 
         public float getPerkProgress() {
-            Perk primary = getPrimaryPerk();
-            return primary != null ? primary.smoothProgress : 0f;
+            if(perks.isEmpty()) return 0f;
+            return getState(perks.get(Math.min(primaryPerkIndex, perks.size - 1))).smoothProgress;
         }
 
         public float getPerkActivated() {
-            Perk primary = getPrimaryPerk();
-            return primary != null ? primary.smoothActivated : 0f;
-        }
-
-        public Perk getPrimaryPerk() {
-            if(perkStates.isEmpty()) return null;
-            int idx = Math.min(primaryPerkIndex, perkStates.size - 1);
-            return perkStates.get(idx);
+            if(perks.isEmpty()) return 0f;
+            return getState(perks.get(Math.min(primaryPerkIndex, perks.size - 1))).smoothActivated;
         }
     }
 }

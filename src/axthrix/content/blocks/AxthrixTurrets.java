@@ -13,7 +13,7 @@ import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.bulletypes.bulletpatterntypes.SpiralPattern;
 import axthrix.world.types.perks.BulletPerk;
 import axthrix.world.types.weapontypes.BlockWeapon;
-import axthrix.world.types.weapontypes.PerkWeapon;
+//import axthrix.world.types.weapontypes.PerkWeapon;
 import axthrix.world.util.*;
 import axthrix.world.util.draw.*;
 import blackhole.entities.bullet.BlackHoleBulletType;
@@ -610,10 +610,10 @@ public class AxthrixTurrets{
         charon = new AxPowerTurret("charon") {{
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(
-                    Items.surgeAlloy,  400,
+                    Items.surgeAlloy, 400,
                     Items.phaseFabric, 200,
-                    Items.silicon,     350,
-                    Items.titanium,    300
+                    Items.silicon, 350,
+                    Items.titanium, 300
             ));
             faction.add(AxFactions.axthrix);
 
@@ -633,8 +633,8 @@ public class AxthrixTurrets{
             shootType = new BasicBulletType(22f, 180) {
                 @Override
                 public void hit(Bullet b, float x, float y, boolean createFrags) {
-                    super.hit(b, x, y,createFrags);
-                    if (b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                    super.hit(b, x, y, createFrags);
+                    if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
                         b.data = Boolean.TRUE;
                         build.onHit(x, y);
                     }
@@ -643,8 +643,8 @@ public class AxthrixTurrets{
                 @Override
                 public void despawned(Bullet b) {
                     super.despawned(b);
-                    if (b.data != Boolean.TRUE) {
-                        if (b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
+                    if(b.data != Boolean.TRUE) {
+                        if(b.owner() instanceof PerkTurretType.PerkTurretTypeBuild build) {
                             build.onMiss();
                         }
                     }
@@ -677,6 +677,7 @@ public class AxthrixTurrets{
                 decaysOnMiss = true;
                 decaysOverTime = false;
                 consumesOnActivate = true;
+                postPerkReloadMultiplier = 0.4f;
                 glowColor = Color.valueOf("ff9944");
                 glowRadius = 20f;
                 bullet = new StaticFieldBulletType() {{
