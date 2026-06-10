@@ -210,27 +210,25 @@ public class HeadTurretClass extends Turret {
 
         @Override
         protected boolean validateTarget() {
-            // Clear invalid target so it can search again next frame
-            if (target != null && invalidateTarget(target, canHeal() ? Team.derelict : team, x, y, range)) {
+            if(isControlled() || logicControlled()) {
+                return !invalidateTarget(target, canHeal() ? Team.derelict : team, x, y, range)
+                        || isControlled() || logicControlled();
+            }
+
+            if(target != null && invalidateTarget(target, canHeal() ? Team.derelict : team, x, y, range)) {
                 target = null;
             }
 
-            if (target == null) return false;
+            if(target == null) return false;
 
-            // Player / logic control
-            if (isControlled() || logicControlled()) {
-                return target.within(this, range + (target instanceof Sized s ? s.hitSize()/2f : 0f));
-            }
+            boolean inRange = target.within(this, range + (target instanceof Sized s ? s.hitSize() / 2f : 0f));
+            if(!inRange) return false;
 
-            // Normal validation
-            boolean inRange = target.within(this, range + (target instanceof Sized s ? s.hitSize()/2f : 0f));
-            if (!inRange) return false;
+            if(!SeaDetection(target)) return false;
 
-            if (!SeaDetection(target)) return false;
-
-            if (target instanceof Unit u) {
+            if(target instanceof Unit u) {
                 boolean submerged = LayerManager.isSubmerged(u);
-                if (submerged) {
+                if(submerged) {
                     return u.isValid();
                 } else {
                     return u.targetable(team) && u.isValid();

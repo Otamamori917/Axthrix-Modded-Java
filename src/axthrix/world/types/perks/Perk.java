@@ -127,7 +127,7 @@ public abstract class Perk {
 
     // ---- Buff application helpers ----
 
-    protected void applyStackingBuffsToUnit(Unit unit, PerkStateData s) {
+    public void applyStackingBuffsToUnit(Unit unit, PerkStateData s) {
         if(unit == null || s.currentStacks <= 0) return;
         if(reloadBuff > 0f) unit.reloadMultiplier *= Math.max(0.1f, 1f - reloadBuff * s.currentStacks);
         if(damageBuff > 0f) unit.damageMultiplier += damageBuff * s.currentStacks;
@@ -135,7 +135,7 @@ public abstract class Perk {
         if(speedBuff > 0f) unit.speedMultiplier += speedBuff * s.currentStacks;
     }
 
-    protected void applyFlatBuffsToUnit(Unit unit, float t) {
+    public void applyFlatBuffsToUnit(Unit unit, float t) {
         if(unit == null || t <= 0f) return;
         if(reloadBuff > 0f) unit.reloadMultiplier *= Math.max(0.1f, 1f - reloadBuff * t);
         if(damageBuff > 0f) unit.damageMultiplier += damageBuff * t;

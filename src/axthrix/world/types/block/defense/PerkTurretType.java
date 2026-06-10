@@ -93,12 +93,12 @@ public class PerkTurretType extends HeadTurretClass {
                         combinedDamageMultiplier *= dp.getTurretDamageMultiplierFlat(sc);
                         combinedRangeBonus += dp.getTurretRangeBonus(sc);
                     }
-                //} else if(perk instanceof RangePerk rp) {
-                //    rp.updateForTurret(this, s);
-                //    float sc = rp.getCurrentScale(s);
-                //    combinedReloadMultiplier *= rp.getTurretReloadMultiplierFlat(sc);
-                //    combinedDamageMultiplier *= rp.getTurretDamageMultiplierFlat(sc);
-                //    combinedRangeBonus += rp.getTurretRangeBonus(sc);
+                } else if(perk instanceof RangePerk rp) {
+                    rp.updateForTurret(this, s);
+                    float sc = rp.getCurrentScale(s);
+                    combinedReloadMultiplier *= rp.getTurretReloadMultiplierFlat(sc);
+                    combinedDamageMultiplier *= rp.getTurretDamageMultiplierFlat(sc);
+                    combinedRangeBonus += rp.getTurretRangeBonus(sc);
                 } else if(perk instanceof DistancePerk dist) {
                     combinedRangeBonus += dist.getConsumedRangeBonus(s);
                 } else {

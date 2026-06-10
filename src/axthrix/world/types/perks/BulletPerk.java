@@ -16,8 +16,11 @@ public class BulletPerk extends Perk {
     public BulletType bullet;
 
     /**
-     * Reload speed multiplier applied to the shot immediately after the perk shot fires.
-     * Values below 1.0 make the follow-up shot faster. Set to 1.0 to disable.
+     * Reload multiplier applied to the shot immediately after the perk shot fires.
+     * < 1.0 = faster reload (e.g. 0.4 = reload in 40% of normal time).
+     * > 1.0 = slower reload (e.g. 2.0 = reload takes twice as long).
+     * 1.0 = no change.
+     * Range: > 0. Must not be 0 or negative.
      */
     public float postPerkReloadMultiplier = 1f;
 
@@ -49,8 +52,8 @@ public class BulletPerk extends Perk {
 
     @Override
     public void onPendingShotFired(Turret.TurretBuild turret, PerkStateData s) {
-        if(postPerkReloadMultiplier < 1f && turret instanceof PerkTurretType.PerkTurretTypeBuild build) {
-            build.pendingReloadMultiplier = postPerkReloadMultiplier;
+        if(postPerkReloadMultiplier != 1f && turret instanceof PerkTurretType.PerkTurretTypeBuild build) {
+            build.pendingReloadMultiplier = Math.max(0.01f, postPerkReloadMultiplier);
         }
     }
 

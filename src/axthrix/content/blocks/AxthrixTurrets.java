@@ -677,7 +677,7 @@ public class AxthrixTurrets{
                 decaysOnMiss = true;
                 decaysOverTime = false;
                 consumesOnActivate = true;
-                postPerkReloadMultiplier = 0.4f;
+                postPerkReloadMultiplier = 1.4f;
                 glowColor = Color.valueOf("ff9944");
                 glowRadius = 20f;
                 bullet = new StaticFieldBulletType() {{
