@@ -4,7 +4,7 @@ import arc.math.Mathf;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
-
+/// the farther the target (or closer via @invertRange) the larger the bonus up to max
 public class RangePerk extends Perk {
 
     /** Distance (world units) at which full buff is received. Range: > 0. */

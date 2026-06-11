@@ -9,7 +9,9 @@ public class AxStats {
     grinderTier,pierceReduction,shield,maxShield,timeToCloak,recipes,producer,produce,used,maxFireRateBonus,timeForMaxBonus,overheat,timeToCool,faction,shieldBoi,
     chargeTimePas,chargeTimePow,emp,empDuration,empPower,staticShock,minimumPowerToDischarge,tiles,timeToGrow,unitsOfForce,refuelRate,Fuel,maxBoostTime,
 
-            boosterLiq,boosterItm,Nanobot
+            boosterLiq,boosterItm,Nanobot,
+
+            perkSystem,wallBreakerUnit,wallBreakerWalls,wallBreakerBuildTime,wallBreakerScan
             ;
     public static void load()
     {
@@ -45,5 +47,10 @@ public class AxStats {
         boosterLiq = new Stat("booster-liquid", StatCat.optional);
         boosterItm = new Stat("booster-item", StatCat.crafting);
         Nanobot = new Stat("nanobot", StatCat.function);
+        perkSystem       = new Stat("aj-perk-system",       StatCat.general);
+        wallBreakerUnit  = new Stat("aj-wallbreaker-unit",   StatCat.general);
+        wallBreakerBuildTime = new Stat("aj-wallbreaker-build-time", StatCat.general);
+        wallBreakerScan  = new Stat("aj-wallbreaker-scan",   StatCat.general);
+        wallBreakerWalls = new Stat("aj-wallbreaker-walls",  StatCat.general);
     }
 }

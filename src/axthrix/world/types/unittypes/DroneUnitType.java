@@ -8,7 +8,7 @@ import mindustry.gen.*;
 
 import java.util.HashMap;
 
-public class DroneUnitType extends AmmoLifeTimeUnitType {
+public class DroneUnitType extends AxUnitType {
 
     public HashMap<Unit, Unit> tetherUnit = new HashMap<>();
     public HashMap<Unit, Integer> droneSlot = new HashMap<>();

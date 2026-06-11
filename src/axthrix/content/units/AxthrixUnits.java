@@ -15,7 +15,6 @@ import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.entities.comp.ProductionUnit;
 import axthrix.world.types.entities.comp.StealthUnit;
-import axthrix.world.types.entities.comp.WorldUnit;
 import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.sea.unit.SubmarineAi;
@@ -94,7 +93,7 @@ public class AxthrixUnits {
             prov(StealthUnit.class, StealthUnit::new),
             prov(ProductionUnit.class, ProductionUnit::new),
             prov(LeggedWaterEntity.class, LeggedWaterEntity::new),
-            prov(WorldUnit.class, WorldUnit::new),
+            //prov(WorldUnit.class, WorldUnit::new),
     };
 
 

@@ -10,7 +10,7 @@ import mindustry.gen.Call;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 
-public class WallBreakerUnitType extends AmmoLifeTimeUnitType {
+public class WallBreakerUnitType extends AxUnitType {
 
     public ObjectMap<Unit, Building> tetherBuilding = new ObjectMap<>();
     public ObjectMap<Unit, Float> drillTime = new ObjectMap<>();

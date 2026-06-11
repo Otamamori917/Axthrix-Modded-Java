@@ -41,7 +41,7 @@ public class AxthrixDrones {
 
             ammoCapacity = 250;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -86,7 +86,7 @@ public class AxthrixDrones {
 
             ammoCapacity = 250;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -120,7 +120,7 @@ public class AxthrixDrones {
 
             ammoCapacity = 250;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -152,7 +152,7 @@ public class AxthrixDrones {
         {{
             ammoCapacity = 500;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -220,7 +220,7 @@ public class AxthrixDrones {
         {{
             ammoCapacity = 500;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -267,7 +267,7 @@ public class AxthrixDrones {
 
             ammoCapacity = 500;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();
@@ -322,7 +322,7 @@ public class AxthrixDrones {
 
             ammoCapacity = 500;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            flying = alwaysShootWhenMoving = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new DroneAI();

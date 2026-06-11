@@ -2,7 +2,7 @@ package axthrix.world.types.perks;
 
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
-
+/// gains X stacks each stack gives a bonus
 public class ShotBuffPerk extends Perk {
 
     /**

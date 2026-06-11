@@ -3,7 +3,7 @@ package axthrix.world.types.perks;
 import arc.util.Time;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
-
+/// after activation buff lasts for a certain amt of ticks giving a flat bonus
 public class DurationPerk extends Perk {
 
     /** How long the buff lasts after activation, in ticks. Range: > 0. */

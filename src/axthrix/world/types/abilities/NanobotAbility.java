@@ -143,13 +143,6 @@ public class NanobotAbility extends Ability {
         params.team = unit.team;
 
         NanobotLogic.updateBoost(unit, params, 6);
-
-        NanobotLogic.updateNanobots(unit, params, timer, useAmmo, () -> {
-            if (useAmmo && state.rules.unitAmmo) {
-                unit.ammo--;
-            }
-            timer = 0f;
-        });
     }
 
     @Override

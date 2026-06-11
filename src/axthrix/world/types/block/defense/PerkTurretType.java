@@ -4,6 +4,8 @@ import arc.struct.Seq;
 import arc.util.Time;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
+import axthrix.world.util.AxStats;
+import axthrix.world.util.PerkStats;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
 import mindustry.world.draw.DrawTurret;
@@ -25,6 +27,14 @@ public class PerkTurretType extends HeadTurretClass {
     public PerkTurretType withPerk(Perk perk) {
         perks.add(perk);
         return this;
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        if (!perks.isEmpty()) {
+            stats.add(AxStats.perkSystem, t -> PerkStats.addPerkStats(t, perks));
+        }
     }
 
     public class PerkTurretTypeBuild extends HeadTurretBuild {
@@ -99,8 +109,6 @@ public class PerkTurretType extends HeadTurretClass {
                     combinedReloadMultiplier *= rp.getTurretReloadMultiplierFlat(sc);
                     combinedDamageMultiplier *= rp.getTurretDamageMultiplierFlat(sc);
                     combinedRangeBonus += rp.getTurretRangeBonus(sc);
-                } else if(perk instanceof DistancePerk dist) {
-                    combinedRangeBonus += dist.getConsumedRangeBonus(s);
                 } else {
                     combinedReloadMultiplier *= perk.getTurretReloadMultiplier(s);
                     combinedDamageMultiplier *= perk.getTurretDamageMultiplier(s);
@@ -132,10 +140,6 @@ public class PerkTurretType extends HeadTurretClass {
                 PerkStateData s = getState(perk);
                 if(perk instanceof ShotBuffPerk sb && sb.resetOnShot) {
                     sb.consumeShot(null, this, s);
-                }
-                if(perk instanceof DistancePerk dist) {
-                    dist.onShoot(null, this, s);
-                    bullet.damage *= dist.getConsumedDamageMultiplier(s);
                 }
             }
         }

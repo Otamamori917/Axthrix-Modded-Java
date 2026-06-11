@@ -4,10 +4,13 @@ import arc.Core;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import axthrix.world.types.AxFaction;
+import axthrix.world.types.weapontypes.PerkWeapon;
 import axthrix.world.util.AxStats;
+import axthrix.world.util.PerkStats;
 import mindustry.Vars;
 import mindustry.game.Gamemode;
 import mindustry.type.UnitType;
+import mindustry.type.Weapon;
 import mindustry.world.meta.Env;
 
 public class AxUnitType extends UnitType {
@@ -36,10 +39,24 @@ public class AxUnitType extends UnitType {
     @Override
     public void setStats() {
         super.setStats();
-        if(factions.any()){
-            stats.add(AxStats.faction, Core.bundle.get("team." +  factions.peek().name));
+
+        if (factions.any()) {
+            stats.add(AxStats.faction, Core.bundle.get("team." + factions.peek().name));
         }
 
+        // Collect perk weapons and emit one stat entry per weapon that has perks.
+        for (Weapon w : weapons) {
+            if (w instanceof PerkWeapon pw && !pw.perks.isEmpty()) {
+                // Label the section with the weapon name if it has one, else generic.
+                String label = (pw.name != null && !pw.name.isEmpty())
+                        ? pw.name
+                        : Core.bundle.get("stat.aj-perk-weapon-unnamed");
+                stats.add(AxStats.perkSystem, t -> {
+                    t.add("[stat]" + label).left().padBottom(2f).colspan(2).row();
+                    PerkStats.addPerkStats(t, pw.perks);
+                });
+            }
+        }
     }
 
     @Override

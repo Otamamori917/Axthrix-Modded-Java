@@ -10,7 +10,7 @@ import axthrix.world.types.block.defense.PerkTurretType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
-
+/// a perk "bullet" when activated shoots a special bullet instead of the one in the base type
 public class BulletPerk extends Perk {
 
     public BulletType bullet;

@@ -93,9 +93,6 @@ public class PerkWeapon extends Weapon {
             if(perk instanceof ShotBuffPerk sb && sb.resetOnShot) {
                 sb.consumeShot(unit, null, s);
             }
-            if(perk instanceof DistancePerk dist) {
-                dist.onShoot(unit, null, s);
-            }
         }
     }
 

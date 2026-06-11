@@ -3,7 +3,7 @@ package axthrix.world.types.perks;
 import arc.math.Mathf;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;
-
+///the faster you move (units) the greater the bonus up to max
 public class SpeedPerk extends Perk {
 
     /** Speed (world units/tick) at which full buff is received. Range: > 0. */
