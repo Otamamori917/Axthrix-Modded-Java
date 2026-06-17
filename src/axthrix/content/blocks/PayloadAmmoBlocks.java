@@ -23,7 +23,13 @@ public class PayloadAmmoBlocks {
     //energy
     void1mCaliber,// Dark energy implosion effect upon impact.
     sonicwave1mCaliber,// Emits a powerful sonic wave upon impact, disorienting and deafening enemies.
-    tempest1mCaliber;// Creates a burst of lightning
+    tempest1mCaliber,// Creates a burst of lightning
+
+
+
+    metalRodSmall,
+    metalRod,
+    metalRodLarge;
 
 
     public static void load(){
@@ -384,6 +390,45 @@ public class PayloadAmmoBlocks {
             );
 
             prev = arcane1mCaliber;
+            size = 2;
+            powerUse = 1f;
+            constructTime = 60f * 4f;
+
+            elevation = 2f / 3f;
+            outlined = true;
+        }};
+
+        metalRodSmall = new PayloadAmmoBlock("small-rod"){{
+            buildCost(
+                    Items.titanium, 20
+            );
+
+            size = 2;
+            powerUse = 1f;
+            constructTime = 60f * 4f;
+
+            elevation = 2f / 3f;
+            outlined = true;
+        }};
+        metalRod = new PayloadAmmoBlock("rod"){{
+            buildCost(
+                    Items.titanium, 40
+            );
+
+            prev = metalRodSmall;
+            size = 3;
+            powerUse = 1f;
+            constructTime = 60f * 4f;
+
+            elevation = 2f / 3f;
+            outlined = true;
+        }};
+        metalRodLarge = new PayloadAmmoBlock("large-rod"){{
+            buildCost(
+                    Items.titanium, 60
+            );
+
+            prev = metalRod;
             size = 2;
             powerUse = 1f;
             constructTime = 60f * 4f;

@@ -18,6 +18,7 @@ import axthrix.world.util.*;
 import axthrix.world.util.draw.*;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.content.*;
+import mindustry.ctype.UnlockableContent;
 import mindustry.entities.UnitSorts;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.pattern.*;
@@ -54,6 +55,9 @@ public class AxthrixTurrets{
     vatya, aratiri, gravitation, morta,
 
     karma,viper,coiner,pop, hematite,
+
+    //RodBased
+    meld,augur,
 
     //perk turrets
     charon,
@@ -606,6 +610,7 @@ public class AxthrixTurrets{
             );
             drawer = new DrawTurret("crystalized-");
         }};
+
 
         charon = new AxPowerTurret("charon") {{
             outlineColor = Color.valueOf("#181a1b");
@@ -1399,6 +1404,76 @@ public class AxthrixTurrets{
             unitSort = UnitSorts.strongest;
 
             coolant = consumeCoolant(0.2f);
+            setUsers();
+        }};
+
+        meld = new PayloadTurretType("meld") {{
+            outlineColor = Color.valueOf("#181a1b");
+
+            requirements(Category.turret, with(
+                    Items.copper, 150,
+                    Items.graphite, 300,
+                    Items.silicon, 325,
+                    Items.titanium, 350
+            ));
+
+            faction.add(AxFactions.axthrix);
+
+            dynamicBurst = true;
+
+            ammo(
+                    metalRodSmall, new BasicBulletType(3f, 35){{
+                        width = height = 2.5f;
+                        trailLength = 8;
+                        trailColor = frontColor = backColor = Color.red.add(Color.white).a(0.6f);
+                        shrinkX = shrinkY = 0.25f;
+                        lifetime = 110f;
+                        sticky = true;
+                        scaledSplashDamage = true;
+                        stickyExtraLifetime = 40;
+                    }},
+
+                    metalRod, new BasicBulletType(3.2f, 50){{
+                        width = height = 3f;
+                        trailLength = 10;
+                        trailColor = frontColor = backColor = Color.red.add(Color.white).a(0.6f);
+                        shrinkX = shrinkY = 0.2f;
+                        lifetime = 110f;
+                        sticky = true;
+                        scaledSplashDamage = true;
+                        stickyExtraLifetime = 40;
+                    }},
+
+                    metalRodLarge, new BasicBulletType(3.5f, 70){{
+                        width = height = 3.5f;
+                        trailLength = 12;
+                        trailColor = frontColor = backColor = Color.red.add(Color.white).a(0.7f);
+                        shrinkX = shrinkY = 0.15f;
+                        lifetime = 110f;
+                        sticky = true;
+                        scaledSplashDamage = true;
+                        stickyExtraLifetime = 40;
+                    }}
+            );
+
+            drawer = new DrawAcceleratedPayloadTurret(true, "crystalized-");
+
+            maxAmmo = 1;                    // important for your PayloadTurretType
+            size = 4;
+            scaledHealth = 180;
+            reload = 300f;
+            ammoUseEffect = AxthrixFfx.payloadCasing;
+            setWarmupTime(1.5f);           // this sets the 120 tick (~2 second) charge
+            shootCone = 4f;
+            shootY = 10f;
+            range = 46 * 8;
+            recoil = 1.2f;
+            rotateSpeed = 1.8f;
+            shootSound = Sounds.shootSublimate;
+            shootEffect = Fx.shootPayloadDriver;
+            smokeEffect = Fx.shootBigSmoke2;
+
+            unitSort = UnitSorts.strongest;
             setUsers();
         }};
         coiner = new ProjectileDefenceTurret("charge-back"){{

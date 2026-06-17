@@ -334,18 +334,18 @@ public class MountUnitType extends AxUnitType {
                             unit.stack.amount -= 1;
                         }
                         tickEnd(build,unit);
-                    } else if (build.block instanceof PayloadTurretType && build.block.size * build.block.size < payloadCapacity) {
+                   // }// else if (build.block instanceof PayloadTurretType && build.block.size * build.block.size < payloadCapacity) {
 
-                        Payload ammo = p.payloads().random();
+                    //    Payload ammo = p.payloads().random();
 
-                        PayloadTurretType.PayloadTurretTypeBuild paybuild = (PayloadTurretType.PayloadTurretTypeBuild) buildTurret.build;
-                        paybuild.unitCarry = unit;
-                        if (paybuild.acceptPayload(null, ammo)) {
-                            paybuild.handlePayload(null, ammo);
-                            p.payloads().remove(ammo);
-                        }
-                        tickEnd(build,unit);
-                        paybuild.unitCarry = null;
+                    //    PayloadTurretType.PayloadTurretTypeBuild paybuild = (PayloadTurretType.PayloadTurretTypeBuild) buildTurret.build;
+                    //    paybuild.unitCarry = unit;
+                    //    if (paybuild.acceptPayload(null, ammo)) {
+                    //        paybuild.handlePayload(null, ammo);
+                    //        p.payloads().remove(ammo);
+                    //    }
+                    //    tickEnd(build,unit);
+                    //    paybuild.unitCarry = null;
 
                     }else{
                         tickEnd(build,unit);
