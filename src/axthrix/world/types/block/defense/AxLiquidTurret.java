@@ -37,7 +37,7 @@ public class AxLiquidTurret extends PerkTurretType {
     @Override
     public void setStats() {
         super.setStats();
-        stats.add(Stat.ammo, StatValues.ammo(ammoTypes));
+        stats.add(Stat.ammo, axthrix.world.util.AxStatValues.ammo(ammoTypes, false, false, null));
     }
 
     @Override

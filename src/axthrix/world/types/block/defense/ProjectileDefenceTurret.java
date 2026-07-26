@@ -68,7 +68,7 @@ public class ProjectileDefenceTurret extends ReloadTurret {
         if(faction.any()){
             stats.add(AxStats.faction, Core.bundle.get("team." +  faction.peek().name));
         }
-        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(new Object[]{this, shootType})));
+        stats.add(Stat.ammo, axthrix.world.util.AxStatValues.ammo(ObjectMap.of(new Object[]{this, shootType}), false, false, null));
 
     }
 

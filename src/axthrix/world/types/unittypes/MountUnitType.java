@@ -14,6 +14,7 @@ import arc.util.Scaling;
 import arc.util.Time;
 import arc.util.noise.Simplex;
 import axthrix.content.AxLiquids;
+import axthrix.world.types.block.defense.AxItemTurret;
 import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.defense.PayloadTurretType;
 import axthrix.world.util.draw.DrawIPayloadTurret;
@@ -67,6 +68,8 @@ public class MountUnitType extends AxUnitType {
     public HashMap<Unit, Float> powTick = new HashMap<>();
     public HashMap<Unit, Boolean> Validation = new HashMap<>();
     public HashMap<Unit, Float> DelpeltionRate = new HashMap<>();
+    public HashMap<Unit, Boolean> hadPayloadLastFrame = new HashMap<>();
+
     public float BaseItemDelpeltionRate = 20;
 
     // payload
@@ -168,11 +171,10 @@ public class MountUnitType extends AxUnitType {
             if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret)
             {
                 Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
-                float rot = unit.rotation - build.rotation;
                 turret.set(unit.x, unit.y, unit.rotation);
-                build.rotation += rot;
-                drawBuild(build,unit,layer);
+                drawBuild(build, unit, layer);
             }
+
             else {
                 Draw.rect(turret.content().fullIcon, unit.x, unit.y, unit.rotation - 90);
             }
@@ -234,17 +236,21 @@ public class MountUnitType extends AxUnitType {
             Validation.remove(unit);
             liquidAmount.remove(unit);
             liquidType.remove(unit);
+            hadPayloadLastFrame.remove(unit);
         }
         existCheck(unit);
-        Units.nearbyBuildings(unit.x,unit.y,liquidPickupRange, b -> {
+
+        if(!hadPayloadLastFrame.containsKey(unit)) hadPayloadLastFrame.put(unit, false);
+
+        Units.nearbyBuildings(unit.x, unit.y, liquidPickupRange, b -> {
             if(b instanceof LiquidRouter.LiquidRouterBuild lr) {
                 if(lr.liquids.currentAmount() != 0  && lr.team() == unit.team()) {
                     if (liquidType.get(unit) == AxLiquids.nothingness && lr.liquids.current() != null){
-                        liquidType.replace(unit,lr.liquids.current());
+                        liquidType.replace(unit, lr.liquids.current());
                     }
                     if (!Objects.equals(liquidAmount.get(unit), liquidCap) && liquidType.get(unit) == lr.liquids.current() ) {
-                        liquidAmount.replace(unit,liquidAmount.get(unit)+1);
-                        lr.liquids.set(lr.liquids.current(),lr.liquids.currentAmount() - 1);
+                        liquidAmount.replace(unit, liquidAmount.get(unit) + 1);
+                        lr.liquids.set(lr.liquids.current(), lr.liquids.currentAmount() - 1);
                     }
                 }
             } else if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
@@ -255,18 +261,18 @@ public class MountUnitType extends AxUnitType {
                     if (liquidAmount.get(unit) > 0 && ld.liquids.currentAmount() != ld.block.liquidCapacity) {
                         if (ld.liquids.current() == liquidType.get(unit) || ld.liquids.current() == Liquids.water){
                             if(liquidType.get(unit) != Liquids.water){
-                                liquidAmount.replace(unit,liquidAmount.get(unit)-1);
-                                ld.liquids.set(liquidType.get(unit),ld.liquids.currentAmount() + 1);
+                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
+                                ld.liquids.set(liquidType.get(unit), ld.liquids.currentAmount() + 1);
                             }else{
-                                liquidAmount.replace(unit,liquidAmount.get(unit)-1);
-                                ld.liquids.set(Liquids.water,ld.liquids.currentAmount() + 1);
+                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
+                                ld.liquids.set(Liquids.water, ld.liquids.currentAmount() + 1);
                             }
                         }
                     }
                 }
-
             }
         });
+
         if (unit.stack.amount != 0) {
             if (unit.stack.item.charge != 0 || unit.stack.item.flammability != 0) {
                 if (unit.stack.item.charge > unit.stack.item.flammability) {
@@ -283,47 +289,53 @@ public class MountUnitType extends AxUnitType {
                 unit.stack.amount -= 1;
             }
         }
-        if (unit instanceof Payloadc p && p.hasPayload()) {
+
+        if (unit instanceof Payloadc p) {
+            if (hadPayloadLastFrame.get(unit) && !p.hasPayload()) {
+                hadPayloadLastFrame.replace(unit, false);
+            }
+
+            if (p.hasPayload()) {
+                hadPayloadLastFrame.replace(unit, true);
+
                 Payload turret = p.payloads().first();
                 Payload module = p.payloads().peek();
                 if (module instanceof BuildPayload buildModule && !(buildModule.block() instanceof Turret)){
                     if(buildModule.build.block.hasLiquids && buildModule.build.liquids != null && liquidType.get(unit) != null) {
-                        if(buildModule.build.acceptLiquid(null,liquidType.get(unit)) && liquidAmount.get(unit) != 0){
+                        if(buildModule.build.acceptLiquid(null, liquidType.get(unit)) && liquidAmount.get(unit) != 0){
                             if (buildModule.build.liquids.currentAmount() < buildModule.build.block.liquidCapacity){
-                                buildModule.build.handleLiquid(null,liquidType.get(unit),1);
-                                liquidAmount.replace(unit,liquidAmount.get(unit)-1);
+                                buildModule.build.handleLiquid(null, liquidType.get(unit), 1);
+                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
                             }
-
                         }
                     }
                     if (buildModule.build instanceof MendProjector.MendBuild mend) {
                         mend.x(unit.x);
                         mend.y(unit.y);
-                        tickEnd(mend,unit);
+                        tickEnd(mend, unit);
                     }
                     if (buildModule.build instanceof ForceProjector.ForceBuild force) {
                         force.x(unit.x);
                         force.y(unit.y);
-                        tickEnd(force,unit);
+                        tickEnd(force, unit);
                     }
                     if (buildModule.build instanceof RepairTurret.RepairPointBuild repair) {
                         repair.x(unit.x);
                         repair.y(unit.y);
-                        tickEnd(repair,unit);
+                        tickEnd(repair, unit);
                     }
-
                 }
+
                 if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret) {
                     Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
                     build.x(unit.x);
                     build.y(unit.y);
                     if(build.block.hasLiquids && build.liquids != null && liquidType.get(unit) != null) {
-                        if(build.acceptLiquid(null,liquidType.get(unit)) && liquidAmount.get(unit) != 0){
+                        if(build.acceptLiquid(null, liquidType.get(unit)) && liquidAmount.get(unit) != 0){
                             if (build.liquids.currentAmount() < build.block.liquidCapacity){
-                                build.handleLiquid(null,liquidType.get(unit),1);
-                                liquidAmount.replace(unit,liquidAmount.get(unit)-1);
+                                build.handleLiquid(null, liquidType.get(unit), 1);
+                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
                             }
-
                         }
                     }
 
@@ -333,39 +345,53 @@ public class MountUnitType extends AxUnitType {
                             Itembuild.handleItem(null, unit.item());
                             unit.stack.amount -= 1;
                         }
-                        tickEnd(build,unit);
-                   // }// else if (build.block instanceof PayloadTurretType && build.block.size * build.block.size < payloadCapacity) {
+                        tickEnd(Itembuild, unit);
+                    } else if (build.block instanceof AxItemTurret) {
+                        AxItemTurret.AxItemTurretBuild Axitembuild = (AxItemTurret.AxItemTurretBuild) buildTurret.build;
+                        if (Axitembuild.acceptItem(null, unit.item()) && unit.stack.amount != 0) {
+                            Axitembuild.handleItem(null, unit.item());
+                            unit.stack.amount -= 1;
+                        }
+                        tickEnd(Axitembuild, unit);
+                    } else if (build.block instanceof PayloadTurretType && build.block.size * build.block.size < payloadCapacity) {
+                        Payload ammo = p.payloads().random();
 
-                    //    Payload ammo = p.payloads().random();
-
-                    //    PayloadTurretType.PayloadTurretTypeBuild paybuild = (PayloadTurretType.PayloadTurretTypeBuild) buildTurret.build;
-                    //    paybuild.unitCarry = unit;
-                    //    if (paybuild.acceptPayload(null, ammo)) {
-                    //        paybuild.handlePayload(null, ammo);
-                    //        p.payloads().remove(ammo);
-                    //    }
-                    //    tickEnd(build,unit);
-                    //    paybuild.unitCarry = null;
-
-                    }else{
-                        tickEnd(build,unit);
+                        PayloadTurretType.PayloadTurretTypeBuild paybuild = (PayloadTurretType.PayloadTurretTypeBuild) buildTurret.build;
+                        if (paybuild.acceptPayload(null, ammo)) {
+                            paybuild.handlePayload(null, ammo);
+                            p.payloads().remove(ammo);
+                        }
+                        tickEnd(paybuild, unit);
+                    } else {
+                        tickEnd(build, unit);
                     }
                 }
+            }
         }
     }
+
+
     public void tickEnd(Building build, Unit unit){
         if (build.block.consumesPower && build.power != null) {
             if (Validation.get(unit)) {
-                build.power.status = 1;
+                build.enabled = true;
             } else {
-                build.power.status = 0f;
+                build.enabled = false;
             }
-            if(!mobile){
-                if (Core.input.keyTap(dropCargo)){
-                    build.power.status = 0f;
+
+            if (unit.isLocal()) {
+                if (!mobile) {
+                    if (Core.input.keyTap(dropCargo)) {
+                        build.enabled = false;
+                    }
+                } else if (Core.input.keyDown(mouseLeft)) {
+                    build.enabled = false;
                 }
-            } else if (Core.input.keyDown(mouseLeft)){
-                build.power.status = 0f;
+            }
+
+            if (build.power.graph != null) {
+                build.power.graph.remove(build);
+                build.power.graph = null;
             }
 
             powTick.replace(unit, powTick.get(unit) + 1);
@@ -382,8 +408,22 @@ public class MountUnitType extends AxUnitType {
                 Log.info("unit:" + unit + "  liquid:" + liquidType.get(unit) + "  liquid amount:" + liquidAmount.get(unit));
             }
         }
-        build.update();
+
+        if (!Vars.net.client()) {
+            build.update();
+        }
+        else {
+            if (build instanceof Turret.TurretBuild tb) {
+                build.update();
+                tb.reloadCounter = 0f;
+            } else {
+                build.update();
+            }
+        }
     }
+
+
+
     public void existCheck(Unit unit){
         if (!powTick.containsKey(unit)){
             powTick.put(unit, 0f);

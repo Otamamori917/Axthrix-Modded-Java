@@ -7,7 +7,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.Weapon;
 /** For unit weapons that use "Spiral Bullet pattern" fixes a known bug with the bullet pattern */
-public class WeaponHelix extends Weapon {
+public class WeaponHelix extends PerkWeapon {
     /** whether bullets shouldn't angle away from the shooting point; only works when rotate = false. */
     public boolean shootForward = true;
 

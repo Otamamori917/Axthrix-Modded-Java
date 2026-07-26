@@ -5,6 +5,7 @@ import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
+import axthrix.world.types.ai.TemporaryDroneAI;
 import axthrix.world.types.unittypes.DroneUnitType;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
@@ -32,6 +33,8 @@ public class SacrificeProtocolAbility extends Ability {
     protected Teamc kamikazeTarget = null;
     protected float kamikazeTimer = 0f;
     protected float maxKamikazeDuration = 180f;
+    public float lifetimeTriggerThreshold = 30f;
+
     @Override
     public String localized(){
         return Core.bundle.format("ability.aj-sacrifice-protocol");
@@ -64,6 +67,18 @@ public class SacrificeProtocolAbility extends Ability {
             if(kamikazeTarget == null){
                 explode(unit);
                 return;
+            }
+        }
+
+        if(!triggered && unit.controller() instanceof TemporaryDroneAI ai){
+            if(ai.getRemainingLifetime() < lifetimeTriggerThreshold){
+                triggered = true;
+                kamikazeTarget = Units.closestEnemy(unit.team, unit.x, unit.y, kamikazeRange, u -> true);
+
+                if(kamikazeTarget == null){
+                    explode(unit);
+                    return;
+                }
             }
         }
 

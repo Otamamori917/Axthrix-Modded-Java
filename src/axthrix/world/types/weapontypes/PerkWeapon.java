@@ -1,12 +1,16 @@
 package axthrix.world.types.weapontypes;
 
+import arc.scene.ui.layout.Table;
 import arc.struct.ObjectIntMap;
 import arc.struct.Seq;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
+import axthrix.world.util.AxStatValues;
 import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
+import mindustry.type.UnitType;
 import mindustry.type.Weapon;
+import mindustry.ui.Styles;
 
 /**
  * A weapon type that supports the modular perk system.
@@ -47,6 +51,16 @@ public class PerkWeapon extends Weapon {
     /** Gets PerkStateData for a given unit and perk using the unit's id as owner key. */
     public PerkStateData getState(Unit unit, Perk perk) {
         return Perk.getState(unit.id, perk.name);
+    }
+
+    @Override
+    public void addStats(UnitType unit, Table t) {
+        Table extra = new Table();
+        extra.left().defaults().padRight(3).left();
+        AxStatValues.appendCustomStats(extra, bullet);
+        t.row();
+        t.table(Styles.grayPanel, et -> et.add(extra).left().grow()).padLeft(5).padTop(0).padBottom(5).growX().margin(10);
+        super.addStats(unit, t);
     }
 
     // ---- Update ----

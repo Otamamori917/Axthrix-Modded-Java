@@ -15,7 +15,7 @@ import mindustry.entities.units.AIController;
 import mindustry.gen.Teamc;
 import mindustry.type.Weapon;
 import mindustry.type.weapons.BuildWeapon;
-
+/** @author Otamamori **/
 public class DroneAI extends AIController {
 	@Override
 	public void updateMovement() {
@@ -40,16 +40,13 @@ public class DroneAI extends AIController {
 				unit.set(un.x + Tmp.v1.x, un.y + Tmp.v1.y);
 
 				if(u.isShield){
-					// Shield drones: always use formation rotation
 					float relativeRotation = abl.getRotShooter(un, ablWarmup, abl.dRot, abl.moveRot, true);
 					unit.rotation = un.rotation + relativeRotation;
 				}else{
-					// Weapon drones: formation rotation normally, override when shooting
 					if(!un.isShooting){
 						float relativeRotation = abl.getRotShooter(un, ablWarmup, abl.dRot, abl.moveRot, false);
 						unit.rotation = un.rotation + relativeRotation;
 					}else{
-						// When shooting: match tether rotation
 						unit.rotation = un.rotation;
 					}
 				}
@@ -96,14 +93,11 @@ public class DroneAI extends AIController {
 			}
 
 			if(u.isShield){
-				// Shield drones: just sync shooting state
 				unit.isShooting = un.isShooting();
 				return;
 			}
 
-			// Weapon drones
 			if(un.isShooting){
-				// When shooting: override rotation and aim at tether's target
 				unit.rotation = un.rotation;
 				unit.aimX = un.aimX;
 				unit.aimY = un.aimY;
@@ -111,7 +105,6 @@ public class DroneAI extends AIController {
 
 			unit.isShooting = un.isShooting();
 
-			// Update weapons
 			for(var mount : unit.mounts) {
 				Weapon weapon = mount.weapon;
 				if (!weapon.aiControllable) {
@@ -121,7 +114,6 @@ public class DroneAI extends AIController {
 				if (weapon.noAttack) continue;
 
 				if(un.isShooting){
-					// Aim weapon at tether's target with prediction
 					Vec2 aimVec = new Vec2(un.aimX, un.aimY);
 					Vec2 to = Predict.intercept(unit, aimVec, weapon.bullet.speed);
 

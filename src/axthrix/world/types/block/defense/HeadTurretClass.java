@@ -12,7 +12,9 @@ import axthrix.AxthrixLoader;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.AxFaction;
 import axthrix.world.types.sea.managers.LayerManager;
+import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStats;
+import axthrix.world.util.logics.AcceleratedLogic;
 import mindustry.content.Blocks;
 import mindustry.entities.Sized;
 import mindustry.entities.Units;
@@ -82,6 +84,54 @@ public class HeadTurretClass extends Turret {
     public class HeadTurretBuild extends TurretBuild {
         @Override
         public void draw() {
+
+            if(this.block instanceof Turret t && t.drawer instanceof DrawTurret dt && dt.parts.size > 0) {
+                float heat = 0f;
+
+
+                if (this instanceof AcceleratedLogic.AcceleratedTurretBuild ab) {
+                    if (ab.getAcceleratedBonus() == 1 && ab.burnsOut()){
+                        AxPartParms.axparams.set(
+                                0,
+                                0,
+                                ab.heatf()
+                        );
+                    }else{
+                        AxPartParms.axparams.set(
+                                0,
+                                0,
+                                ab.heatp()
+                        );
+                    }
+                }
+
+                if (this instanceof ChargingShotgunTurret.ChargingShotgunBuild cb) {
+                    AxPartParms.axparams.set(
+                            cb.chargeProgress,
+                            0,
+                            0
+                    );
+                }
+
+                if (this instanceof RevolverTurret.RevolverTurretBuild rb) {
+                    float progress = rb.progress();
+
+                    AxPartParms.axparams.set(
+                            1f - progress,
+                            rb.secondarySmoothReload,
+                            0
+                    );
+                }
+
+                if(this instanceof PerkTurretType.PerkTurretTypeBuild pb) {
+                    AxPartParms.perkparams.set(
+                            pb.getPerkProgress(),
+                            pb.getPerkActivated()
+                    );
+                }
+            }
+
+
             if (AxthrixLoader.drawEnchancedShadows) {
                 super.draw();
                 return;

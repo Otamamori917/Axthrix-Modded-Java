@@ -62,11 +62,7 @@ public class SheildArcBullet extends BulletType {
                 float d = Mathf.dst(eb.x, eb.y, b.x, b.y);
                 if (d < b.hitSize*2) {
                     if(eb.type.absorbable && !(eb.type instanceof SheildArcBullet)){
-                        eb.absorb();
-                        Fx.absorb.at(eb);
-                        alpha.replace(b.id,1.0f);
-                        damageEffect.at(eb.x, eb.y, b.angleTo(eb),  b.team.color);
-                        currentHp.replace(b.id,currentHp.get(b.id) - eb.damage);
+                        wasHit(eb,b);
                     }
                 }
             }
@@ -75,6 +71,14 @@ public class SheildArcBullet extends BulletType {
             b.remove();
         }
     }
+
+    public void wasHit(Bullet enemyBullet, Bullet thisBullet){
+        enemyBullet.absorb();
+        Fx.absorb.at(enemyBullet);
+        alpha.replace(thisBullet.id,1.0f);
+        damageEffect.at(enemyBullet.x, enemyBullet.y, thisBullet.angleTo(enemyBullet),  thisBullet.team.color);
+        currentHp.replace(thisBullet.id,currentHp.get(thisBullet.id) - enemyBullet.damage);
+    };
 
     @Override
     public void draw(Bullet b) {

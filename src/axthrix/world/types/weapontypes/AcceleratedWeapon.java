@@ -12,7 +12,7 @@ import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.meta.StatUnit;
 
-public class AcceleratedWeapon extends Weapon {
+public class AcceleratedWeapon extends PerkWeapon {
     public float accelCooldownTime = 120f;
     public float accelCooldownWaitTime = 60f;
     public float accelPerShot = 1.1f;
@@ -127,7 +127,7 @@ public class AcceleratedWeapon extends Weapon {
     }
 
     @Override
-    protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
+    public void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation){
         AcceleratedMount aMount = (AcceleratedMount)mount;
 
         // Double-check overheat (shouldn't reach here if overheated, but just in case)
@@ -158,9 +158,9 @@ public class AcceleratedWeapon extends Weapon {
                 }
 
                 AxPartParms.axparams.set(
-                        0, //used in other always 0
-                        0, //used in other always 0
-                        heat // Heat value 0-1
+                        0,
+                        0,
+                        heat
                 );
             }
         }

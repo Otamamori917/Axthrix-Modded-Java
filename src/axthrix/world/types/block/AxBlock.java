@@ -84,54 +84,40 @@ public class AxBlock extends Block {
             boolean playerSub = LayerManager.isPlayerSubmerged();
             boolean onLiquid = tile.floor().isLiquid;
 
-            // 1. Unified Transition Logic (0 = Block, 1 = Shadow)
             float shadowWeight = 0f;
             if (waterBlock) {
-                // Water blocks turn into shadows as you surface (intensity -> 0)
                 shadowWeight = 1f - intensity;
             } else if (onLiquid) {
-                // Land blocks on liquid turn into shadows as you submerge (intensity -> 1)
                 shadowWeight = intensity;
             }
 
-            // 2. Prepare Drawing State
-            // Jiggle scales with how "shadowy" the block is
             float ox = Mathf.sin(Time.time, 15f, 1.2f) * shadowWeight;
             float oy = Mathf.cos(Time.time, 18f, 0.8f) * shadowWeight;
-
-            // LERP: Base Color (White -> Black) and Alpha (1.0 -> 0.25)
             Draw.color(Color.white, Color.black, shadowWeight);
             Draw.alpha(Mathf.lerp(1f, 0.25f, shadowWeight));
 
-            // Handle Native Underwater Tinting (If it's a water block and we are submerged)
             if (waterBlock && playerSub) {
                 Color floorCol = tile.floor().mapColor;
-                // Tmp.c1 saves the current hue-shift for the team top later
                 Tmp.c1.set(Draw.getColor()).lerp(Tmp.c2.set(floorCol).add(0.2f, 0.2f, 0.2f, 0f), intensity);
                 Draw.color(Tmp.c1);
             }
 
-            // Save current color state for components
             Color currentColor = Tmp.c3.set(Draw.getColor());
             float currentAlpha = Draw.getColorAlpha();
 
-            // 3. Main Block Drawing
             if (block.variants != 0 && block.variantRegions != null) {
                 Draw.rect(block.variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, block.variantRegions.length - 1))], x + ox, y + oy, drawrot());
             } else {
                 Draw.rect(block.region, x + ox, y + oy, drawrot());
             }
 
-            // 4. Team Top (Smoothly fades out as it turns into a shadow)
             if (block.teamRegion.found()) {
-                // We multiply team alpha by (1 - shadowWeight) so it disappears as the shadow turns black
                 float teamAlpha = currentAlpha * (1f - shadowWeight);
 
                 if (teamAlpha > 0.01f) {
                     Color baseTeam = (block.teamRegions[team.id] == block.teamRegion) ? team.color : Color.white;
                     Draw.color(baseTeam);
 
-                    // Apply the hue-shift if we are native water
                     if (waterBlock && playerSub) {
                         Draw.color(Draw.getColor().mul(currentColor));
                     }

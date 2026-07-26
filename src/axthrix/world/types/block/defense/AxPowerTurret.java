@@ -17,7 +17,7 @@ public class AxPowerTurret extends PerkTurretType {
     @Override
     public void setStats() {
         super.setStats();
-        stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
+        stats.add(Stat.ammo, axthrix.world.util.AxStatValues.ammo(ObjectMap.of(this, shootType), false, false, null));
     }
 
     public void limitRange(float margin) {

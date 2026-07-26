@@ -7,8 +7,10 @@ import axthrix.content.AxthrixSounds;
 import axthrix.world.types.abilities.AfterBurnAbility;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
+import axthrix.world.types.perks.SpeedPerk;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.CnSUnitType;
+import axthrix.world.types.weapontypes.PerkWeapon;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.*;
@@ -140,7 +142,7 @@ public class RaodonUnits {
             targetFlags = new BlockFlag[]{BlockFlag.repair,BlockFlag.unitAssembler, null};
 
 
-            weapons.add(new Weapon(){{
+            weapons.add(new PerkWeapon(){{
                 x = y = 0f;
                 shootY = -5;
                 mirror = false;
@@ -149,6 +151,10 @@ public class RaodonUnits {
                 shootSound = Sounds.none;
                 shoot.shots = 8;
                 shoot.shotDelay = 2;
+                perks.add(new SpeedPerk(){{
+                    requiredSpeed = 2;
+                    damageBuff = 0.1f;
+                }});
                 bullet = new BasicBulletType(){{
                     sprite = "large-bomb";
                     width = height = 60/4f;
@@ -200,13 +206,13 @@ public class RaodonUnits {
             targetFlags = new BlockFlag[]{BlockFlag.battery,BlockFlag.generator, null};
 
             abilities.add(new AfterBurnAbility(){{
-                fuelCap = 40;
-                boostForce = 30;
-                fuelRegenPerTick = 0.5f;
+                fuelCap = 50;
+                boostForce = 20;
+                fuelRegenPerTick = 0.1f;
                 fuelUsedPerTick = 1;
             }});
 
-            weapons.add(new Weapon(){{
+            weapons.add(new PerkWeapon(){{
                 x = y = 0f;
                 shootY = 8f;
                 mirror = false;
@@ -216,6 +222,10 @@ public class RaodonUnits {
                 shootSound = Sounds.none;
                 shoot.shots = 4;
                 shoot.shotDelay = 8;
+                perks.add(new SpeedPerk(){{
+                    damageBuff = 10;
+                    requiredSpeed = 6;
+                }});
                 bullet = new BasicBulletType(){{
                     sprite = "large-bomb";
                     width = height = 60/4f;

@@ -429,7 +429,7 @@ public class PayloadAmmoBlocks {
             );
 
             prev = metalRod;
-            size = 2;
+            size = 4;
             powerUse = 1f;
             constructTime = 60f * 4f;
 

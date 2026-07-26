@@ -1,7 +1,8 @@
 package axthrix.world.types.block.defense;
 
+import axthrix.world.util.draw.DrawIPayloadTurret;
 import axthrix.world.util.logics.AcceleratedLogic;
-import axthrix.world.util.draw.DrawAcceleratedPayloadTurret;
+import mindustry.world.draw.DrawBlock;
 
 public class PayloadAcceleratedTurret extends PayloadTurretType implements AcceleratedLogic {
     public float acceleratedDelay = 120, acceleratedBonus = 1.5f;
@@ -12,7 +13,8 @@ public class PayloadAcceleratedTurret extends PayloadTurretType implements Accel
 
     public PayloadAcceleratedTurret(String name){
         super(name);
-        drawer = new DrawAcceleratedPayloadTurret(true,"crystalized-");
+        drawer = new DrawIPayloadTurret(true, "crystalized-") {
+        };
     }
 
     // Interface implementations

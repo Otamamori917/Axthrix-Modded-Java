@@ -4,7 +4,6 @@ import arc.Events;
 import arc.audio.Sound;
 import arc.func.Func;
 import arc.math.Mathf;
-import arc.scene.Element;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
@@ -14,21 +13,14 @@ import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.content.blocks.AxthrixTurrets;
 import axthrix.content.blocks.PayloadAmmoBlocks;
 import axthrix.content.units.*;
-import axthrix.world.types.block.AxBlock;
 import axthrix.world.types.block.env.TemperatureFloor;
 import axthrix.world.types.bulletypes.*;
-import axthrix.world.types.sea.managers.LayerManager;
 import axthrix.world.types.sea.managers.SubmergedUpdaterAndRenderer;
-import axthrix.world.types.sea.managers.UnderwaterZone;
-import axthrix.world.types.sea.unit.SubmarineUnitType;
 import axthrix.world.types.unittypes.DroneUnitType;
 import axthrix.world.util.*;
-import axthrix.world.util.draw.DrawSeaTurret;
 import axthrix.world.util.logics.TemperatureLogic;
 import axthrix.world.util.save_states.AxthrixWorldState;
 import axthrix.world.util.ui.CustomUnitInfoBar;
-import axthrix.world.util.ui.TemperatureGaugeUI;
-import mindustry.Vars;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -37,10 +29,8 @@ import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.gen.Groups;
-import mindustry.gen.Unit;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
-import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.*;
@@ -72,7 +62,6 @@ public class AxthrixLoader extends Mod{
     public static int payloadMenuOffsetY = 0;
     public static int nadoEffectDensity = 100;
     CustomUnitInfoBar unitInfoBar;
-    TemperatureGaugeUI tempGauge;
     public AxthrixLoader(){
         super();
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
@@ -103,9 +92,6 @@ public class AxthrixLoader extends Mod{
 
         unitInfoBar = new CustomUnitInfoBar();
         unitInfoBar.build();
-
-        tempGauge = new TemperatureGaugeUI();
-        tempGauge.build();
 
         /// SETTINGS LOADING
 

@@ -83,7 +83,7 @@ public class PayloadAmmoBlock extends AxBlock{
         }
 
         if(user != null && bullet != null){
-            stats.add(AxStats.used, AxStatValues.ammo(ObjectMap.of(user, bullet)));
+            stats.add(AxStats.used, AxStatValues.ammo(ObjectMap.of(user, bullet), false, false, null));
         }
     }
 

@@ -1,5 +1,6 @@
 package axthrix.world.types.perks;
 
+import arc.graphics.Color;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.entities.bullet.BulletType;
@@ -84,6 +85,8 @@ public abstract class Perk {
 
     /** Speed multiplier boost per application (units only). Range: >= 0. */
     public float speedBuff = 0f;
+
+    public Color color = Color.red;
 
     // ---- Abstract Methods ----
 

@@ -137,7 +137,6 @@ public class AxUtil {
         return abilities;
     }
 
-
     public static float[] generateBarrels(int count, float totalWidth, float yOffset) {
         float[] barrels = new float[count * 3];
         for (int i = 0; i < count; i++) {

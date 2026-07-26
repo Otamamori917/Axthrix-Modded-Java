@@ -46,7 +46,7 @@ public class AxItemTurret extends PerkTurretType {
     public void setStats() {
         super.setStats();
         stats.remove(Stat.itemCapacity);
-        stats.add(Stat.ammo, StatValues.ammo(ammoTypes));
+        stats.add(Stat.ammo, axthrix.world.util.AxStatValues.ammo(ammoTypes,false, false, null));
         stats.add(Stat.ammoCapacity, maxAmmo / ammoPerShot, StatUnit.shots);
     }
 

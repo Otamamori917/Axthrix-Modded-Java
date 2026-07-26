@@ -3,6 +3,8 @@ package axthrix.world.types.block.defense;
 import arc.graphics.g2d.*;
 import arc.struct.Seq;
 import axthrix.world.types.weapontypes.BlockWeapon;
+import axthrix.world.util.AxStatValues;
+import mindustry.world.meta.Stat;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 
@@ -18,15 +20,13 @@ public class MultiTurretType extends HeadTurretClass {
         drawer = new DrawDefault();
         weapons = new Seq<>();
         itemCapacity = 10;
-        canPickup = false; //no MountUnitType synergy
+        canPickup = false;
     }
 
     @Override
     public void setStats() {
         super.setStats();
-        for (BlockWeapon weapon : weapons) {
-            weapon.addStats(this);
-        }
+        stats.add(Stat.weapons, AxStatValues.blockWeapons(this, weapons));
     }
 
     @Override

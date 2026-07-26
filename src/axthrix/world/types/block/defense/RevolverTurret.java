@@ -51,6 +51,11 @@ public class RevolverTurret extends AxItemTurret implements RevolverLogic {
 
     public RevolverTurret(String name){
         super(name);
+        configurable = true;
+
+        config(Integer.class, (RevolverTurretBuild build, Integer value) -> {
+            build.cartridges = value;
+        });
     }
 
     @Override
@@ -142,12 +147,17 @@ public class RevolverTurret extends AxItemTurret implements RevolverLogic {
         }
 
         public void addAmmo(int amount) {
+            if (Vars.net.client()) return;
+
             if (cartridges >= maxCartridges) return;
             cartridges += amount;
             if (cartridges > maxCartridges) cartridges = maxCartridges;
 
+            configure(cartridges);
+
             reloadCartridgesEffect.at(this.x, this.y + this.block.size / 2f);
             reloadCartridgesSound.at(this);
         }
+
     }
 }

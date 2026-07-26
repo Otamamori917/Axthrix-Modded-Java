@@ -1,11 +1,15 @@
 package axthrix.world.types.block.defense;
 
+import arc.Events;
+import arc.func.Boolp;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.io.*;
+import axthrix.world.util.AxStatValues;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
+import mindustry.game.EventType;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -20,6 +24,8 @@ public class AxPayloadAmmoTurret extends PerkTurretType {
     public ObjectMap<UnlockableContent, BulletType> ammoTypes = new ObjectMap<>();
     protected UnlockableContent[] ammoKeys;
 
+    private final Seq<ConditionalAmmo> conditionalAmmo = new Seq<>();
+
     public AxPayloadAmmoTurret(String name) {
         super(name);
         maxAmmo = 3;
@@ -28,6 +34,40 @@ public class AxPayloadAmmoTurret extends PerkTurretType {
 
     public void ammo(Object... objects) {
         ammoTypes = ObjectMap.of(objects);
+    }
+
+    public void conditionalAmmo(UnlockableContent key, BulletType bullet, Boolp condition) {
+        conditionalAmmo.add(new ConditionalAmmo(key, bullet, condition));
+    }
+
+    private void updateConditionalAmmo() {
+        if(!state.isGame()) return;
+
+        boolean changed = false;
+        for(ConditionalAmmo c : conditionalAmmo) {
+            boolean should = c.condition.get();
+            if(should != c.active) {
+                c.active = should;
+                if(should) ammoTypes.put(c.key, c.bullet);
+                else ammoTypes.remove(c.key);
+                changed = true;
+            }
+        }
+
+        if(changed) ammoKeys = ammoTypes.keys().toSeq().toArray(UnlockableContent.class);
+    }
+
+    private static class ConditionalAmmo {
+        final UnlockableContent key;
+        final BulletType bullet;
+        final Boolp condition;
+        boolean active = false;
+
+        ConditionalAmmo(UnlockableContent key, BulletType bullet, Boolp condition) {
+            this.key = key;
+            this.bullet = bullet;
+            this.condition = condition;
+        }
     }
 
     public void limitRange() { limitRange(1f); }
@@ -42,7 +82,7 @@ public class AxPayloadAmmoTurret extends PerkTurretType {
     public void setStats() {
         super.setStats();
         stats.remove(Stat.itemCapacity);
-        stats.add(Stat.ammo, StatValues.ammo(ammoTypes, true));
+        stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes,0, true));
     }
 
     @Override
@@ -72,6 +112,11 @@ public class AxPayloadAmmoTurret extends PerkTurretType {
         });
 
         ammoKeys = ammoTypes.keys().toSeq().toArray(UnlockableContent.class);
+
+        if(conditionalAmmo.any()) {
+            Events.run(EventType.Trigger.update, this::updateConditionalAmmo);
+        }
+
         super.init();
     }
 

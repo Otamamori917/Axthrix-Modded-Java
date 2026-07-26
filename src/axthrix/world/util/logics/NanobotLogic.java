@@ -101,13 +101,7 @@ public class NanobotLogic {
         Seq<Nanobot> nanobots = ownerNanobots.get(owner);
         if (nanobots == null) return;
 
-        boolean useShader = Vars.renderer.animateShields;
-
         Draw.draw(AxLayers.nanobotLayer, () -> {
-            if (useShader) {
-                Draw.shader(AxShaders.nanoBots);
-                AxShaders.nanoBots.time = Time.time;
-            }
 
             for (Nanobot nano : nanobots) {
                 nano.update(params.x, params.y, params.range, params.nanobotOrbitSpeed, params.nanobotMoveSpeed, params.spreadMultiplier);
@@ -130,8 +124,6 @@ public class NanobotLogic {
                         Draw.color(Tmp.c1, alpha * trailAlphas[i]);
                         Fill.circle(px, py, params.nanobotSize * scale * trailScales[i]);
                     }
-
-                    // Pulse ring — only when boosting a block, drawn in orange
                     if (nano.boostTarget) {
                         float ringProgress = 1f - (nano.targetTimer / 30f);
                         float ringRadius = params.nanobotSize * 4f * ringProgress;
@@ -151,7 +143,6 @@ public class NanobotLogic {
                 Fill.circle(nano.x, nano.y, params.nanobotSize * scale * 0.5f);
             }
 
-            if (useShader) Draw.shader();
             Draw.reset();
         });
     }

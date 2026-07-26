@@ -17,7 +17,7 @@ import axthrix.world.util.logics.RevolverLogic;
 import static axthrix.content.AxthrixSounds.RevolverEmpty;
 import static axthrix.content.AxthrixSounds.RevolverReload;
 
-public class RevolverWeapon extends Weapon implements RevolverLogic {
+public class RevolverWeapon extends PerkWeapon implements RevolverLogic {
 
     public int maxCartridges = 6;
     public Effect reloadCartridgesEffect = Fx.none;
@@ -99,7 +99,7 @@ public class RevolverWeapon extends Weapon implements RevolverLogic {
     }
 
     @Override
-    protected void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation) {
+    public void shoot(Unit unit, WeaponMount mount, float shootX, float shootY, float rotation) {
         RevolverWeaponMount rwm = (RevolverWeaponMount) mount;
         rwm.tryShoot(shootX, shootY, rotation, () -> super.shoot(unit, mount, shootX, shootY, rotation));
     }

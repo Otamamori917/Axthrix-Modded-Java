@@ -30,7 +30,7 @@ public class HarpoonBulletType extends BulletType {
     public float holdDamage = 8f;
     public float holdDamageInterval = 15f;
     public float reelSpeed = 7.5f;
-    public float switchToJawsDistance = 35f;
+    public float switchToJawsDistance = 10f;
     public float resistancePerHitSize = 0.15f;
 
     public Color chainColor = Color.darkGray.cpy().add(Color.violet);
@@ -111,7 +111,7 @@ public class HarpoonBulletType extends BulletType {
     public void draw(Bullet b) {
         if (!(b.owner instanceof Posc pos)) return;
 
-        Draw.z(Layer.flyingUnit + 0.5f);
+        Draw.z(Layer.turret-1);
         drawAnimatedChain(pos.x(), pos.y(), b.x, b.y,
                 chainColor, chainWidthScale, chainHeightScale);
 
@@ -173,19 +173,33 @@ public class HarpoonBulletType extends BulletType {
                     float effectiveSpeed = data.reelSpeed * (1f - resistance) * Time.delta;
                     float dx = ownerX - target.x;
                     float dy = ownerY - target.y;
-                    target.x += dx / dist * effectiveSpeed;
-                    target.y += dy / dist * effectiveSpeed;
+                    if (!Vars.net.client()) {
+                        target.x += dx / dist * effectiveSpeed;
+                        target.y += dy / dist * effectiveSpeed;
+                    }
+
                 }
 
                 if (dist < data.switchToJawsDistance) {
                     if (owner instanceof TransformingTurret.TransformingTurretBuild turret) {
-                        int jawsIndex = findJawsFormIndex(turret);
-                        if (jawsIndex >= 0) {
-                            turret.targetForm = jawsIndex;
-                            turret.transitionTime = 0f;
-                            if (turret.block instanceof TransformingTurret tt
-                                    && tt.forms != null && jawsIndex < tt.forms.length) {
-                                turret.shootPublic(tt.forms[jawsIndex].bullet);
+
+                        if (!Vars.net.client() && turret.block instanceof TransformingTurret parentTurret && parentTurret.forms != null && parentTurret.forms.length > 0) {
+
+                            int shortestRangeIndex = -1;
+                            float minRange = Float.MAX_VALUE;
+
+                            for (int i = 0; i < parentTurret.forms.length; i++) {
+                                TransformingTurret.Form f = parentTurret.forms[i];
+                                if (f != null && f.range < minRange) {
+                                    minRange = f.range;
+                                    shortestRangeIndex = i;
+                                }
+                            }
+
+                            if (shortestRangeIndex >= 0) {
+                                turret.configure(shortestRangeIndex);
+
+                                turret.customReloadTimer = parentTurret.forms[shortestRangeIndex].reload;
                             }
                         }
                     }
@@ -194,6 +208,8 @@ public class HarpoonBulletType extends BulletType {
                     activeHarpoons.remove(entry.key);
                     continue;
                 }
+
+
 
                 if (!Vars.net.client() && data.damageTimer >= data.holdDamageInterval) {
                     target.damage(data.holdDamage);
@@ -226,7 +242,7 @@ public class HarpoonBulletType extends BulletType {
             float headX = target.x + Tmp.v1.x;
             float headY = target.y + Tmp.v1.y;
 
-            Draw.z(Layer.flyingUnit + 0.5f);
+            Draw.z(Layer.turret-1);
             drawAnimatedChain(owner.x(), owner.y(), headX, headY,
                     data.chainColor,
                     data.chainWidthScale, data.chainHeightScale);
@@ -279,7 +295,7 @@ public class HarpoonBulletType extends BulletType {
 
     private static void drawRetracts() {
         for (RetractData r : activeRetracts) {
-            Draw.z(Layer.flyingUnit + 0.5f);
+            Draw.z(Layer.turret-1);
             drawAnimatedChain(r.anchorX, r.anchorY, r.headX, r.headY,
                     r.chainColor,
                     r.chainWidthScale, r.chainHeightScale);

@@ -20,7 +20,7 @@ import mindustry.Vars;
 
 import static mindustry.Vars.tilesize;
 
-public class DrawSeaTurret extends DrawPerkTurretType {
+public class DrawSeaTurret extends DrawTurret {
     public static FrameBuffer buffer;
 
     /// Renderer Resolution

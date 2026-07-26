@@ -24,7 +24,7 @@ import mindustry.world.meta.StatUnit;
 import java.util.HashMap;
 
 import static mindustry.Vars.ui;
-
+/** @author Otamamori **/
 public class DroneSpawnAbility extends Ability {
     public DroneUnitType drone;
     public float spawnTime = 510;
@@ -32,7 +32,7 @@ public class DroneSpawnAbility extends Ability {
     public boolean parentizeEffects;
     public int droneSlot = 0;
     public int number = 0;
-    public boolean spawnOnShoot = false; // New: spawn only when tether shoots
+    public boolean spawnOnShoot = false;
 
     public HashMap<Unit, Unit> aliveUnit = new HashMap<>();
     public HashMap<Unit, Float> warmup = new HashMap<>();
@@ -89,7 +89,7 @@ public class DroneSpawnAbility extends Ability {
         }
 
 
-        // Check if unit stopped shooting and we're in spawn-on-shoot mode
+
         if(spawnOnShoot && !unit.isShooting && aliveUnit.get(unit) != null && aliveUnit.get(unit).isValid()){
             Unit droneUnit = aliveUnit.get(unit);
 
@@ -105,38 +105,29 @@ public class DroneSpawnAbility extends Ability {
             }
 
             if(hasKamikaze && kamikazeAbility != null){
-                // Damage drone to just below threshold to trigger kamikaze
-                // Calculate damage needed: current health - (maxHealth * threshold) + 1
+
                 float thresholdHealth = droneUnit.maxHealth * kamikazeAbility.healthThreshold;
                 float damageNeeded = droneUnit.health - thresholdHealth + 1f;
 
                 if(damageNeeded > 0){
                     droneUnit.damage(damageNeeded);
                 }
-                // The SacrificeProtocolAbility will handle the rest on its next update
             }else{
-                // No kamikaze, just despawn
                 Call.unitDespawn(droneUnit);
                 aliveUnit.replace(unit, null);
             }
 
-            // Reset timer
             timer = 0f;
         }
 
-        // Only increment timer if:
-        // - Not spawn-on-shoot mode, OR
-        // - Spawn-on-shoot mode AND unit is shooting
         if(!spawnOnShoot || unit.isShooting){
             timer += Time.delta * Vars.state.rules.unitBuildSpeed(unit.team);
         }
 
-        // Spawn conditions
         boolean shouldSpawn = timer >= spawnTime &&
                 Units.canCreate(unit.team, drone) &&
                 canReplace(unit);
 
-        // For spawn-on-shoot, also require unit to be shooting
         if(spawnOnShoot){
             shouldSpawn = shouldSpawn && unit.isShooting;
         }
@@ -181,7 +172,6 @@ public class DroneSpawnAbility extends Ability {
 
     public void draw(Unit unit) {
         if (Units.canCreate(unit.team, drone) && canReplace(unit) && warmup.containsKey(unit)) {
-            // Don't show construction preview if spawn-on-shoot and not shooting
             if(spawnOnShoot && !unit.isShooting) return;
 
             Draw.draw(Draw.z(), () -> {

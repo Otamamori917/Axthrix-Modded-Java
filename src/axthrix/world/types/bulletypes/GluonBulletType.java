@@ -157,10 +157,12 @@ public class GluonBulletType extends PointBulletType {
             float stretch = dst / maxDist;
             float strength = pullStr * stretch * Time.delta;
 
-            pulled.vel.add(Tmp.v1.trns(angle, strength/60));
-
-            pulled.vel.scl(0.98f);
+            if (!Vars.net.client()) {
+                pulled.vel.add(Tmp.v1.trns(angle, strength/60));
+                pulled.vel.scl(0.98f);
+            }
         }
+
 
         private void triggerSnap(Unit unit) {
             if (unit == null || !unit.isAdded()) return;

@@ -7,11 +7,17 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import axthrix.world.types.block.PayloadAmmoBlock;
 import axthrix.world.util.AxStatValues;
+import axthrix.world.util.TempUnit;
 import axthrix.world.util.draw.DrawIPayloadTurret;
+import axthrix.world.util.logics.TemperatureLogic;
+import axthrix.world.util.ui.TemperatureBar;
 import mindustry.content.Fx;
 import mindustry.ctype.UnlockableContent;
+import mindustry.entities.Damage;
+import mindustry.entities.Effect;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
+import mindustry.world.Block;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 
@@ -24,6 +30,24 @@ public class PayloadTurretType extends AxPayloadAmmoTurret {
 
     /** If true, the turret will fire multiple bullets based on payload size */
     public boolean dynamicBurst = false;
+    public int bulletsPerSize = 10;
+
+    /** If true, this turret generates heat via TemperatureLogic on every volley */
+    public boolean generatesHeat = false;
+    /** Heat added per volley, multiplied by the fired payload's block size */
+    public float heatPerSize = 8f;
+    /** Heat value at which burst timing starts slowing down / degrading */
+    public float heatWarningThreshold = 55f;
+    /** Heat value at which the turret refuses to fire entirely */
+    public float heatCriticalThreshold = 85f;
+    /** Consecutive ticks the turret can sit at/above critical before meltdown */
+    public float heatCriticalTimeLimit = 300f;
+    /** Damage dealt to the nearby on meltdown */
+    public float meltdownDamage = 400f;
+    public float meltdownRadius = 40f;
+
+    /** Self-damage per second while the turret is at critical heat */
+    public float criticalSelfDamage = 35f;
 
     public PayloadTurretType(String name) {
         super(name);
@@ -36,10 +60,32 @@ public class PayloadTurretType extends AxPayloadAmmoTurret {
     }
 
     @Override
+    public void setBars(){
+        super.setBars();
+
+        if(generatesHeat){
+            addBar("temperature", (PayloadTurretTypeBuild entity) -> new TemperatureBar("Temp", entity));
+        }
+    }
+
+    @Override
     public void setStats() {
         super.setStats();
         stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes, true));
+
+        if(!generatesHeat) {
+            stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes, 0, true));
+        } else {
+            stats.add(Stat.ammo, AxStatValues.ammoheat(ammoTypes, 0, true, heatPerSize, reload));
+            stats.add(Stat.heatCapacity, table -> {
+                String heatCap = TempUnit.format(heatCriticalThreshold);
+                table.add("[red]" + heatCap + "[] is critical");
+                table.add("[accent]Meltdown after " + (int)(heatCriticalTimeLimit / 60) + " seconds[]").row();
+                if (criticalSelfDamage > 0) {
+                    table.add("[red]Takes " + criticalSelfDamage + " damage per second[] while critical");
+                }
+            });
+        }
     }
 
     public void setWarmupTime(float seconds) {
@@ -64,6 +110,9 @@ public class PayloadTurretType extends AxPayloadAmmoTurret {
         public float payLen;
         public Vec2 payVector = new Vec2();
 
+        protected float criticalTime = 0f;
+        protected float selfDamageTimer = 0f;   // new
+
         @Override
         public void updateTile() {
             if (moveInPayload()) {
@@ -71,7 +120,42 @@ public class PayloadTurretType extends AxPayloadAmmoTurret {
                 payload = null;
             }
 
+            if (generatesHeat) updateHeatState();
+
             super.updateTile();
+        }
+
+        protected void updateHeatState() {
+            float heat = TemperatureLogic.getHeatBuilding(this);
+
+            if (heat >= heatCriticalThreshold) {
+                criticalTime += Time.delta;
+
+                if (criticalSelfDamage > 0) {
+                    selfDamageTimer += Time.delta;
+                    if (selfDamageTimer >= 60f) {
+                        damage(criticalSelfDamage);
+                        selfDamageTimer -= 60f;
+                    }
+                }
+
+                if (criticalTime >= heatCriticalTimeLimit) {
+                    meltdown();
+                }
+            } else {
+                criticalTime = 0f;
+                selfDamageTimer = 0f;
+            }
+        }
+
+        protected void meltdown() {
+            Damage.damage(team, x, y, meltdownRadius, meltdownDamage);
+            Fx.blockExplosionSmoke.at(x, y);
+            float currentHeat = TemperatureLogic.getHeatBuilding(this);
+            if (currentHeat > 0f) TemperatureLogic.applyTemperatureBuilding(this, -currentHeat);
+
+            criticalTime = 0f;
+            kill();
         }
 
         @Override
@@ -110,29 +194,52 @@ public class PayloadTurretType extends AxPayloadAmmoTurret {
             return payVector.len() / payLen;
         }
 
-        // ==================== CUSTOM MULTI-SHOT LOGIC ====================
         @Override
         protected void shoot(BulletType type) {
             if (!dynamicBurst) {
-                super.shoot(type);   // Normal behavior for other turrets
+                super.shoot(type);
+                if (generatesHeat) {
+                    applyHeat();
+                }
                 return;
             }
 
-            // Dynamic burst for this turret
-            UnlockableContent ammo = currentAmmo();
-            int shotCount = 8; // fallback
+            float heat = generatesHeat ? TemperatureLogic.getHeatBuilding(this) : 0f;
 
-            if (ammo == metalRodSmall) shotCount = 20;
-            else if (ammo == metalRod) shotCount = 40;
-            else if (ammo == metalRodLarge) shotCount = 60;
+            if (generatesHeat && heat >= heatCriticalThreshold) {
+                return;
+            }
+
+            UnlockableContent ammo = currentAmmo();
+            int size = (ammo instanceof Block b) ? b.size : 1;
+            int shotCount = size * bulletsPerSize;
+
+            float spacingMult = 1f;
+            if (generatesHeat && heat > heatWarningThreshold) {
+                float heatFactor = Mathf.clamp((heat - heatWarningThreshold) / (heatCriticalThreshold - heatWarningThreshold), 0f, 1f);
+                spacingMult = 1f + heatFactor * 2f;
+            }
+
+
+            float heatPerBullet = (size * heatPerSize) / Math.max(shotCount, 1);
 
             for (int i = 0; i < shotCount; i++) {
-                Time.run(i * 1f, () -> {
-                    if (isValid() && hasAmmo()) {
-                        super.shoot(type);
+                Time.run(i * spacingMult, () -> {
+                    if (!isValid()) return;
+
+                    super.shoot(type);
+
+                    if (generatesHeat) {
+                        TemperatureLogic.applyTemperatureBuilding(this, heatPerBullet);
                     }
                 });
             }
+        }
+
+        private void applyHeat() {
+            if (!generatesHeat) return;
+            int size = (currentAmmo() instanceof Block b) ? b.size : 1;
+            TemperatureLogic.applyTemperatureBuilding(this, size * heatPerSize);
         }
 
         @Override

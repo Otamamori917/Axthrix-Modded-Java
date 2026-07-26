@@ -3,6 +3,7 @@ package axthrix.world.types.block.defense;
 import arc.Core;
 import arc.audio.Sound;
 import arc.math.Mathf;
+import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -17,25 +18,28 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
 public class ChargingShotgunTurret extends AxItemTurret {
+
     public float maxChargeTime = 80f;
     public float minSpread = 2f;
     public float maxSpread = 35f;
     public float minLifetimeMultiplier = 1f;
     public float maxLifetimeMultiplier = 2f;
+
     public Effect chargingEffect = Fx.shootBigSmoke;
     public Sound chargingSound = AxthrixSounds.parserCharge;
     public float chargingEffectInterval = 15f;
     public float chargeEffectOffset = 0f;
-    ///How close the enemy must be to start not fully charging.
+
+    /// How close the enemy must be to start not fully charging.
     public float aiChargeThreshold = 0.5f;
 
-    public ChargingShotgunTurret(String name){
+    public ChargingShotgunTurret(String name) {
         super(name);
         canOverdrive = false;
     }
 
     @Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
 
         addBar("charge", (ChargingShotgunBuild entity) -> new Bar(
@@ -46,7 +50,7 @@ public class ChargingShotgunTurret extends AxItemTurret {
     }
 
     @Override
-    public void setStats(){
+    public void setStats() {
         super.setStats();
 
         stats.remove(Stat.inaccuracy);
@@ -54,121 +58,115 @@ public class ChargingShotgunTurret extends AxItemTurret {
         stats.remove(Stat.shootRange);
         stats.remove(Stat.range);
 
-
-
-
-        stats.add(Stat.inaccuracy, minSpread + " - " + maxSpread +" "+ StatUnit.degrees.localized());
-        stats.add(Stat.charge, Strings.autoFixed(maxChargeTime / 60f, 1) + " "+ StatUnit.seconds.localized());
-        stats.add(Stat.reload, Core.bundle.format("stat.aj-min") +": " + 60.0F / reload + " "+ StatUnit.perSecond.localized() +
-                " - "+Core.bundle.format("stat.aj-max") +": " + 60.0F / (reload + maxChargeTime) + " "+ StatUnit.perSecond.localized());
-        stats.add(Stat.shootRange, Core.bundle.format("stat.aj-min") +": " + AxUtil.GetRange(4f, 10 * minLifetimeMultiplier) + " " + StatUnit.blocks.localized() +
-                " - "+Core.bundle.format("stat.aj-max") +": " + AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier) + " "+ StatUnit.blocks.localized());
+        stats.add(Stat.inaccuracy, minSpread + " - " + maxSpread + " " + StatUnit.degrees.localized());
+        stats.add(Stat.charge, Strings.autoFixed(maxChargeTime / 60f, 1) + " " + StatUnit.seconds.localized());
+        stats.add(Stat.reload, Core.bundle.format("stat.aj-min") + ": " + 60f / reload + " " + StatUnit.perSecond.localized() +
+                " - " + Core.bundle.format("stat.aj-max") + ": " + 60f / (reload + maxChargeTime) + " " + StatUnit.perSecond.localized());
+        stats.add(Stat.shootRange, Core.bundle.format("stat.aj-min") + ": " + AxUtil.GetRange(4f, 10 * minLifetimeMultiplier) + " " + StatUnit.blocks.localized() +
+                " - " + Core.bundle.format("stat.aj-max") + ": " + AxUtil.GetRange(4f, 10 * maxLifetimeMultiplier) + " " + StatUnit.blocks.localized());
     }
 
     public class ChargingShotgunBuild extends AxItemTurretBuild {
+
         public float chargeTime = 0f;
         public float chargeProgress = 0f;
         public boolean charging = false;
         public boolean readyToFire = false;
         public float chargeEffectTimer = 0f;
-        public float currentSpread = maxSpread; // Store current spread
-        public float currentLifetimeMultiplier = minLifetimeMultiplier; // Store current lifetime mult
+
+        public float currentSpread = maxSpread;
+        public float currentLifetimeMultiplier = minLifetimeMultiplier;
+
+        protected float custCounter;
 
         @Override
-        public void updateTile(){
+        public void updateTile() {
             super.updateTile();
 
-            // Don't interfere while waiting to fire
-            if(readyToFire) return;
+            custCounter += Time.delta;
 
-            if(hasAmmo()){
-                // Get controlling player if any
-                mindustry.gen.Player controllingPlayer = null;
-                if(isControlled() && unit.controller() instanceof mindustry.gen.Player p){
-                    controllingPlayer = p;
-                }
-
-                boolean playerHoldingFire = controllingPlayer != null && controllingPlayer.shooting;
-                boolean aiShooting = !isControlled() && target != null;
-
-                if(playerHoldingFire || aiShooting){
-                    chargeEffectTimer += Time.delta;
-                    if(chargeEffectTimer >= chargingEffectInterval){
-                        for(int i = 0; i < 2; i++){
-                            float side = i == 0 ? 1f : -1f;
-                            float dist = (block.size * 4f) + chargeEffectOffset;
-
-                            Tmp.v1.trns(rotation + 90f, dist * side);
-                            float ex = x + Tmp.v1.x;
-                            float ey = y + Tmp.v1.y;
-
-                            float angle = rotation + 180f - (45f * side);
-
-                            chargingEffect.at(ex, ey, angle, Tmp.c1.set(Pal.ammo).lerp(Pal.surge, chargeProgress));
-                        }
-                        chargeEffectTimer = 0f;
-                    }
-
-                    if(!charging){
+            if(custCounter >= reload){
+                if (isShooting() && hasAmmo()) {
+                    if (!charging) {
                         charging = true;
                         chargeTime = 0f;
                         chargingSound.at(x, y);
                     }
 
-                    if(isControlled()){
-                        chargeTime = Math.min(chargeTime + Time.delta, maxChargeTime);
-                        chargeProgress = chargeTime / maxChargeTime;
-
-                        // Update spread and lifetime in real-time
-                        currentSpread = Mathf.lerp(maxSpread, minSpread, chargeProgress);
-                        currentLifetimeMultiplier = Mathf.lerp(minLifetimeMultiplier, maxLifetimeMultiplier, chargeProgress);
-                    }else{
-                        float desiredCharge = Mathf.clamp(dst(target) / (range()*aiChargeThreshold));
-                        float desiredChargeTime = desiredCharge * maxChargeTime;
-
-                        if(chargeTime < desiredChargeTime){
-                            chargeTime = Math.min(chargeTime + Time.delta, desiredChargeTime);
-                            chargeProgress = chargeTime / maxChargeTime;
-
-                            // Update spread and lifetime
-                            currentSpread = Mathf.lerp(maxSpread, minSpread, chargeProgress);
-                            currentLifetimeMultiplier = Mathf.lerp(minLifetimeMultiplier, maxLifetimeMultiplier, chargeProgress);
-                        }else{
-                            readyToFire = true;
-                        }
+                    // Charging visual effect
+                    chargeEffectTimer += Time.delta;
+                    if (chargeEffectTimer >= chargingEffectInterval) {
+                        spawnChargeEffects();
+                        chargeEffectTimer = 0f;
                     }
-                }else{
-                    if(isControlled() && charging && chargeTime > 0){
-                        chargingSound.stop();
+
+                    // Increase charge
+                    chargeTime = Math.min(chargeTime + Time.delta, maxChargeTime);
+                    chargeProgress = chargeTime / maxChargeTime;
+
+                    currentSpread = Mathf.lerp(maxSpread, minSpread, chargeProgress);
+                    currentLifetimeMultiplier = Mathf.lerp(minLifetimeMultiplier, maxLifetimeMultiplier, chargeProgress);
+
+                } else if (charging) {
+                    // Player released the key (or AI lost target)
+                    if (reloadCounter >= reload) {
+                        shootCharged();
+                        custCounter = 0;
+                    } else {
                         readyToFire = true;
-                    }else{
-                        resetCharge();
                     }
+                    charging = false;
+                }
+
+                // AI auto fire when fully charged
+                if (!isControlled() && charging && chargeProgress >= 0.95f && reloadCounter >= reload) {
+                    shootCharged();
+                    custCounter = 0;
                 }
             }else{
                 resetCharge();
             }
+
+
         }
 
-        @Override
-        protected void updateShooting(){
-            if(readyToFire){
-                super.updateShooting();
+        private void spawnChargeEffects() {
+            for (int i = 0; i < 2; i++) {
+                float side = i == 0 ? 1f : -1f;
+                float dist = (block.size * 4f) + chargeEffectOffset;
+
+                Tmp.v1.trns(rotation + 90f, dist * side);
+                float ex = x + Tmp.v1.x;
+                float ey = y + Tmp.v1.y;
+                float angle = rotation + 180f - (45f * side);
+
+                chargingEffect.at(ex, ey, angle, Tmp.c1.set(Pal.ammo).lerp(Pal.surge, chargeProgress));
             }
         }
 
-        @Override
-        protected void shoot(BulletType type){
+        private void shootCharged() {
             float originalInaccuracy = inaccuracy;
             inaccuracy = currentSpread;
-            BulletType modifiedType = type.copy();
-            modifiedType.lifetime = type.lifetime * currentLifetimeMultiplier;
-            super.shoot(modifiedType);
+
+            BulletType modified = peekAmmo().copy();
+            modified.lifetime *= currentLifetimeMultiplier;
+
+            super.shoot(modified);
+
             inaccuracy = originalInaccuracy;
             resetCharge();
         }
 
-        public void resetCharge(){
+        @Override
+        protected void updateShooting() {
+            if (readyToFire && reloadCounter >= reload) {
+                shootCharged();
+                custCounter = 0;
+                readyToFire = false;
+            }
+        }
+
+        public void resetCharge() {
             charging = false;
             chargeTime = 0f;
             chargeProgress = 0f;

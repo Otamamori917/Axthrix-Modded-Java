@@ -1,13 +1,19 @@
 package axthrix.world.types.block.defense;
 
+import arc.func.Floatp;
+import arc.func.Prov;
+import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.Time;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStats;
 import axthrix.world.util.PerkStats;
+import axthrix.world.util.ui.TemperatureBar;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Bullet;
+import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.world.draw.DrawTurret;
 
 public class PerkTurretType extends HeadTurretClass {
@@ -36,6 +42,50 @@ public class PerkTurretType extends HeadTurretClass {
             stats.add(AxStats.perkSystem, t -> PerkStats.addPerkStats(t, perks));
         }
     }
+
+    @Override
+    public void setBars() {
+        super.setBars();
+
+        if (perks.any()) {
+            for (Perk perk : perks) {
+                String barName = "perk-" + perk.name;
+
+                addBar(barName, (PerkTurretTypeBuild b) -> {
+                    PerkStateData s = b.getState(perk);
+
+                    return new Bar(
+                            () -> {  // Title
+                                if (perk instanceof DurationPerk dp) {
+                                    return perk.name + " [accent]" + (int)(dp.getBuffProgress(s) * 100) + "%[]";
+                                }
+                                if (perk instanceof BulletPerk) {
+                                    return perk.name + (s.pendingShot ? " [green]READY[]" : " " + s.currentStacks + "/" + perk.maxStacks);
+                                }
+                                if (perk instanceof RangePerk || perk instanceof SpeedPerk) {
+                                    return perk.name + " [accent]" + (int)(s.smoothProgress * 100) + "%[]";
+                                }
+                                return perk.name + " " + s.currentStacks + "/" + perk.maxStacks;
+                            },
+                            () -> {  // Color
+                                boolean isActive = s.smoothActivated > 0.4f ||
+                                        (perk instanceof DurationPerk dp && dp.getBuffScale(s) > 0f) ||
+                                        (perk instanceof BulletPerk && s.pendingShot);
+                                return isActive ? mindustry.graphics.Pal.remove :
+                                        (perk.color != null ? perk.color : mindustry.graphics.Pal.accent);
+                            },
+                            () -> {  // Fraction
+                                if (perk instanceof DurationPerk dp) return dp.getBuffProgress(s);
+                                if (perk instanceof RangePerk || perk instanceof SpeedPerk) return s.smoothProgress;
+                                if (perk instanceof BulletPerk) return s.smoothProgress;
+                                return perk.maxStacks > 0 ? (float) s.currentStacks / perk.maxStacks : 0f;
+                            }
+                    );
+                });
+            }
+        }
+    }
+
 
     public class PerkTurretTypeBuild extends HeadTurretBuild {
 

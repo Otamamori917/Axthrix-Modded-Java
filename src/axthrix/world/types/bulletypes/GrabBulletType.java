@@ -148,14 +148,15 @@ public class GrabBulletType extends BulletType {
                 }
 
                 float moveSpeed = 8f;
-                target.vel.set(
-                        (targetX - target.x) * moveSpeed * Time.delta,
-                        (targetY - target.y) * moveSpeed * Time.delta
-                );
+                if (!Vars.net.client()) {
+                    target.vel.set(
+                            (targetX - target.x) * moveSpeed * Time.delta,
+                            (targetY - target.y) * moveSpeed * Time.delta
+                    );
 
-                target.vel.limit(attacker != null ? attacker.hitSize : attackerBuilding.hitSize());
-
-                target.rotation = Mathf.slerpDelta(target.rotation, holdAngle + 180f, 0.2f);
+                    target.vel.limit(attacker != null ? attacker.hitSize : attackerBuilding.hitSize());
+                    target.rotation = Mathf.slerpDelta(target.rotation, holdAngle + 180f, 0.2f);
+                }
 
                 if(!Vars.net.client()){
                     if(data.damageTimer >= data.holdDamageInterval){
