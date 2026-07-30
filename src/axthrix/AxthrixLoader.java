@@ -13,6 +13,7 @@ import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.content.blocks.AxthrixTurrets;
 import axthrix.content.blocks.PayloadAmmoBlocks;
 import axthrix.content.units.*;
+import axthrix.world.types.abilities.ShieldPlateAbility;
 import axthrix.world.types.block.env.TemperatureFloor;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.sea.managers.SubmergedUpdaterAndRenderer;
@@ -57,9 +58,10 @@ public class AxthrixLoader extends Mod{
     public static boolean drawUnderwaterVoid = true;
     public static boolean drawUnderwaterSand = true;
     public static boolean showMobileDiveButton = false;
-    public static boolean showPayloadCrafterIndicators = true;
-    public static int payloadMenuOffsetX = 0;
-    public static int payloadMenuOffsetY = 0;
+    public static boolean showAdvanced = true;
+    public static boolean hudMiniFacesUp = false;
+    public static int customHudOffsetX = 0;
+    public static int customHudOffsetY = 0;
     public static int nadoEffectDensity = 100;
     CustomUnitInfoBar unitInfoBar;
     public AxthrixLoader(){
@@ -109,9 +111,11 @@ public class AxthrixLoader extends Mod{
         tempUnit = settings.getInt("aj-temp-unit", 0);
         followRealCaps = settings.getBool("aj-follow-caps", false);
         nadoEffectDensity = settings.getInt("aj-nado-density", 100);
-        showPayloadCrafterIndicators = settings.getBool("aj-pay-indicators", true);
-        payloadMenuOffsetX = settings.getInt("aj-pay-X-offset", 0);
-        payloadMenuOffsetY = settings.getInt("aj-pay-Y-offset", 0);
+        showAdvanced = settings.getBool("aj-advanced-ui", true);
+        customHudOffsetX = settings.getInt("aj-hud-X-offset", 4);
+        customHudOffsetY = settings.getInt("aj-hud-Y-offset", -120);
+        hudMiniFacesUp = settings.getBool("aj-hud-mini-face-up", false);
+
 
 
         /// CLIENT LOAD EVENTS
@@ -219,27 +223,29 @@ public class AxthrixLoader extends Mod{
 
         // Building heat damage amplification
         Events.on(EventType.BuildDamageEvent.class, event -> {
-            if(event.source == null) return; // Skip non-bullet damage
+            if (event.source == null) return; // Skip non-bullet damage
 
             // Heat damage amplification
             float tempMult = TemperatureLogic.getTemperatureDamageMultiplier(event.build);
             float baseDamage = event.source.damage;
             float extraDamage = (baseDamage * tempMult) - baseDamage;
 
-            if(TemperatureLogic.debugLogging && extraDamage > 0){
+            if (TemperatureLogic.debugLogging && extraDamage > 0) {
                 Log.info("[DamageEvent] Block @ (pos: @): Base damage: @, Temp mult: @x, Extra damage: @",
                         event.build.block.name, event.build.pos(), baseDamage, tempMult, extraDamage);
             }
 
-            if(extraDamage > 0){
+            if (extraDamage > 0) {
                 event.build.damage(extraDamage);
 
-                if(TemperatureLogic.debugLogging){
+                if (TemperatureLogic.debugLogging) {
                     Log.info("[DamageEvent] Block @ (pos: @): Total extra damage applied: @",
                             event.build.block.name, event.build.pos(), extraDamage);
                 }
             }
         });
+
+        Events.on(EventType.UnitDamageEvent.class, ShieldPlateAbility::onUnitDamage);
 
         // Unit damage events
         Events.on(EventType.UnitDamageEvent.class, event -> {
@@ -396,19 +402,22 @@ public class AxthrixLoader extends Mod{
                 showMobileDiveButton = b;
             });
             t.pref(new AxUtil.Separator(10));
-            t.checkPref("aj-pay-indicators", true, b -> {
-                showPayloadCrafterIndicators = b;
+            t.checkPref("aj-advanced-ui", true, b -> {
+                showAdvanced = b;
             });
+            t.checkPref("aj-hud-mini-face-up", false, b -> hudMiniFacesUp = b);
+
             t.pref(new AxUtil.Separator(4));
-            t.pref(new AxUtil.Header("Ui Payload Offsets",1,true,false));
-            t.sliderPref("aj-pay-X-offset", 0, -500, 0, 1, i -> {
-                payloadMenuOffsetX = i;
+            t.pref(new AxUtil.Header("Custom HUD Positioning Offsets", 1, true, false));
+            t.sliderPref("aj-hud-X-offset", 4, -100, 500, 1, i -> {
+                customHudOffsetX = i;
                 return i + "px";
             });
-            t.sliderPref("aj-pay-Y-offset", 0, -250, 250, 1, i -> {
-                payloadMenuOffsetY = i;
+            t.sliderPref("aj-hud-Y-offset", -120, -500, 250, 1, i -> {
+                customHudOffsetY = i;
                 return i + "px";
             });
+
         });
     }
 

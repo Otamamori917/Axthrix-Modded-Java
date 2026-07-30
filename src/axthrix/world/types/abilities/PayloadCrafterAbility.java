@@ -44,12 +44,10 @@ public class PayloadCrafterAbility extends Ability {
 
     public ObjectMap<UnlockableContent, CraftOption> craftOptions = new ObjectMap<>();
 
-    protected static ObjectMap<Integer, UnlockableContent> selectedCraft = new ObjectMap<>();
-    protected static ObjectMap<Integer, Float> constructionProgress = new ObjectMap<>();
-    protected static ObjectMap<Integer, UnlockableContent> constructingContent = new ObjectMap<>();
+    public static ObjectMap<Integer, UnlockableContent> selectedCraft = new ObjectMap<>();
+    public static ObjectMap<Integer, Float> constructionProgress = new ObjectMap<>();
+    public static ObjectMap<Integer, UnlockableContent> constructingContent = new ObjectMap<>();
 
-    protected transient Table selectionTable = null;
-    protected transient int lastControlledUnitId = -1;
     protected transient boolean uiInitialized = false;
     protected transient boolean showCraftOptions = false;
 
@@ -177,9 +175,7 @@ public class PayloadCrafterAbility extends Ability {
             if(controlled.abilities != null){
                 for(var ab : controlled.abilities){
                     if(ab instanceof PayloadCrafterAbility pca){
-                        if(pca.selectionTable != null){
-                            Core.app.post(() -> pca.buildSelectionTable(controlled));
-                        }
+                        // Removed the old pca.selectionTable reload post hook since CustomUnitInfoBar handles its own updates automatically
                         break;
                     }
                 }
@@ -213,7 +209,7 @@ public class PayloadCrafterAbility extends Ability {
         return (currentUsage + neededSpace) <= maxCapacity;
     }
 
-    protected PowerNode.PowerNodeBuild getNearestPowerNode(Unit unit){
+    public PowerNode.PowerNodeBuild getNearestPowerNode(Unit unit){
         final PowerNode.PowerNodeBuild[] nearest = {null};
         final float[] closestDist = {Float.MAX_VALUE};
 
@@ -234,11 +230,11 @@ public class PayloadCrafterAbility extends Ability {
         return nearest[0];
     }
 
-    protected boolean isNotPowered(Unit unit){
+    public boolean isNotPowered(Unit unit){
         return getNearestPowerNode(unit) == null;
     }
 
-    protected boolean canCraft(Unit unit, UnlockableContent content){
+    public boolean canCraft(Unit unit, UnlockableContent content){
         if(!craftOptions.containsKey(content)) return false;
         if(!isUnlocked(content)) return false;
 
@@ -270,11 +266,6 @@ public class PayloadCrafterAbility extends Ability {
             selectedCraft.remove(unit.id);
         }else{
             selectedCraft.put(unit.id, content);
-        }
-
-        if(headless) return;
-        if(selectionTable != null && player != null && player.unit() == unit){
-            Core.app.post(() -> buildSelectionTable(unit));
         }
     }
 
@@ -333,13 +324,6 @@ public class PayloadCrafterAbility extends Ability {
             constructionProgress.remove(unit.id);
             constructingContent.remove(unit.id);
         }
-
-        if(headless) return;
-
-        if(!uiInitialized){
-            initializeUI();
-            uiInitialized = true;
-        }
     }
 
     @Override
@@ -378,153 +362,52 @@ public class PayloadCrafterAbility extends Ability {
         }
     }
 
-    protected void initializeUI(){
-        if(headless) return;
-
-        Events.run(EventType.Trigger.draw, () -> {
-            if(player == null || player.unit() == null){
-                hideSelectionUI();
-                return;
-            }
-
-            Unit controlled = player.unit();
-
-            if(controlled.id != lastControlledUnitId){
-                hideSelectionUI();
-                lastControlledUnitId = controlled.id;
-
-                boolean hasAbility = false;
-
-                if(controlled.abilities != null){
-                    for(var ab : controlled.abilities){
-                        if(ab instanceof PayloadCrafterAbility pca && pca == this){
-                            hasAbility = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(hasAbility){
-                    showSelectionUI(controlled);
-                }
-            }
-        });
-    }
-
-    protected void showSelectionUI(Unit unit){
-        if(selectionTable != null) return;
-
-        selectionTable = new Table(Tex.pane);
-        buildSelectionTable(unit);
-
-        ui.hudGroup.addChild(selectionTable);
-        selectionTable.update(() -> {
-            selectionTable.setPosition(
-                    Core.graphics.getWidth() - selectionTable.getWidth() - 4f + AxthrixLoader.payloadMenuOffsetX,
-                    Core.graphics.getHeight() / 2f - selectionTable.getHeight() / 2f + AxthrixLoader.payloadMenuOffsetY
-            );
-
-            if(player != null && player.unit() != null && AxthrixLoader.showPayloadCrafterIndicators){
-                updateIndicators(player.unit());
-            }
-        });
-    }
-
-    protected void hideSelectionUI(){
-        if(selectionTable != null){
-            selectionTable.remove();
-            selectionTable = null;
-        }
-    }
-
-    protected void updateIndicators(Unit unit){
-        if(selectionTable == null) return;
-
-        int row = 1;
-        Seq<UnlockableContent> sorted = getSortedCraftOptions();
-
-        for(UnlockableContent content : sorted){
-            boolean unlocked = isUnlocked(content);
-
-            if(!unlocked){
-                row++;
-                continue;
-            }
-
-            boolean canCraftNow = canCraft(unit, content);
-
-            try {
-                var cells = selectionTable.getCells();
-                if(row * 2 + 1 < cells.size){
-                    var indicatorCell = cells.get(row * 2 + 1);
-                    if(indicatorCell.get() instanceof arc.scene.ui.Image img){
-                        img.setColor(canCraftNow ? Color.green : Color.red);
-                    }
-                }
-            } catch(Exception ignored){}
-
-            row++;
-        }
-    }
-
-    protected void buildSelectionTable(Unit unit){
-        if(selectionTable == null) return;
-
-        selectionTable.clearChildren();
-        selectionTable.background(Tex.pane);
-        selectionTable.margin(4f);
+    public void buildEmbeddedSelectionTable(Unit unit, Table targetRow) {
+        targetRow.clearChildren();
+        targetRow.margin(4f);
 
         UnlockableContent selected = getSelectedCraft(unit);
 
-        selectionTable.button(Icon.cancel, Styles.clearNoneTogglei, 40f, () -> setSelectedCraft(unit, null)).tooltip(Core.bundle.format("stat.aj-disable")).checked(b -> selected == null);
-
-        if(AxthrixLoader.showPayloadCrafterIndicators){
-            selectionTable.image().size(12f).color(Color.green).pad(2f);
-        }
-        selectionTable.row();
+        // Standard close selection button to clear active crafting
+        targetRow.button(Icon.cancel, Styles.clearNoneTogglei, 32f, () -> setSelectedCraft(unit, null))
+                .tooltip(Core.bundle.format("stat.aj-disable"))
+                .checked(b -> selected == null)
+                .padRight(4f);
 
         Seq<UnlockableContent> sorted = getSortedCraftOptions();
 
-        for(UnlockableContent content : sorted){
+        for (UnlockableContent content : sorted) {
             CraftOption option = craftOptions.get(content);
             float constructionTime = option.cost * ticksPerCost / 60f;
 
             boolean unlocked = isUnlocked(content);
 
-            if(!unlocked){
-                selectionTable.button(Icon.cancel, Styles.clearNoneTogglei, 40f, () -> {})
+            if (!unlocked) {
+                targetRow.button(Icon.cancel, Styles.clearNoneTogglei, 32f, () -> {})
                         .disabled(true)
-                        .tooltip("[red]"+ Core.bundle.format("stat.aj-locked") +" - "+ Core.bundle.format("stat.aj-missing-research"));
-
-                if(AxthrixLoader.showPayloadCrafterIndicators){
-                    selectionTable.image().size(12f).color(Color.red).pad(2f);
-                }
-                selectionTable.row();
+                        .tooltip("[red]" + Core.bundle.format("stat.aj-locked") + " - " + Core.bundle.format("stat.aj-missing-research"))
+                        .padRight(4f);
                 continue;
             }
 
             boolean canCraftNow = canCraft(unit, content);
 
-            selectionTable.button(
+            // Active recipe button mapping
+            var btn = targetRow.button(
                     new arc.scene.style.TextureRegionDrawable(content.uiIcon),
-                    Styles.clearNoneTogglei, 40f, () -> setSelectedCraft(unit, content)).tooltip(
+                    Styles.clearNoneTogglei, 32f, () -> setSelectedCraft(unit, content)
+            ).tooltip(
                     content.localizedName +
-                            "\n[lightgray]"+ Core.bundle.format("stat.aj-cost") +" [white]" + option.cost + " " +
-                            "\n[lightgray]"+ Core.bundle.format("stat.aj-time") +" [white]" + Strings.autoFixed(constructionTime, 1) +" "+ StatUnit.seconds.localized() +
-                            (option.requirePower ? "\n[stat]⚡ [lightgray]"+ Core.bundle.format("stat.aj-power") : "")
-            ).checked(b -> selected == content);
+                            "\n[lightgray]" + Core.bundle.format("stat.aj-cost") + " [white]" + option.cost + " " +
+                            "\n[lightgray]" + Core.bundle.format("stat.aj-time") + " [white]" + Strings.autoFixed(constructionTime, 1) + " " + StatUnit.seconds.localized() +
+                            (option.requirePower ? "\n[stat]⚡ [lightgray]" + Core.bundle.format("stat.aj-power") : "")
+            ).checked(b -> selected == content).padRight(4f).get();
 
-            if(AxthrixLoader.showPayloadCrafterIndicators){
-                selectionTable.image()
-                        .size(12f)
-                        .color(canCraftNow ? Color.green : Color.red)
-                        .pad(2f);
+            // Color code button frames when advanced visual toggles are active
+            if (AxthrixLoader.showAdvanced) {
+                btn.setColor(canCraftNow ? Color.white : Color.valueOf("8B4444"));
             }
-
-            selectionTable.row();
         }
-
-        selectionTable.pack();
     }
 
     public static class CraftOption {

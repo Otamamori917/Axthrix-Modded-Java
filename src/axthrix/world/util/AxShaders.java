@@ -12,13 +12,11 @@ public class AxShaders {
     public static MaterializeShader materialize;
     public static BlockBuildCenterShader blockBuildCenter;
     public static AlphaShader alphaShader;
-    public static NanoBotShader nanoBots;
 
     public static void init() {
         materialize = new MaterializeShader();
         blockBuildCenter = new BlockBuildCenterShader();
         alphaShader = new AlphaShader();
-        nanoBots = new NanoBotShader();
     }
 
     public static class MaterializeShader extends AxLoadShader {
@@ -74,21 +72,6 @@ public class AxShaders {
         @Override
         public void apply() {
             setUniformf("u_alpha", alpha);
-        }
-    }
-
-    public static class NanoBotShader extends AxLoadShader {
-        public float time;
-
-        public NanoBotShader() {
-            super("nanobotsi");
-        }
-
-        @Override
-        public void apply() {
-            setUniformf("u_time", time);
-            setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
-            setUniformf("u_mouse", arc.Core.camera.position.x, arc.Core.camera.position.y);
         }
     }
 

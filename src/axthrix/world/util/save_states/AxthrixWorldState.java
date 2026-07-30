@@ -4,6 +4,7 @@ import arc.util.Log;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import axthrix.world.types.abilities.DroneSpawnAbility;
+import axthrix.world.types.abilities.ShieldPlateAbility;
 import axthrix.world.types.statuseffects.StackStatusEffect;
 import axthrix.world.types.unittypes.DroneUnitType;
 import axthrix.world.types.unittypes.MountUnitType;
@@ -329,6 +330,17 @@ public class AxthrixWorldState {
                 }
 
                 Log.info("[Axthrix] Loaded @ drone types, @ ability instances", droneTypeCount, abilityDataCount);
+            }
+        });
+        SaveVersion.addCustomChunk("plateShields", new SaveVersion.CustomChunk(){
+            @Override
+            public void write(DataOutput stream) throws IOException {
+                ShieldPlateAbility.writeSaveData(stream);
+            }
+
+            @Override
+            public void read(DataInput stream) throws IOException {
+                ShieldPlateAbility.readSaveData(stream);
             }
         });
     }

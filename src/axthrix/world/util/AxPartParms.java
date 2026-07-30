@@ -7,6 +7,9 @@ public class AxPartParms {
 
     public static final AxPartParms.PerkPartParams perkparams = new AxPartParms.PerkPartParams();
 
+    // Global static placeholder container for shield plate progress parameters
+    public static final AxPartParms.PlateShieldsPartParams shieldparams = new AxPartParms.PlateShieldsPartParams();
+
     public static class AxPartParams {
         public float SecondaryReload, SecondarySmoothReload, SecondaryHeat;
 
@@ -20,19 +23,38 @@ public class AxPartParms {
 
     /**
      * Custom params object for PerkWeaponType and PerkTurret part progress.
-     *
-     * @perkProgress : How charged the primary perk is (0.0 = no progress, 1.0 = max stacks).
-     * @perkActivated : Whether the primary perk is fully activated (1.0 = yes, 0.0 = no).
      */
     public static class PerkPartParams {
-        /** Perk charge progress. Range: 0.0 to 1.0. */
         public float perkProgress;
-        /** Perk activated state. 1.0 if at max stacks, 0.0 otherwise. */
         public float perkActivated;
 
         public PerkPartParams set(float progress, float activated) {
             perkProgress = progress;
             perkActivated = activated;
+            return this;
+        }
+    }
+
+    // UPDATED: Added weapon tracking variables directly inside the shield plate params class!
+    public static class PlateShieldsPartParams {
+        public float plateDurability;
+        public float plateRebuildProgress;
+        public float plateSmoothRebuild;
+
+        // New Weapon Progress Fields
+        public float weaponWarmup;
+        public float weaponReload;
+        public float weaponRecoil;
+        public float weaponHeat;
+
+        public PlateShieldsPartParams set(float durability, float rebuildProgress, float smoothRebuild, float warmup, float reload, float recoil, float heat) {
+            this.plateDurability = durability;
+            this.plateRebuildProgress = rebuildProgress;
+            this.plateSmoothRebuild = smoothRebuild;
+            this.weaponWarmup = warmup;
+            this.weaponReload = reload;
+            this.weaponRecoil = recoil;
+            this.weaponHeat = heat;
             return this;
         }
     }
@@ -51,5 +73,17 @@ public class AxPartParms {
         DrawPart.PartProgress
                 perkProgress = p -> perkparams.perkProgress,
                 perkActivated = p -> perkparams.perkActivated;
+    }
+
+    // UPDATED: Added new PartProgress handles so animations can read weapon states through the shield params layer!
+    public interface PlateShieldsPartProgress {
+        DrawPart.PartProgress
+                plateDurability = p -> shieldparams.plateDurability,
+                plateRebuildProgress = p -> shieldparams.plateRebuildProgress,
+                plateSmoothRebuild = p -> shieldparams.plateSmoothRebuild,
+                shieldWeaponWarmup = p -> shieldparams.weaponWarmup,
+                shieldWeaponReload = p -> shieldparams.weaponReload,
+                shieldWeaponRecoil = p -> shieldparams.weaponRecoil,
+                shieldWeaponHeat = p -> shieldparams.weaponHeat;
     }
 }

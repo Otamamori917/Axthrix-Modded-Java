@@ -1,21 +1,31 @@
 package axthrix.content.units;
 
 import arc.graphics.Color;
+import arc.math.Mathf;
+import arc.math.geom.Rect;
 import arc.struct.Seq;
+import arc.util.Time;
 import axthrix.content.AxFactions;
 import axthrix.content.AxthrixSounds;
+import axthrix.content.AxthrixStatus;
 import axthrix.world.types.abilities.AfterBurnAbility;
+import axthrix.world.types.abilities.AttractionFieldAbility;
+import axthrix.world.types.abilities.ShieldPlateAbility;
 import axthrix.world.types.entities.comp.StealthUnit;
 import axthrix.world.types.ai.DynFlyingAI;
 import axthrix.world.types.perks.SpeedPerk;
 import axthrix.world.types.unittypes.AxUnitType;
 import axthrix.world.types.unittypes.CnSUnitType;
 import axthrix.world.types.weapontypes.PerkWeapon;
+import axthrix.world.util.AxPartParms;
+import blackhole.entities.part.BlackHolePart;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.RegionPart;
 import mindustry.gen.MechUnit;
 import mindustry.gen.Sounds;
+import mindustry.gen.TankUnit;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.meta.BlockFlag;
@@ -117,6 +127,65 @@ public class RaodonUnits {
                     hitLarge = false;
                 }};
             }});
+        }};
+        danu = new AxUnitType("danu") {{
+            treadPullOffset = -2;
+            itemCapacity = 0;
+            treadRects = new Rect[]{new Rect(14, -26f, 17, 57)};
+            factions.add(AxFactions.raodon);
+            constructor = TankUnit::create;
+            outlines = false;
+            flying = false;
+            speed = 5.3f/7.5f;
+            drag = 0.13f;
+            hitSize = 10f;
+            health = 650;
+            armor = 8;
+            accel = 0.6f;
+            rotateSpeed = 3.3f;
+            faceTarget = false;
+            range = 120;
+            weapons.add(
+              new PerkWeapon(){{
+                  rotate = true;
+                  reload = 15;
+                  bullet = new MissileBulletType();
+              }}
+            );
+            abilities.add(
+                new ShieldPlateAbility(){{
+                    plateIndex = 0;
+                    canRebuild = true;
+                    facingAngle = 90f;
+                    coverageArc = 100f;
+                    maxDurability = 345;
+                    part = new RegionPart("-shield-l");
+               }},
+                new ShieldPlateAbility(){{
+                    plateIndex = 1;
+                    facingAngle = 0f;
+                    coverageArc = 100f;
+                    canRebuild = true;
+                    maxDurability = 400;
+                    part = new RegionPart("-shield-t");
+                }},
+                new ShieldPlateAbility(){{
+                    plateIndex = 2;
+                    facingAngle = 180f;
+                    coverageArc = 100f;
+                    canRebuild = true;
+                    maxDurability = 250;
+                    part = new RegionPart("-shield-b");
+                }},
+                new ShieldPlateAbility(){{
+                    plateIndex = 3;
+                    facingAngle = -90f;
+                    coverageArc = 100f;
+                    canRebuild = true;
+                    maxDurability = 345;
+                    part = new RegionPart("-shield-r");
+                }}
+            );
         }};
         efim = new CnSUnitType("efim",520) {{
             itemCapacity = 0;

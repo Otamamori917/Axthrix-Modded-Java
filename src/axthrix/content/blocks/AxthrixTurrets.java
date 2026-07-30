@@ -315,6 +315,7 @@ public class AxthrixTurrets{
                     parts.add(new RegionPart("-blade"){{
                                   progress = PartProgress.warmup;
                                   heatProgress = PartProgress.warmup;
+                                  turretHeatLayer = 54;
                                   heatColor = Pal.techBlue;
                                   moveRot = -18f;
                                   moveX = 4f;
@@ -327,6 +328,7 @@ public class AxthrixTurrets{
                                   children.add(new RegionPart("-joint"){{
                                       progress = PartProgress.warmup.delay(0.6f);
                                       heatProgress = PartProgress.recoil;
+                                      turretHeatLayer = 54;
                                       heatColor = Pal.techBlue;
                                       mirror = true;
                                       under = true;
@@ -339,6 +341,7 @@ public class AxthrixTurrets{
                                       children.add(new RegionPart("-plate"){{
                                           progress = PartProgress.warmup.delay(0.6f);
                                           heatProgress = PartProgress.recoil;
+                                          turretHeatLayer = 54;
                                           heatColor = Pal.techBlue;
                                           mirror = true;
                                           under = true;
@@ -354,6 +357,7 @@ public class AxthrixTurrets{
                                               heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                                               heatColor = Pal.techBlue;
                                               mirror = true;
+                                              turretHeatLayer = 54;
                                               under = true;
                                               moveRot = 40f;
                                               x = 8f;
@@ -369,6 +373,7 @@ public class AxthrixTurrets{
                                               progress = PartProgress.warmup;
                                               heatProgress = PartProgress.warmup.add(-0.2f).add(p -> Mathf.sin(9f, 0.2f) * p.warmup);
                                               heatColor = Pal.techBlue;
+                                              turretHeatLayer = 54;
                                               mirror = true;
                                               under = true;
                                               moveRot = 40f;
@@ -389,6 +394,7 @@ public class AxthrixTurrets{
                                 heatColor = Pal.techBlue;
                                 mirror = false;
                                 under = true;
+                                turretHeatLayer = 54;
                                 moveY = -5f;
                                 layerOffset = 2f;
                                 children.add(new RegionPart("-missile") {{
