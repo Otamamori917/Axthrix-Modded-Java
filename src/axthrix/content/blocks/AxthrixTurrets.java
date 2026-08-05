@@ -3,11 +3,8 @@ package axthrix.content.blocks;
 import arc.util.Log;
 import arc.util.Time;
 import axthrix.AxthrixLoader;
-import axthrix.content.AxFactions;
+import axthrix.content.*;
 
-import axthrix.content.AxLiquids;
-import axthrix.content.AxthrixSounds;
-import axthrix.content.AxthrixStatus;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.units.AxthrixDrones;
 import axthrix.world.types.block.defense.*;
@@ -35,6 +32,7 @@ import mindustry.entities.part.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.ItemTurret;
 import mindustry.world.draw.*;
 
 import static axthrix.content.blocks.PayloadAmmoBlocks.*;
@@ -47,6 +45,8 @@ public class AxthrixTurrets{
             //Bendy miniguns
             kramola,
 
+    //Basic turrets
+    ironspitter,
     //Artillery
     kisten,
 
@@ -75,6 +75,30 @@ public class AxthrixTurrets{
     venture,asmot,rektios;
 
     public static void loadAxthrix(){
+
+        ironspitter = new ItemTurret("ironspitter"){{
+            requirements(Category.turret, with(AxItems.iron, 15, AxItems.ingot, 3));
+            recoil = 4;
+            reload = 90;
+            ammoPerShot = 2;
+            maxAmmo = 20;
+            scaledHealth = 400;
+            inaccuracy = 5;
+            range = 10*10;
+            size = 1;
+            targetAir = false;
+            ammo(
+                    AxItems.iron, new BasicBulletType(){{
+                        damage = 50;
+                        lifetime = 30;
+                        speed = 5;
+                        accel = -0.1f;
+                        frontColor = backColor = Color.lightGray;
+                    }}
+            );
+        }};
+
+
         kramola = new ItemAcceleratedTurret("kramola"){{
             outlineColor = Color.valueOf("#181a1b");
             requirements(Category.turret, with(Items.titanium, 300, Items.thorium, 200, Items.plastanium, 125));

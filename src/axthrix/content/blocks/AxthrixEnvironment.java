@@ -34,6 +34,9 @@ public class AxthrixEnvironment {
     //Tharaxia ocean ores
     testOceanOre,
 
+    //Tharaxoa regular ores
+    ironOre,
+
     // Tharaxia walls
     darkBasaltWall, tharaxianStoneWall, deepSlateWall,
 
@@ -182,6 +185,12 @@ public class AxthrixEnvironment {
             variants = 3;
         }};
 
+
+        // Ores
+        ironOre = new OreBlock("ore-iron", AxItems.iron){{
+           variants = 2;
+           
+        }};
         // ---- THARAXIA WALLS ----
 
         darkBasaltWall = new StaticWall("tharaxia-dark-basalt-wall") {{

@@ -12,7 +12,7 @@ public class AxItems {
             //fusion materials
     aqullium,esperillo,komainium,
             //normal material
-    sulfur,curium,iodine,samarium,dysprosium,
+    iron, sulfur,curium,iodine,samarium,dysprosium,
             //alloys
     aquillo,
             //printing coils
@@ -55,6 +55,11 @@ public class AxItems {
             hideDetails = false;
         }};
         //normal material
+
+        iron = new Item("iron"){{
+           hideDetails = false;
+           color = Color.valueOf("bfa1a1");
+        }};
         sulfur = new Item("sulfur") {{
             color = Color.valueOf("c1815b");
             hideDetails = false;
