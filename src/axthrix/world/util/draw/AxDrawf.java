@@ -214,6 +214,15 @@ public class AxDrawf {
         reset();
     }
 
+    public static Color[] generateRainbow(int count, float alpha) {
+        Color[] colors = new Color[count];
+        for (int i = 0; i < count; i++) {
+            float hue = 360f * i / count;
+            colors[i] = new Color().fromHsv(hue, 1f, 1f).a(alpha);
+        }
+        return colors;
+    }
+
     /** Draws a sprite that should be light-wise correct. Provided sprites must be similar in shape and face towards the right. */
     public static void spinSprite(TextureRegion base, TextureRegion bottomLeft, TextureRegion topRight, float x, float y, float r, float alpha){
         if(alpha < 0.001f) return;

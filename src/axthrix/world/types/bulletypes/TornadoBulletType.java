@@ -152,8 +152,9 @@ public class TornadoBulletType extends BulletType {
             }
         }
 
-        Groups.bullet.each(eb -> {
-            float fout = fout(b);
+        float fout = fout(b);
+        float maxRadius = Math.max(damageRadius, suctionRadius) * fout;
+        Groups.bullet.intersect(b.x - maxRadius, b.y - maxRadius, maxRadius * 2f, maxRadius * 2f, eb -> {
             float d = Mathf.dst(eb.x, eb.y, b.x, b.y);
             if (d < (damageRadius * fout) && eb.type instanceof BlackHoleBulletType) {
                 if (eb.team != b.team){
@@ -169,7 +170,7 @@ public class TornadoBulletType extends BulletType {
                     bulletcpy.removeAfterPierce = true;
                     bulletcpy.fragOnHit = true;
 
-                    bulletcpy.create(b,b.team,eb.x, eb.y,Mathf.random(eb.rotation(), b.rotation()));
+                    bulletcpy.create(b, b.team, eb.x, eb.y, Mathf.random(eb.rotation(), b.rotation()));
 
                     eb.type.fragOnAbsorb = false;
                     eb.absorb();
@@ -177,7 +178,6 @@ public class TornadoBulletType extends BulletType {
             }
         });
         Groups.unit.each(eu -> {
-            float fout = fout(b);
             float d = Mathf.dst(eu.x, eu.y, b.x, b.y);
             for (int i = 0; i < eu.abilities.length; i++) {
                 if (d < (damageRadius * fout) && eu.type.abilities.get(i) instanceof BlackHoleAbility) {

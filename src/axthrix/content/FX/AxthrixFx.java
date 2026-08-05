@@ -294,37 +294,31 @@ public class AxthrixFx {
     });
 
     public static final Effect gluonTrail = new Effect(16.0F, (e) -> {
-        // Calculate a high-speed jitter offset for this frame
-        float jitter = 2.5f; // Intensity of the wiggle
+        float jitter = 2.5f;
         float offX = Mathf.randomSeedRange((long) (e.id + Time.time), jitter);
         float offY = Mathf.randomSeedRange((long) (e.id + Time.time + 1), jitter);
 
         for (int i = 0; i < 2; ++i) {
-            Draw.color(i == 0 ? Pal.sapBulletBack : Pal.sapBullet);
+            Draw.color(i == 0 ? Color.valueOf("de9458") : Pal.orangeSpark);
 
             float m = i == 0 ? 1.0F : 0.5F;
             float rot = e.rotation + 180.0F;
 
-            // Randomize the width and length slightly per frame for "flicker"
             float flicker = 1f + Mathf.randomSeedRange((long) (e.id + Time.time), 0.2f);
             float w = (12.0F / 2 * e.fout() * m) * flicker;
             float len = (25.0F / 2 + Mathf.randomSeedRange((long) e.id, 10.0F / 2)) * m;
 
-            // Draw with the jittered coordinates
             Drawf.tri(e.x + offX, e.y + offY, w, len * flicker, rot);
 
-            // Small "head" triangle also jitters
             Drawf.tri(e.x + offX, e.y + offY, w, (8.0F / 2 * m), rot + 180.0F);
         }
 
-        // Glowing purple core light
-        Drawf.light(e.x + offX, e.y + offY, 40.0F / 2, Pal.sapBulletBack, 0.5F * e.fout());
+        Drawf.light(e.x + offX, e.y + offY, 40.0F / 2, Color.valueOf("de9458"), 0.5F * e.fout());
     });
 
     public static final Effect gluonDissipate = new Effect(25f, (e) -> {
-        Draw.color(Pal.sapBulletBack, Color.white, e.fout());
+        Draw.color(Color.valueOf("de9458"), Color.white, e.fout());
 
-        // Create several "shards" that fly outward from the center
         for (int i = 0; i < 4; i++) {
             float rot = e.rotation + i * 90f + Mathf.randomSeedRange(e.id + i, 20f);
             float len = 15f * e.fout();
@@ -332,35 +326,30 @@ public class AxthrixFx {
             Drawf.tri(e.x, e.y, 3f * e.fout(), len / 2f, rot + 180f);
         }
 
-        // Small fading circle of light
         Fill.circle(e.x, e.y, 4f * e.fout());
     });
     public static final Effect gluonFire = new Effect(20f, (e) -> {
-        Draw.color(Pal.sapBullet, Color.white, e.fout());
+        Draw.color(Color.valueOf("de9458"), Color.white, e.fout());
 
-        // Large "muzzle" triangles
         for (int i = 0; i < 2; i++) {
             float m = i == 0 ? 1f : 0.5f;
             Drawf.tri(e.x, e.y, 6f * m * e.fout(), 18f * m * e.fout(), e.rotation);
             Drawf.tri(e.x, e.y, 6f * m * e.fout(), 8f * m * e.fout(), e.rotation + 180f);
         }
 
-        // Fading glow circle
         Lines.stroke(2f * e.fout());
         Lines.circle(e.x, e.y, 4f + e.fin() * 10f);
     });
 
     public static final Effect gluonFireAdvanced = new Effect(15f, (e) -> {
-        Draw.color(Pal.sapBullet, Color.white, e.fout());
+        Draw.color(Color.valueOf("de9458"), Color.white, e.fout());
 
-        // Main muzzle spike
         for(int i = 0; i < 2; i++){
             float m = i == 0 ? 1f : 0.6f;
             Drawf.tri(e.x, e.y, 8f * m * e.fout(), 22f * m * e.fout(), e.rotation);
             Drawf.tri(e.x, e.y, 5f * m * e.fout(), 10f * m * e.fout(), e.rotation + 180f);
         }
 
-        // Side "venting" sparks
         for(int i : Mathf.signs){
             Drawf.tri(e.x, e.y, 3f * e.fout(), 12f * e.fout(), e.rotation + 45f * i);
         }
@@ -368,35 +357,29 @@ public class AxthrixFx {
 
 
     public static final Effect gluonHit = new Effect(25f, (e) -> {
-        // 1. SAP LIGHTNING ARCS: Randomly jumping small bolts
-        Draw.color(Pal.sapBulletBack);
+
+        Draw.color(Color.valueOf("de9458"));
         for (int i = 0; i < 4; i++) {
             float ang = e.rotation + Mathf.randomSeedRange(e.id + i, 360f);
-            // Uses randomSeedRange to keep the lightning "frozen" but jittery
             Lines.stroke(1.2f * e.fout());
             Lines.spikes(e.x, e.y, 2f + 8f * e.fin(), 4f * e.fout(), 4, ang);
         }
 
-        // 2. SHATTERING TRIANGLES: Sharp shards flying outward
-        Draw.color(Color.white, Pal.sapBullet, e.fin());
+        Draw.color(Color.white,Color.valueOf("de9458"), e.fin());
         for (int i = 0; i < 6; i++) {
             float rot = e.rotation + Mathf.randomSeedRange(e.id + i + 10, 360f);
             float len = 12f * e.fout();
             float w = 3f * e.fout();
-            // Forward shard
             Drawf.tri(e.x, e.y, w, len, rot);
-            // Smaller backward "pinch"
             Drawf.tri(e.x, e.y, w, len / 2f, rot + 180f);
         }
 
-        // 3. THE CORE: A bright white flash that shrinks into a purple ring
-        Draw.color(Color.white, Pal.sapBulletBack, e.fin());
+        Draw.color(Color.white, Color.valueOf("de9458"), e.fin());
         Lines.stroke(2f * e.fout());
-        Lines.circle(e.x, e.y, 3f + 10f * e.fin()); // Expanding ring
-        Fill.circle(e.x, e.y, 5f * e.fout()); // Solid shrinking core
+        Lines.circle(e.x, e.y, 3f + 10f * e.fin());
+        Fill.circle(e.x, e.y, 5f * e.fout());
 
-        // 4. SECONDARY GLOW: A soft purple aura
-        Drawf.light(e.x, e.y, 45f * e.fout(), Pal.sapBulletBack, 0.7f);
+        Drawf.light(e.x, e.y, 45f * e.fout(), Color.valueOf("de9458"), 0.7f);
     });
 }
 

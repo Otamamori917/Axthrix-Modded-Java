@@ -158,7 +158,9 @@ public class HeatPipeNetworkAbility extends PassiveHeatAbility {
             }
         }
 
-        isDealingDamage = dealingDamage;
+        if(bytickHeatLoss !=0 && singleTickHeatLoss !=0){
+            isDealingDamage = dealingDamage;
+        }
     }
 
     @Override
@@ -169,19 +171,15 @@ public class HeatPipeNetworkAbility extends PassiveHeatAbility {
 
         Seq<PipeConnection> pipes = connections.get(unit.id);
 
-        // Get chain texture (fallback to square if not available)
         TextureRegion chainRegion = Core.atlas.find("aj-chain");
         boolean hasChainTexture = chainRegion.found();
 
         for(PipeConnection pipe : pipes){
-            // Calculate current end position based on progress
             Tmp.v1.set(pipe.target).sub(unit.x, unit.y).scl(pipe.progress).add(unit.x, unit.y);
 
             if(hasChainTexture){
-                // Draw chain with animated color
                 drawAnimatedChain(chainRegion, unit.x, unit.y, Tmp.v1.x, Tmp.v1.y, pipe.progress);
             } else {
-                // Fallback: draw tiled squares
                 drawFallbackChain(unit.x, unit.y, Tmp.v1.x, Tmp.v1.y, pipe.progress);
             }
         }
@@ -193,26 +191,20 @@ public class HeatPipeNetworkAbility extends PassiveHeatAbility {
         float angleToEnd = Mathf.angle(endx - x, endy - y);
         float distance = Mathf.dst(x, y, endx, endy);
 
-        // Chain dimensions in world units
         float height = region.height / 4f * chainHeightScale;
         float width = region.width / 4f * chainWidthScale;
 
-        // Number of full chain links
         int numLinks = (int)Math.floor(distance / height);
         float remainder = ((distance * 4) % (region.height * chainHeightScale)) / 8;
 
-        // Flow animation progress (0-1 cycling)
         float flowProgress = (Time.time * flowSpeed % 60f) / 60f;
 
-        // Draw full links
         for(int i = 0; i < numLinks; i++){
             tv1.trns(angleToEnd, distance - i * height - region.height / 8f * chainHeightScale).add(x, y);
 
-            // Calculate link color based on flow
             float linkProgress = (float)i / Math.max(1, numLinks);
             float colorPhase = (linkProgress + flowProgress) % 1f;
 
-            // Only show flow color if chain is fully connected
             if(connectionProgress >= 1f){
                 Draw.color(chainColor, flowColor, Mathf.curve(colorPhase, 0f, 0.3f));
             } else {
@@ -223,7 +215,6 @@ public class HeatPipeNetworkAbility extends PassiveHeatAbility {
             Draw.rect(region, tv1.x, tv1.y, width, height, angleToEnd - 90);
         }
 
-        // Draw remainder link
         if(remainder > 0.5f){
             tv1.trns(angleToEnd, remainder);
 

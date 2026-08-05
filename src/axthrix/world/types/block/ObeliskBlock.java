@@ -162,13 +162,11 @@ public class ObeliskBlock extends Block {
             if(camAbove) drawWall(sideBackRegion, tbRx, tbRy, bRx, bRy, bLx, bLy, tbLx, tbLy);
             else drawWall(sideFrontRegion, tfLx, tfLy, fLx, fLy, fRx, fRy, tfRx, tfRy);
 
-            //Draw Top
             if(topRegion != null) {
                 Draw.color(solved ? Pal.accent.cpy().add(Color.white).add(Color.white) : Color.white);
                 Fill.quad(topRegion, tfRx, tfRy, tbRx, tbRy, tbLx, tbLy, tfLx, tfLy);
             }
 
-            //Draw Display on the front wall
             if(arc.Core.camera.position.y < (y - l)) {
                 drawWallDisplay(x - w, y - l, x + w, y - l, h);
             }
@@ -263,51 +261,41 @@ public class ObeliskBlock extends Block {
         public void updateTile() {
             super.updateTile();
 
-            // 1. Calculate boundaries (Width and Length/Height)
+            if(riseTimer < riseDuration) riseTimer = Math.min(riseTimer + Time.delta, riseDuration);
+
             float baseW = (block.size * Vars.tilesize / 1.1f);
             float w = baseW + (Math.max(3, puzzleSize) - 3) * 2f;
             float l = (block.size * Vars.tilesize / 2.8f);
 
-            // Use a slightly larger range for the search to ensure we catch units on the edges
             float searchRange = Math.max(w, l) + 20f;
 
             Groups.unit.intersect(x - searchRange, y - searchRange, searchRange * 2, searchRange * 2, unit -> {
-                // Only affect flying units (matching your first example)
+
                 if(!unit.isFlying()) return;
 
-                // 2. Square Hitbox Math
                 float dx = unit.x - x;
                 float dy = unit.y - y;
 
-                // Define the "Collision Box" including the unit's own hitsize
                 float hW = w + unit.hitSize / 2f;
                 float hL = l + unit.hitSize / 2f;
 
-                // Check if the unit is inside the rectangle
                 if(Math.abs(dx) < hW && Math.abs(dy) < hL){
 
-                    // 3. Precise Overlap Correction (Nudging)
-                    // Determine which side they are closer to so we push them out the shortest way
                     float overlapX = hW - Math.abs(dx);
                     float overlapY = hL - Math.abs(dy);
 
                     if(overlapX < overlapY){
-                        // Push out Left or Right
                         unit.x += (dx > 0 ? 1 : -1) * overlapX;
 
-                        // 4. Frictionless Bounce (Zero out velocity heading INTO the block)
                         float signX = (dx > 0 ? 1 : -1);
                         if((unit.vel.x * signX) < 0) unit.vel.x = 0;
                     } else {
-                        // Push out Up or Down
                         unit.y += (dy > 0 ? 1 : -1) * overlapY;
 
-                        // Frictionless Bounce
                         float signY = (dy > 0 ? 1 : -1);
                         if((unit.vel.y * signY) < 0) unit.vel.y = 0;
                     }
 
-                    // 5. Speed-based Effects (Puff & Kill logic from example 1)
                     float speed = unit.vel.len();
                     if(speed > 4.5f){
                         unit.kill();

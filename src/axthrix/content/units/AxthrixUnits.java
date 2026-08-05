@@ -15,14 +15,12 @@ import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.entities.comp.ProductionUnit;
 import axthrix.world.types.entities.comp.StealthUnit;
+import axthrix.world.types.parts.DrawOrbitRegions;
 import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
-import axthrix.world.types.sea.unit.SubmarineAi;
 import axthrix.world.types.sea.unit.SubmarineUnitType;
 import axthrix.world.types.unittypes.*;
-import axthrix.world.types.weapontypes.AcceleratedWeapon;
-import axthrix.world.types.weapontypes.RevolverWeapon;
-import axthrix.world.types.weapontypes.WeaponHelix;
+import axthrix.world.types.weapontypes.*;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxUtil;
 import axthrix.world.util.importedcode.BallisticMissileBulletType;
@@ -31,6 +29,7 @@ import blackhole.entities.part.BlackHolePart;
 import static arc.math.Interp.pow10Out;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
 
+import mindustry.Vars;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
@@ -59,11 +58,12 @@ import static mindustry.content.StatusEffects.*;
 
 public class AxthrixUnits {
     public static UnitType
-    //Axthrix  |6 trees|
+    //Axthrix  |7 trees|
         //Ground
-            //Assault Hovers |SubAtomic|
+            //Assault Hovers |SubAtomic| thermal
                 quark, electron, baryon, hadron, photon,
-
+             //Sub tree (diverts after electron) cyro
+                                 meson, neutrino,tachyon,
             //Support Walkers |Protect|
                 barrier, blockade, palisade, parapet, impediment,
             //Specialist Tanks |Energy/Gem|
@@ -78,15 +78,17 @@ public class AxthrixUnits {
                 amos,arvad,amasya,rahela,chavash,
                 //TX
                 atlas,
-            //Elemental Shuttles | leader |
+            //Elemental Shuttles | leader | might be removed ngl
                 aza,enzo,ashur,shiva,vishnu,
                 //TX
                 murugan,
             //Berzerker Spiders | Revolver |
             sig,sindri,sigurd,sighelm,siegfried,
+            // Submarines
+            vestage,
 
     //Core Units |4 units|
-    shale, slate, stele, skarn, limir,vestage, sbr;
+    shale, slate, stele, skarn, limir, sbr;
 
     private static final Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new Entry[]{
             prov(CptrUnitEntity.class, CptrUnitEntity::new),
@@ -292,7 +294,7 @@ public class AxthrixUnits {
 
             );
 
-            weapons.add(new Weapon(){{
+            weapons.add(new PerkWeapon(){{
                 mirror = false;
                 minWarmup = 0.8f;
                 reload = 60f/0.4f;
@@ -374,10 +376,12 @@ public class AxthrixUnits {
             faceTarget = true;
             hovering = true;
             effectResistanceHeat = 0;
-            //abilities.add(new HeatWaveAbility(600,80,600,Color.valueOf("de9458")));
-            abilities.add(new PressurizedBurstAbility());
+            abilities.add(new PassiveHeatAbility(){{
+                idleHeatGain = 5.4f;
+                singleTickHeatLoss = bytickHeatLoss = 0;
+                display = false;
+            }});
             effectResistanceHeat = 0;
-            //hover/mechanical parts
             parts.add(
                     new RegionPart("-pin"){{
                         mirror = under = true;
@@ -461,7 +465,76 @@ public class AxthrixUnits {
                     }}
             );
 
-            weapons.add(new WeaponHelix(){{
+            weapons.add(
+            new TemperatureWeapon(){{
+                x = 10;
+                mirror = true;
+                rotate = true;
+                tempConsume = 6.8f;
+                reload = 100;
+                reloadBonus = 10f;
+                spreadBonus = 8f;
+                shoot.shots = 2;
+                shoot.shotDelay = 6;
+                inaccuracy = 4;
+                bullet = new RangBulletType(){{
+                    speed = 5;
+                    lifetime = 80;
+                    returnHeatAmount = 3;
+                    homingTurnSpeed = 0.06f;
+                    trailEffect = new MultiEffect(Fx.fireballsmoke,Fx.fire,Fx.ballfire,Fx.fireHit);
+                    trailInterval = 3;
+                    trailLength = 4;
+                    trailWidth = 2;
+
+                    parts.add(
+                            new ShapePart(){{
+                                progress = PartProgress.life.inv().curve(Interp.slope);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 8;
+                                hollow = true;
+                                stroke = 0f;
+                                strokeTo = 1f;
+                                radius = 3f;
+                                layer = Layer.effect;
+                                rotateSpeed = 2;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new ShapePart(){{
+                                progress = PartProgress.life.inv().curve(Interp.slope);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 40;
+                                hollow = true;
+                                stroke = 0f;
+                                strokeTo = 1f;
+                                radius = 5f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }},
+                            new HaloPart(){{
+                                progress = PartProgress.life.inv().curve(Interp.slope);
+                                weaponIndex = 0;
+                                color = Color.valueOf("de9458");
+                                sides = 3;
+                                hollow = false;
+                                shapes = 4;
+                                stroke = 0f;
+                                strokeTo = 1f;
+                                radius = 2f;
+                                haloRadius = 4f;
+                                haloRotateSpeed = 2f;
+                                layer = Layer.effect;
+                                y = 0;
+                                x = 0;
+                            }}
+                    );
+                }};
+            }},
+            new WeaponHelix(){{
                 mirror = false;
                 minWarmup = 0.8f;
                 x = 0;
@@ -566,8 +639,14 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = true;
             hovering = true;
-            //abilities.add(new HeatWaveAbility(600,160,800,Color.valueOf("de9458")));
-            abilities.add(new HeatPipeNetworkAbility());
+            abilities.add(new HeatPipeNetworkAbility(){{
+                idleHeatGain = 10f;
+                bytickHeatLoss = 0;
+                networkRadius = 600;
+                pipeSpeed = 45;
+                maxTargets = 4;
+                damagePerSecond = 240;
+            }});
             effectResistanceHeat = 0;
             //hover/mechanical parts
             parts.addAll(
@@ -582,17 +661,48 @@ public class AxthrixUnits {
                         progress = PartProgress.warmup.delay(0.3f);
                         mirror = under = true;
                         weaponIndex = 0;
-                        moveY = -2.2f;
+                        moveY = -2f;
                         moveX = -2;
-                        moveRot = 10;
+                        moveRot = 16;
+                        children.add(
+                                new RegionPart("-plate-glow"){{
+                                    blending = Blending.additive;
+                                    outline = false;
+                                    progress = AxPartParms.AxPartProgress.secondaryHeat;
+
+                                    colorTo = Color.valueOf("f8940e");
+                                    color = Color.valueOf("de9458");
+                                    mixColorTo = Color.valueOf("ff4a00");
+                                    mixColor = Color.valueOf("f8940e");
+                                    mirror = true;
+                                }}
+                        );
                     }},
                     new RegionPart("-arm"){{
-                        progress = PartProgress.warmup.delay(0.6f);
+                        progress = PartProgress.warmup.delay(0.3f);
                         mirror = under = true;
                         weaponIndex = 0;
-                        moveY = 2;
-                        moveX = -2;
-                        moveRot = 5;
+                        moveY = -3;
+                        moveX = 1;
+                        moveRot = 12;
+                        children.add(
+                                new RegionPart("-arm-glow"){{
+                                    blending = Blending.additive;
+                                    outline = false;
+                                    progress = AxPartParms.AxPartProgress.secondaryHeat;
+
+                                    colorTo = Color.valueOf("f8940e");
+                                    color = Color.valueOf("de9458");
+                                    mixColorTo = Color.valueOf("ff4a00");
+                                    mixColor = Color.valueOf("f8940e");
+                                    mirror = true;
+                                }}
+                        );
+                    }},
+                    new RegionPart("-piston-guard"){{
+                        mirror = under = true;
+                        layerOffset = 1;
+                        moveY = moveX = moveRot = 0;
                     }},
                     new RegionPart("-side-piston") {{
                         progress = p -> Mathf.cos(Time.time / 20) / 2 + 0.2f;
@@ -602,8 +712,6 @@ public class AxthrixUnits {
                         moveY = 1f;
                         moveX = 1f;
                         moves.add(new PartMove(PartProgress.recoil.inv(), -0.5f, -0.5f, 0f));
-                        heatProgress = PartProgress.recoil;
-                        heatColor = Color.valueOf("de9458");
                     }},
                     new RegionPart("-rear-piston") {{
                         progress = p -> Mathf.cos(Time.time / 24) / 2 + 0.2f;
@@ -617,9 +725,14 @@ public class AxthrixUnits {
                         heatColor = Color.valueOf("de9458");
                     }},
                     new RegionPart("-glow"){{
-                        color = Color.valueOf("de9458");
                         blending = Blending.additive;
                         outline = mirror = false;
+                        progress = AxPartParms.AxPartProgress.secondaryHeat;
+
+                        colorTo = Color.valueOf("f8940e");
+                        color = Color.valueOf("de9458");
+                        mixColorTo = Color.valueOf("ff4a00");
+                        mixColor = Color.valueOf("f8940e");
                     }},
                     new HoverPart(){{
                         x = 0f;
@@ -676,211 +789,157 @@ public class AxthrixUnits {
                     }}
             );
 
-            weapons.add(new Weapon(){{
+            weapons.add(new PerkWeapon(){{
                 mirror = false;
                 minWarmup = 0.8f;
                 x = 0;
                 y = 0;
                 reload = 100f;
-                shootY = 2f;
+                shootY = -8f;
                 inaccuracy = 0;
                 predictTarget = false;
-                bullet = new GluonBulletType();
-                /*bullet = new ArtilleryBulletType(5f, 0){{
-                    width = 8;
-                    height = 8;
-                    lifetime = 109;
-                    scaleLife = true;
-                    keepVelocity = false;
-                    collidesAir = true;
-                    trailColor = backColor = lightColor = Color.valueOf("683b3d");
-                    frontColor = Color.valueOf("de9458");
-                    despawnEffect = hitEffect = Fx.none;
-                    weaveMag = 2;
-                    weaveScale = 4;
-                    knockback = 4f;
-                    backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
-                    frontColor = Color.white;
-                    hitSound = Sounds.none;
+                range = 300;
+                shootStatus = unmoving;
+                shootStatusDuration = 69f;
+                bullet = new PlasmaCapacitorBulletType(){{
+                    shootEffect = Fx.none;
+                    damage = 45f;
+                    baseLaunchSpeed = 7f;
+                    chargeDuration = 70f;
+                    heatSiphonPerFrame = 1.8f;
+                    damagePerHeatStored = 5.2f;
+                    radiusPerHeatStored = 1.4f;
+                    spin = 20;
+                    sprite = "aj-plasma";
 
-                    trailLength = 16;
-                    trailWidth = 5.35f;
-                    trailSinScl = 2.5f;
-                    trailSinMag = 0.5f;
-                    trailEffect = Fx.none;
-                    despawnShake = 7f;
+                    parts.addAll(
+                         new RegionPart(){{
+                             name = "aj-core";
+                             blending = Blending.additive;
 
-                    shootEffect = Fx.shootTitan;
-                    smokeEffect = Fx.shootSmokeTitan;
-                    shootSound = Sounds.explosionDull;
-                    soundPitchMax = soundPitchMin = 3;
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 1.9f;
+                             outline = mirror = false;
 
-                    trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
-                    parts.add(
-                            new ShapePart(){{
-                                progress = PartProgress.warmup.delay(0.6f);
-                                weaponIndex = 0;
-                                color = Color.valueOf("de9458");
-                                sides = 40;
-                                hollow = true;
-                                stroke = 1.2f;
-                                radius = 8f;
-                                layer = Layer.effect;
-                                y = 0;
-                                x = 0;
-                            }},
-                            new ShapePart(){{
-                                progress = PartProgress.warmup.delay(0.6f);
-                                weaponIndex = 0;
-                                color = Color.valueOf("de9458");
-                                sides = 40;
-                                hollow = true;
-                                stroke = 1.2f;
-                                radius = 10f;
-                                layer = Layer.effect;
-                                y = 0;
-                                x = 0;
-                            }},
-                            new ShapePart(){{
-                                progress = PartProgress.warmup.delay(0.6f);
-                                weaponIndex = 0;
-                                color = Color.valueOf("de9458");
-                                sides = 40;
-                                hollow = true;
-                                stroke = 1.2f;
-                                radius = 12f;
-                                layer = Layer.effect;
-                                y = 0;
-                                x = 0;
-                            }}
+                         }
+                             @Override
+                             public void draw(PartParams params){
 
+                             if(!Vars.state.isPaused()){
+                                 this.rotation += 4*growProgress.get(params);
+                             }
+
+                                 super.draw(params);
+                             }
+                         },
+                         new RegionPart(){{
+                             name = "aj-glow";
+                             blending = Blending.additive;
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 3;
+                             outline = mirror = false;
+
+                         }
+                             @Override
+                             public void draw(PartParams params){
+                                 if(!Vars.state.isPaused()){
+                                     this.rotation -= 4*growProgress.get(params);
+                                 }
+                                 super.draw(params);
+                             }
+                         },
+                         new RegionPart(){{
+                             name ="aj-ring";
+                             blending = Blending.additive;
+
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 1.5f;
+                             outline = mirror = false;
+                         }
+                             @Override
+                             public void draw(PartParams params){
+                                 if(!Vars.state.isPaused()){
+                                     this.rotation += 6*growProgress.get(params);
+                                 }
+                                 super.draw(params);
+                             }
+                         },
+                         new RegionPart(){{
+                             name ="aj-trail";
+                             blending = Blending.additive;
+
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 1.45f;
+                             outline = mirror = false;
+                         }
+                             @Override
+                             public void draw(PartParams params){
+                                 if(!Vars.state.isPaused()){
+                                     this.rotation -= 6*growProgress.get(params);
+                                 }
+                                 super.draw(params);
+                             }
+                         },
+                         new RegionPart(){{
+                             name ="aj-ring2";
+                             blending = Blending.additive;
+
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 1.3f;
+                             outline = mirror = false;
+                         }
+                             @Override
+                             public void draw(PartParams params){
+                                 if(!Vars.state.isPaused()){
+                                     this.rotation += 8*growProgress.get(params);
+                                 }
+                                 super.draw(params);
+                             }
+                         },
+                         new RegionPart(){{
+                             name ="aj-trail2";
+                             blending = Blending.additive;
+
+                             color = Color.valueOf("de9458");
+                             colorTo = Color.valueOf("f8940e");
+                             progress = PartProgress.reload;
+                             growProgress = PartProgress.smoothReload;
+                             growX = growY = 1.25f;
+                             outline = mirror = false;
+                         }
+                             @Override
+                             public void draw(PartParams params){
+                                 if(!Vars.state.isPaused()){
+                                     this.rotation -= 8*growProgress.get(params);
+                                 }
+                                 super.draw(params);
+                             }
+                         }
                     );
-                    fragBullets = 1;
-                    fragAngle = 0;
-                    fragSpread = 0;
-                    fragRandomSpread = 0;
-                    fragBullet = new BasicBulletType(){{
-                        ammoMultiplier = 5;
-                        speed = 0f;
-                        keepVelocity = false;
-                        collidesAir = false;
-                        spawnUnit = new MissileUnitType("sub-bullet"){{
-                            abilities.add(new HeatWaveAbility(12,80,80,Color.valueOf("de9458")));
-                            rotateSpeed = 0;
-                            speed = 0.01f;
-                            lifetime = 80;
-                            engineSize = 0;
-                            health = 1;
-                            loopSoundVolume = 0.1f;
-                            deathExplosionEffect = despawnEffect = Fx.none;
-                            deathSound = despawnSound = Sounds.none;
-                            hittable = false;
-                            targetable = false;
-                            parts.add(
-
-                                    new ShapePart(){{
-                                        progress = PartProgress.warmup.delay(0.6f);
-                                        weaponIndex = 0;
-                                        color = Color.valueOf("de9458");
-                                        sides = 40;
-                                        hollow = false;
-                                        stroke = 1.2f;
-                                        radius = 2f;
-                                        layer = Layer.effect;
-                                        y = 0;
-                                        x = 0;
-                                    }},
-                                    new ShapePart(){{
-                                        progress = PartProgress.warmup.delay(0.6f);
-                                        weaponIndex = 0;
-                                        color = Color.valueOf("de9458");
-                                        sides = 40;
-                                        hollow = true;
-                                        stroke = 1.2f;
-                                        radius = 4f;
-                                        layer = Layer.effect;
-                                        y = 0;
-                                        x = 0;
-                                    }},
-                                    new ShapePart(){{
-                                        progress = PartProgress.warmup.delay(0.6f);
-                                        weaponIndex = 0;
-                                        color = Color.valueOf("de9458");
-                                        sides = 40;
-                                        hollow = true;
-                                        stroke = 1.2f;
-                                        radius = 6;
-                                        layer = Layer.effect;
-                                        y = 0;
-                                        x = 0;
-                                    }}
-
-                            );
-
-                            weapons.add(new Weapon(){{
-                                shootCone = 360;
-                                mirror = false;
-                                reload = 1f;
-                                shootOnDeath = true;
-                                noAttack = true;
-                                bullet = new BulletType(0f, 0){{
-                                    killShooter = true;
-                                    absorbable = false;
-                                    laserAbsorb = false;
-                                    hittable = false;
-                                    reflectable = false;
-                                    collides = false;
-                                    instantDisappear = true;
-                                    hitEffect = despawnEffect = shootEffect = Fx.none;
-                                    lifetime = 1;
-                                    fragBullets = 4;
-                                    fragAngle = 0;
-                                    fragSpread = 45;
-                                    fragRandomSpread = 0;
-                                    fragBullet = new BasicBulletType(6f, 200){{
-                                        buildingDamageMultiplier = 3;
-                                        width = 8;
-                                        height = 8;
-                                        lifetime = 60;
-                                        keepVelocity = true;
-                                        homingRange = 100;
-                                        homingPower = 10;
-                                        homingDelay = 1;
-                                        weaveMag = 2;
-                                        weaveScale = 4;
-                                        trailColor = backColor = lightColor = Color.valueOf("de9458");
-                                        frontColor = Color.valueOf("de9458");
-                                        trailLength = 12;
-                                        trailChance = 0f;
-                                        trailWidth = 4f;
-                                        despawnEffect = hitEffect = Fx.none;
-                                        parts.add(
-                                            new ShapePart(){{
-                                                color = Color.valueOf("de9458");
-                                                sides = 10;
-                                                hollow = true;
-                                                stroke = 0.8f;
-                                                radius = 4f;
-                                                layer = Layer.effect;
-                                                y = 0;
-                                                x = 0;
-                                            }}
-                                        );
-                                    }};
-                                }};
-                            }});
-                        }};
-                    }};
-                }};*/
+                }};
             }});
-            weapons.add(new Weapon("aj-assault-railgun"){{
-                float brange = range = 400f;
+            weapons.add(new PerkWeapon("aj-assault-railgun"){{
                 controllable = false;
                 autoTarget = true;
                 ignoreRotation = false;
                 mirror = true;
-                x = 12;
-                y = 2;
+                x = 14;
+                y = -6;
                 layerOffset = 1;
                 shootY = 2f;
                 inaccuracy = 0;
@@ -892,7 +951,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.shootForeshadow;
+                shootSound = AxthrixSounds.gluon;
                 parts.add(
                     new RegionPart("-front"){{
                         progress = PartProgress.recoil;
@@ -903,18 +962,9 @@ public class AxthrixUnits {
                         moveY = -2f;
                     }}
                 );
-                bullet = new RailBulletType(){{
-                    buildingDamageMultiplier = 2;
-                    shootEffect = AxthrixFx.instSmallShoot;
-                    hitEffect = AxthrixFx.instSmallHit;
-                    pierceEffect = AxthrixFx.railSmallHit;
-                    smokeEffect = Fx.smokeCloud;
-                    pointEffect = AxthrixFx.instSmallTrail;
-                    despawnEffect = AxthrixFx.instSmallBomb;
-                    pointEffectSpace = 10f;
+                bullet = new GluonBulletType(){{
                     damage = 200;
                     pierceDamageFactor = 1f;
-                    length = brange;
                     hitShake = 1;
                     status = StatusEffects.slow;
                     statusDuration = 200;
@@ -936,24 +986,9 @@ public class AxthrixUnits {
             hovering = true;
             abilities.addAll(
                     new ThermalRadiationAbility(){{
-                        bytickHeatLoss = 0.8f;
-                    }},
-
-                    new HeatPipeNetworkAbility(){{
-                        idleHeatGain = 0;
-                        networkRadius = 180;
-                        maxTargets = 12;
-                        pipeSpeed = 60;
-                        chainWidthScale = 1.2f;
-                        bytickHeatLoss = 0.2f;
-                    }},
-
-                    new PressurizedBurstAbility(){{
-                        idleHeatGain = 0;
-                        chargeTime = 300;
-                        burstRadius = 160f;
-                        knockback = 14;
-                        burstDamage = 120;
+                        bytickHeatLoss = 0.1f;
+                        baseRadius = 40;
+                        maxRadius = 240;
                     }},
 
                     new ThermalDashAbility(){{
@@ -967,19 +1002,9 @@ public class AxthrixUnits {
                         dashColor = Color.white;
                         singleTickHeatLoss = 0.3f;
                         bytickHeatLoss = 0f;
-                    }},
-
-                    new HeatSparkAbility(){{
-                        idleHeatGain = 0;
-                        heatRadius = 120;
-                        heatDamage = 450;
-                        damageThreshold = 250;
-                        singleTickHeatLoss = 0.02f;
                     }}
             );
             effectResistanceHeat = 0;
-            //abilities.add(new HeatWaveAbility(600,240,1000,Color.valueOf("de9458")));
-            //hover/mechanical parts
             parts.addAll(
                     new RegionPart("-bar"){{
                         progress = PartProgress.warmup;
@@ -1029,9 +1054,14 @@ public class AxthrixUnits {
                         heatColor = Color.valueOf("de9458");
                     }},
                     new RegionPart("-glow"){{
-                        color = Color.valueOf("de94580");
                         blending = Blending.additive;
                         outline = mirror = false;
+                        progress = AxPartParms.AxPartProgress.secondaryHeat;
+
+                        colorTo = Color.valueOf("f8940e");
+                        color = Color.valueOf("de9458");
+                        mixColorTo = Color.valueOf("ff4a00");
+                        mixColor = Color.valueOf("f8940e");
                     }},
                     new HoverPart(){{
                         x = 0f;
@@ -1214,59 +1244,7 @@ public class AxthrixUnits {
                     }}
             );
 
-            weapons.add(new Weapon(){{
-                x = 0;
-                y = 0;
-                //old photon weapon looked sick af but was too laggy remains here for now
-                /*
-                reload = 1f;
-                inaccuracy = 20;
-                bullet = new BasicBulletType(30, 15f){{
-                    sprite = "missile-large";
-                    lightColor = Color.white;
-                    lightOpacity = 0.6f;
-                    lightRadius = 15;
-
-                    lifetime = 16f;
-                    width = 4f;
-                    height = 14f;
-                    pierce = true;
-                    pierceArmor = true;
-                    pierceBuilding = true;
-                    pierceCap = 20;
-                    pierceDamageFactor = 0.8f;
-                    laserAbsorb = true;
-
-                    hitEffect = despawnEffect = AxthrixFfx.circleOut(4,30,10,Color.white);
-                    knockback = 2f;
-                    splashDamageRadius = 60f;
-                    splashDamage = 50f;
-                    scaledSplashDamage = true;
-
-                    hittable = true;
-                    keepVelocity = false;
-                    reflectable = false;
-                    shootEffect = Fx.shootSmokeSquareBig;
-                    smokeEffect = Fx.shootSmokeDisperse;
-                    hitColor = backColor = trailColor = Color.white;
-                    frontColor = Color.white;
-                    trailWidth = 8f;
-                    trailLength = 40;
-                    trailInterval = 0.01f;
-
-                    trailEffect = AxthrixFfx.circleOut(6,10,5,Color.white);
-
-                    homingPower = 1f;
-                    homingDelay = 4f;
-                    homingRange = 100;
-                    collidesGround = true;
-                    collidesAir = true;
-
-                    shootSound = Sounds.plasmadrop;
-                    soundPitchMax = 8;
-                    soundPitchMin = 6;
-
-                }};*/
+            weapons.add(new PerkWeapon(){{
                 rotate = false;
                 minWarmup = 0.8f;
 
@@ -1285,24 +1263,24 @@ public class AxthrixUnits {
                 reload = 1000;
 
 
-                bullet = new ContinuousFlameBulletType() {{
+                bullet = new ContinuousFractalLightBulletType(20,3) {{
                     damage = 150.0F;
-                    reflectable = absorbable = false;
-                    status = AxthrixStatus.burning;
-                    //lengthInterp = Interp.reverse;
                     lengthInterp = v -> (float) Math.sqrt((double)(1.0F - v * v * v));
                     lifetime = 900;
                     hitEffect = Fx.none;
                     drawFlare = false;
-                    length = 250;
-                    width = 15;
                     knockback = 1.0F;
-                    pierceCap = 10;
-                    layer = Layer.light;
-                    colors = new Color[]{new Color(255F, 255F, 255F, 0.45F), new Color(255F, 255F, 255F, 0.1F), new Color(255F, 255F, 255F, 0.1F), new Color(255F, 255F, 255F, 0.05F), new Color(255F, 255F, 255F, 0.01F)};
+
+                    fractalSpread = 2;
+
+                    fractalWidthMult = 0.7f;
+                    fractalDamageMult = 0.30f;
+                    length = 275;
+                    width = 14;
+
                 }};
             }},
-            new Weapon(){{
+            new PerkWeapon(){{
                 rotate = false;
                 minWarmup = 0.8f;
                 display = false;
@@ -1326,14 +1304,14 @@ public class AxthrixUnits {
                     lifetime = 900;
                     hitEffect = Fx.none;
                     drawFlare = false;
-                    length = 250;
+                    length = 275;
                     width = 0;
                     knockback = 0F;
                     pierceCap = 0;
                     layer = Layer.light;
                 }};
             }});
-            weapons.add(new Weapon("aj-large-assault-railgun"){{
+            weapons.add(new PerkWeapon("aj-large-assault-railgun"){{
                 float brange = range = 500f;
                 controllable = false;
                 autoTarget = true;
@@ -1351,7 +1329,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.shootForeshadow;
+                shootSound = AxthrixSounds.gluon;
                 shoot = new ShootAlternate(7f);
                 recoils =2;
                 parts.add(
@@ -1378,25 +1356,16 @@ public class AxthrixUnits {
                         moveY = -1.5f;
                     }});
                 }
-
-                bullet = new RailBulletType(){{
-                    buildingDamageMultiplier = 2;
-                    shootEffect = AxthrixFx.instSmallShoot;
-                    hitEffect = AxthrixFx.instSmallHit;
-                    pierceEffect = AxthrixFx.railSmallHit;
-                    smokeEffect = Fx.smokeCloud;
-                    pointEffect = AxthrixFx.instSmallTrail;
-                    despawnEffect = AxthrixFx.instSmallBomb;
-                    pointEffectSpace = 10f;
-                    damage = 250;
-                    pierceDamageFactor = 1f;
-                    length = brange;
-                    hitShake = 1;
-                    status = StatusEffects.slow;
+                bullet = new GluonBulletType(){{
                     statusDuration = 300;
+                    status = StatusEffects.slow;
+                    hitShake = 1;
+                    pierceDamageFactor = 1f;
+                    damage = 250;
+
                 }};
             }});
-            weapons.add(new Weapon("aj-large-assault-railgun"){{
+            weapons.add(new PerkWeapon("aj-large-assault-railgun"){{
                 float brange = range = 500f;
                 controllable = false;
                 autoTarget = true;
@@ -1414,7 +1383,7 @@ public class AxthrixUnits {
                 cooldownTime = reload;
                 shake = 2;
                 shootCone = 2f;
-                shootSound = Sounds.shootForeshadow;
+                shootSound = AxthrixSounds.gluon;
                 shoot = new ShootAlternate(7f);
                 recoils =2;
                 parts.add(
@@ -1441,22 +1410,12 @@ public class AxthrixUnits {
                         moveY = -1.5f;
                     }});
                 }
-
-                bullet = new RailBulletType(){{
-                    buildingDamageMultiplier = 2;
-                    shootEffect = AxthrixFx.instSmallShoot;
-                    hitEffect = AxthrixFx.instSmallHit;
-                    pierceEffect = AxthrixFx.railSmallHit;
-                    smokeEffect = Fx.smokeCloud;
-                    pointEffect = AxthrixFx.instSmallTrail;
-                    despawnEffect = AxthrixFx.instSmallBomb;
-                    pointEffectSpace = 10f;
-                    damage = 250;
-                    pierceDamageFactor = 1f;
-                    length = brange;
-                    hitShake = 1;
-                    status = StatusEffects.slow;
+                bullet = new GluonBulletType(){{
                     statusDuration = 300;
+                    status = StatusEffects.slow;
+                    hitShake = 1;
+                    pierceDamageFactor = 1f;
+                    damage = 250;
                 }};
             }});
         }};
@@ -1480,7 +1439,7 @@ public class AxthrixUnits {
             }});
 
 
-            weapons.add(new Weapon("puw"){{
+            weapons.add(new PerkWeapon("puw"){{
                 shootSound = Sounds.shootSap;
                 shootY = 2f;
                 x = 0f;
@@ -1552,7 +1511,7 @@ public class AxthrixUnits {
                     }}
             );
 
-            weapons.add(new Weapon("aj-force-launcher"){{
+            weapons.add(new PerkWeapon("aj-force-launcher"){{
                 shootSound = Sounds.shootElude;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1615,7 +1574,7 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
 
-            weapons.add(new Weapon("aj-recursor"){{
+            weapons.add(new PerkWeapon("aj-recursor"){{
                 shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1711,7 +1670,7 @@ public class AxthrixUnits {
                 onShoot = true;
             }});
 
-            weapons.add(new Weapon("aj-hammer-shotgun"){{
+            weapons.add(new PerkWeapon("aj-hammer-shotgun"){{
                 shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1787,7 +1746,7 @@ public class AxthrixUnits {
                     frontColor = Color.white;
                 }};
             }});
-            weapons.add(new Weapon("aj-burst"){{
+            weapons.add(new PerkWeapon("aj-burst"){{
                 shootSound = Sounds.shootQuad;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1850,7 +1809,7 @@ public class AxthrixUnits {
                     damage = 125;
                 }};
             }},
-            new Weapon("aj-burst"){{
+            new PerkWeapon("aj-burst"){{
                 shootSound = Sounds.shootQuad;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -1940,7 +1899,7 @@ public class AxthrixUnits {
             }});
 
 
-            weapons.add(new Weapon("aj-force"){{
+            weapons.add(new PerkWeapon("aj-force"){{
                 shootSound = Sounds.shootEnergyField;
                 shootWarmupSpeed = 0.06f;
                 minWarmup = 0.9f;
@@ -2093,7 +2052,7 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = false;
             range = 160;
-            weapons.add(new Weapon("gravic"){{
+            weapons.add(new PerkWeapon("gravic"){{
                 shootSound = Sounds.none;
                 shootCone = 360;
                 ignoreRotation = true;
@@ -2167,7 +2126,7 @@ public class AxthrixUnits {
             rotateSpeed = 3.3f;
             faceTarget = false;
             range = 160;
-            weapons.add(new Weapon("gravcal"){{
+            weapons.add(new PerkWeapon("gravcal"){{
                 shootSound = Sounds.none;
                 shootY = 0f;
                 x = 0f;
@@ -2328,7 +2287,7 @@ public class AxthrixUnits {
             constructor = CptrUnitEntity::new;
             aiController = DynFlyingAI::new;
 
-            weapons.add(new AcceleratedWeapon(name + "-weapon"){{
+            weapons.add(new AcceleratedWeapon(name + "-Perkweapon"){{
                 shootY = 6f;
                 accelPerShot = 1.5f;
                 accelCooldownWaitTime = 130f;
@@ -2482,7 +2441,7 @@ public class AxthrixUnits {
                 layerOffset = -0.1f;
             }});
 
-            weapons.add(new Weapon(name+"-inferno"){{
+            weapons.add(new PerkWeapon(name+"-inferno"){{
                 shootSound = Sounds.shootBreachCarbide;
                 x = 8F;
                 y = -0.5F;
@@ -2610,7 +2569,7 @@ public class AxthrixUnits {
                 layerOffset = -0.1f;
             }});
 
-            weapons.add(new Weapon(name+"-weapon") {{
+            weapons.add(new PerkWeapon(name+"-Perkweapon") {{
                 rotate = true;
                 x = y = shootX = 0;
                 shootY = 2;
@@ -2801,7 +2760,6 @@ public class AxthrixUnits {
         }};
         atlas = new MountUnitType("atlas")//Todo Might have weapons or abilities
         {{
-
             constructor = PayloadUnit::create;
             health = 65000;
             armor = 39;
@@ -2895,7 +2853,7 @@ public class AxthrixUnits {
                         drone = AxthrixDrones.wattIce;
                     }});
 
-            weapons.add(new Weapon("puw"){{
+            weapons.add(new PerkWeapon("puw"){{
                 shootSound = Sounds.shootSap;
                 shootY = 2f;
                 x = 0f;
@@ -2963,7 +2921,7 @@ public class AxthrixUnits {
                 range = 8*8;
                 maxRange = 14*8;
 
-                weapons.add(new RevolverWeapon("sig-weapon") {
+                weapons.add(new RevolverWeapon("sig-Perkweapon") {
                     {
                         shootSound = Sounds.loopSpray;
                         inaccuracy = 10;
@@ -3063,14 +3021,12 @@ public class AxthrixUnits {
             hitSize = 14f;
             itemCapacity = 8*12;
 
-            // Payload capacity
             payloadCapacity = tilePayload * (8 * 2);
             pickupUnits = false;
 
             buildSpeed = 1.5f;
 
             abilities.addAll(
-                    // Two side drones that help build
                     new DroneSpawnAbility(){{
                         drone = AxthrixDrones.builderDrone;
                         spawnTime = 180f;
@@ -3096,7 +3052,7 @@ public class AxthrixUnits {
                     new ScrapCollectorAbility(){{
                         collectionRange = 240f;
                         itemType = AxItems.ingot;
-                        armorMultiplier = 1.2f; // Gets 1.5x enemy armor as scrap
+                        armorMultiplier = 1.2f;
                     }},
 
                     new PayloadCrafterAbility(){{
@@ -3110,7 +3066,7 @@ public class AxthrixUnits {
             );
 
 
-            weapons.add(new Weapon("block-launcher"){{
+            weapons.add(new PerkWeapon("block-launcher"){{
                 reload = 1f;
                 x = 0f;
                 y = 8f;
@@ -3130,8 +3086,7 @@ public class AxthrixUnits {
                     height = 8f;
                     shrinkY = 0f;
 
-                    // Spinning effect
-                    spin = 12f; // Rotations per second
+                    spin = 12f;
 
                     splashDamage = 50f;
                     splashDamageRadius = 20f;
@@ -3139,7 +3094,6 @@ public class AxthrixUnits {
                     hitEffect = Fx.flakExplosion;
                     despawnEffect = Fx.blockCrash;
 
-                    // Make it look like a flying block
                     pierce = false;
                     pierceBuilding = true;
 
@@ -3188,7 +3142,7 @@ public class AxthrixUnits {
             hitSize = 14f;
             itemCapacity = 0;
 
-            weapons.add(new Weapon("bay"){{
+            weapons.add(new PerkWeapon("bay"){{
                 shootSound = Sounds.shootMissileLong;
                 shootY = 2f;
                 x = 0f;

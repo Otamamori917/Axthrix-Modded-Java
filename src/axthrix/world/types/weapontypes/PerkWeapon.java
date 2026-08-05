@@ -2,7 +2,9 @@ package axthrix.world.types.weapontypes;
 
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectIntMap;
+import arc.struct.ObjectMap;
 import arc.struct.Seq;
+import arc.util.Strings;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStatValues;
@@ -11,6 +13,9 @@ import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.ui.Styles;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 
 /**
  * A weapon type that supports the modular perk system.
@@ -55,13 +60,21 @@ public class PerkWeapon extends Weapon {
 
     @Override
     public void addStats(UnitType unit, Table t) {
-        Table extra = new Table();
-        extra.left().defaults().padRight(3).left();
-        AxStatValues.appendCustomStats(extra, bullet);
-        t.row();
-        t.table(Styles.grayPanel, et -> et.add(extra).left().grow()).padLeft(5).padTop(0).padBottom(5).growX().margin(10);
-        super.addStats(unit, t);
+
+        if(inaccuracy > 0){
+            t.row();
+            t.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)inaccuracy + " " + StatUnit.degrees.localized());
+        }
+        if(!alwaysContinuous && reload > 0 && !bullet.killShooter){
+            t.row();
+            t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+        }
+
+        AxStatValues.appendCustomStats(t, bullet);
+        StatValues.ammo(ObjectMap.of(unit, bullet)).display(t);
+
     }
+
 
     // ---- Update ----
 
@@ -75,7 +88,6 @@ public class PerkWeapon extends Weapon {
         for(Perk perk : perks) {
             PerkStateData s = getState(unit, perk);
 
-            // RangePerk needs the weapon mount for target access
             if(perk instanceof RangePerk rp) {
                 rp.updateForUnit(unit, mount, s);
             } else {
@@ -84,13 +96,11 @@ public class PerkWeapon extends Weapon {
 
             perk.tickTimer(unit, null, s, fired);
 
-            // Apply unit-side buffs for non-special perks
             if(perk instanceof ShotBuffPerk sb && !sb.resetOnShot && s.currentStacks > 0) {
                 perk.applyStackingBuffsToUnit(unit, s);
             } else if(perk instanceof DurationPerk dp && s.buffActive) {
                 perk.applyFlatBuffsToUnit(unit, 1f);
             } else if(perk instanceof SpeedPerk sp) {
-                // SpeedPerk handles its own application in update()
             }
         }
     }
@@ -109,8 +119,6 @@ public class PerkWeapon extends Weapon {
             }
         }
     }
-
-    // ---- Hit / Miss Routing ----
 
     public void onHit(Unit unit, WeaponMount mount, float targetX, float targetY, float shooterX, float shooterY) {
         float dist = arc.math.Mathf.dst(shooterX, shooterY, targetX, targetY);

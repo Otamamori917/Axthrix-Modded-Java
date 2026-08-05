@@ -2,16 +2,21 @@ package axthrix.world.types.unittypes;
 
 import arc.Core;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import axthrix.world.types.AxFaction;
+import axthrix.world.types.ai.TemporaryDroneAI;
 import axthrix.world.types.perks.*;
 import axthrix.world.types.weapontypes.PerkWeapon;
+import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStats;
 import axthrix.world.util.PerkStats;
+import axthrix.world.util.logics.TemperatureLogic;
 import mindustry.Vars;
 import mindustry.game.Gamemode;
+import mindustry.gen.Call;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
@@ -63,6 +68,11 @@ public class AxUnitType extends UnitType {
                 });
             }
         }
+    }
+
+    @Override
+    public void update(Unit unit){
+        AxPartParms.axparams.set(0, 0, TemperatureLogic.getTemperatureUnit(unit)/100);
     }
 
     @Override

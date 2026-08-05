@@ -498,8 +498,10 @@ public class MountUnitType extends AxUnitType {
                 if ((float)(x * x + y * y) <= (float)(rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double)(1.0F / 5), (double)(x + tx), (double)(y + ty)) * realNoise * realNoise) {
                     float scaling = (1.0F - Mathf.dst((float)x, (float)y) / (float)rad) * 5;
                     Tile tile = Vars.world.tile(tx + x, ty + y);
-                    if (tile != null && liquidAmount.get(unit) != 0) {
-                        Puddles.deposit(tile, liquidType.get(unit), (liquidAmount.get(unit)/ (liquidAmount.get(unit) /  10)) * scaling);
+                    if(liquidAmount.containsKey(unit)){
+                        if (tile != null && liquidAmount.get(unit) != 0) {
+                            Puddles.deposit(tile, liquidType.get(unit), (liquidAmount.get(unit)/ (liquidAmount.get(unit) /  10)) * scaling);
+                        }
                     }
                 }
             }

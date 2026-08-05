@@ -385,22 +385,20 @@ public class AxStatValues {
         boolean any = false;
 
         if(type instanceof TornadoBulletType b){
-            header(t, "stat.aj-tornado-header");
-            line(t, "stat.aj-tornado-damage-radius", tiles(b.damageRadius));
-            line(t, "stat.aj-tornado-suction-radius", tiles(b.suctionRadius));
-            line(t, "stat.aj-tornado-force", fx(b.force) + " ~ " + fx(b.scaledForce));
-            line(t, "stat.aj-tornado-grow-time", secs(b.growTime));
-            line(t, "stat.aj-tornado-shrink-time", secs(b.shrinkTime));
+            line(t, "stat.aj-tornado-damage-radius", tiles(b.damageRadius)).left();
+            line(t, "stat.aj-tornado-suction-radius", tiles(b.suctionRadius)).left();
+            line(t, "stat.aj-tornado-force", fx(b.force) + " ~ " + fx(b.scaledForce)).left();
+            line(t, "stat.aj-tornado-grow-time", secs(b.growTime)).left();
+            line(t, "stat.aj-tornado-shrink-time", secs(b.shrinkTime)).left();
             any = true;
         }
 
         if(type instanceof blackhole.entities.bullet.BlackHoleBulletType b){
-            header(t, "stat.aj-blackhole-header");
-            line(t, "stat.aj-blackhole-damage-radius", tiles(b.damageRadius));
-            line(t, "stat.aj-blackhole-suction-radius", tiles(b.suctionRadius));
-            line(t, "stat.aj-blackhole-force", fx(b.force) + " ~ " + fx(b.scaledForce));
-            line(t, "stat.aj-blackhole-grow-time", secs(b.growTime));
-            line(t, "stat.aj-blackhole-shrink-time", secs(b.shrinkTime));
+            line(t, "stat.aj-blackhole-damage-radius", tiles(b.damageRadius)).left();
+            line(t, "stat.aj-blackhole-suction-radius", tiles(b.suctionRadius)).left();
+            line(t, "stat.aj-blackhole-force", fx(b.force) + " ~ " + fx(b.scaledForce)).left();
+            line(t, "stat.aj-blackhole-grow-time", secs(b.growTime)).left();
+            line(t, "stat.aj-blackhole-shrink-time", secs(b.shrinkTime)).left();
             any = true;
         }
 
@@ -412,175 +410,229 @@ public class AxStatValues {
         if(type instanceof InfFragBulletType inf){
             header(t, "stat.aj-inffrag-header");
             t.row();
-            t.table(row -> {
-                row.left().defaults().left();
-                row.add("[lightgray]" + Core.bundle.get("stat.aj-inffrag-fragbullets") + " ");
-                row.add(new RainbowWiggleLabel(Core.bundle.get("stat.aj-inffrag-everything")));
-            }).left();
+            t.add("[lightgray]" + Core.bundle.get("stat.aj-inffrag-fragbullets") + " ").left();
+            t.add(new RainbowWiggleLabel(Core.bundle.get("stat.aj-inffrag-everything"))).left();
             appendInfFragOptions(t, inf);
             any = true;
         }
 
         if(type instanceof TemperatureBulletType b){
-            header(t, "stat.aj-temperature-header");
-            line(t, "stat.aj-temperature-per-hit", fx(b.temperaturePerHit));
+            String prefix = (b.temperaturePerHit > 0) ? "[red]+" : "[cyan]";
+            String key = (b.temperaturePerHit > 0) ? "stat.aj-heat-per-hit" : "stat.aj-cold-per-hit";
+            line(t, key, prefix + TempUnit.formatDelta(b.temperaturePerHit)).left();
+            any = true;
+        }
+
+        if(type instanceof RangBulletType b){
+            float returnTimeSeconds = (b.lifetime * b.returnTrigger) / 60f;
+            String prefix = (b.returnHeatAmount > 0) ? "[red]+" : "[cyan]";
+            line(t, "stat.aj-rang-return", prefix + TempUnit.formatDelta(b.returnHeatAmount)).left();
+            line(t, "stat.aj-rang-return-time", Strings.autoFixed(returnTimeSeconds, 2) + " " + mindustry.world.meta.StatUnit.seconds.localized()).left();
+            any = true;
+        }
+
+        if(type instanceof VariantBulletType b){
+            header(t, "stat.aj-variant-header");
+            float totalWeight = 0f;
+            if(b.useWeights && !b.variantWeights.isEmpty()){
+                int limit = Math.min(b.variants.size, b.variantWeights.size);
+                for(int i = 0; i < limit; i++) totalWeight += b.variantWeights.get(i);
+            }
+            final float finalTotalWeight = totalWeight;
+
+            for(int i = 0; i < b.variants.size; i++){
+                BulletType variant = b.variants.get(i);
+                String chanceStr;
+                if(b.useWeights && finalTotalWeight > 0f && i < b.variantWeights.size){
+                    chanceStr = Strings.autoFixed((b.variantWeights.get(i) / finalTotalWeight) * 100f, 1) + "%";
+                }else{
+                    chanceStr = Strings.autoFixed((1f / b.variants.size) * 100f, 1) + "%";
+                }
+
+                t.row();
+                t.add("[lightgray]" + Core.bundle.get("stat.aj-variant-bullet") + " #" + (i + 1) + " (Chance: [white]" + chanceStr + "[lightgray])[]").left();
+                t.table(vStats -> {
+                    baseBullet(variant, vStats, true, tb);
+                    appendCustomStats(vStats, variant, tb);
+                }).padLeft(12f).left();
+            }
             any = true;
         }
 
         if(type instanceof WarningBulletType b){
-            header(t, "stat.aj-warning-header");
-            line(t, "stat.aj-warning-radius", tiles(b.spriteRadius));
-            line(t, "stat.aj-warning-slow-duration", secs(b.warningDuration));
+            line(t, "stat.aj-warning-radius", tiles(b.spriteRadius)).left();
+            line(t, "stat.aj-warning-slow-duration", secs(b.warningDuration)).left();
             any = true;
         }
-
         if(type instanceof AfterShockBulletType b){
             boolean puddle = b instanceof FirePuddleBulletType;
             header(t, puddle ? "stat.aj-firepuddle-header" : "stat.aj-aftershock-header");
-            line(t, "stat.aj-aftershock-pulses", String.valueOf(b.splashAmount));
-            line(t, "stat.aj-aftershock-pulse-delay", secs(b.splashDelay));
+            line(t, "stat.aj-aftershock-pulses", String.valueOf(b.splashAmount)).left();
+            line(t, "stat.aj-aftershock-pulse-delay", secs(b.splashDelay)).left();
             if(!puddle){
-                line(t, "stat.aj-aftershock-pulse-damage", fx(b.splashDamage));
-                line(t, "stat.aj-aftershock-pulse-radius", tiles(b.splashDamageRadius));
+                line(t, "stat.aj-aftershock-pulse-damage", fx(b.splashDamage)).left();
+                line(t, "stat.aj-aftershock-pulse-radius", tiles(b.splashDamageRadius)).left();
             }
             any = true;
         }
 
         if(type instanceof AttachmentGrenadeBulletType b){
-            header(t, "stat.aj-grenade-header");
-            line(t, "stat.aj-grenade-attach-duration", secs(b.attachDuration));
-            line(t, "stat.aj-grenade-detonation-damage", fx(b.detonationDamage));
-            line(t, "stat.aj-grenade-detonation-radius", tiles(b.detonationRadius));
+            line(t, "stat.aj-grenade-attach-duration", secs(b.attachDuration)).left();
+            line(t, "stat.aj-grenade-detonation-damage", fx(b.detonationDamage)).left();
+            line(t, "stat.aj-grenade-detonation-radius", tiles(b.detonationRadius)).left();
             any = true;
         }
 
         if(type instanceof BoltBulletType b){
-            header(t, "stat.aj-bolt-header");
-            line(t, "stat.aj-bolt-length", b.boltLength + (b.boltLengthRand > 0 ? " ~ +" + b.boltLengthRand : "")
-                    + " " + unit("stat.aj-bolt-links"));
+            line(t, "stat.aj-bolt-length", b.boltLength + (b.boltLengthRand > 0 ? " ~ +" + b.boltLengthRand : "") + " " + unit("stat.aj-bolt-links")).left();
             any = true;
         }
 
         if(type instanceof ConeBulletType b){
-            header(t, "stat.aj-cone-header");
-            line(t, "stat.aj-cone-angle", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0");
-            line(t, "stat.aj-cone-length", tiles(b.length));
-            if(b.healPercent > 0) line(t, "stat.aj-cone-heal", Strings.autoFixed(b.healPercent, 1) + "%");
+            line(t, "stat.aj-cone-angle", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0").left();
+            line(t, "stat.aj-cone-length", tiles(b.length)).left();
+            if(b.healPercent > 0) line(t, "stat.aj-cone-heal", Strings.autoFixed(b.healPercent, 1) + "%").left();
             any = true;
         }
 
         if(type instanceof DetonatorBulletType b){
-            header(t, "stat.aj-detonator-header");
             String suffix = b.damageOnHit ? "" : " " + unit("stat.aj-detonator-grenade-only");
-            line(t, "stat.aj-detonator-hit-damage", fx(b.baseHitDamage) + suffix);
+            line(t, "stat.aj-detonator-hit-damage", fx(b.baseHitDamage) + suffix).left();
             any = true;
         }
 
         if(type instanceof GluonBulletType b){
-            header(t, "stat.aj-gluon-header");
-            line(t, "stat.aj-gluon-snap-damage", fx(b.snapDamage));
-            line(t, "stat.aj-gluon-tether-duration", secs(b.tetherDuration));
-            line(t, "stat.aj-gluon-unit-tether", tiles(b.maxUnitTetherDistance));
-            line(t, "stat.aj-gluon-building-tether", tiles(b.maxBuildingTetherDistance)
-                    + " (" + b.maxBuildingsPerHit + " " + unit("stat.aj-gluon-building-tether-max") + ")");
+            line(t, "stat.aj-gluon-snap-damage", fx(b.snapDamage)).left();
+            line(t, "stat.aj-gluon-tether-duration", secs(b.tetherDuration)).left();
+            line(t, "stat.aj-gluon-unit-tether", tiles(b.maxUnitTetherDistance)).left();
+            line(t, "stat.aj-gluon-building-tether", tiles(b.maxBuildingTetherDistance) + " (" + b.maxBuildingsPerHit + " " + unit("stat.aj-gluon-building-tether-max") + ")").left();
+            any = true;
+        }
+
+        if(type instanceof PlasmaCapacitorBulletType b){
+            line(t, "stat.aj-capacitor-charge-time", secs(b.chargeDuration)).left();
+            line(t, "stat.aj-capacitor-siphon-rate", "[red]-" + TempUnit.formatDelta(b.heatSiphonPerFrame*60) + StatUnit.perSecond.localized()).left();
+            line(t, "stat.aj-capacitor-scale-factor", b.damagePerHeatStored +" [lightgray]"+ Stat.damage.localized()).left();
+            any = true;
+        }
+
+
+        if(type instanceof ContinuousFractalLightBulletType b){
+
+            if(b.heatApplyPerTick != 0f){
+                String prefix = (b.heatApplyPerTick > 0) ? "[red]+" : "[cyan]";
+                String key = (b.heatApplyPerTick > 0) ? "stat.aj-heat-per-hit" : "stat.aj-cold-per-hit";
+                line(t, key, prefix + TempUnit.formatDelta(b.heatApplyPerTick*60) +" "+StatUnit.perSecond.localized()).left();
+            }
+
+            if(b.laserFractals > 0){
+                t.row();
+                Table fc = new Table();
+                fc.left().defaults().left();
+
+                float combinedSpread = b.fractalSpread * b.laserFractals;
+                float actualFragDamage = b.damage * b.fractalDamageMult;
+
+                fc.table(l -> line(l, "stat.aj-fractal-spread-combined", Strings.autoFixed(combinedSpread, 1) + "° "+StatUnit.degrees.localized())).right().row();
+                fc.table(l -> line(l, "stat.aj-fractal-dmg-per", "  "+fx(actualFragDamage) +"[lightgray] "+Stat.damage.localized()+StatUnit.perSecond.localized())).right().row();
+
+                Collapser coll = new Collapser(fc, true);
+                coll.setDuration(0.1f);
+
+                t.table(ft -> {
+                    ft.left().defaults().left();
+                    ft.add("[lightgray] " + Core.bundle.format("bullet.aj-fractals-count", b.laserFractals));
+                    ft.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false))
+                            .update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen))
+                            .size(8).padLeft(16f).expandX();
+                }).left();
+                t.row();
+                t.add(coll).left();
+            }
             any = true;
         }
 
         if(type instanceof GrabBulletType b){
-            header(t, "stat.aj-grab-header");
-            line(t, "stat.aj-grab-duration", secs(b.grabDuration));
-            line(t, "stat.aj-grab-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval));
-            line(t, "stat.aj-grab-size-ratio", Strings.autoFixed(b.maxSizeRatio, 2) + "x");
+            line(t, "stat.aj-grab-duration", secs(b.grabDuration)).left();
+            line(t, "stat.aj-grab-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval)).left();
+            line(t, "stat.aj-grab-size-ratio", Strings.autoFixed(b.maxSizeRatio, 2) + "x").left();
             any = true;
         }
 
         if(type instanceof GravityWellBulletType b){
-            header(t, "stat.aj-gravitywell-header");
-            line(t, "stat.aj-gravitywell-radius", tiles(b.gravityRadius));
-            line(t, "stat.aj-gravitywell-duration", secs(b.gravityDuration));
-            line(t, "stat.aj-gravitywell-damage", fx(b.continuousDamage)
-                    + " (x" + Strings.autoFixed(b.flyingDamageMultiplier, 1) + " " + unit("stat.aj-gravitywell-flying-mult") + ")");
+            line(t, "stat.aj-gravitywell-radius", tiles(b.gravityRadius)).left();
+            line(t, "stat.aj-gravitywell-duration", secs(b.gravityDuration)).left();
+            line(t, "stat.aj-gravitywell-damage", fx(b.continuousDamage) + " (x" + Strings.autoFixed(b.flyingDamageMultiplier, 1) + " " + unit("stat.aj-gravitywell-flying-mult") + ")").left();
             any = true;
         }
 
         if(type instanceof HarpoonBulletType b){
-            header(t, "stat.aj-harpoon-header");
-            line(t, "stat.aj-harpoon-duration", secs(b.grabDuration));
-            line(t, "stat.aj-harpoon-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval));
-            line(t, "stat.aj-harpoon-reel-speed", Strings.autoFixed(b.reelSpeed, 1));
+            line(t, "stat.aj-harpoon-duration", secs(b.grabDuration)).left();
+            line(t, "stat.aj-harpoon-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval)).left();
+            line(t, "stat.aj-harpoon-reel-speed", Strings.autoFixed(b.reelSpeed, 1)).left();
             any = true;
         }
 
         if(type instanceof MineBulletType b){
             header(t, "stat.aj-mine-header");
-            line(t, "stat.aj-mine-places", b.mine != null ? b.mine.localizedName : "?");
-            if(b.createChance) line(t, "stat.aj-mine-chance", Strings.autoFixed(b.createChancePercent * 100f, 1) + "%");
+            line(t, "stat.aj-mine-places", b.mine != null ? b.mine.localizedName : "?").left();
+            if(b.createChance) line(t, "stat.aj-mine-chance", Strings.autoFixed(b.createChancePercent * 100f, 1) + "%").left();
             any = true;
         }
 
         if(type instanceof NanobotBulletType b){
-            header(t, "stat.aj-nanobot-header");
             if(b.activeWhileFlying){
-                line(t, "stat.aj-nanobot-flying", fx(b.flyingNanoDamage) + " dmg / " + fx(b.flyingNanoHealAmount)
-                        + " heal, " + tiles(b.flyingRange));
+                line(t, "stat.aj-nanobot-flying", fx(b.flyingNanoDamage) + " dmg / " + fx(b.flyingNanoHealAmount) + " heal, " + tiles(b.flyingRange)).left();
             }
             if(b.lingersOnHit){
-                line(t, "stat.aj-nanobot-linger", fx(b.lingerNanoDamage) + " dmg / " + fx(b.lingerNanoHealAmount)
-                        + " heal, " + secs(b.lingerDuration) + ", " + tiles(b.lingerRange));
+                line(t, "stat.aj-nanobot-linger", fx(b.lingerNanoDamage) + " dmg / " + fx(b.lingerNanoHealAmount) + " heal, " + secs(b.lingerDuration) + ", " + tiles(b.lingerRange)).left();
             }
             any = true;
         }
 
         if(type instanceof RendBulletType b){
-            header(t, "stat.aj-rend-header");
-            line(t, "stat.aj-rend-cone", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0 / " + tiles(b.length));
-            line(t, "stat.aj-rend-swipes", b.totalSwipes + " x " + fx(b.baseDamage)
-                    + " (" + unit("stat.aj-rend-falloff") + " " + Strings.autoFixed(b.damageFalloff * 100f, 0) + "%)");
-            line(t, "stat.aj-rend-dot", fx(b.rendDoTDamage) + "/tick x6, " + secs(b.dotDuration));
+            line(t, "stat.aj-rend-cone", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0 / " + tiles(b.length)).left();
+            line(t, "stat.aj-rend-swipes", b.totalSwipes + " x " + fx(b.baseDamage) + " (" + unit("stat.aj-rend-falloff") + " " + Strings.autoFixed(b.damageFalloff * 100f, 0) + "%)").left();
+            line(t, "stat.aj-rend-dot", fx(b.rendDoTDamage) + "/tick x6, " + secs(b.dotDuration)).left();
             any = true;
         }
 
         if(type instanceof SheildArcBullet b){
-            header(t, "stat.aj-shieldarc-header");
-            line(t, "stat.aj-shieldarc-max-hp", fx(b.max));
-            line(t, "stat.aj-shieldarc-radius", tiles(b.radius));
+            line(t, "stat.aj-shieldarc-max-hp", fx(b.max)).left();
+            line(t, "stat.aj-shieldarc-radius", tiles(b.radius)).left();
             any = true;
         }
 
         if(type instanceof StaticFieldBulletType b){
-            header(t, "stat.aj-staticfield-header");
-            line(t, "stat.aj-staticfield-radius", tiles(b.fieldRadius));
-            line(t, "stat.aj-staticfield-duration", secs(b.fieldDuration));
-            line(t, "stat.aj-staticfield-pulse", fx(b.fieldDamagePerPulse) + " / " + secs(b.fieldPulseInterval));
-            line(t, "stat.aj-staticfield-min-health", Strings.autoFixed(b.minHealthFraction * 100f, 0) + "%");
+            line(t, "stat.aj-staticfield-radius", tiles(b.fieldRadius)).left();
+            line(t, "stat.aj-staticfield-duration", secs(b.fieldDuration)).left();
+            line(t, "stat.aj-staticfield-pulse", fx(b.fieldDamagePerPulse) + " / " + secs(b.fieldPulseInterval)).left();
+            line(t, "stat.aj-staticfield-min-health", Strings.autoFixed(b.minHealthFraction * 100f, 0) + "%").left();
             any = true;
         }
         t.row();
-        baseBullet(type,t,true,tb);
+        baseBullet(type, t, true, tb);
 
         return any;
     }
-
     public static boolean appendCustomStats(Table t, BulletType type){
         boolean any = false;
 
         if(type instanceof TornadoBulletType b){
-            header(t, "stat.aj-tornado-header");
-            line(t, "stat.aj-tornado-damage-radius", tiles(b.damageRadius));
-            line(t, "stat.aj-tornado-suction-radius", tiles(b.suctionRadius));
-            line(t, "stat.aj-tornado-force", fx(b.force) + " ~ " + fx(b.scaledForce));
-            line(t, "stat.aj-tornado-grow-time", secs(b.growTime));
-            line(t, "stat.aj-tornado-shrink-time", secs(b.shrinkTime));
+            line(t, "stat.aj-tornado-damage-radius", tiles(b.damageRadius)).left();
+            line(t, "stat.aj-tornado-suction-radius", tiles(b.suctionRadius)).left();
+            line(t, "stat.aj-tornado-force", fx(b.force) + " ~ " + fx(b.scaledForce)).left();
+            line(t, "stat.aj-tornado-grow-time", secs(b.growTime)).left();
+            line(t, "stat.aj-tornado-shrink-time", secs(b.shrinkTime)).left();
             any = true;
         }
 
         if(type instanceof blackhole.entities.bullet.BlackHoleBulletType b){
-            header(t, "stat.aj-blackhole-header");
-            line(t, "stat.aj-blackhole-damage-radius", tiles(b.damageRadius));
-            line(t, "stat.aj-blackhole-suction-radius", tiles(b.suctionRadius));
-            line(t, "stat.aj-blackhole-force", fx(b.force) + " ~ " + fx(b.scaledForce));
-            line(t, "stat.aj-blackhole-grow-time", secs(b.growTime));
-            line(t, "stat.aj-blackhole-shrink-time", secs(b.shrinkTime));
+            line(t, "stat.aj-blackhole-damage-radius", tiles(b.damageRadius)).left();
+            line(t, "stat.aj-blackhole-suction-radius", tiles(b.suctionRadius)).left();
+            line(t, "stat.aj-blackhole-force", fx(b.force) + " ~ " + fx(b.scaledForce)).left();
+            line(t, "stat.aj-blackhole-grow-time", secs(b.growTime)).left();
+            line(t, "stat.aj-blackhole-shrink-time", secs(b.shrinkTime)).left();
             any = true;
         }
 
@@ -592,162 +644,221 @@ public class AxStatValues {
         if(type instanceof InfFragBulletType inf){
             header(t, "stat.aj-inffrag-header");
             t.row();
-            t.table(row -> {
-                row.left().defaults().left();
-                row.add("[lightgray]" + Core.bundle.get("stat.aj-inffrag-fragbullets") + " ");
-                row.add(new RainbowWiggleLabel(Core.bundle.get("stat.aj-inffrag-everything")));
-            }).left();
-            appendInfFragOptions(t, inf);
+            t.add("[lightgray]" + Core.bundle.get("stat.aj-inffrag-fragbullets") + " ").left();
+            t.add(new RainbowWiggleLabel(Core.bundle.get("stat.aj-inffrag-everything"))).left();
             any = true;
         }
 
         if(type instanceof TemperatureBulletType b){
-            header(t, "stat.aj-temperature-header");
-            line(t, "stat.aj-temperature-per-hit", fx(b.temperaturePerHit));
+            String prefix = (b.temperaturePerHit > 0) ? "[red]+" : "[cyan]";
+            String key = (b.temperaturePerHit > 0) ? "stat.aj-heat-per-hit" : "stat.aj-cold-per-hit";
+            line(t, key, prefix + TempUnit.formatDelta(b.temperaturePerHit)).left();
+            any = true;
+        }
+
+        if(type instanceof RangBulletType b){
+            float returnTimeSeconds = (b.lifetime * b.returnTrigger) / 60f;
+            String prefix = (b.returnHeatAmount > 0) ? "[red]+" : "[cyan]";
+            line(t, "stat.aj-rang-return", prefix + TempUnit.formatDelta(b.returnHeatAmount)).left();
+            line(t, "stat.aj-rang-return-time", Strings.autoFixed(returnTimeSeconds, 2) + " " + mindustry.world.meta.StatUnit.seconds.localized()).left();
+            any = true;
+        }
+
+        if(type instanceof VariantBulletType b){
+            header(t, "stat.aj-variant-header");
+            float totalWeight = 0f;
+            if(b.useWeights && !b.variantWeights.isEmpty()){
+                int limit = Math.min(b.variants.size, b.variantWeights.size);
+                for(int i = 0; i < limit; i++) totalWeight += b.variantWeights.get(i);
+            }
+            final float finalTotalWeight = totalWeight;
+
+            for(int i = 0; i < b.variants.size; i++){
+                BulletType variant = b.variants.get(i);
+                String chanceStr;
+                if(b.useWeights && finalTotalWeight > 0f && i < b.variantWeights.size){
+                    chanceStr = Strings.autoFixed((b.variantWeights.get(i) / finalTotalWeight) * 100f, 1) + "%";
+                }else{
+                    chanceStr = Strings.autoFixed((1f / b.variants.size) * 100f, 1) + "%";
+                }
+
+                t.row();
+                t.add("[lightgray]" + Core.bundle.get("stat.aj-variant-bullet") + " #" + (i + 1) + " (Chance: [white]" + chanceStr + "[lightgray])[]").left();
+                t.table(vStats -> {
+                    appendCustomStats(vStats, variant);
+                }).padLeft(12f).left();
+            }
             any = true;
         }
 
         if(type instanceof WarningBulletType b){
-            header(t, "stat.aj-warning-header");
-            line(t, "stat.aj-warning-radius", tiles(b.spriteRadius));
-            line(t, "stat.aj-warning-slow-duration", secs(b.warningDuration));
+            line(t, "stat.aj-warning-radius", tiles(b.spriteRadius)).left();
+            line(t, "stat.aj-warning-slow-duration", secs(b.warningDuration)).left();
             any = true;
         }
-
         if(type instanceof AfterShockBulletType b){
             boolean puddle = b instanceof FirePuddleBulletType;
             header(t, puddle ? "stat.aj-firepuddle-header" : "stat.aj-aftershock-header");
-            line(t, "stat.aj-aftershock-pulses", String.valueOf(b.splashAmount));
-            line(t, "stat.aj-aftershock-pulse-delay", secs(b.splashDelay));
+            line(t, "stat.aj-aftershock-pulses", String.valueOf(b.splashAmount)).left();
+            line(t, "stat.aj-aftershock-pulse-delay", secs(b.splashDelay)).left();
             if(!puddle){
-                line(t, "stat.aj-aftershock-pulse-damage", fx(b.splashDamage));
-                line(t, "stat.aj-aftershock-pulse-radius", tiles(b.splashDamageRadius));
+                line(t, "stat.aj-aftershock-pulse-damage", fx(b.splashDamage)).left();
+                line(t, "stat.aj-aftershock-pulse-radius", tiles(b.splashDamageRadius)).left();
             }
             any = true;
         }
 
         if(type instanceof AttachmentGrenadeBulletType b){
-            header(t, "stat.aj-grenade-header");
-            line(t, "stat.aj-grenade-attach-duration", secs(b.attachDuration));
-            line(t, "stat.aj-grenade-detonation-damage", fx(b.detonationDamage));
-            line(t, "stat.aj-grenade-detonation-radius", tiles(b.detonationRadius));
+            line(t, "stat.aj-grenade-attach-duration", secs(b.attachDuration)).left();
+            line(t, "stat.aj-grenade-detonation-damage", fx(b.detonationDamage)).left();
+            line(t, "stat.aj-grenade-detonation-radius", tiles(b.detonationRadius)).left();
             any = true;
         }
 
         if(type instanceof BoltBulletType b){
-            header(t, "stat.aj-bolt-header");
-            line(t, "stat.aj-bolt-length", b.boltLength + (b.boltLengthRand > 0 ? " ~ +" + b.boltLengthRand : "")
-                    + " " + unit("stat.aj-bolt-links"));
+            line(t, "stat.aj-bolt-length", b.boltLength + (b.boltLengthRand > 0 ? " ~ +" + b.boltLengthRand : "") + " " + unit("stat.aj-bolt-links")).left();
             any = true;
         }
 
         if(type instanceof ConeBulletType b){
-            header(t, "stat.aj-cone-header");
-            line(t, "stat.aj-cone-angle", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0");
-            line(t, "stat.aj-cone-length", tiles(b.length));
-            if(b.healPercent > 0) line(t, "stat.aj-cone-heal", Strings.autoFixed(b.healPercent, 1) + "%");
+            line(t, "stat.aj-cone-angle", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0").left();
+            line(t, "stat.aj-cone-length", tiles(b.length)).left();
+            if(b.healPercent > 0) line(t, "stat.aj-cone-heal", Strings.autoFixed(b.healPercent, 1) + "%").left();
             any = true;
         }
 
         if(type instanceof DetonatorBulletType b){
-            header(t, "stat.aj-detonator-header");
             String suffix = b.damageOnHit ? "" : " " + unit("stat.aj-detonator-grenade-only");
-            line(t, "stat.aj-detonator-hit-damage", fx(b.baseHitDamage) + suffix);
+            line(t, "stat.aj-detonator-hit-damage", fx(b.baseHitDamage) + suffix).left();
             any = true;
         }
 
         if(type instanceof GluonBulletType b){
-            header(t, "stat.aj-gluon-header");
-            line(t, "stat.aj-gluon-snap-damage", fx(b.snapDamage));
-            line(t, "stat.aj-gluon-tether-duration", secs(b.tetherDuration));
-            line(t, "stat.aj-gluon-unit-tether", tiles(b.maxUnitTetherDistance));
-            line(t, "stat.aj-gluon-building-tether", tiles(b.maxBuildingTetherDistance)
-                    + " (" + b.maxBuildingsPerHit + " " + unit("stat.aj-gluon-building-tether-max") + ")");
+            line(t, "stat.aj-gluon-snap-damage", fx(b.snapDamage)).left();
+            line(t, "stat.aj-gluon-tether-duration", secs(b.tetherDuration)).left();
+            line(t, "stat.aj-gluon-unit-tether", tiles(b.maxUnitTetherDistance)).left();
+            line(t, "stat.aj-gluon-building-tether", tiles(b.maxBuildingTetherDistance) + " (" + b.maxBuildingsPerHit + " " + unit("stat.aj-gluon-building-tether-max") + ")").left();
             any = true;
         }
 
+        if(type instanceof PlasmaCapacitorBulletType b){
+            line(t, "stat.aj-capacitor-charge-time", secs(b.chargeDuration)).left();
+            line(t, "stat.aj-capacitor-siphon-rate", "[red]-" + TempUnit.formatDelta(b.heatSiphonPerFrame*60) + StatUnit.perSecond.localized()).left();
+            line(t, "stat.aj-capacitor-scale-factor", "[orange]+" + b.damagePerHeatStored + StatUnit.heatUnits.localized()).left();
+            any = true;
+        }
+
+
+        if(type instanceof ContinuousFractalLightBulletType b){
+
+            if(b.heatApplyPerTick != 0f){
+                String prefix = (b.heatApplyPerTick > 0) ? "[red]+" : "[cyan]";
+                String key = (b.heatApplyPerTick > 0) ? "stat.aj-heat-per-hit" : "stat.aj-cold-per-hit";
+                line(t, key, prefix + TempUnit.formatDelta(b.heatApplyPerTick*60) +" "+StatUnit.perSecond.localized()).left();
+            }
+
+            if(b.laserFractals > 0){
+                t.row();
+                Table fc = new Table();
+                fc.left().defaults().left();
+
+                float combinedSpread = b.fractalSpread * b.laserFractals;
+                float actualFragDamage = b.damage * b.fractalDamageMult;
+
+                fc.table(l -> line(l, "stat.aj-fractal-spread-combined", Strings.autoFixed(combinedSpread, 1) + "° "+StatUnit.degrees.localized())).right().row();
+                fc.table(l -> line(l, "stat.aj-fractal-dmg-per", "  "+fx(actualFragDamage) +"[lightgray] "+Stat.damage.localized()+StatUnit.perSecond.localized())).right().row();
+
+                Collapser coll = new Collapser(fc, true);
+                coll.setDuration(0.1f);
+
+                t.table(ft -> {
+                    ft.left().defaults().left();
+                    ft.add("[lightgray] " + Core.bundle.format("bullet.aj-fractals-count", b.laserFractals));
+                    ft.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false))
+                            .update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen))
+                            .size(8).padLeft(16f).expandX();
+                }).left();
+                t.row();
+                t.add(coll).left();
+            }
+            any = true;
+        }
+
+
         if(type instanceof GrabBulletType b){
-            header(t, "stat.aj-grab-header");
-            line(t, "stat.aj-grab-duration", secs(b.grabDuration));
-            line(t, "stat.aj-grab-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval));
-            line(t, "stat.aj-grab-size-ratio", Strings.autoFixed(b.maxSizeRatio, 2) + "x");
+            line(t, "stat.aj-grab-duration", secs(b.grabDuration)).left();
+            line(t, "stat.aj-grab-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval)).left();
+            line(t, "stat.aj-grab-size-ratio", Strings.autoFixed(b.maxSizeRatio, 2) + "x").left();
             any = true;
         }
 
         if(type instanceof GravityWellBulletType b){
-            header(t, "stat.aj-gravitywell-header");
-            line(t, "stat.aj-gravitywell-radius", tiles(b.gravityRadius));
-            line(t, "stat.aj-gravitywell-duration", secs(b.gravityDuration));
-            line(t, "stat.aj-gravitywell-damage", fx(b.continuousDamage)
-                    + " (x" + Strings.autoFixed(b.flyingDamageMultiplier, 1) + " " + unit("stat.aj-gravitywell-flying-mult") + ")");
+            line(t, "stat.aj-gravitywell-radius", tiles(b.gravityRadius)).left();
+            line(t, "stat.aj-gravitywell-duration", secs(b.gravityDuration)).left();
+            line(t, "stat.aj-gravitywell-damage", fx(b.continuousDamage) + " (x" + Strings.autoFixed(b.flyingDamageMultiplier, 1) + " " + unit("stat.aj-gravitywell-flying-mult") + ")").left();
             any = true;
         }
 
         if(type instanceof HarpoonBulletType b){
-            header(t, "stat.aj-harpoon-header");
-            line(t, "stat.aj-harpoon-duration", secs(b.grabDuration));
-            line(t, "stat.aj-harpoon-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval));
-            line(t, "stat.aj-harpoon-reel-speed", Strings.autoFixed(b.reelSpeed, 1));
+            line(t, "stat.aj-harpoon-duration", secs(b.grabDuration)).left();
+            line(t, "stat.aj-harpoon-hold-damage", fx(b.holdDamage) + " / " + secs(b.holdDamageInterval)).left();
+            line(t, "stat.aj-harpoon-reel-speed", Strings.autoFixed(b.reelSpeed, 1)).left();
             any = true;
         }
 
         if(type instanceof MineBulletType b){
             header(t, "stat.aj-mine-header");
-            line(t, "stat.aj-mine-places", b.mine != null ? b.mine.localizedName : "?");
-            if(b.createChance) line(t, "stat.aj-mine-chance", Strings.autoFixed(b.createChancePercent * 100f, 1) + "%");
+            line(t, "stat.aj-mine-places", b.mine != null ? b.mine.localizedName : "?").left();
+            if(b.createChance) line(t, "stat.aj-mine-chance", Strings.autoFixed(b.createChancePercent * 100f, 1) + "%").left();
             any = true;
         }
 
         if(type instanceof NanobotBulletType b){
-            header(t, "stat.aj-nanobot-header");
             if(b.activeWhileFlying){
-                line(t, "stat.aj-nanobot-flying", fx(b.flyingNanoDamage) + " dmg / " + fx(b.flyingNanoHealAmount)
-                        + " heal, " + tiles(b.flyingRange));
+                line(t, "stat.aj-nanobot-flying", fx(b.flyingNanoDamage) + " dmg / " + fx(b.flyingNanoHealAmount) + " heal, " + tiles(b.flyingRange)).left();
             }
             if(b.lingersOnHit){
-                line(t, "stat.aj-nanobot-linger", fx(b.lingerNanoDamage) + " dmg / " + fx(b.lingerNanoHealAmount)
-                        + " heal, " + secs(b.lingerDuration) + ", " + tiles(b.lingerRange));
+                line(t, "stat.aj-nanobot-linger", fx(b.lingerNanoDamage) + " dmg / " + fx(b.lingerNanoHealAmount) + " heal, " + secs(b.lingerDuration) + ", " + tiles(b.lingerRange)).left();
             }
             any = true;
         }
 
         if(type instanceof RendBulletType b){
-            header(t, "stat.aj-rend-header");
-            line(t, "stat.aj-rend-cone", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0 / " + tiles(b.length));
-            line(t, "stat.aj-rend-swipes", b.totalSwipes + " x " + fx(b.baseDamage)
-                    + " (" + unit("stat.aj-rend-falloff") + " " + Strings.autoFixed(b.damageFalloff * 100f, 0) + "%)");
-            line(t, "stat.aj-rend-dot", fx(b.rendDoTDamage) + "/tick x6, " + secs(b.dotDuration));
+            line(t, "stat.aj-rend-cone", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0 / " + tiles(b.length)).left();
+            line(t, "stat.aj-rend-swipes", b.totalSwipes + " x " + fx(b.baseDamage) + " (" + unit("stat.aj-rend-falloff") + " " + Strings.autoFixed(b.damageFalloff * 100f, 0) + "%)").left();
+            line(t, "stat.aj-rend-dot", fx(b.rendDoTDamage) + "/tick x6, " + secs(b.dotDuration)).left();
             any = true;
         }
 
         if(type instanceof SheildArcBullet b){
-            header(t, "stat.aj-shieldarc-header");
-            line(t, "stat.aj-shieldarc-max-hp", fx(b.max));
-            line(t, "stat.aj-shieldarc-radius", tiles(b.radius));
+            line(t, "stat.aj-shieldarc-max-hp", fx(b.max)).left();
+            line(t, "stat.aj-shieldarc-radius", tiles(b.radius)).left();
             any = true;
         }
 
         if(type instanceof StaticFieldBulletType b){
-            header(t, "stat.aj-staticfield-header");
-            line(t, "stat.aj-staticfield-radius", tiles(b.fieldRadius));
-            line(t, "stat.aj-staticfield-duration", secs(b.fieldDuration));
-            line(t, "stat.aj-staticfield-pulse", fx(b.fieldDamagePerPulse) + " / " + secs(b.fieldPulseInterval));
-            line(t, "stat.aj-staticfield-min-health", Strings.autoFixed(b.minHealthFraction * 100f, 0) + "%");
+            line(t, "stat.aj-staticfield-radius", tiles(b.fieldRadius)).left();
+            line(t, "stat.aj-staticfield-duration", secs(b.fieldDuration)).left();
+            line(t, "stat.aj-staticfield-pulse", fx(b.fieldDamagePerPulse) + " / " + secs(b.fieldPulseInterval)).left();
+            line(t, "stat.aj-staticfield-min-health", Strings.autoFixed(b.minHealthFraction * 100f, 0) + "%").left();
             any = true;
         }
-
 
         return any;
     }
 
-    /**
-     * Builds a collapsible dropdown listing every bullet InfFragBulletType could possibly frag
-     * into (drawn from AxthrixLoader.allBullets, respecting allowKillShooter the same way
-     * getBullet() does). Since the pool can legitimately contain this exact InfFragBulletType
-     * itself (it can frag into itself), any candidate that is itself an InfFragBulletType is
-     * shown as a plain label instead of recursing into another full stat panel + another
-     * possible-frags dropdown, which would otherwise nest infinitely.
-     */
+
+
+
+
+        /**
+         * Builds a collapsible dropdown listing every bullet InfFragBulletType could possibly frag
+         * into (drawn from AxthrixLoader.allBullets, respecting allowKillShooter the same way
+         * getBullet() does). Since the pool can legitimately contain this exact InfFragBulletType
+         * itself (it can frag into itself), any candidate that is itself an InfFragBulletType is
+         * shown as a plain label instead of recursing into another full stat panel + another
+         * possible-frags dropdown, which would otherwise nest infinitely.
+             */
     private static void appendInfFragOptions(Table t, InfFragBulletType inf){
         Seq<AxthrixLoader.BulletData> candidates = AxthrixLoader.allBullets.select(d -> inf.allowKillShooter || !d.bulletType.killShooter);
         if(candidates.isEmpty()) return;
@@ -793,10 +904,15 @@ public class AxStatValues {
     }
 
     /** label from bundle key + already-formatted value */
-    private static Cell<?> line(Table t, String labelKey, String value){
+    private static Cell<?> lineInv(Table t, String labelKey, String value){
         t.row();
         return t.add("[lightgray]" + Core.bundle.get(labelKey) + " [white]" + value + "[]");
     }
+    private static Cell<?> line(Table t, String labelKey, String value){
+        t.row();
+        return t.add( " [stat]" + value + " [lightgray]" + Core.bundle.get(labelKey));
+    }
+
 
     private static String unit(String key){
         return Core.bundle.get(key);

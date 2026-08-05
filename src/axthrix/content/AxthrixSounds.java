@@ -26,7 +26,8 @@ public class AxthrixSounds {
              nadeblast = new Sound(),
              parserShoot = new Sound(),
              parserCharge = new Sound(),
-             pop = new Sound()
+             pop = new Sound(),
+             gluon = new Sound()
 
 
 
@@ -54,6 +55,7 @@ public class AxthrixSounds {
         parserShoot = tree.loadSound("shoot-parser");
         parserCharge = tree.loadSound("charge-parser");
         pop = tree.loadSound("pop");
+        gluon = tree.loadSound("gluon");
 
     }
 }

@@ -26,30 +26,19 @@ public class TemperatureGenerator extends AxGenericCrafter {
     @Override
     public void setStats(){
         super.setStats();
-        stats.remove(Stat.basePowerGeneration); // Remove power stat
+        stats.remove(Stat.basePowerGeneration);
 
         stats.add(Stat.output, table -> {
-            // 1. Determine Visuals (Red for Heat, Cyan for Cold)
-            // If positive, add a "+" sign. If negative, the number itself will carry the "-" sign.
             String prefix = (temperatureOutput > 0) ? "[red]+" : "[cyan]";
 
-            // 2. Calculate the Value
-            // We use formatDelta because this is a RATE, not a thermometer reading.
             String value = TempUnit.formatDelta(temperatureOutput);
 
-            // 3. Display: "[red]+10°F/sec" or "[cyan]-10°F/sec"
             table.add(prefix + value + StatUnit.perSecond.localized());
         });
 
         stats.add(Stat.heatCapacity, table -> {
-
-            // 1. Convert the Cold Limit (Negative internal value)
             String coldCap = TempUnit.format(-maxTempStorage);
-
-            // 2. Convert the Heat Limit (Positive internal value)
             String heatCap = TempUnit.format(maxTempStorage);
-
-            // 3. Display as a Range: "[cyan]-148°F[]  to  [red]212°F[]"
             table.add("[cyan]" + coldCap + "[]  -  [red]" + heatCap + "[]");
         });
     }

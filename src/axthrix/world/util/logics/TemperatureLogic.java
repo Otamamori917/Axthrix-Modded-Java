@@ -300,6 +300,11 @@ public class TemperatureLogic {
 
 
     /// TEMPERATURE GRABBERS
+    public static float getTemperature(Entityc ob){
+        if(ob instanceof Unit u) return getTemperatureUnit(u);
+        if(ob instanceof Building b) return getTemperatureBuilding(b);
+        return 0;
+    }
 
     public static float getTemperatureUnit(Unit unit){
         return unitTemperature.get(unit.id, 0f);

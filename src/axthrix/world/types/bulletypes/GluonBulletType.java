@@ -16,15 +16,14 @@ import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.LaserBulletType;
-import mindustry.entities.bullet.PointBulletType;
+import mindustry.entities.bullet.RailBulletType;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
-public class GluonBulletType extends PointBulletType {
+public class GluonBulletType extends RailBulletType {
     ///how far to attach and how far a unit has to move to deal snap damage
     public float maxUnitTetherDistance = 20f;
     ///force applied to a unit per second
@@ -45,13 +44,17 @@ public class GluonBulletType extends PointBulletType {
     public float snapDamage = 100;
     public GluonBulletType() {
         super();
-        damage = 40f;
-        speed = 200f;
-        trailEffect = AxthrixFx.gluonTrail;
+        damage = 100f;
+        speed = 0f;
         shootEffect = AxthrixFx.gluonFireAdvanced;
-        hitEffect = AxthrixFx.gluonHit;
-        despawnEffect = AxthrixFx.gluonHit;
-        hitColor = Pal.sapBullet;
+        hitEffect = despawnEffect = pierceEffect = AxthrixFx.gluonHit;
+        smokeEffect = Fx.smokeCloud;
+        pointEffect = trailEffect = AxthrixFx.gluonTrail;
+        trailInterval = 2;
+        pointEffectSpace = 10f;
+
+        hitColor = Color.valueOf("de9458");
+        length = 700;
 
 
     }
@@ -61,11 +64,10 @@ public class GluonBulletType extends PointBulletType {
         super.hit(b, x, y);
         hitSound.at(x, y, 1.1f);
 
-        // 1. Try to find a Unit first
+
         Unit struck = Units.closestEnemy(b.team, x, y, 20f, u -> true);
 
         if (struck == null) {
-            // 2. No unit? Find the building at the exact impact point
             Building struckB = Vars.world.build(Mathf.floor(x / Vars.tilesize), Mathf.floor(y / Vars.tilesize));
             if (struckB == null) return;
 
@@ -74,20 +76,18 @@ public class GluonBulletType extends PointBulletType {
             Vars.indexer.eachBlock(null, x, y, maxBuildingTetherDistance, other -> other != struckB, nearbyBuildings::add);
 
             if (nearbyBuildings.size > 0) {
-                nearbyBuildings.shuffle(); // Safe random selection
+                nearbyBuildings.shuffle();
                 int count = Math.min(nearbyBuildings.size, maxBuildingsPerHit);
 
                 for (int i = 0; i < count; i++) {
                     Building other = nearbyBuildings.get(i);
                     if (!activeBuildingTethers.contains(t -> t.links(struckB, other))) {
                         activeBuildingTethers.add(new BuildingTether(b, struckB, other,maxBuildingTetherDistance, snapDamage, tetherDuration,snapInterval));
-                        // Success Log
-                        Log.info("Tether Created between " + struckB.block.name + " and " + other.block.name);
+
                     }
                 }
             }
         } else {
-            // 3. Unit Cluster Logic
             Units.nearbyEnemies(b.team, x, y, maxUnitTetherDistance, other -> {
                 if (other != struck && !activeTethers.contains(t -> t.links(struck, other))) {
                     activeTethers.add(new Tether(b, struck, other, maxUnitTetherDistance + struck.hitSize, snapDamage, pullStrength, tetherDuration, status));
@@ -167,12 +167,10 @@ public class GluonBulletType extends PointBulletType {
         private void triggerSnap(Unit unit) {
             if (unit == null || !unit.isAdded()) return;
 
-            // High-damage snap: using bullet for team ownership
             Damage.damage(bullet == null ? null : bullet.team, unit.x, unit.y, unit.hitSize * 4, damage);
 
-            // Violent visual effects
-            Fx.sapExplosion.at(unit.x, unit.y);
-            AxthrixFx.gluonHit.at(unit.x, unit.y, 0, Pal.sapBulletBack);
+            Fx.blastExplosion.at(unit.x, unit.y);
+            AxthrixFx.gluonHit.at(unit.x, unit.y, 0, Color.valueOf("de9458"));
         }
 
         private void triggerExpiry() {
@@ -190,12 +188,10 @@ public class GluonBulletType extends PointBulletType {
             float dist = unitA.dst(unitB);
             float stretch = dist / maxDist;
 
-            // Unstable Gluon pulse: faster and whiter when stretched
             float speed = 2f + (stretch * 4f);
             float pulse = Mathf.absin(Time.time, speed, 0.4f);
-            Color col = Tmp.c1.set(Pal.sapBulletBack).lerp(Color.white, pulse);
+            Color col = Tmp.c1.set(Color.valueOf("de9458")).lerp(Color.white, pulse);
 
-            // Visual Tension: Line gets thinner but jitters more as it stretches
             float jitterScl = 1.5f + (stretch * 3.5f);
             float stroke = (1.4f + pulse) * (1f - stretch * 0.4f);
             int segments = (int)(dist / 4f);
@@ -209,7 +205,6 @@ public class GluonBulletType extends PointBulletType {
                 float py = Mathf.lerp(unitA.y, unitB.y, progress);
 
                 if(i > 0 && i < segments){
-                    // High-speed jitter using randomSeedRange
                     float offset = Mathf.randomSeedRange((long)(i + Time.time * 2), jitterScl);
                     px += Mathf.cosDeg(angle + 90) * offset;
                     py += Mathf.sinDeg(angle + 90) * offset;
@@ -218,17 +213,16 @@ public class GluonBulletType extends PointBulletType {
             }
             Lines.endLine();
 
-            // Glow caps at the units
             for(int i = 0; i < 2; i++) {
                 float m = (i == 0 ? 1f : 0.5f);
-                Draw.color(i == 0 ? Pal.sapBulletBack : Color.white);
+                Draw.color(i == 0 ? Color.valueOf("de9458") : Color.white);
                 float headScl = 1f + Mathf.randomSeedRange((long)Time.time, 0.2f);
 
                 Drawf.tri(unitA.x, unitA.y, 4f * m, (10f * headScl) * m, angle);
                 Drawf.tri(unitB.x, unitB.y, 4f * m, (10f * headScl) * m, angle + 180f);
             }
 
-            Drawf.light(unitA.x, unitA.y, unitB.x, unitB.y, 30f * (1f + pulse), Pal.sapBulletBack, 0.6f);
+            Drawf.light(unitA.x, unitA.y, unitB.x, unitB.y, 30f * (1f + pulse), Color.valueOf("de9458"), 0.6f);
             Draw.reset();
         }
     }
@@ -297,12 +291,10 @@ public class GluonBulletType extends PointBulletType {
             float dist = buildA.dst(buildB);
             float stretch = dist / maxDist;
 
-            // Unstable Gluon pulse: faster and whiter when stretched
             float speed = 2f + (stretch * 4f);
             float pulse = Mathf.absin(Time.time, speed, 0.4f);
-            Color col = Tmp.c1.set(Pal.sapBulletBack).lerp(Color.white, pulse);
+            Color col = Tmp.c1.set(Color.valueOf("de9458")).lerp(Color.white, pulse);
 
-            // Visual Tension: Line gets thinner but jitters more as it stretches
             float jitterScl = 1.5f + (stretch * 3.5f);
             float stroke = (1.4f + pulse) * (1f - stretch * 0.4f);
             int segments = (int)(dist / 4f);
@@ -316,7 +308,6 @@ public class GluonBulletType extends PointBulletType {
                 float py = Mathf.lerp(buildA.y, buildB.y, progress);
 
                 if(i > 0 && i < segments){
-                    // High-speed jitter using randomSeedRange
                     float offset = Mathf.randomSeedRange((long)(i + Time.time * 2), jitterScl);
                     px += Mathf.cosDeg(angle + 90) * offset;
                     py += Mathf.sinDeg(angle + 90) * offset;
@@ -328,14 +319,14 @@ public class GluonBulletType extends PointBulletType {
             // Glow caps at the units
             for(int i = 0; i < 2; i++) {
                 float m = (i == 0 ? 1f : 0.5f);
-                Draw.color(i == 0 ? Pal.sapBulletBack : Color.white);
+                Draw.color(i == 0 ? Color.valueOf("de9458") : Color.white);
                 float headScl = 1f + Mathf.randomSeedRange((long)Time.time, 0.2f);
 
                 Drawf.tri(buildA.x, buildA.y, 4f * m, (10f * headScl) * m, angle);
                 Drawf.tri(buildB.x, buildB.y, 4f * m, (10f * headScl) * m, angle + 180f);
             }
 
-            Drawf.light(buildA.x, buildA.y, buildB.x, buildB.y, 30f * (1f + pulse), Pal.sapBulletBack, 0.6f);
+            Drawf.light(buildA.x, buildA.y, buildB.x, buildB.y, 30f * (1f + pulse), Color.valueOf("de9458"), 0.6f);
             Draw.reset();
         }
 

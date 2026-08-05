@@ -69,6 +69,16 @@ public class CustomUnitInfoBar {
             container.pack();
         });
     }
+
+    private void addSolidDivider(Table container) {
+        container.image(Tex.whiteui)
+                .color(Color.valueOf("404042"))
+                .growX()
+                .height(4f)
+                .padTop(5f)
+                .padBottom(5f);
+        container.row();
+    }
     private void rebuildInfo(Unit unit){
         boolean unitChanged = unit.id != lastUnitId;
         lastUnitId = unit.id;
@@ -87,14 +97,9 @@ public class CustomUnitInfoBar {
         boolean craftChanged = currentCraft != lastSelectedCraft;
         lastSelectedCraft = currentCraft;
 
-        if(unitChanged || craftChanged || buttonRowCache == null){
-            container.clearChildren();
-            container.background(Tex.buttonEdge3);
-            container.margin(6f);
-            buttonRowCache = null;
-        } else {
-            return;
-        }
+        container.clearChildren();
+        container.background(Tex.buttonEdge3);
+        container.margin(6f);
 
         boolean hasAnyInfo = false;
         float temp = 0f;
@@ -117,12 +122,14 @@ public class CustomUnitInfoBar {
 
             addTemperatureInfo(container, temp, typeLabelKey, resistance);
             hasAnyInfo = true;
+            addSolidDivider(container);
         }
 
         MiniUnitDisplay mini = new MiniUnitDisplay(unit);
         if (mini.hasContent()) {
-            container.add(mini).size(170f).padBottom(8f).row();
+            container.add(mini).size(130f).padBottom(8f).row();
             hasAnyInfo = true;
+            addSolidDivider(container);
         }
 
         if(unit.abilities != null){
@@ -130,9 +137,11 @@ public class CustomUnitInfoBar {
                 if(ab instanceof AfterBurnAbility afterburn){
                     addAfterBurnInfo(container, afterburn);
                     hasAnyInfo = true;
+                    addSolidDivider(container);
                 } else if(ab instanceof StaticEMPability emp){
                     addEMPInfo(container, unit, emp);
                     hasAnyInfo = true;
+                    addSolidDivider(container);
                 }
             }
         }
@@ -144,6 +153,7 @@ public class CustomUnitInfoBar {
                         PerkStateData s = pw.getState(unit, perk);
                         addPerkInfo(container, perk, s);
                         hasAnyInfo = true;
+                        addSolidDivider(container);
                     }
                 }
             }
@@ -152,6 +162,12 @@ public class CustomUnitInfoBar {
         if (crafter != null) {
             addPayloadCrafterInfo(container, unit, crafter);
             hasAnyInfo = true;
+        }
+
+        if(crafter != null && (unitChanged || craftChanged || buttonRowCache == null)) {
+            Table newButtons = new Table(Tex.pane);
+            crafter.buildEmbeddedSelectionTable(unit, newButtons);
+            buttonRowCache = newButtons;
         }
 
         container.visible = hasAnyInfo;
@@ -172,14 +188,12 @@ public class CustomUnitInfoBar {
                     return out;
                 }
 
-                float modifierFactor = resistance;
-
                 if(temperature > 0){
-                    float finalDmgDebuff = temperature * modifierFactor;
+                    float finalDmgDebuff = temperature * resistance;
                     String formattedVal = Strings.fixed(finalDmgDebuff, 0);
                     out += " " + Core.bundle.format("ui.ax-info.temp-heat-debuff", formattedVal);
                 } else {
-                    float finalColdDebuff = (-temperature) * modifierFactor;
+                    float finalColdDebuff = (-temperature) * resistance;
                     String formattedVal = Strings.fixed(finalColdDebuff, 0);
                     out += " " + Core.bundle.format("ui.ax-info.temp-cold-debuff", formattedVal);
                 }
@@ -190,9 +204,16 @@ public class CustomUnitInfoBar {
         container.row();
     }
 
+    private Color getPerkColor(Perk perk, PerkStateData s) {
+        boolean active = s.smoothActivated > 0.4f ||
+                (perk instanceof DurationPerk dp && dp.getBuffScale(s) > 0f) ||
+                (perk instanceof BulletPerk && s.pendingShot);
+        return active ? Pal.remove : (perk.color != null ? perk.color : Pal.accent);
+    }
+
     private void addAfterBurnInfo(Table container, AfterBurnAbility afterburn){
         container.table(t -> {
-            t.image(Icon.defense).size(16f).color(afterburn.colors[4]).padRight(6f);
+            t.image(Icon.defense).size(16f).color(afterburn.colors[0]).padRight(6f);
             t.label(() -> {
                 float fuel = afterburn.fuel;
                 float max = afterburn.fuelCap;
@@ -251,13 +272,6 @@ public class CustomUnitInfoBar {
         container.row();
     }
 
-    private Color getPerkColor(Perk perk, PerkStateData s) {
-        boolean active = s.smoothActivated > 0.4f ||
-                (perk instanceof DurationPerk dp && dp.getBuffScale(s) > 0f) ||
-                (perk instanceof BulletPerk && s.pendingShot);
-        return active ? Pal.remove : (perk.color != null ? perk.color : Pal.accent);
-    }
-
     private void addPayloadCrafterInfo(Table container, Unit unit, PayloadCrafterAbility crafter) {
         UnlockableContent selected = lastSelectedCraft;
 
@@ -269,28 +283,37 @@ public class CustomUnitInfoBar {
             }
 
             var option = crafter.craftOptions.get(selected);
-            float progress = PayloadCrafterAbility.constructionProgress.get(unit.id, 0f);
-            float maxTime = option != null ? option.cost * crafter.ticksPerCost : 1f;
-            float progressFraction = arc.math.Mathf.clamp(progress / maxTime);
+            boolean requiresPower = option != null && option.requirePower;
 
             t.image(selected.uiIcon).size(16f).padRight(6f);
             t.table(barTable -> {
-                barTable.add(selected.localizedName).style(Styles.outlineLabel).left().row();
+                barTable.add(selected.localizedName).style(Styles.outlineLabel).left();
+
+                if (requiresPower) {
+                    barTable.label(() -> {
+                        boolean disconnected = crafter.isNotPowered(unit);
+                        String hexCol = disconnected ? "FF6666" : "FFEA7C";
+                        return " [#" + hexCol + "]⚡[]";
+                    }).style(Styles.outlineLabel).left();
+                }
+                barTable.row();
 
                 if (AxthrixLoader.showAdvanced) {
                     barTable.label(() -> {
-                        int percent = (int)(progressFraction * 100);
-                        return "[lightgray]Crafting:[] " + percent + "%" +
-                                ((option != null && option.requirePower && crafter.isNotPowered(unit)) ? " [scarlet](NO POWER)[]" : "");
+                        float progress = 0f;
+                        Float liveMapVal = PayloadCrafterAbility.constructionProgress.get(unit.id);
+                        if (liveMapVal != null) progress = liveMapVal;
+
+                        float maxTime = option != null ? option.cost * crafter.ticksPerCost : 1f;
+                        int percent = (int)(arc.math.Mathf.clamp(progress / maxTime) * 100);
+                        return "[lightgray]Crafting:[] " + percent + "%";
                     }).style(Styles.outlineLabel).left();
                 }
             }).left();
         }).left().padBottom(4f).row();
 
-        buttonRowCache = container.table(buttonRow -> {
-            buttonRow.background(Tex.pane);
-            crafter.buildEmbeddedSelectionTable(unit, buttonRow);
-        }).left().padLeft(4f).padBottom(8f).get();
-        container.row();
+        if(buttonRowCache != null) {
+            container.add(buttonRowCache).left().padLeft(4f).padBottom(8f).row();
+        }
     }
 }

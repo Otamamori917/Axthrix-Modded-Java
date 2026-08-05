@@ -21,7 +21,7 @@ import mindustry.input.Binding;
 
 public class ThermalDashAbility extends PassiveHeatAbility {
     public float dashDistance = 2.5f;
-    public float dodgeDistance = 1.5f; // Shorter dodge dash
+    public float dodgeDistance = 1.5f;
     public float dashSpeed = 30f;
     public float cooldown = 240f;
 
@@ -50,7 +50,7 @@ public class ThermalDashAbility extends PassiveHeatAbility {
     private ObjectMap<Integer, Float> cooldownTimer = new ObjectMap<>();
     private ObjectMap<Integer, Float> dashProgress = new ObjectMap<>();
     private ObjectMap<Integer, Float> dashAngle = new ObjectMap<>();
-    private ObjectMap<Integer, Boolean> isDodgeDash = new ObjectMap<>(); // Track if this is a dodge
+    private ObjectMap<Integer, Boolean> isDodgeDash = new ObjectMap<>();
 
     public ThermalDashAbility(){
         singleTickHeatLoss = 0.15f;
@@ -83,7 +83,6 @@ public class ThermalDashAbility extends PassiveHeatAbility {
 
         float heat = TemperatureLogic.getHeatUnit(unit);
 
-        // Currently dashing
         if(progress > 0f && progress < 1f){
             isDealingDamage = true;
 
@@ -109,7 +108,6 @@ public class ThermalDashAbility extends PassiveHeatAbility {
 
             performThermalBurst(unit);
 
-            // Use dodge distance if this is a dodge dash
             float currentDashDistance = isDodgeDash.get(unit.id) ? dodgeDistance : dashDistance;
             progress += Time.delta / (currentDashDistance / dashSpeed * 60f);
             dashProgress.put(unit.id, Math.min(progress, 1f));
@@ -139,7 +137,7 @@ public class ThermalDashAbility extends PassiveHeatAbility {
                 if(Core.input.keyTap(Binding.boost)){
                     targetAngle = unit.rotation;
                     shouldDash = true;
-                    isDodge = false; // Manual dash is always full distance
+                    isDodge = false;
                 }
             }
         } else {
@@ -185,7 +183,7 @@ public class ThermalDashAbility extends PassiveHeatAbility {
         if(incomingThreat && Mathf.chance(aiDodgePriority)){
             targetAngle = unit.rotation + (Mathf.randomBoolean() ? 90f : -90f);
             shouldDash = true;
-            isDodge = true; // This is a dodge
+            isDodge = true;
         } else if(enemyInFront){
             targetAngle = unit.angleTo(closestEnemy);
             shouldDash = true;

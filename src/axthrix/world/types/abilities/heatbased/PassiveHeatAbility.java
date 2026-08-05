@@ -14,19 +14,16 @@ public class PassiveHeatAbility extends Ability {
     public float maxSelfHeat = 100f;
 
     /// Set to true by child abilities when they're dealing damage for bytickheatloss
-    protected boolean isDealingDamage = false;
+    public boolean isDealingDamage = false;
 
     @Override
     public void update(Unit unit){
         if(isDealingDamage){
-            // Lose heat when attacking
             TemperatureLogic.applyTemperatureUnit(unit, -bytickHeatLoss * Time.delta / 60f);
         } else {
-            // Gain heat when idle
             TemperatureLogic.applyTemperatureUnit(unit, idleHeatGain * Time.delta / 60f);
         }
 
-        // Reset flag for next frame
         isDealingDamage = false;
     }
     /**
@@ -64,7 +61,6 @@ public class PassiveHeatAbility extends Ability {
      * @return Final damage with heat bonus
      */
     protected float applyTargetHeatBonus(float targetHeat, float targetEffectResist, float baseDamage, float targetHeatDamageBonus){
-        // Resistance reduces effectiveness: 0.2 resist = only 20% of bonus applies
         float effectiveBonusRate = targetHeatDamageBonus * (1f - targetEffectResist);
         float heatBonus = 1f + (targetHeat * effectiveBonusRate);
         return baseDamage * heatBonus;

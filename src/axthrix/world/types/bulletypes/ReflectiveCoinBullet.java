@@ -38,10 +38,11 @@ public class ReflectiveCoinBullet extends AnimationBulletType {
     @Override
     public void update(Bullet b){
         super.update(b);
-        Groups.bullet.each(eb -> {
+        float r = b.hitSize / 2f;
+        Groups.bullet.intersect(b.x - r, b.y - r, r * 2f, r * 2f, eb -> {
             float d = Mathf.dst(eb.x, eb.y, b.x, b.y);
-            if (d < b.hitSize / 2 && eb.type.reflectable && !(eb.type instanceof ReflectiveCoinBullet)) {
-                AxthrixSounds.payitback.at(b.x,b.y);
+            if (d < r && eb.type.reflectable && !(eb.type instanceof ReflectiveCoinBullet)) {
+                AxthrixSounds.payitback.at(b.x, b.y);
                 if (eb.team != b.team) {
                     BulletType bulletcpy = eb.type.copy();
                     bulletcpy.pierce = false;
@@ -54,9 +55,7 @@ public class ReflectiveCoinBullet extends AnimationBulletType {
                     eb.type.fragOnAbsorb = false;
                     eb.absorb();
                     b.remove();
-                }/* else {
-
-                }*/
+                }
             }
         });
     }

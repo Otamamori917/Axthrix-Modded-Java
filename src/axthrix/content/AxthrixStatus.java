@@ -82,10 +82,7 @@ public class AxthrixStatus {
             public void setStats(){
                 super.setStats();
                 stats.add(new Stat("aj-heat-add"), table -> {
-                    float valPerSec = 0.01f * 60f; // Calculate the raw value (0.6)
-
-                    // Use formatDelta because this is a RATE, not a specific temp
-                    // We make it positive for the display text ("0.6" instead of "-0.6")
+                    float valPerSec = 0.01f * 60f;
                     String formatted = TempUnit.formatDelta(valPerSec);
 
                     table.add("[lightgray] -" + formatted + StatUnit.perSecond.localized());
@@ -108,12 +105,8 @@ public class AxthrixStatus {
             public void setStats(){
                 super.setStats();
 
-                // Use a Lambda (table -> {}) instead of a String
                 stats.add(new Stat("aj-cyro-add"), table -> {
-                    float valPerSec = 0.01f * 60f; // Calculate the raw value (0.6)
-
-                    // Use formatDelta because this is a RATE, not a specific temp
-                    // We make it positive for the display text ("0.6" instead of "-0.6")
+                    float valPerSec = 0.01f * 60f;
                     String formatted = TempUnit.formatDelta(valPerSec);
 
                     table.add("[lightgray] -" + formatted + StatUnit.perSecond.localized());

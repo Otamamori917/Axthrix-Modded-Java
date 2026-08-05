@@ -7,7 +7,6 @@ public class AxPartParms {
 
     public static final AxPartParms.PerkPartParams perkparams = new AxPartParms.PerkPartParams();
 
-    // Global static placeholder container for shield plate progress parameters
     public static final AxPartParms.PlateShieldsPartParams shieldparams = new AxPartParms.PlateShieldsPartParams();
 
     public static class AxPartParams {
@@ -75,15 +74,14 @@ public class AxPartParms {
                 perkActivated = p -> perkparams.perkActivated;
     }
 
-    // UPDATED: Added new PartProgress handles so animations can read weapon states through the shield params layer!
     public interface PlateShieldsPartProgress {
         DrawPart.PartProgress
-                plateDurability = p -> shieldparams.plateDurability,
-                plateRebuildProgress = p -> shieldparams.plateRebuildProgress,
-                plateSmoothRebuild = p -> shieldparams.plateSmoothRebuild,
-                shieldWeaponWarmup = p -> shieldparams.weaponWarmup,
-                shieldWeaponReload = p -> shieldparams.weaponReload,
-                shieldWeaponRecoil = p -> shieldparams.weaponRecoil,
-                shieldWeaponHeat = p -> shieldparams.weaponHeat;
+                Durability = p -> shieldparams.plateDurability,
+                RebuildProgress = p -> shieldparams.plateRebuildProgress,
+                SmoothRebuild = p -> shieldparams.plateSmoothRebuild,
+                WeaponWarmup = p -> shieldparams.weaponWarmup,
+                WeaponReload = p -> shieldparams.weaponReload,
+                WeaponRecoil = p -> shieldparams.weaponRecoil,
+                WeaponHeat = p -> shieldparams.weaponHeat;
     }
 }

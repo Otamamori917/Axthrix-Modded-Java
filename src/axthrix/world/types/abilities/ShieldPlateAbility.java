@@ -1,23 +1,31 @@
 package axthrix.world.types.abilities;
 
 
+import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
+import arc.graphics.g2d.*;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.math.geom.Vec2;
+import arc.scene.Element;
+import arc.scene.ui.layout.Scl;
 import arc.scene.ui.layout.Table;
 import arc.struct.IntMap;
 import arc.struct.Seq;
+import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import arc.util.pooling.Pools;
+import axthrix.world.util.AxPartParms;
 import axthrix.world.util.draw.AxDrawf;
+import axthrix.world.util.draw.FlatIconShader;
 import axthrix.world.util.ui.ShieldPlatesBar;
+import mindustry.Vars;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.entities.part.DrawPart;
@@ -26,9 +34,14 @@ import mindustry.entities.part.RegionPart;
 import mindustry.game.EventType;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
+import mindustry.gen.Tex;
 import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.type.UnitType;
+import mindustry.ui.Fonts;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 /**
  * A physical armor plate with its own durability pool, separate from unit health.
@@ -78,6 +91,16 @@ public class ShieldPlateAbility extends Ability {
     /** bullet.type.hitSize at or above this value is treated as a "big" bullet for gap-splash behavior; below it, gap hits pass straight through to the unit untouched. */
     public static float bigBulletSizeThreshold = 9f;
 
+    /** Custom bundle key for this plate's specific display name (e.g., "stat.aj-plate-front") */
+    public String displayLabelKey = "aj-plate-default";
+
+    /** Visual UI offset overrides to adjust this plate's preview placement if it doesn't move its normal coordinates */
+    public float displayX = 0f;
+    public float displayY = 0f;
+
+    /** Independent radius offset to push this specific shield's coverage arc in the display stats further away or closer in */
+    public float arcRadiusOffset = 0.72f;
+
     /**
      * a {@link RegionPart}  used to draw this plate - load() resolves it as "{unitName}-{suffix}"
      */
@@ -105,9 +128,187 @@ public class ShieldPlateAbility extends Ability {
     public void init(UnitType type) {
         part.turretShading = false;
         part.load(type.name);
+        if (this.plateIndex != 0) {
+            this.display = false;
+        }
+
     }
 
     @Override
+    public void addStats(Table t) {
+        if (plateIndex != 0) return;
+
+        UnitType activeType = null;
+        for (var ut : Vars.content.units()) {
+            if (ut.abilities.contains(this)) {
+                activeType = ut;
+                break;
+            }
+        }
+        if (activeType == null) return;
+
+        Seq<ShieldPlateAbility> gridPlates = new Seq<>();
+        for (var ab : activeType.abilities) {
+            if (ab instanceof ShieldPlateAbility sp) {
+                gridPlates.add(sp);
+            }
+        }
+        gridPlates.sort((a, b) -> a.plateIndex - b.plateIndex);
+
+        final Color[] layerColors = {
+                Color.valueOf("7CFF7C"),
+                Color.valueOf("7CDDFF"),
+                Color.valueOf("FFEA7C"),
+                Color.valueOf("FFAA5E"),
+                Color.valueOf("FF7C7C"),
+                Color.valueOf("E07CFF"),
+                Color.valueOf("FF7CD5"),
+                Color.valueOf("7C94FF"),
+                Color.valueOf("A3FF7C"),
+                Color.valueOf("FFE3A3"),
+                Color.valueOf("A3FFEB"),
+                Color.valueOf("FFAA5E")
+        };
+
+        t.add("[#404042]-------------------------------------------------------").left();
+        t.row();
+
+        final UnitType finalType = activeType;
+        t.table(splitPane -> {
+            splitPane.left();
+
+            splitPane.table(leftPane -> {
+                leftPane.background(Tex.pane);
+                leftPane.margin(8f);
+
+                leftPane.add(new Element() {
+                    @Override
+                    public void draw() {
+                        float cx = x + width / 2f;
+                        float cy = y + height / 2f;
+                        float baseScale = 2.45f;
+
+                        float iconW = finalType.fullIcon != null ? finalType.fullIcon.width : 40f;
+                        float iconH = finalType.fullIcon != null ? finalType.fullIcon.height : 40f;
+                        float maxIconSize = Math.max(iconW, iconH);
+
+                        float targetBoxEnvelope = 82f;
+                        float sharedScale = baseScale;
+                        if (maxIconSize * sharedScale > targetBoxEnvelope) {
+                            sharedScale = targetBoxEnvelope / maxIconSize;
+                        }
+
+                        if (finalType.fullIcon != null) {
+                            Draw.shader(FlatIconShader.instance);
+                            Draw.color(Color.valueOf("383838"));
+                            Draw.rect(finalType.fullIcon, cx, cy, finalType.fullIcon.width * sharedScale, finalType.fullIcon.height * sharedScale, -90f);
+                            Draw.shader();
+                            Draw.reset();
+                        }
+
+                        for (ShieldPlateAbility p : gridPlates) {
+                            TextureRegion icon = p.part.regions.length > 0 ? p.part.regions[0] : null;
+                            if (icon == null) continue;
+
+                            Color runtimeColor = layerColors[Math.min(p.plateIndex, layerColors.length - 1)];
+
+                            Vec2 offsetVec = Pools.obtain(Vec2.class, Vec2::new);
+                            offsetVec.set(p.part.x * sharedScale * 2.4f, p.part.y * sharedScale * 2.4f);
+                            offsetVec.rotate(-90f);
+                            float px = cx + offsetVec.x;
+                            float py = cy + offsetVec.y;
+                            Pools.free(offsetVec);
+
+                            float rot = p.part.rotation - 90f;
+
+                            Draw.color(Color.white);
+                            Draw.rect(icon, px, py, icon.width * sharedScale, icon.height * sharedScale, rot);
+                            Draw.reset();
+
+                            float arcRadius = Math.max(icon.width, icon.height) * sharedScale * p.arcRadiusOffset;
+                            Lines.stroke(4f);
+                            Draw.color(runtimeColor, 0.25f);
+
+                            float startAngle = (p.facingAngle) - (p.coverageArc / 2f);
+                            int steps = 18;
+                            float angleStep = p.coverageArc / steps;
+
+                            for (int s = 0; s < steps; s++) {
+                                float a1 = startAngle + s * angleStep;
+                                float a2 = startAngle + (s + 1) * angleStep;
+
+                                float x1 = px + Mathf.cosDeg(a1) * arcRadius;
+                                float y1 = py + Mathf.sinDeg(a1) * arcRadius;
+                                float x2 = px + Mathf.cosDeg(a2) * arcRadius;
+                                float y2 = py + Mathf.sinDeg(a2) * arcRadius;
+
+                                Lines.line(x1, y1, x2, y2);
+                            }
+                            Draw.reset();
+
+                            Vec2 textOffsetVec = Pools.obtain(Vec2.class, Vec2::new);
+                            textOffsetVec.set((p.part.x + p.displayX) * sharedScale * 2.4f, (p.part.y + p.displayY) * sharedScale * 2.4f);
+                            textOffsetVec.rotate(-90f);
+                            float textPx = cx + textOffsetVec.x;
+                            float textPy = cy + textOffsetVec.y;
+                            Pools.free(textOffsetVec);
+
+                            String indexText = String.valueOf(p.plateIndex + 1);
+                            Font font = Fonts.outline;
+                            float oldScaleX = font.getData().scaleX;
+                            float oldScaleY = font.getData().scaleY;
+
+                            font.getData().setScale(0.65f / Scl.scl(1f));
+                            font.setColor(runtimeColor);
+
+                            GlyphLayout lay = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
+                            lay.setText(font, indexText);
+
+                            font.getCache().clear();
+                            font.getCache().addText(indexText, textPx - lay.width / 2f, textPy + lay.height / 2f);
+                            font.getCache().draw(parentAlpha);
+
+                            Pools.free(lay);
+                            font.getData().setScale(oldScaleX, oldScaleY);
+                        }
+                    }
+                }).size(150f);
+            }).left().padRight(16f);
+            splitPane.table(rightPane -> {
+                rightPane.top().left();
+
+                for (ShieldPlateAbility p : gridPlates) {
+                    Color runtimeColor = layerColors[Math.min(p.plateIndex, layerColors.length - 1)];
+                    String hexColor = "[#" + runtimeColor.toString() + "]";
+
+                    rightPane.table(itemBlock -> {
+                        itemBlock.left();
+
+                        String localizedName = Core.bundle.get(p.displayLabelKey);
+                        itemBlock.add(hexColor + (p.plateIndex + 1) + ".[] [white]" + localizedName + "[]").left().row();
+
+                        String hpLabel = Stat.health.localized();
+                        itemBlock.add("   [lightgray]•[] " + hpLabel + ": [stat]" + (int)p.maxDurability +" "+ StatUnit.shieldHealth.localized())
+                                .left().padLeft(8f).row();
+
+                        itemBlock.add("   [lightgray]•[] " + Core.bundle.get("stat.aj-coverage") + ":[stat] " + (int)p.coverageArc +" "+ StatUnit.degrees.localized())
+                                .left().padLeft(8f).row();
+
+                        if (p.canRebuild) {
+                            String formattedTime = Strings.autoFixed(p.buildTime / 60f, 1);
+                            itemBlock.add("   [lightgray]•[] " + Core.bundle.format("stat.aj-rebuild-time", formattedTime)+" "+StatUnit.seconds.localized())
+                                    .left().padLeft(8f).row();
+                        }
+                    }).left().padBottom(10f).row();
+                }
+            }).top().left();
+        }).left();
+        t.row();
+    }
+
+
+
+        @Override
     public void created(Unit unit) {
         ShieldState state = stateFor(unit);
         state.durability = maxDurability;
@@ -282,7 +483,7 @@ public class ShieldPlateAbility extends Ability {
         float durFraction = maxDurability > 0f ? state.durability / maxDurability : 0f;
         float rebuildProgress = buildTime > 0f ? arc.math.Mathf.clamp(1f - (state.buildRemaining / buildTime)) : 1f;
 
-        axthrix.world.util.AxPartParms.shieldparams.set(
+        AxPartParms.shieldparams.set(
                 durFraction,
                 rebuildProgress,
                 state.smoothRebuildProgress,
@@ -705,6 +906,10 @@ public class ShieldPlateAbility extends Ability {
 
             plateStates.put(key(unitId, plateIdx), s);
         }
+    }
+
+    public String localized() {
+        return Core.bundle.format("ability.aj-shield-plates");
     }
 
     /** Persistent state for a single plate on a single unit. */

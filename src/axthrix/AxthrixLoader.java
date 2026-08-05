@@ -134,8 +134,6 @@ public class AxthrixLoader extends Mod{
             }
         });
 
-        /// UPDATE EVENTS (Run every frame)
-
         Events.run(EventType.Trigger.update, () -> {
             // Attachment grenade updates
             Groups.unit.each(AttachmentGrenadeBulletType::updateGrenades);

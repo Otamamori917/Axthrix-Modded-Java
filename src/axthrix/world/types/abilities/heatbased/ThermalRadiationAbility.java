@@ -37,7 +37,7 @@ public class ThermalRadiationAbility extends PassiveHeatAbility {
 
     @Override
     public void update(Unit unit){
-        super.update(unit); // Handle heat generation
+        super.update(unit);
 
         float ownHeat = TemperatureLogic.getHeatUnit(unit);
         float heatPercent = ownHeat / maxSelfHeat;
