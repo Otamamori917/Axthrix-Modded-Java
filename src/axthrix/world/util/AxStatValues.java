@@ -744,10 +744,9 @@ public class AxStatValues {
         if(type instanceof PlasmaCapacitorBulletType b){
             line(t, "stat.aj-capacitor-charge-time", secs(b.chargeDuration)).left();
             line(t, "stat.aj-capacitor-siphon-rate", "[red]-" + TempUnit.formatDelta(b.heatSiphonPerFrame*60) + StatUnit.perSecond.localized()).left();
-            line(t, "stat.aj-capacitor-scale-factor", "[orange]+" + b.damagePerHeatStored + StatUnit.heatUnits.localized()).left();
+            line(t, "stat.aj-capacitor-scale-factor", b.damagePerHeatStored +" [lightgray]"+ Stat.damage.localized()).left();
             any = true;
         }
-
 
         if(type instanceof ContinuousFractalLightBulletType b){
 
