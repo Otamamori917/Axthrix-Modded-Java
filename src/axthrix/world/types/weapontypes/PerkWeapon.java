@@ -5,6 +5,7 @@ import arc.struct.ObjectIntMap;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Strings;
+import axthrix.content.AxLiquids;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStatValues;
@@ -70,9 +71,7 @@ public class PerkWeapon extends Weapon {
             t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
         }
 
-        AxStatValues.appendCustomStats(t, bullet);
-        StatValues.ammo(ObjectMap.of(unit, bullet)).display(t);
-
+        AxStatValues.appendCustomStats(t, bullet, AxLiquids.nothingness);
     }
 
 

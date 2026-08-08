@@ -66,13 +66,11 @@ public class TemperatureBulletType extends BasicBulletType {
                 }
             });
 
-            Groups.build.intersect(x - splashDamageRadius, y - splashDamageRadius, splashDamageRadius * 2f, splashDamageRadius * 2f, otherBuild -> {
+            Units.nearbyBuildings(x, y, splashDamageRadius, otherBuild -> {
                 if(otherBuild.isValid() && !otherBuild.dead && otherBuild.team != b.team){
                     float dist = Mathf.dst(x, y, otherBuild.x, otherBuild.y);
-                    if(dist <= splashDamageRadius){
-                        float factor = 1f - Mathf.clamp(dist / splashDamageRadius);
-                        TemperatureLogic.applyTemperatureBuilding(otherBuild, temperaturePerHit * factor);
-                    }
+                    float factor = 1f - Mathf.clamp(dist / splashDamageRadius);
+                    TemperatureLogic.applyTemperatureBuilding(otherBuild, temperaturePerHit * factor);
                 }
             });
         }

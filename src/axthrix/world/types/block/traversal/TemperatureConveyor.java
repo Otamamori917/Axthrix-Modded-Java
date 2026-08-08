@@ -1,192 +1,247 @@
 package axthrix.world.types.block.traversal;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
-import arc.math.geom.Geometry;
-import arc.util.Time;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.geom.*;
+import arc.util.*;
 import axthrix.world.types.block.AxBlock;
-import axthrix.world.types.block.production.TemperatureGenerator;
 import axthrix.world.util.TempUnit;
 import axthrix.world.util.logics.TemperatureLogic;
 import axthrix.world.util.ui.TemperatureBar;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.world.Tile;
+import mindustry.world.blocks.Autotiler;
+import mindustry.world.meta.*;
 
-public class TemperatureConveyor extends AxBlock {
-    public float transferRate = 2f; // Temperature transferred per second
-    public float sideTransferRate = 1f; // Temperature from sides (for turning)
+import static mindustry.Vars.*;
 
-    // Temperature resistances
-    public float accumulationResistanceHeat = 1f;
-    public float accumulationResistanceCold = 1f;
-    public float effectResistanceHeat = 0.5f;
-    public float effectResistanceCold = 0.5f;
-
+public class TemperatureConveyor extends AxBlock implements Autotiler {
+    public float transferRate = 2f;
     public float maxTempStorage = 20f;
+
+    public TextureRegion[] topRegions = new TextureRegion[5];
+    public TextureRegion[] botRegions = new TextureRegion[5];
 
     public TemperatureConveyor(String name){
         super(name);
+        group = BlockGroup.transportation;
         update = true;
         solid = false;
         rotate = true;
+        noSideBlend = true;
+        conveyorPlacement = true;
         noUpdateDisabled = true;
+        underBullets = true;
+
+        effectResistanceHeat = 0.5f;
+        effectResistanceCold = 0.5f;
     }
 
     @Override
     public void setStats(){
         super.setStats();
-
-        // Output Stat (Main Line Transfer)
         stats.add(Stat.output, table -> {
-            // formatDelta handles the math for rates (x1.8 for F, x1 for K)
             String rate = TempUnit.formatDelta(transferRate);
             table.add("Transfer: " + rate + StatUnit.perSecond.localized());
         });
-
-        // Input Stat (Side Transfer)
-        stats.add(Stat.input, table -> {
-            String sideRate = TempUnit.formatDelta(sideTransferRate);
-            table.add("Side input: " + sideRate + StatUnit.perSecond.localized());
-        });
-
         stats.add(Stat.heatCapacity, table -> {
-
-            // 1. Convert the Cold Limit (Negative internal value)
             String coldCap = TempUnit.format(-maxTempStorage);
-
-            // 2. Convert the Heat Limit (Positive internal value)
             String heatCap = TempUnit.format(maxTempStorage);
-
-            // 3. Display as a Range: "[cyan]-148°F[]  to  [red]212°F[]"
             table.add("[cyan]" + coldCap + "[]  -  [red]" + heatCap + "[]");
         });
     }
 
-
     @Override
     public void setBars(){
         super.setBars();
-
         addBar("temperature", (TemperatureConveyorBuild entity) -> new TemperatureBar("Temp", entity));
-
     }
 
-    public class TemperatureConveyorBuild extends AxBlockBuild {
+    @Override
+    public void load() {
+        super.load();
+        for (int i = 0; i < 5; i++) {
+            topRegions[i] = Core.atlas.find(name + "-top-" + i);
+            botRegions[i] = Core.atlas.find(name + "-bottom-" + i, Core.atlas.find("duct-bottom-" + i));
+        }
+    }
+
+    @Override
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        int[] bits = getTiling(plan, list);
+        if(bits == null) return;
+
+        Draw.scl(bits[1], bits[2]);
+        Draw.alpha(0.5f);
+        Draw.rect(botRegions[bits[0]], plan.drawx(), plan.drawy(), plan.rotation * 90);
+        Draw.color();
+        Draw.rect(topRegions[bits[0]], plan.drawx(), plan.drawy(), plan.rotation * 90);
+        Draw.scl();
+    }
+
+    @Override
+    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+        return otherblock instanceof TemperatureConveyor || otherblock instanceof TemperatureRouter || otherblock instanceof TemperatureJunction;
+    }
+    public class TemperatureConveyorBuild extends Building {
+        public int blendbits, xscl, yscl, blending;
+        public @Nullable Building next;
 
         @Override
         public void updateTile(){
-            // Get my current temperature
             float myHeat = TemperatureLogic.getHeatBuilding(this);
             float myCold = TemperatureLogic.getColdBuilding(this);
+            float frameTransferLimit = transferRate * Time.delta / 60f;
 
-            // Transfer to front first (priority)
-            Building front = front();
-            if(front != null){
-                float transferAmount = transferRate * Time.delta / 60f;
+            next = front();
+            if(next != null){
+                float targetMaxStorage = TemperatureLogic.getMaxTempStorage(next.block);
+                float targetRemaining = 0f;
 
-                // Transfer heat
-                if(myHeat > 0){
-                    float transfer = Math.min(myHeat, transferAmount);
-                    TemperatureLogic.applyTemperatureBuilding(front, transfer);
-                    // Remove from self
-                    TemperatureLogic.applyTemperatureBuilding(this, -transfer);
-                    myHeat -= transfer; // Update local value
-                }
+                if(next instanceof TemperatureJunction.TemperatureJunctionBuild jb) {
+                    int targetAxis = (this.rotation % 2 == 0) ? 0 : 1;
 
-                // Transfer cold
-                if(myCold > 0){
-                    float transfer = Math.min(myCold, transferAmount);
-                    TemperatureLogic.applyTemperatureBuilding(front, -transfer);
-                    // Remove from self
-                    TemperatureLogic.applyTemperatureBuilding(this, transfer);
-                    myCold -= transfer; // Update local value
+                    if (myHeat > 0.001f) {
+                        targetRemaining = jb.channels[targetAxis] < 0 ? 0f : targetMaxStorage - jb.channels[targetAxis];
+                    } else if (myCold > 0.001f) {
+                        targetRemaining = jb.channels[targetAxis] > 0 ? 0f : targetMaxStorage - Math.abs(jb.channels[targetAxis]);
+                    }
+
+                    if (targetRemaining > 0.001f) {
+                        float transfer = Math.min(myHeat > 0.001f ? myHeat : myCold, Math.min(frameTransferLimit, targetRemaining));
+                        if (myHeat > 0.001f) {
+                            jb.channels[targetAxis] += transfer;
+                            TemperatureLogic.applyTemperatureBuilding(this, -transfer);
+                            myHeat -= transfer;
+                        } else {
+                            jb.channels[targetAxis] -= transfer;
+                            TemperatureLogic.applyTemperatureBuilding(this, transfer);
+                            myCold -= transfer;
+                        }
+                    }
+                } else {
+                    if(myHeat > 0.001f){
+                        targetRemaining = targetMaxStorage - TemperatureLogic.getHeatBuilding(next);
+                        if (targetRemaining > 0.001f) {
+                            float transfer = Math.min(myHeat, Math.min(frameTransferLimit, targetRemaining));
+                            TemperatureLogic.applyTemperatureBuilding(next, transfer);
+                            TemperatureLogic.applyTemperatureBuilding(this, -transfer);
+                            myHeat -= transfer;
+                        }
+                    }
+                    if(myCold > 0.001f){
+                        targetRemaining = targetMaxStorage - TemperatureLogic.getColdBuilding(next);
+                        if (targetRemaining > 0.001f) {
+                            float transfer = Math.min(myCold, Math.min(frameTransferLimit, targetRemaining));
+                            TemperatureLogic.applyTemperatureBuilding(next, -transfer);
+                            TemperatureLogic.applyTemperatureBuilding(this, transfer);
+                            myCold -= transfer;
+                        }
+                    }
                 }
             }
 
-            // Pull from back (after transferring forward)
             Building back = back();
-            if(back != null){
+            if(back != null && !(back.block instanceof TemperatureConveyor) && !(back.block instanceof TemperatureRouter) && !(back.block instanceof TemperatureJunction)){
+                float spaceLeftHeat = maxTempStorage - myHeat;
+                float spaceLeftCold = maxTempStorage - myCold;
                 float backHeat = TemperatureLogic.getHeatBuilding(back);
                 float backCold = TemperatureLogic.getColdBuilding(back);
 
-                float transferAmount = transferRate * Time.delta / 60f;
-
-                // Pull heat from back
-                if(backHeat > 0){
-                    float transfer = Math.min(backHeat, transferAmount);
+                if(backHeat > 0.001f && spaceLeftHeat > 0.001f){
+                    float transfer = Math.min(backHeat, Math.min(frameTransferLimit, spaceLeftHeat));
                     TemperatureLogic.applyTemperatureBuilding(this, transfer);
-                    // Remove from back
                     TemperatureLogic.applyTemperatureBuilding(back, -transfer);
+                    myHeat += transfer;
                 }
-
-                // Pull cold from back
-                if(backCold > 0){
-                    float transfer = Math.min(backCold, transferAmount);
+                if(backCold > 0.001f && spaceLeftCold > 0.001f){
+                    float transfer = Math.min(backCold, Math.min(frameTransferLimit, spaceLeftCold));
                     TemperatureLogic.applyTemperatureBuilding(this, -transfer);
-                    // Remove from back
                     TemperatureLogic.applyTemperatureBuilding(back, transfer);
+                    myCold += transfer;
                 }
             }
 
-            // Pull from sides (for turning)
             for(int i = 0; i < 2; i++){
                 int sideRotation = (rotation + (i == 0 ? 1 : -1) * 2) % 4;
-                if(sideRotation < 0) sideRotation += 4; // Handle negative modulo
+                if(sideRotation < 0) sideRotation += 4;
 
                 Building side = nearby(sideRotation);
-                if(side != null){
+                if(side != null && !(side.block instanceof TemperatureConveyor) && !(side.block instanceof TemperatureRouter) && !(side.block instanceof TemperatureJunction)){
+                    float spaceLeftHeat = maxTempStorage - myHeat;
+                    float spaceLeftCold = maxTempStorage - myCold;
                     float sideHeat = TemperatureLogic.getHeatBuilding(side);
                     float sideCold = TemperatureLogic.getColdBuilding(side);
 
-                    float sideTransferAmount = sideTransferRate * Time.delta / 60f;
-
-                    // Pull heat from side
-                    if(sideHeat > 0){
-                        float transfer = Math.min(sideHeat, sideTransferAmount);
+                    if(sideHeat > 0.001f && spaceLeftHeat > 0.001f){
+                        float transfer = Math.min(sideHeat, Math.min(frameTransferLimit, spaceLeftHeat));
                         TemperatureLogic.applyTemperatureBuilding(this, transfer);
-                        // Remove from side
                         TemperatureLogic.applyTemperatureBuilding(side, -transfer);
+                        myHeat += transfer;
                     }
-
-                    // Pull cold from side
-                    if(sideCold > 0){
-                        float transfer = Math.min(sideCold, sideTransferAmount);
+                    if(sideCold > 0.001f && spaceLeftCold > 0.001f){
+                        float transfer = Math.min(sideCold, Math.min(frameTransferLimit, spaceLeftCold));
                         TemperatureLogic.applyTemperatureBuilding(this, -transfer);
-                        // Remove from side
                         TemperatureLogic.applyTemperatureBuilding(side, transfer);
+                        myCold += transfer;
                     }
                 }
             }
         }
+        @Override
+        public void onProximityUpdate(){
+            super.onProximityUpdate();
+            int[] bits = buildBlending(tile, rotation, null, true);
+            blendbits = bits[0];
+            xscl = bits[1];
+            yscl = bits[2];
+            blending = bits[4];
+            next = front();
+        }
 
         @Override
         public void draw(){
-            super.draw();
+            float rotationDeg = rotdeg();
+            int r = this.rotation;
 
-            // Draw flow indicator
+            for(int i = 0; i < 4; i++){
+                if((blending & (1 << i)) != 0){
+                    int dir = r - i;
+                    float rot = i == 0 ? rotationDeg : (dir)*90;
+                    drawAt(x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, 0, rot, i != 0 ? SliceMode.bottom : SliceMode.top);
+                }
+            }
+
+            Draw.scl(xscl, yscl);
+            drawAt(x, y, blendbits, rotationDeg, SliceMode.none);
+            Draw.scl();
+
             float heat = TemperatureLogic.getHeatBuilding(this);
             float cold = TemperatureLogic.getColdBuilding(this);
-
-            if(heat > 0 || cold > 0){
-                Draw.z(30f);
-
-                Color color = heat > cold ? Pal.turretHeat : Pal.lancerLaser;
-                Draw.color(color);
-
-                // Animated flow arrow
+            if(heat > 0.01f || cold > 0.01f){
+                Draw.z(Layer.blockUnder + 0.3f);
+                Draw.color(heat > cold ? Pal.turretHeat : Pal.lancerLaser);
                 float offset = (Time.time % 60f) / 60f * 8f;
-                int dx = Geometry.d4x(rotation);
-                int dy = Geometry.d4y(rotation);
-
                 Lines.stroke(2f);
-                Lines.lineAngle(x + dx * offset, y + dy * offset, rotation * 90f, 4f);
-
+                Lines.lineAngle(x + Geometry.d4x(this.rotation) * offset, y + Geometry.d4y(this.rotation) * offset, this.rotation * 90f, 4f);
                 Draw.reset();
             }
+        }
+
+        protected void drawAt(float x, float y, int bits, float rotation, SliceMode slice){
+            Draw.z(Layer.blockUnder);
+            Draw.rect(sliced(botRegions[bits], slice), x, y, rotation);
+
+            Draw.z(Layer.blockUnder + 0.2f);
+            Draw.color(new Color(0.4f, 0.4f, 0.4f, 0.1f));
+            Draw.rect(sliced(botRegions[bits], slice), x, y, rotation);
+            Draw.color();
+            Draw.rect(sliced(topRegions[bits], slice), x, y, rotation);
         }
     }
 }

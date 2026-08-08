@@ -17,6 +17,7 @@ import arc.scene.ui.layout.Table;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.*;
+import axthrix.content.AxLiquids;
 import axthrix.world.util.AxPartParms;
 import mindustry.Vars;
 import mindustry.audio.SoundLoop;
@@ -342,7 +343,7 @@ public class BlockWeapon implements Cloneable {
 
                     Table customPanel = new Table();
                     customPanel.left().defaults().padRight(3).left();
-                    if(AxStatValues.appendCustomStats(customPanel, type)){
+                    if(AxStatValues.appendCustomStats(customPanel, type, AxLiquids.nothingness)){
                         bt.row();
                         bt.table(Styles.grayPanel, (et) -> et.add(customPanel).left().grow())
                                 .padLeft(5).padTop(0).padBottom(5).growX().margin(10);
@@ -356,7 +357,7 @@ public class BlockWeapon implements Cloneable {
 
             Table customPanel = new Table();
             customPanel.left().defaults().padRight(3).left();
-            if(AxStatValues.appendCustomStats(customPanel, this.bullet)){
+            if(AxStatValues.appendCustomStats(customPanel, this.bullet,AxLiquids.nothingness)){
                 t.row();
                 t.table(Styles.grayPanel, (et) -> et.add(customPanel).left().grow())
                         .padLeft(5).padTop(0).padBottom(5).growX().margin(10);

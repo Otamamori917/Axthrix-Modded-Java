@@ -30,6 +30,8 @@ public class AxDuct extends Duct {
 
     public boolean waterBlock;
 
+    public Color transparentColor = new Color(0.4f, 0.4f, 0.4f, 0.1f);
+
     public Seq<AxFaction> faction = new Seq<>();
 
     public AxDuct(String name) {

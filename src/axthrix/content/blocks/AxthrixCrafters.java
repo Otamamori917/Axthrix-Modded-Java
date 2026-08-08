@@ -1,5 +1,6 @@
 package axthrix.content.blocks;
 
+
 import arc.graphics.Color;
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
@@ -7,29 +8,37 @@ import axthrix.content.AxItems;
 import axthrix.content.AxLiquids;
 import axthrix.content.units.AxthrixUnits;
 import axthrix.world.types.ai.WallBreakerAI;
+import axthrix.world.types.block.PayloadAmmoBlock;
 import axthrix.world.types.block.drill.AxDrill;
 import axthrix.world.types.block.drill.WallBreakerSpawner;
-import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.effect.GeneratorCoreBlock;
 import axthrix.world.types.block.effect.NanobotProjector;
 import axthrix.world.types.block.production.*;
+import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.storage.TemperatureStorage;
+import axthrix.world.types.block.temperature.TemperatureDrainBlock;
+import axthrix.world.types.block.temperature.TemperatureSourceBlock;
+import axthrix.world.types.block.temperature.TemperatureVoidBlock;
 import axthrix.world.types.block.traversal.*;
 import axthrix.world.types.sea.block.SeaCore;
-import axthrix.world.types.sea.unit.SeaCoreConstructorUnitType;
 import axthrix.world.types.sea.block.SeaCoreSpawner;
+import axthrix.world.types.sea.unit.SeaCoreConstructorUnitType;
 import axthrix.world.types.unittypes.WallBreakerUnitType;
 import axthrix.world.util.AxRecipe;
 import axthrix.world.util.AxRecipeSelector;
-import mindustry.content.*;
+import mindustry.content.Blocks;
+import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.content.Liquids;
 import mindustry.gen.LegsUnit;
 import mindustry.gen.Sounds;
-import mindustry.type.*;
+import mindustry.type.Category;
+import mindustry.type.ItemStack;
+import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
-import multicraft.*;
+import multicraft.IOEntry;
 
-import static axthrix.content.blocks.PayloadAmmoBlocks.*;
 import static mindustry.type.ItemStack.with;
 
 public class AxthrixCrafters {
@@ -46,7 +55,7 @@ public class AxthrixCrafters {
 
 	cryoForge,// crafts cooling assemblies from cold temperatures and tungsten Coils, solid iodine, and silver Coils
 
-	thermalDuct,//moves hot and cold temperatures
+	thermalDuct,thermalRouter,thermalJunction,temperatureSource,temperatureVoid,//moves hot and cold temperatures
 
 	thermalBattery,//stores hot and cold temperatures dissipates without any input or power
 
@@ -84,26 +93,32 @@ public class AxthrixCrafters {
 
 	liquidDeposit,// a way for units with liquid storage to desposit such liquids
 
-	wallCarver; //remove env walls producing waste material and revealing ores
+	wallCarver, //remove env walls producing waste material and revealing ores
 
+    salvageHeatSink,salvageDefroster,
+	heatsink,defroster,
+	multiTemper
+
+
+	; //sand box duh
 
 
     public static void load() {
 		seaRouter = new AxDuctRouter("sea-item-router"){{
 			waterBlock = true;
-			requirements(Category.distribution, ItemStack.with(
+			requirements(Category.distribution, with(
 					Items.lead, 1, Items.metaglass, 1
 			));
 		}};
 		seaBridge = new AxDuctBridge("sea-item-bridge"){{
 			waterBlock = true;
-			requirements(Category.distribution, ItemStack.with(
+			requirements(Category.distribution, with(
 					Items.lead, 1, Items.metaglass, 1
 			));
 		}};
 		seaJunction = new AxDuctJunction("sea-item-junction"){{
 			waterBlock = true;
-			requirements(Category.distribution, ItemStack.with(
+			requirements(Category.distribution, with(
 					Items.lead, 1, Items.metaglass, 1
 			));
 		}};//Blocks.tankAssembler
@@ -111,14 +126,14 @@ public class AxthrixCrafters {
 			waterBlock = true;
 			junctionReplacement = seaJunction;
 			bridgeReplacement = seaBridge;
-			requirements(Category.distribution, ItemStack.with(
+			requirements(Category.distribution, with(
 					Items.lead, 1, Items.metaglass, 1
 			));
 		}};
 
 		seaDrill = new AxDrill("sea-drill"){{
 			waterBlock = true;
-			requirements(Category.production, ItemStack.with(
+			requirements(Category.production, with(
 					Items.lead, 50, Items.metaglass, 20
 			));
 		}};
@@ -167,7 +182,7 @@ public class AxthrixCrafters {
 
 			consumePower(2f);
 			consumeItems(with(Items.coal, 1));
-			requirements(Category.production, ItemStack.with(
+			requirements(Category.production, with(
 					Items.lead, 50, Items.silicon, 20
 			));
 		}};
@@ -202,13 +217,37 @@ public class AxthrixCrafters {
 			requirements(Category.effect, with(Items.graphite, 150, Items.silicon, 100));
 		}};
 
-        // Temperature conveyor
 		thermalDuct = new TemperatureConveyor("thermal-duct"){{
 			size = 1;
 			transferRate = 5f;
-			sideTransferRate = 2f;
 
 			requirements(Category.distribution, with(Items.copper, 2, Items.graphite, 2));
+		}};
+
+		thermalRouter = new TemperatureRouter("thermal-router"){{
+			size = 1;
+			transferRate = 5f;
+
+			requirements(Category.distribution, with(Items.copper, 2, Items.graphite, 2));
+		}};
+
+		thermalJunction = new TemperatureJunction("thermal-junction"){{
+			size = 1;
+			transferRate = 5f;
+
+			requirements(Category.distribution, with(Items.copper, 2, Items.graphite, 2));
+		}};
+
+		temperatureSource = new TemperatureSourceBlock("temp-source"){{
+			requirements(Category.distribution, with(
+					Items.copper, 1
+			));
+		}};
+
+		temperatureVoid = new TemperatureVoidBlock("temp-void"){{
+			requirements(Category.distribution, with(
+					Items.copper, 1
+			));
 		}};
 		// Power generator
 		heatGenerator = new TemperaturePowerGenerator("heat-generator"){{
@@ -246,7 +285,7 @@ public class AxthrixCrafters {
 			effectResistanceCold = 0;
 			accumulationResistanceHeat = 0.4f;
 
-			consumeItems(ItemStack.with(AxItems.tungstenCoil, 8, AxItems.iodine, 4, AxItems.silverCoil,10));
+			consumeItems(with(AxItems.tungstenCoil, 8, AxItems.iodine, 4, AxItems.silverCoil,10));
 			outputItem = new ItemStack(AxItems.coolingAssembly, 2);
 			craftTime = 120f;
 			requirements(Category.crafting, with(
@@ -446,13 +485,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(ItemStack.with(AxItems.carbonCoil, 8, AxItems.silverCoil, 1)),
+									Seq.with(with(AxItems.carbonCoil, 8, AxItems.silverCoil, 1)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(ItemStack.with(AxItems.CSW, 2)),
+									Seq.with(with(AxItems.CSW, 2)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -495,13 +534,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(ItemStack.with(AxItems.aqullium, 2)),
+									Seq.with(with(AxItems.aqullium, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(ItemStack.with(AxItems.carbonCoil, 2, AxItems.tungstenCoil, 1, AxItems.ingot, 1)),
+									Seq.with(with(AxItems.carbonCoil, 2, AxItems.tungstenCoil, 1, AxItems.ingot, 1)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -512,13 +551,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(ItemStack.with(AxItems.esperillo, 2)),
+									Seq.with(with(AxItems.esperillo, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(ItemStack.with(AxItems.copperCoil, 2, AxItems.ingot, 4)),
+									Seq.with(with(AxItems.copperCoil, 2, AxItems.ingot, 4)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -529,13 +568,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(ItemStack.with(AxItems.komainium, 2)),
+									Seq.with(with(AxItems.komainium, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(ItemStack.with(AxItems.leadCoil, 2, AxItems.silverCoil, 1, AxItems.ingot, 1)),
+									Seq.with(with(AxItems.leadCoil, 2, AxItems.silverCoil, 1, AxItems.ingot, 1)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -567,7 +606,7 @@ public class AxthrixCrafters {
 			researchCost = with(Items.copper, 1);
 			requirements(Category.crafting, with(Items.copper, 1));
 			consumeLiquids(LiquidStack.with(AxLiquids.xenon, 0.2f, AxLiquids.iodineGas, 0.15));
-			consumeItems(ItemStack.with(AxItems.CSW, 2, AxItems.coolingAssembly, 1,AxItems.dysprosium,4));
+			consumeItems(with(AxItems.CSW, 2, AxItems.coolingAssembly, 1,AxItems.dysprosium,4));
 		}};
 
 		chemicalSeparator = new AxSeparator("chemical-separator"){{
@@ -664,7 +703,7 @@ public class AxthrixCrafters {
 			size = 3;
 			ambientSound = Sounds.loopMachine;
 			recipes(
-					empty1mCaliber
+					PayloadAmmoBlocks.empty1mCaliber
 			);
 			recipes.each(r -> r.centerBuild = true);
 			setRecipeProductionStats();
@@ -684,16 +723,16 @@ public class AxthrixCrafters {
 			ambientSound = Sounds.loopMachine;
 			liquidCapacity = 80f;
 			recipes(
-					basic1mCaliber,
-					arcane1mCaliber,
+					PayloadAmmoBlocks.basic1mCaliber,
+					PayloadAmmoBlocks.arcane1mCaliber,
 					//solids
-					frostbite1mCaliber,
-					incendiary1mCaliber,
-					quicksilver1mCaliber,
+					PayloadAmmoBlocks.frostbite1mCaliber,
+					PayloadAmmoBlocks.incendiary1mCaliber,
+					PayloadAmmoBlocks.quicksilver1mCaliber,
 					//energy
-					void1mCaliber,
-					sonicwave1mCaliber,
-					tempest1mCaliber
+					PayloadAmmoBlocks.void1mCaliber,
+					PayloadAmmoBlocks.sonicwave1mCaliber,
+					PayloadAmmoBlocks.tempest1mCaliber
 			);
 			setRecipeProductionStats();
 		}};
@@ -706,6 +745,28 @@ public class AxthrixCrafters {
 					Items.titanium, 100,
 					Items.silicon, 80
 			));
+		}};
+
+
+		salvageDefroster = new TemperatureDrainBlock("salvage-defroster"){{
+			requirements(Category.liquid, with(
+					AxItems.ingot, 15,
+					AxItems.iron,10
+			));
+			drainHeat = false;
+			swappable = false;
+			drainRate = 2;
+			drainMode = 1;
+		}};
+		salvageHeatSink = new TemperatureDrainBlock("salvage-heat-sink"){{
+			requirements(Category.liquid, with(
+					AxItems.ingot, 15,
+					AxItems.iron,10
+			));
+			drainHeat = true;
+			swappable = false;
+			drainRate = 2.5f;
+			drainMode = 2;
 		}};
     }
 }

@@ -55,9 +55,7 @@ public class TemperatureGenerator extends AxGenericCrafter {
 
         @Override
         public void updateTile(){
-            super.updateTile(); // Handle all consumption automatically
-
-            // Only produce temperature if we're efficient (have resources)
+            super.updateTile();
             if(efficiency > 0){
                 float deltaTemp = temperatureOutput *
                         efficiency * Time.delta / 60f;

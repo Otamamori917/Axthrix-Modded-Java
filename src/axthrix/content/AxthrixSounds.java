@@ -27,7 +27,12 @@ public class AxthrixSounds {
              parserShoot = new Sound(),
              parserCharge = new Sound(),
              pop = new Sound(),
-             gluon = new Sound()
+             gluon = new Sound(),
+
+    /// welcome animations
+             MarkMyWords = new Sound(),
+             Phoenix = new Sound(),
+             AuraMonster = new Sound()
 
 
 
@@ -56,6 +61,11 @@ public class AxthrixSounds {
         parserCharge = tree.loadSound("charge-parser");
         pop = tree.loadSound("pop");
         gluon = tree.loadSound("gluon");
+
+
+        MarkMyWords = tree.loadSound("mark-my-words");
+        Phoenix = tree.loadSound("phoenix");
+        AuraMonster = tree.loadSound("aura-monster");
 
     }
 }

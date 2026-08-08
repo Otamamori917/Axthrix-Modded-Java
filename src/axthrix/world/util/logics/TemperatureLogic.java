@@ -3,7 +3,6 @@ package axthrix.world.util.logics;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.gl.Shader;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
@@ -23,6 +22,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Layer;
 import mindustry.type.StatusEffect;
 import mindustry.type.unit.ErekirUnitType;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 
 import java.io.DataInput;
@@ -47,7 +47,7 @@ public class TemperatureLogic {
     protected static ObjectMap<Integer, Float> buildingHeat = new ObjectMap<>();
     protected static ObjectMap<Integer, Float> buildingCold = new ObjectMap<>();
 
-    ///last hit times for heat and cold and combined
+    /// last hit times for heat and cold and combined
     protected static ObjectMap<Integer, Float> lastHitTime = new ObjectMap<>();
     protected static ObjectMap<Integer, Float> lastHitTimeHeat = new ObjectMap<>();
     protected static ObjectMap<Integer, Float> lastHitTimeCold = new ObjectMap<>();
@@ -68,8 +68,13 @@ public class TemperatureLogic {
     protected static ObjectMap<Integer, Float> buildingEffectResistanceHeat = new ObjectMap<>();
     protected static ObjectMap<Integer, Float> buildingEffectResistanceCold = new ObjectMap<>();
 
-    /// idk bruh
+    /// per-building tile cache used by applyTemperatureFromFloors
     protected static ObjectMap<Integer, TileCont> blockTilesList = new ObjectMap<>();
+
+    /// per-block-class cache of the requiresHeat && requiresCold reflection lookup
+    protected static ObjectMap<Class<?>, Boolean> needsBothCache = new ObjectMap<>();
+    /// per-block-class cache of the maxTempStorage reflection lookup
+    protected static ObjectMap<Class<?>, Float> maxTempCache = new ObjectMap<>();
 
     /// Effect particle counters
     protected static int heatParticleCounter = 0;
@@ -119,12 +124,11 @@ public class TemperatureLogic {
 
 
 
-    /// TEMPERATURE APPLICATION
+    /// TEMPERATURE APPLICATION (adds, scaled by accumulation resistance)
 
     public static void applyTemperatureUnit(Unit unit, float amount){
         int id = unit.id;
 
-        // Store resistance values if not already stored
         loadUnitResistances(unit);
 
         float accumulationResist = amount > 0 ?
@@ -147,7 +151,6 @@ public class TemperatureLogic {
     public static void applyTemperatureBuilding(Building building, float amount){
         int pos = building.pos();
 
-        // Store resistance values if not already stored
         loadBuildingResistances(building);
 
         float accumulationResist = amount > 0 ?
@@ -155,42 +158,16 @@ public class TemperatureLogic {
                 buildingAccumulationResistanceCold.get(pos, 1f);
         float resistedAmount = amount * accumulationResist;
 
-        // Check if building needs both temps
-        boolean needsBoth = false;
-        try {
-            var blockClass = building.block.getClass();
-            var heatField = blockClass.getField("requiresHeat");
-            var coldField = blockClass.getField("requiresCold");
-            boolean reqHeat = heatField.getBoolean(building.block);
-            boolean reqCold = coldField.getBoolean(building.block);
-            needsBoth = reqHeat && reqCold;
+        boolean needsBoth = needsBothTemps(building.block);
+        float maxTemp = getMaxTempStorage(building.block);
 
-            if(debugLogging) {
-                Log.info("[GrabVariable] Requires for @ - Heat: @, Cold: @, NeedsBoth: @",
-                        building.block.name, reqHeat, reqCold, needsBoth);
-            }
-        } catch(Exception e){
-            // No requirements, use normal combined temp
-        }
-
-        // Check for custom max storage limits
-        float maxTemp = 100f;
-        try {
-            var blockClass = building.block.getClass();
-            var maxTempField = blockClass.getField("maxTempStorage");
-            maxTemp = maxTempField.getFloat(building.block);
-
-            if(debugLogging) {
-                Log.info("[GrabVariable] Storage limits for @ - Max Temp: @",
-                        building.block.name, maxTemp);
-            }
-        } catch(Exception e){
-            // No custom storage, use default 100
+        if(debugLogging) {
+            Log.info("[GrabVariable] Requires for @ - NeedsBoth: @, MaxTemp: @",
+                    building.block.name, needsBoth, maxTemp);
         }
 
         if(needsBoth){
-            // Separate heat/cold maps (no cancellation)
-            if(amount > 0){ // HEAT
+            if(amount > 0){
                 float currentHeat = buildingHeat.get(pos, 0f);
                 float newHeat = Mathf.clamp(currentHeat + resistedAmount, 0f, maxTemp);
 
@@ -201,7 +178,7 @@ public class TemperatureLogic {
 
                 buildingHeat.put(pos, newHeat);
                 lastHitTimeHeat.put(pos, Time.time);
-            }else{ // COLD
+            }else{
                 float currentCold = buildingCold.get(pos, 0f);
                 float newCold = Mathf.clamp(currentCold - resistedAmount, 0f, maxTemp);
 
@@ -214,7 +191,6 @@ public class TemperatureLogic {
                 lastHitTimeCold.put(pos, Time.time);
             }
         }else{
-            // Combined temperature (heat cancels cold)
             float currentTemp = buildingTemperature.get(pos, 0f);
             float newTemp = Mathf.clamp(currentTemp + resistedAmount, -maxTemp, maxTemp);
 
@@ -227,6 +203,104 @@ public class TemperatureLogic {
             lastHitTime.put(pos, Time.time);
         }
     }
+
+
+    /// FORCE SET (bypasses accumulation resistance entirely, directly overrides current value)
+
+    public static void setTemperatureUnit(Unit unit, float amount){
+        loadUnitResistances(unit);
+        unitTemperature.put(unit.id, Mathf.clamp(amount, -100f, 100f));
+    }
+
+    public static void setTemperatureBuilding(Building building, float amount){
+        int pos = building.pos();
+        loadBuildingResistances(building);
+
+        float maxTemp = getMaxTempStorage(building.block);
+
+        if(needsBothTemps(building.block)){
+            if(amount >= 0){
+                buildingHeat.put(pos, Mathf.clamp(amount, 0f, maxTemp));
+                buildingCold.put(pos, 0f);
+            }else{
+                buildingCold.put(pos, Mathf.clamp(-amount, 0f, maxTemp));
+                buildingHeat.put(pos, 0f);
+            }
+        }else{
+            buildingTemperature.put(pos, Mathf.clamp(amount, -maxTemp, maxTemp));
+        }
+    }
+
+
+    /// GRADUAL DRAIN TOWARD ZERO (single direction only, leaves the other side untouched)
+
+    public static void drainTemperatureTowardZero(Unit unit, boolean drainHeat, float amountPerTick){
+        float temp = unitTemperature.get(unit.id, 0f);
+        if(drainHeat && temp > 0f){
+            unitTemperature.put(unit.id, Math.max(0f, temp - amountPerTick));
+        }else if(!drainHeat && temp < 0f){
+            unitTemperature.put(unit.id, Math.min(0f, temp + amountPerTick));
+        }
+    }
+
+    public static void drainTemperatureTowardZero(Building building, boolean drainHeat, float amountPerTick){
+        int pos = building.pos();
+
+        if(needsBothTemps(building.block)){
+            if(drainHeat){
+                float heat = buildingHeat.get(pos, 0f);
+                if(heat > 0f) buildingHeat.put(pos, Math.max(0f, heat - amountPerTick));
+            }else{
+                float cold = buildingCold.get(pos, 0f);
+                if(cold > 0f) buildingCold.put(pos, Math.max(0f, cold - amountPerTick));
+            }
+        }else{
+            float temp = buildingTemperature.get(pos, 0f);
+            if(drainHeat && temp > 0f){
+                buildingTemperature.put(pos, Math.max(0f, temp - amountPerTick));
+            }else if(!drainHeat && temp < 0f){
+                buildingTemperature.put(pos, Math.min(0f, temp + amountPerTick));
+            }
+        }
+    }
+
+
+    /// REFLECTION HELPERS (cached per Block class - reflection is expensive per-call, so only ever done once per class)
+
+    protected static boolean needsBothTemps(Block block){
+        Class<?> cls = block.getClass();
+        if(needsBothCache.containsKey(cls)) return needsBothCache.get(cls);
+
+        boolean result;
+        try {
+            var heatField = cls.getField("requiresHeat");
+            var coldField = cls.getField("requiresCold");
+            result = heatField.getBoolean(block) && coldField.getBoolean(block);
+        } catch(Exception e){
+            result = false;
+        }
+
+        needsBothCache.put(cls, result);
+        return result;
+    }
+
+    public static float getMaxTempStorage(Block block){
+        Class<?> cls = block.getClass();
+        if(maxTempCache.containsKey(cls)) return maxTempCache.get(cls);
+
+        float result;
+        try {
+            var maxTempField = cls.getField("maxTempStorage");
+            result = maxTempField.getFloat(block);
+        } catch(Exception e){
+            result = 100f;
+        }
+
+        maxTempCache.put(cls, result);
+        return result;
+    }
+
+
     /// LOAD RESISTANCES
     public static void loadUnitResistances(Unit unit){
         int id = unit.id;
@@ -314,6 +388,12 @@ public class TemperatureLogic {
         return buildingTemperature.get(building.pos(), 0f);
     }
 
+    /// Returns the magnitude of temperature in the given direction (direction >= 0 = heat, direction < 0 = cold).
+    /// Automatically handles dual-storage (requiresHeat && requiresCold) blocks correctly, same as getHeatBuilding/getColdBuilding.
+    public static float getDirectedTemperature(Building building, float direction){
+        return direction >= 0f ? getHeatBuilding(building) : getColdBuilding(building);
+    }
+
     public static float getEffectResistanceHeatUnit(Unit unit){
         if (unitEffectResistanceHeat.get(unit.id) == null){
             loadUnitResistances(unit);
@@ -361,20 +441,19 @@ public class TemperatureLogic {
     /// UTILITY METHODS
 
     public static void refreshLastHitTime(int pos){
-        // Refresh both separate timers if they exist
         if(lastHitTimeHeat.containsKey(pos)){
             lastHitTimeHeat.put(pos, Time.time);
         }
         if(lastHitTimeCold.containsKey(pos)){
             lastHitTimeCold.put(pos, Time.time);
         }
-        // Refresh combined timer
         if(lastHitTime.containsKey(pos)){
             lastHitTime.put(pos, Time.time);
         }
     }
     public static class TileCont {
-        public boolean isEven; // Move your "evenness" check result here
+        /// true if this building's tile size is even (changes tile-offset calculation)
+        public boolean isEven;
         protected ObjectMap<Integer, Tile> tiles = new ObjectMap<>();
     }
 
@@ -422,12 +501,10 @@ public class TemperatureLogic {
     public static void updateTemperatureSystem(){
         if(Vars.state.isPaused()) return;
 
-        // Reset particle counters
         heatParticleCounter = 0;
         coldParticleCounter = 0;
         dualTempParticleCounter = 0;
 
-        // Update all units
         Seq<Integer> deadUnits = new Seq<>();
         unitTemperature.each((id, temp) -> {
             Unit u = Groups.unit.getByID(id);
@@ -444,7 +521,6 @@ public class TemperatureLogic {
             cleanupUnit(id);
         }
 
-        // Update buildings (combined temp)
         Seq<Integer> deadBuildings = new Seq<>();
         buildingTemperature.each((pos, temp) -> {
             if(pos == null){
@@ -468,7 +544,6 @@ public class TemperatureLogic {
             }
         }
 
-        // Update buildings with separate heat/cold
         Seq<Integer> deadBuildingsSeparate = new Seq<>();
         buildingHeat.each((pos, heat) -> {
             if(pos == null){
@@ -481,8 +556,7 @@ public class TemperatureLogic {
                 deadBuildingsSeparate.add(pos);
             }else{
                 updateBuildingHeatCold(b, pos, heat, buildingCold.get(pos, 0f));
-                // Draw dual-temp effects
-                float combinedTemp = heat + buildingCold.get(pos, 0f); // Both positive for intensity
+                float combinedTemp = heat + buildingCold.get(pos, 0f);
                 if(combinedTemp > 0){
                     drawTemperatureEffects(b.x, b.y, b.block.size * 8f, combinedTemp, true);
                 }
@@ -542,7 +616,6 @@ public class TemperatureLogic {
         float timeSinceHitHeat = Time.time - lastHitHeat;
         float timeSinceHitCold = Time.time - lastHitCold;
 
-        // Independent cooldowns
         if(timeSinceHitHeat > 300f && heat > 0){
             float newHeat = Math.max(0f, heat - 0.1f);
             if(debugLogging && heat != newHeat){
@@ -568,7 +641,7 @@ public class TemperatureLogic {
     protected static void applyUnitTemperatureEffects(Unit unit, float temperature){
         int id = unit.id;
 
-        if(temperature < 0){ // COLD
+        if(temperature < 0){
             float coldPercent = -temperature;
             float effectResist = unitEffectResistanceCold.get(id, 1f);
             float effectiveColdPercent = coldPercent * effectResist;
@@ -641,12 +714,10 @@ public class TemperatureLogic {
         float alpha = intensity * 0.6f;
 
         if(isDualTemp){
-            // Dual-temp building - show smoke effect
             Draw.color(Color.gray, Color.white, Mathf.absin(Time.time, 3f, 0.5f));
             Draw.alpha(alpha);
             Fill.circle(x, y, size * 0.8f);
 
-            // Reduced particle spawning based on counter
             if(!Vars.state.isPaused() && Mathf.chance(intensity * 0.1f) && dualTempParticleCounter % 5 == 0){
                 float angle = Mathf.random(360f);
                 float dist = Mathf.random(size);
@@ -658,7 +729,7 @@ public class TemperatureLogic {
             }
             dualTempParticleCounter++;
 
-        }else if(temperature > 0){ // HEAT
+        }else if(temperature > 0){
             Draw.color(Color.red);
             Draw.alpha(alpha);
             Fill.circle(x, y, size * 0.8f);
@@ -667,7 +738,6 @@ public class TemperatureLogic {
             Draw.alpha(alpha * 0.4f);
             Fill.circle(x, y, size * 1.2f * (1f + Mathf.absin(Time.time, 2f, 0.1f)));
 
-            // Reduced particle spawning based on counter
             if(!Vars.state.isPaused() && Mathf.chance(intensity * 0.3f) && heatParticleCounter % 3 == 0){
                 float angle = Mathf.random(360f);
                 float dist = Mathf.random(size);
@@ -679,7 +749,7 @@ public class TemperatureLogic {
             }
             heatParticleCounter++;
 
-        }else{ // COLD
+        }else{
             Draw.color(Color.cyan);
             Draw.alpha(alpha);
             Fill.circle(x, y, size * 0.8f);
@@ -688,7 +758,6 @@ public class TemperatureLogic {
             Draw.alpha(alpha * 0.4f);
             Fill.circle(x, y, size * 1.15f);
 
-            // Reduced particle spawning based on counter
             if(!Vars.state.isPaused() && Mathf.chance(intensity * 0.2f) && coldParticleCounter % 4 == 0){
                 float angle = Mathf.random(360f);
                 float dist = Mathf.random(size);
@@ -706,51 +775,43 @@ public class TemperatureLogic {
     /// SAVE/LOAD SYSTEM
 
     public static void writeTemperatureData(DataOutput stream) throws IOException {
-        // Write unit temperature data
         stream.writeInt(unitTemperature.size);
         unitTemperature.each((id, temp) -> {
             try {
                 stream.writeInt(id);
                 stream.writeFloat(temp);
 
-                // Write resistances
                 stream.writeFloat(unitAccumulationResistanceHeat.get(id, 1f));
                 stream.writeFloat(unitAccumulationResistanceCold.get(id, 1f));
                 stream.writeFloat(unitEffectResistanceHeat.get(id, 1f));
                 stream.writeFloat(unitEffectResistanceCold.get(id, 1f));
 
-                // Write stat modifications
                 stream.writeFloat(originalArmor.get(id, 0f));
                 stream.writeFloat(coldResistanceReduction.get(id, 0f));
 
-                // Write last hit time
                 stream.writeFloat(lastHitTime.get(id, 0f));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
 
-        // Write building combined temperature data
         stream.writeInt(buildingTemperature.size);
         buildingTemperature.each((pos, temp) -> {
             try {
                 stream.writeInt(pos);
                 stream.writeFloat(temp);
 
-                // Write resistances
                 stream.writeFloat(buildingAccumulationResistanceHeat.get(pos, 1f));
                 stream.writeFloat(buildingAccumulationResistanceCold.get(pos, 1f));
                 stream.writeFloat(buildingEffectResistanceHeat.get(pos, 1f));
                 stream.writeFloat(buildingEffectResistanceCold.get(pos, 1f));
 
-                // Write last hit time
                 stream.writeFloat(lastHitTime.get(pos, 0f));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
 
-        // Write building separate heat/cold data
         stream.writeInt(buildingHeat.size);
         buildingHeat.each((pos, heat) -> {
             try {
@@ -758,7 +819,6 @@ public class TemperatureLogic {
                 stream.writeFloat(heat);
                 stream.writeFloat(buildingCold.get(pos, 0f));
 
-                // Write resistances (if not already written in combined)
                 if(!buildingTemperature.containsKey(pos)){
                     stream.writeFloat(buildingAccumulationResistanceHeat.get(pos, 1f));
                     stream.writeFloat(buildingAccumulationResistanceCold.get(pos, 1f));
@@ -766,7 +826,6 @@ public class TemperatureLogic {
                     stream.writeFloat(buildingEffectResistanceCold.get(pos, 1f));
                 }
 
-                // Write separate last hit times
                 stream.writeFloat(lastHitTimeHeat.get(pos, 0f));
                 stream.writeFloat(lastHitTimeCold.get(pos, 0f));
             } catch (IOException e) {
@@ -781,29 +840,23 @@ public class TemperatureLogic {
     }
 
     public static void readTemperatureData(DataInput stream) throws IOException {
-        // Clear all existing data
         clearAllTemperatureData();
 
-        // Read unit temperature data
         int unitCount = stream.readInt();
         for(int i = 0; i < unitCount; i++){
             int id = stream.readInt();
             float temp = stream.readFloat();
 
-            // Read resistances
             float accHeat = stream.readFloat();
             float accCold = stream.readFloat();
             float effHeat = stream.readFloat();
             float effCold = stream.readFloat();
 
-            // Read stat modifications
             float origArmor = stream.readFloat();
             float coldResReduce = stream.readFloat();
 
-            // Read last hit time
             float lastHit = stream.readFloat();
 
-            // Verify unit still exists
             Unit unit = Groups.unit.getByID(id);
             if(unit != null){
                 unitTemperature.put(id, temp);
@@ -819,22 +872,18 @@ public class TemperatureLogic {
             }
         }
 
-        // Read building combined temperature data
         int buildingCount = stream.readInt();
         for(int i = 0; i < buildingCount; i++){
             int pos = stream.readInt();
             float temp = stream.readFloat();
 
-            // Read resistances
             float accHeat = stream.readFloat();
             float accCold = stream.readFloat();
             float effHeat = stream.readFloat();
             float effCold = stream.readFloat();
 
-            // Read last hit time
             float lastHit = stream.readFloat();
 
-            // Verify building still exists
             Building building = mindustry.Vars.world.build(pos);
             if(building != null){
                 buildingTemperature.put(pos, temp);
@@ -847,25 +896,21 @@ public class TemperatureLogic {
             }
         }
 
-        // Read building separate heat/cold data
         int dualTempCount = stream.readInt();
         for(int i = 0; i < dualTempCount; i++){
             int pos = stream.readInt();
             float heat = stream.readFloat();
             float cold = stream.readFloat();
 
-            // Read resistances if not in combined
             boolean hasCombined = buildingTemperature.containsKey(pos);
             float accHeat = hasCombined ? buildingAccumulationResistanceHeat.get(pos, 1f) : stream.readFloat();
             float accCold = hasCombined ? buildingAccumulationResistanceCold.get(pos, 1f) : stream.readFloat();
             float effHeat = hasCombined ? buildingEffectResistanceHeat.get(pos, 1f) : stream.readFloat();
             float effCold = hasCombined ? buildingEffectResistanceCold.get(pos, 1f) : stream.readFloat();
 
-            // Read separate last hit times
             float lastHitH = stream.readFloat();
             float lastHitC = stream.readFloat();
 
-            // Verify building still exists
             Building building = mindustry.Vars.world.build(pos);
             if(building != null){
                 buildingHeat.put(pos, heat);

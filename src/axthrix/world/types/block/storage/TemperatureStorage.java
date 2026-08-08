@@ -6,6 +6,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Strings;
 import arc.util.Time;
+import axthrix.world.types.block.AxBlock;
 import axthrix.world.util.TempUnit;
 import axthrix.world.util.logics.TemperatureLogic;
 import axthrix.world.util.ui.TemperatureBar;
@@ -15,14 +16,9 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.meta.Stat;
 
-public class TemperatureStorage extends Block {
+public class TemperatureStorage extends AxBlock {
     public float maxTempStorage = 500f;
 
-    // Temperature resistances
-    public float accumulationResistanceHeat = 1f;
-    public float accumulationResistanceCold = 1f;
-    public float effectResistanceHeat = 0.1f; // Very resistant to effects
-    public float effectResistanceCold = 0.1f;
 
     public TemperatureStorage(String name){
         super(name);
@@ -30,22 +26,18 @@ public class TemperatureStorage extends Block {
         solid = true;
         configurable = false;
         hasPower = true;
+
+        effectResistanceHeat = 0.1f;
+        effectResistanceCold = 0.1f;
     }
 
     @Override
     public void setStats(){
         super.setStats();
 
-        // Use the Lambda (table -> {}) to make it update when settings change
         stats.add(Stat.heatCapacity, table -> {
-
-            // 1. Convert the Cold Limit (Negative internal value)
             String coldCap = TempUnit.format(-maxTempStorage);
-
-            // 2. Convert the Heat Limit (Positive internal value)
             String heatCap = TempUnit.format(maxTempStorage);
-
-            // 3. Display as a Range: "[cyan]-148°F[]  to  [red]212°F[]"
             table.add("[cyan]" + coldCap + "[]  -  [red]" + heatCap + "[]");
         });
     }
@@ -60,7 +52,6 @@ public class TemperatureStorage extends Block {
     }
 
     public class TemperatureStorageBuild extends Building {
-        public boolean isPowered = false;
 
         @Override
         public void updateTile(){
@@ -73,7 +64,6 @@ public class TemperatureStorage extends Block {
         public void draw(){
             super.draw();
 
-            // Draw storage indicator
             float heat = TemperatureLogic.getHeatBuilding(this);
             float cold = TemperatureLogic.getColdBuilding(this);
 

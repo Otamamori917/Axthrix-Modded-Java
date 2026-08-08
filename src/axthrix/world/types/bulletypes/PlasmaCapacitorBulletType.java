@@ -111,7 +111,7 @@ public class PlasmaCapacitorBulletType extends BasicBulletType {
                     0f,
                     state[2] > 0.5f ? 1f : 0f,
                     maxPotentialBonusDamage > 0.01f ? Mathf.clamp(state[0] / maxPotentialBonusDamage) : 0f,
-                    TemperatureLogic.getTemperatureUnit(owner) / 100f,
+                    TemperatureLogic.getTemperature(owner) / 100f,
                     0f,
                     Mathf.clamp(b.time / chargeDuration),
                     b.x, b.y, b.rotation()

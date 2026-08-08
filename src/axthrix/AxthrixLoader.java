@@ -6,6 +6,7 @@ import arc.func.Func;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Strings;
 import arc.util.Time;
 import axthrix.content.*;
 import axthrix.content.blocks.AxthrixCrafters;
@@ -21,6 +22,7 @@ import axthrix.world.types.unittypes.DroneUnitType;
 import axthrix.world.util.*;
 import axthrix.world.util.logics.TemperatureLogic;
 import axthrix.world.util.save_states.AxthrixWorldState;
+import axthrix.world.util.ui.AnimatedWelcomeDialog;
 import axthrix.world.util.ui.CustomUnitInfoBar;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
@@ -30,6 +32,7 @@ import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
 import mindustry.gen.Groups;
+import mindustry.graphics.Layer;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
 import mindustry.ui.dialogs.BaseDialog;
@@ -115,7 +118,6 @@ public class AxthrixLoader extends Mod{
         customHudOffsetX = settings.getInt("aj-hud-X-offset", 4);
         customHudOffsetY = settings.getInt("aj-hud-Y-offset", -120);
         hudMiniFacesUp = settings.getBool("aj-hud-mini-face-up", false);
-
 
 
         /// CLIENT LOAD EVENTS
@@ -326,16 +328,66 @@ public class AxthrixLoader extends Mod{
 
 
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
-            BaseDialog dialog = new BaseDialog(bundle.get("menu.aj-menu.title"));
-            dialog.cont.add(bundle.get("menu.aj-menu.message")).row();
-            dialog.cont.image(atlas.find("aj-welcome-icon")).pad(20f).row();
-            dialog.cont.button("okay", dialog::hide).size(100f, 50f);
-            if (showMessage){
-                dialog.show();
+            if (!showMessage) return;
+
+            AnimatedWelcomeDialog MarkMyWords = new AnimatedWelcomeDialog(
+                    "menu.aj-menu.title",
+                    "menu.aj-menu.message",
+                    "mark-my-words",
+                    AxthrixSounds.MarkMyWords,
+                    244
+            ){{
+                chanceToTrigger = 0.02f;
+                targetAudioDurationSeconds = 24.46f;
+                showSkipButton = false;
+            }};
+
+            AnimatedWelcomeDialog Phoenix = new AnimatedWelcomeDialog(
+                   "menu.secret.title",
+                    "menu.secret.message",
+                    "phoenix",
+                    AxthrixSounds.Phoenix,
+                    401
+            ){{
+                chanceToTrigger = 0.02f;
+                targetAudioDurationSeconds = 40.26f;
+                showSkipButton = false;
+            }};
+
+
+            AnimatedWelcomeDialog AuraMonster = new AnimatedWelcomeDialog(
+                    "menu.secret.title",
+                    "menu.secret.message",
+                    "aura-monster",
+                    AxthrixSounds.AuraMonster,
+                    102
+            ){{
+                chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 4.26f;
+                loopAnimation = showSkipButton= true;
+                delayBetweenLoops = 2;
+                cutsceneVolume = 5;
+            }};
+
+
+            if (arc.math.Mathf.chance(MarkMyWords.chanceToTrigger)) {
+                MarkMyWords.chanceToTrigger = 1.0f;
+                MarkMyWords.show();
+            } else if (arc.math.Mathf.chance(Phoenix.chanceToTrigger)) {
+                Phoenix.chanceToTrigger = 1.0f;
+                Phoenix.show();
+            } else if (arc.math.Mathf.chance(AuraMonster.chanceToTrigger)) {
+                AuraMonster.chanceToTrigger = 1.0f;
+                AuraMonster.show();
             } else {
-                dialog.hide();
+                BaseDialog fallbackDialog = new BaseDialog(bundle.get("menu.aj-menu.title"));
+                fallbackDialog.cont.add(bundle.get("menu.aj-menu.message")).row();
+                fallbackDialog.cont.image(atlas.find("aj-welcome-icon")).pad(20f).row();
+                fallbackDialog.cont.button("okay", fallbackDialog::hide).size(100f, 50f);
+                fallbackDialog.show();
             }
         }));
+
     }
     private void loadSettings(){
         ui.settings.addCategory(bundle.get("setting.aj-title"), "aj-settings-icon", t -> {
@@ -415,6 +467,7 @@ public class AxthrixLoader extends Mod{
                 customHudOffsetY = i;
                 return i + "px";
             });
+
 
         });
     }

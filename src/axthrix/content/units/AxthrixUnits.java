@@ -30,6 +30,7 @@ import static arc.math.Interp.pow10Out;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
 
 import mindustry.Vars;
+import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
@@ -212,6 +213,7 @@ public class AxthrixUnits {
                 reload = 60f/0.8f;
                 shootY = 2f;
                 inaccuracy = 0;
+
                 shoot = new SpiralPattern(2f, 1){{
                     shots = 3;
                 }};
@@ -486,6 +488,8 @@ public class AxthrixUnits {
                     trailInterval = 3;
                     trailLength = 4;
                     trailWidth = 2;
+                    splashDamage = 10;
+                    splashDamageRadius = 10;
 
                     parts.add(
                             new ShapePart(){{
@@ -646,7 +650,12 @@ public class AxthrixUnits {
                 pipeSpeed = 45;
                 maxTargets = 4;
                 damagePerSecond = 240;
-            }});
+            }},
+                    new StatusFieldAbility(none,1,1,1){{
+                        activeEffect = new ParticleEffect(){{
+
+                        }};
+                    }});
             effectResistanceHeat = 0;
             //hover/mechanical parts
             parts.addAll(

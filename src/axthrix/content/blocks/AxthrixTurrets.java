@@ -16,6 +16,8 @@ import axthrix.world.types.weapontypes.BlockWeapon;
 //import axthrix.world.types.weapontypes.PerkWeapon;
 import axthrix.world.util.*;
 import axthrix.world.util.draw.*;
+import axthrix.world.util.logics.TemperatureLogic;
+import axthrix.world.util.ui.TemperatureBar;
 import blackhole.entities.bullet.BlackHoleBulletType;
 import mindustry.Vars;
 import mindustry.content.*;
@@ -46,7 +48,7 @@ public class AxthrixTurrets{
             kramola,
 
     //Basic turrets
-    ironspitter,
+    clasp,
     //Artillery
     kisten,
 
@@ -75,27 +77,66 @@ public class AxthrixTurrets{
     venture,asmot,rektios;
 
     public static void loadAxthrix(){
-
-        ironspitter = new ItemTurret("ironspitter"){{
+        //creates heat as a biproduct and locks downs if temp becomes to high
+        clasp = new ItemTempTurret("clasp"){{
             requirements(Category.turret, with(AxItems.iron, 15, AxItems.ingot, 3));
-            recoil = 4;
+            temperatureOutput = 6;
+            effectResistanceHeat = 0.8f;
+            recoil = 0.5f;
             reload = 90;
             ammoPerShot = 2;
             maxAmmo = 20;
             scaledHealth = 400;
-            inaccuracy = 5;
+            inaccuracy = 20;
             range = 10*10;
             size = 1;
             targetAir = false;
+            shoot.shots = 9;
             ammo(
-                    AxItems.iron, new BasicBulletType(){{
-                        damage = 50;
-                        lifetime = 30;
-                        speed = 5;
-                        accel = -0.1f;
-                        frontColor = backColor = Color.lightGray;
-                    }}
+                    AxItems.iron, new LiquidBulletType(){{
+                        lifetime = 38f;
+                        speed = 4.5f;
+                        scaledSplashDamage = true;
+                        liquid = Liquids.slag;
+                        orbSize = 1.5f;
+                        puddleSize = 6f;
+
+                        splashDamageRadius = 26f;
+                        splashDamage = 56f;
+                        sticky = true;
+                        stickyExtraLifetime = 10;
+                    }
+                        @Override
+                        public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+                            super.hit(b, hitx, hity, createFrags);
+                            createSplashDamage(b, hitx, hity);
+                        }
+                    }
             );
+                drawer = new DrawTurret("crystalized-"){{
+                    parts.add(
+                            new RegionPart("-flint-l"){{
+                                progress = PartProgress.recoil.inv();
+                                layerOffset = 0.7f;
+                                y = 0.6f;
+                                moveY = -0.1f;
+                                rotation = -45;
+                                moveRot = 50;
+                            }},
+                            new RegionPart("-flint-r"){{
+                                progress = PartProgress.recoil.inv();
+                                layerOffset = 0.7f;
+                                y = 0.6f;
+                                moveY = -0.1f;
+                                rotation = 45;
+                                moveRot = -50;
+                            }},
+                            new RegionPart("-main"){{
+                                layerOffset = 0.8f;
+                                outlineLayerOffset = -0.2f;
+                            }}
+                    );
+                }};
         }};
 
 

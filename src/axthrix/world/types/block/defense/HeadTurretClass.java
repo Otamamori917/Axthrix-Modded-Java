@@ -15,6 +15,7 @@ import axthrix.world.types.sea.managers.LayerManager;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStats;
 import axthrix.world.util.logics.AcceleratedLogic;
+import axthrix.world.util.logics.TemperatureLogic;
 import mindustry.content.Blocks;
 import mindustry.entities.Sized;
 import mindustry.entities.Units;
@@ -32,6 +33,11 @@ public class HeadTurretClass extends Turret {
     public boolean seeOutsideLayer = false;
 
 
+    public float accumulationResistanceHeat = 1f;
+    public float accumulationResistanceCold = 1f;
+    public float effectResistanceHeat = 1f;
+    public float effectResistanceCold = 1f;
+    public float maxTempStorage = 100f;
 
 
     /** Factions this block belongs to. */
@@ -86,8 +92,15 @@ public class HeadTurretClass extends Turret {
         public void draw() {
 
             if(this.block instanceof Turret t && t.drawer instanceof DrawTurret dt && dt.parts.size > 0) {
-                float heat = 0f;
 
+
+                if(this instanceof ItemTempTurret.ItemTempTurretBuild itb){
+                    AxPartParms.axparams.set(
+                            0,
+                            0,
+                            TemperatureLogic.getTemperatureBuilding(this)/maxTempStorage
+                    );
+                }
 
                 if (this instanceof AcceleratedLogic.AcceleratedTurretBuild ab) {
                     if (ab.getAcceleratedBonus() == 1 && ab.burnsOut()){
