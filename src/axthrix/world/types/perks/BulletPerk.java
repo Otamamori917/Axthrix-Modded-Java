@@ -6,7 +6,7 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Mathf;
 import arc.util.Time;
-import axthrix.world.types.block.defense.PerkTurretType;
+import axthrix.world.types.block.defense.parent.PerkTurretType;
 import mindustry.entities.bullet.BulletType;
 import mindustry.gen.Unit;
 import mindustry.world.blocks.defense.turrets.Turret;

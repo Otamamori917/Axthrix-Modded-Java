@@ -10,12 +10,10 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import axthrix.AxthrixLoader;
-import axthrix.content.AxLiquids;
+import axthrix.content.AxResources;
 import axthrix.world.types.block.defense.MultiTurretType;
-import axthrix.world.types.block.defense.PayloadTurretType;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.weapontypes.BlockWeapon;
-import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.ctype.*;
 import mindustry.entities.bullet.*;
@@ -35,7 +33,6 @@ import static arc.Core.*;
 
 import static mindustry.Vars.*;
 import static mindustry.world.meta.StatValues.displayItem;
-import static mindustry.world.meta.StatValues.displayLiquid;
 
 public class AxStatValues {
     public static StatValue blocks(Seq<Block> attr, boolean floating) {
@@ -191,7 +188,7 @@ public class AxStatValues {
 
                         Table extra = new Table();
                         extra.left().defaults().padRight(3).left();
-                        appendCustomStats(extra, type, t);
+                        appendCustomStats(extra, type, t,true);
                         bt.table(Styles.grayPanel, et -> et.add(extra).left().grow()).padLeft(5).padTop(0).padBottom(5).growX().margin(10);
                         bt.row();
                     }
@@ -367,7 +364,7 @@ public class AxStatValues {
 
                     Table extra = new Table();
                     extra.left().defaults().padRight(3).left();
-                    appendCustomStats(extra, finalType, t);
+                    appendCustomStats(extra, finalType, t,true);
                     bt.table(Styles.grayPanel, et -> et.add(extra).left().grow()).padLeft(5).padTop(0).padBottom(5).growX().margin(10);
                 }).padLeft(5).padTop(5).padBottom(5).growX().margin(10);
 
@@ -382,7 +379,7 @@ public class AxStatValues {
      * no custom stats to show. Public so other stat-building code (e.g. BlockWeapon) can reuse it
      * without duplicating the instanceof chain.
      */
-    public static boolean appendCustomStats(Table t, BulletType type, UnlockableContent tb){
+    public static boolean appendCustomStats(Table t, BulletType type, UnlockableContent tb, boolean displayBase){
         boolean any = false;
 
         if(type instanceof TornadoBulletType b){
@@ -464,7 +461,7 @@ public class AxStatValues {
                 t.add("[lightgray]" + Core.bundle.get("stat.aj-variant-bullet") + " #" + (i + 1) + " (Chance: [white]" + chanceStr + "[lightgray])[]").left();
                 t.table(vStats -> {
                     baseBullet(variant, vStats, true, tb);
-                    appendCustomStats(vStats, variant, tb);
+                    appendCustomStats(vStats, variant, tb,true);
                 }).padLeft(12f).left();
             }
             any = true;
@@ -503,6 +500,24 @@ public class AxStatValues {
             line(t, "stat.aj-cone-angle", Strings.autoFixed(b.cone * 2f, 0) + "\u00b0").left();
             line(t, "stat.aj-cone-length", tiles(b.length)).left();
             if(b.healPercent > 0) line(t, "stat.aj-cone-heal", Strings.autoFixed(b.healPercent, 1) + "%").left();
+            any = true;
+        }
+
+        if(type instanceof MagneticBulletType b){
+            line(t, "stat.aj-magnetic-cone", Strings.autoFixed(b.coneAngleArc * 2f, 0) + "\u00b0").left();
+            line(t, "stat.aj-magnetic-length", tiles(b.length)).left();
+            if(b.damageToHealRatio > 0f){
+                line(t, "stat.aj-magnetic-heal-ratio", Strings.autoFixed(b.damageToHealRatio * 100f, 0) + StatUnit.percent.localized()).left();
+            }
+            if(b.healAllies && b.healRange > 0f){
+                line(t, "stat.aj-magnetic-heal-range", tiles(b.healRange)).left();
+            }
+            if(b.healDistanceFalloff > 0f){
+                line(t, "stat.aj-magnetic-heal-falloff", Strings.autoFixed(b.healDistanceFalloff * 100f, 0) + StatUnit.percent.localized()).left();
+            }
+            if(b.maxTargets > 0){
+                line(t, "stat.aj-magnetic-max-targets", String.valueOf(b.maxTargets)).left();
+            }
             any = true;
         }
 
@@ -613,16 +628,10 @@ public class AxStatValues {
             line(t, "stat.aj-shieldarc-radius", tiles(b.radius)).left();
             any = true;
         }
-
-        if(type instanceof StaticFieldBulletType b){
-            line(t, "stat.aj-staticfield-radius", tiles(b.fieldRadius)).left();
-            line(t, "stat.aj-staticfield-duration", secs(b.fieldDuration)).left();
-            line(t, "stat.aj-staticfield-pulse", fx(b.fieldDamagePerPulse) + " / " + secs(b.fieldPulseInterval)).left();
-            line(t, "stat.aj-staticfield-min-health", Strings.autoFixed(b.minHealthFraction * 100f, 0) + "%").left();
-            any = true;
-        }
         t.row();
-        baseBullet(type, t, true, tb);
+        if(displayBase){
+            baseBullet(type, t, true, tb);
+        }
 
         return any;
     }
@@ -652,7 +661,7 @@ public class AxStatValues {
                 Table candidatePanel = new Table();
                 candidatePanel.left().defaults().padRight(3).left();
                 candidatePanel.add("[accent]" + candidate.getClass().getTypeName()).padTop(2);
-                appendCustomStats(candidatePanel, candidate, AxLiquids.nothingness);
+                appendCustomStats(candidatePanel, candidate, AxResources.nothingness,true);
                 candidatePanel.row();
                 candidatePanel.image(Tex.whiteui).color(Pal.accent).growX().height(2f).padTop(2f).padBottom(5f);
 
@@ -933,7 +942,7 @@ public class AxStatValues {
             bt.row();
 
             Table ic = new Table();
-            appendCustomStats(ic,type.intervalBullet,t);
+            appendCustomStats(ic,type.intervalBullet,t,true);
             //ammo(ObjectMap.of(t, type.intervalBullet), 1, false).display(ic);
             Collapser coll = new Collapser(ic, true);
             coll.setDuration(0.1f);
@@ -952,7 +961,7 @@ public class AxStatValues {
             bt.row();
 
             Table fc = new Table();
-            appendCustomStats(fc,type.fragBullet,t);
+            appendCustomStats(fc,type.fragBullet,t,true);
             //ammo(ObjectMap.of(t, type.fragBullet), 1, false).display(fc);
             Collapser coll = new Collapser(fc, true);
             coll.setDuration(0.1f);
@@ -972,7 +981,7 @@ public class AxStatValues {
 
             Table sc = new Table();
             for(BulletType spawn : type.spawnBullets){
-                if(spawn.showStats && spawn.damage != Float.MAX_VALUE) appendCustomStats(sc,spawn,t);//ammo(ObjectMap.of(t, spawn), 1, false).display(sc);
+                if(spawn.showStats && spawn.damage != Float.MAX_VALUE) appendCustomStats(sc,spawn,t,true);//ammo(ObjectMap.of(t, spawn), 1, false).display(sc);
             }
             Collapser coll = new Collapser(sc, true);
             coll.setDuration(0.1f);

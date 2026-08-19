@@ -139,8 +139,7 @@ public class StackStatusEffect extends AxStatusEffect {
         }
     }
     @Override
-    public void init()
-    {
+    public void init() {
         statsStatic.clear();
         statsStatic.add(damageMultiplier);
         statsStatic.add(healthMultiplier);
@@ -157,16 +156,22 @@ public class StackStatusEffect extends AxStatusEffect {
 
         super.init();
         localName = localizedName;
-        Events.run(EventType.Trigger.update,()-> {
-            if (unitCharges.containsKey(Vars.player.unit()) && Vars.player.unit().hasEffect(this))
-                if (setStatsInfinity) {
-                    localizedName = localName + " [accent]x" + unitCharges.get(Vars.player.unit()) + " | Infinity";
-                }else{
-                    localizedName = localName + " [accent]x" + unitCharges.get(Vars.player.unit()) + " | " + charges;
-                }
-            else
-                localizedName = localName;
-        });
+
+        Events.run(EventType.Trigger.update, this::updateDisplayName);
+    }
+
+    protected void updateDisplayName() {
+        Unit u = Vars.player.unit();
+        if (u != null && unitCharges.containsKey(u) && u.hasEffect(this)) {
+            int stacks = unitCharges.get(u);
+            if (setStatsInfinity) {
+                localizedName = localName + " [accent]x" + stacks + " | Infinity";
+            } else {
+                localizedName = localName + " [accent]x" + stacks + " | " + charges;
+            }
+        } else {
+            localizedName = localName;
+        }
     }
 
     public void start(Unit unit,float time)
@@ -212,23 +217,32 @@ public class StackStatusEffect extends AxStatusEffect {
         }
         if (!unitCharges.containsKey(unit))
             start(unit,entry.time);
+        if (!unitCharges.containsKey(unit) || !unitTime.containsKey(unit))
+            return;
+
         if (unitTime.get(unit) < entry.time)
             start(unit,entry.time);
+
+        if (!unitCharges.containsKey(unit))
+            return;
+
+        int stacks = unitCharges.get(unit);
+
         unitTime.replace(unit,entry.time);
-        unit.damageMultiplier *= 1+(statsStatic.get(0)-1)*unitCharges.get(unit);
-        unit.healthMultiplier *= 1+(statsStatic.get(1)-1)*unitCharges.get(unit);
-        unit.speedMultiplier *= 1+(statsStatic.get(2)-1)*unitCharges.get(unit);
-        unit.reloadMultiplier *= 1+(statsStatic.get(3)-1)*unitCharges.get(unit);
-        unit.buildSpeedMultiplier *= 1+(statsStatic.get(4)-1)*unitCharges.get(unit);
+        unit.damageMultiplier *= 1+(statsStatic.get(0)-1)*stacks;
+        unit.healthMultiplier *= 1+(statsStatic.get(1)-1)*stacks;
+        unit.speedMultiplier *= 1+(statsStatic.get(2)-1)*stacks;
+        unit.reloadMultiplier *= 1+(statsStatic.get(3)-1)*stacks;
+        unit.buildSpeedMultiplier *= 1+(statsStatic.get(4)-1)*stacks;
 
         float shieldDiff = maxShield - shield;
         if (shieldDiff > 0)
             unit.shield += Math.min(shield,shieldDiff);
 
         if(damage > 0){
-            unit.damageContinuousPierce(damage*unitCharges.get(unit));
+            unit.damageContinuousPierce(damage*stacks);
         }else if(damage < 0){ //heal unit
-            unit.heal(-1f * damage * unitCharges.get(unit) * Time.delta);
+            unit.heal(-1f * damage * stacks * Time.delta);
         }
 
         if (newTeam != null)
@@ -239,10 +253,9 @@ public class StackStatusEffect extends AxStatusEffect {
             effect.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y, 0, color, parentizeEffect ? unit : null);
         }
 
-        if (unitCharges.containsKey(unit) && (entry.time <= Time.delta * 2f || !unit.isValid()))
-        {{
+        if (unitCharges.containsKey(unit) && (entry.time <= Time.delta * 2f || !unit.isValid())) {
             end(unit);
-        }}
+        }
     }
 
     @Override

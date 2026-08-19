@@ -62,6 +62,9 @@ public class NanobotLogic {
         public float spreadMultiplier = 1f;
 
         public mindustry.game.Team team;
+
+        /** When true, damages host team instead of healing it (status debuff). */
+        public boolean inverted = false;
     }
 
     public static void initNanobots(Object owner, float x, float y, int count) {
@@ -111,7 +114,6 @@ public class NanobotLogic {
 
                 Tmp.c1.set(params.color).lerp(Color.gray, 1f - params.fadeMultiplier);
 
-                // Ghost trail — always drawn when nanobot has a target
                 if (nano.targetTimer > 0) {
                     float[] trailAlphas = {0.4f, 0.25f, 0.1f};
                     float[] trailScales = {0.7f, 0.5f, 0.3f};
@@ -135,7 +137,6 @@ public class NanobotLogic {
                     }
                 }
 
-                // Main nanobot dot
                 Draw.color(Tmp.c1, alpha);
                 Fill.circle(nano.x, nano.y, params.nanobotSize * scale);
 
@@ -149,11 +150,9 @@ public class NanobotLogic {
 
     /** Returns true if the unit has a NanobotAbility or fires Nanobot bullets. Used to reduce incoming healing from those instances. */
     public static boolean hasNanobot(Unit unit) {
-        // Check for NanobotAbility
         for (Ability ability : unit.abilities) {
             if (ability instanceof NanobotAbility) return true;
         }
-        // Check if unit can fire a flying nanobot bullet
         for (var weapon : unit.type.weapons) {
             if (weapon.bullet instanceof NanobotBulletType) return true;
         }
@@ -164,14 +163,15 @@ public class NanobotLogic {
         Seq<Nanobot> nanobots = ownerNanobots.get(owner);
         if (nanobots == null) return;
 
-        // Tick effect cooldown timers
         healEffectTimers.merge(owner, Time.delta, Float::sum);
         damageEffectTimers.merge(owner, Time.delta, Float::sum);
 
         if (timer >= params.tickRate && (!useAmmo || consumeAmmo == null)) {
 
             Units.nearby(null, params.x, params.y, params.range, other -> {
-                if (other.team == params.team) {
+                boolean ally = other.team == params.team;
+
+                if (!params.inverted && ally) {
                     if (other.damaged()) {
                         float healMultiplier = hasNanobot(other) || other.type instanceof DroneUnitType ? params.stackPenalty : 1f;
                         float totalHeal = (params.healAmount + (other.maxHealth * params.healPercent / 100f)) * healMultiplier;
@@ -181,26 +181,35 @@ public class NanobotLogic {
                             params.healEffect.at(other.x, other.y, 0f, params.color);
                             healEffectTimers.put(owner, 0f);
                         }
-                        if (!(other.type instanceof DroneUnitType) || owner != other){
-                            assignNanobots(owner, other.x, other.y, true, false,3);
+                        if (!(other.type instanceof DroneUnitType) || owner != other) {
+                            assignNanobots(owner, other.x, other.y, true, false, 3);
                         }
-
                     }
-                } else {
+                } else if (params.inverted && ally) {
                     other.damage(params.damage * state.rules.unitDamage(params.team));
-                    other.apply(params.status, params.statusDuration);
+                    if (params.status != null) other.apply(params.status, params.statusDuration);
 
                     if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
                         params.damageEffect.at(other.x, other.y, 0f, params.color);
                         damageEffectTimers.put(owner, 0f);
                     }
+                    assignNanobots(owner, other.x, other.y, false, false, 10);
+                } else if (!params.inverted && !ally) {
+                    other.damage(params.damage * state.rules.unitDamage(params.team));
+                    if (params.status != null) other.apply(params.status, params.statusDuration);
 
-                    assignNanobots(owner, other.x, other.y, false, false,10);
+                    if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
+                        params.damageEffect.at(other.x, other.y, 0f, params.color);
+                        damageEffectTimers.put(owner, 0f);
+                    }
+                    assignNanobots(owner, other.x, other.y, false, false, 10);
                 }
             });
 
             indexer.eachBlock(null, params.x, params.y, params.range, other -> true, building -> {
-                if (building.team == params.team) {
+                boolean ally = building.team == params.team;
+
+                if (!params.inverted && ally) {
                     if (building.damaged()) {
                         float totalHeal = params.healAmount + (building.maxHealth * params.healPercent / 100f);
                         building.heal(totalHeal);
@@ -209,43 +218,61 @@ public class NanobotLogic {
                             Fx.healBlockFull.at(building.x, building.y, 0f, params.color, building.block);
                             healEffectTimers.put(owner, 0f);
                         }
-
-                        if (owner != building){
-                            assignNanobots(owner, building.x, building.y, true, false,3);
+                        if (owner != building) {
+                            assignNanobots(owner, building.x, building.y, true, false, 3);
                         }
-
                     }
-                } else {
+                } else if (params.inverted && ally) {
                     building.damage(params.damage * params.buildingDamageMultiplier * state.rules.unitDamage(params.team));
 
                     if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
                         params.damageEffect.at(building.x, building.y, 0f, params.color);
                         damageEffectTimers.put(owner, 0f);
                     }
+                    assignNanobots(owner, building.x, building.y, false, false, 10);
+                } else if (!params.inverted && !ally) {
+                    building.damage(params.damage * params.buildingDamageMultiplier * state.rules.unitDamage(params.team));
 
-                    assignNanobots(owner, building.x, building.y, false, false,10);
+                    if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
+                        params.damageEffect.at(building.x, building.y, 0f, params.color);
+                        damageEffectTimers.put(owner, 0f);
+                    }
+                    assignNanobots(owner, building.x, building.y, false, false, 10);
                 }
             });
 
             Groups.bullet.intersect(params.x - params.range, params.y - params.range, params.range * 2, params.range * 2, bullet -> {
-                if (bullet.within(params.x, params.y, params.range)) {
-                    if (bullet.team == params.team) {
-                        if (params.bulletSpeedBonus != 1f) {
-                            bullet.vel.scl(params.bulletSpeedBonus);
-                            if (Mathf.chance(0.1f)) {
-                                assignNanobots(owner, bullet.x, bullet.y, true, false,2);
-                            }
+                if (!bullet.within(params.x, params.y, params.range)) return;
+
+                boolean ally = bullet.team == params.team;
+
+                if (!params.inverted && ally) {
+                    if (params.bulletSpeedBonus != 1f) {
+                        bullet.vel.scl(params.bulletSpeedBonus);
+                        if (Mathf.chance(0.1f)) {
+                            assignNanobots(owner, bullet.x, bullet.y, true, false, 2);
                         }
-                    } else {
-                        if (params.bulletSlowdown != 1f) {
-                            bullet.vel.scl(params.bulletSlowdown);
-                            if (Mathf.chance(0.1f)) {
-                                if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
-                                    Fx.hitLaserBlast.at(bullet.x, bullet.y, 0f, params.color);
-                                    damageEffectTimers.put(owner, 0f);
-                                }
-                                assignNanobots(owner, bullet.x, bullet.y, false, false,2);
+                    }
+                } else if (params.inverted && ally) {
+                    if (params.bulletSlowdown != 1f) {
+                        bullet.vel.scl(params.bulletSlowdown);
+                        if (Mathf.chance(0.1f)) {
+                            if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
+                                Fx.hitLaserBlast.at(bullet.x, bullet.y, 0f, params.color);
+                                damageEffectTimers.put(owner, 0f);
                             }
+                            assignNanobots(owner, bullet.x, bullet.y, false, false, 2);
+                        }
+                    }
+                } else if (!params.inverted && !ally) {
+                    if (params.bulletSlowdown != 1f) {
+                        bullet.vel.scl(params.bulletSlowdown);
+                        if (Mathf.chance(0.1f)) {
+                            if (damageEffectTimers.getOrDefault(owner, 0f) >= effectInterval) {
+                                Fx.hitLaserBlast.at(bullet.x, bullet.y, 0f, params.color);
+                                damageEffectTimers.put(owner, 0f);
+                            }
+                            assignNanobots(owner, bullet.x, bullet.y, false, false, 2);
                         }
                     }
                 }
@@ -257,12 +284,14 @@ public class NanobotLogic {
         }
     }
 
-    public static void updateBoost(Object owner, NanobotParams params,int max) {
+    public static void updateBoost(Object owner, NanobotParams params, int max) {
+        if (params.inverted) return;
+
         indexer.eachBlock(null, params.x, params.y, params.range, other -> other.team == params.team, building -> {
             if (building.block.canOverdrive) {
                 building.applyBoost(params.efficiencyBoost, params.tickRate + 1);
                 if (Mathf.chance(0.05f)) {
-                    assignNanobots(owner, building.x, building.y, true, true,max);
+                    assignNanobots(owner, building.x, building.y, true, true, max);
                 }
             }
         });

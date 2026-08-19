@@ -8,6 +8,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import mindustry.entities.abilities.Ability;
+import mindustry.entities.abilities.ArmorPlateAbility;
 import mindustry.gen.Unit;
 import mindustry.graphics.Shaders;
 import mindustry.world.meta.Stat;
@@ -23,7 +24,6 @@ public class SilveringWeakness extends Ability {
 
     public SilveringWeakness() {
     }
-
     public void update(Unit unit) {
         super.update(unit);
         boolean active = (unit.isShooting || !whenShooting);

@@ -1,12 +1,14 @@
 package axthrix;
 
+import arc.Core;
 import arc.Events;
 import arc.audio.Sound;
 import arc.func.Func;
+import arc.input.KeyCode;
 import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Align;
 import arc.util.Log;
-import arc.util.Strings;
 import arc.util.Time;
 import axthrix.content.*;
 import axthrix.content.blocks.AxthrixCrafters;
@@ -18,12 +20,15 @@ import axthrix.world.types.abilities.ShieldPlateAbility;
 import axthrix.world.types.block.env.TemperatureFloor;
 import axthrix.world.types.bulletypes.*;
 import axthrix.world.types.sea.managers.SubmergedUpdaterAndRenderer;
+import axthrix.world.types.statuseffects.AccumStackStatusEffect;
 import axthrix.world.types.unittypes.DroneUnitType;
 import axthrix.world.util.*;
 import axthrix.world.util.logics.TemperatureLogic;
 import axthrix.world.util.save_states.AxthrixWorldState;
 import axthrix.world.util.ui.AnimatedWelcomeDialog;
 import axthrix.world.util.ui.CustomUnitInfoBar;
+import axthrix.world.util.ui.MiniUnitScaleDebug;
+import mindustry.Vars;
 import mindustry.content.Bullets;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
@@ -31,11 +36,13 @@ import mindustry.entities.bullet.BulletType;
 import mindustry.game.EventType;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.EventType.FileTreeInitEvent;
+import mindustry.game.Gamemode;
 import mindustry.gen.Groups;
-import mindustry.graphics.Layer;
 import mindustry.mod.Mod;
 import mindustry.mod.Mods;
+import mindustry.ui.Styles;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 import mindustry.world.Tile;
 import mindustry.world.blocks.defense.turrets.*;
 
@@ -51,7 +58,6 @@ public class AxthrixLoader extends Mod{
     //debug
     public static boolean amosPowerDebug = false;
     public static boolean amosLiquidDebug = false;
-    public static boolean nado3dDebug = false;
     public static boolean showMessage = true;
     // Visuals
     public static int tempUnit = 0; // 0: Celsius, 1: Fahrenheit, 2: Kelvin
@@ -60,13 +66,38 @@ public class AxthrixLoader extends Mod{
     public static boolean drawEnchancedShadows = true;
     public static boolean drawUnderwaterVoid = true;
     public static boolean drawUnderwaterSand = true;
-    public static boolean showMobileDiveButton = false;
+    public static float hudButtonScale = 1f;
+    public static boolean showMobileButtons = mobile;
     public static boolean showAdvanced = true;
-    public static boolean hudMiniFacesUp = false;
     public static int customHudOffsetX = 0;
     public static int customHudOffsetY = 0;
     public static int nadoEffectDensity = 100;
     CustomUnitInfoBar unitInfoBar;
+
+    public static KeyCode bindToggle = KeyCode.controlLeft;
+    public static KeyCode bindActivate = KeyCode.altLeft;
+
+    private static boolean rebindingToggle;
+    private static boolean rebindingActivate;
+
+    public static boolean toggleTapped() {
+        return !mobile && Core.input.keyTap(bindToggle);
+    }
+
+    public static boolean activateTapped() {
+        return !mobile && Core.input.keyTap(bindActivate);
+    }
+
+    public static boolean activateDown() {
+        return !mobile && Core.input.keyDown(bindActivate);
+    }
+
+    private static void startRebind(boolean toggle) {
+        rebindingToggle = toggle;
+        rebindingActivate = !toggle;
+        ui.showInfoToast(bundle.get("setting.aj-rebind-press"), 2f);
+    }
+
     public AxthrixLoader(){
         super();
         Events.on(FileTreeInitEvent.class, e -> app.post(() -> {
@@ -105,19 +136,20 @@ public class AxthrixLoader extends Mod{
         drawEnchancedShadows = settings.getBool("aj-enhanced-shadows", true);
         amosPowerDebug = settings.getBool("aj-mount-power-debug", false);
         amosLiquidDebug = settings.getBool("aj-mount-liquid-debug", false);
-        nado3dDebug = settings.getBool("aj-nado-3d-debug", false);
         showMessage = settings.getBool("aj-message-debug", true);
         showRevolverAmmo = settings.getBool("aj-revolver-ammo", true);
         drawUnderwaterVoid = settings.getBool("aj-draw-void", true);
         drawUnderwaterSand = settings.getBool("aj-draw-sand", true);
-        showMobileDiveButton = settings.getBool("aj-show-mobile-dive-button", true);
+        showMobileButtons = settings.getBool("aj-show-mobile-buttons", mobile);
+        hudButtonScale = settings.getInt("aj-hud-button-scale", 100) / 100f;
         tempUnit = settings.getInt("aj-temp-unit", 0);
         followRealCaps = settings.getBool("aj-follow-caps", false);
         nadoEffectDensity = settings.getInt("aj-nado-density", 100);
         showAdvanced = settings.getBool("aj-advanced-ui", true);
         customHudOffsetX = settings.getInt("aj-hud-X-offset", 4);
         customHudOffsetY = settings.getInt("aj-hud-Y-offset", -120);
-        hudMiniFacesUp = settings.getBool("aj-hud-mini-face-up", false);
+        bindToggle = KeyCode.valueOf(settings.getString("aj-bind-toggle", KeyCode.controlLeft.name()));
+        bindActivate = KeyCode.valueOf(settings.getString("aj-bind-activate", KeyCode.altLeft.name()));
 
 
         /// CLIENT LOAD EVENTS
@@ -133,6 +165,31 @@ public class AxthrixLoader extends Mod{
             if(funibullet){
                 Log.info("Chaos Frag is turned on \nMay crash if Apex or Apexus fires an Router");
                 setupEveryBullets(null);
+            }
+        });
+
+        Events.run(EventType.Trigger.update, () -> {
+            if (Core.input.keyDown(KeyCode.controlLeft) && Core.input.keyTap(KeyCode.f7) && Vars.state.rules.mode() == Gamemode.sandbox) {
+                MiniUnitScaleDebug.open();
+                ui.showInfoToast(Core.bundle.get("menu.mini-scaler-page-warning"), 20f);
+            }
+
+            if (rebindingToggle || rebindingActivate) {
+                for (KeyCode k : KeyCode.all) {
+                    if (k == KeyCode.mouseLeft || k == KeyCode.mouseRight || k == KeyCode.mouseMiddle) continue;
+                    if (Core.input.keyTap(k)) {
+                        if (rebindingToggle) {
+                            bindToggle = k;
+                            settings.put("aj-bind-toggle", k.name());
+                        } else {
+                            bindActivate = k;
+                            settings.put("aj-bind-activate", k.name());
+                        }
+                        rebindingToggle = rebindingActivate = false;
+                        ui.showInfoToast(k.toString(), 1.5f);
+                        break;
+                    }
+                }
             }
         });
 
@@ -182,12 +239,9 @@ public class AxthrixLoader extends Mod{
                     }
                 });
 
-                Groups.build.each(building -> {
-                    TemperatureLogic.applyTemperatureFromFloors(building);
-                });
+                Groups.build.each(TemperatureLogic::applyTemperatureFromFloors);
             }
 
-            StaticFieldBulletType.updateFields();
         });
 
 
@@ -214,7 +268,6 @@ public class AxthrixLoader extends Mod{
                 if (w.bullet instanceof NanobotBulletType nb) nb.drawClouds();
             }));
 
-            StaticFieldBulletType.drawFields();
         });
 
 
@@ -304,10 +357,10 @@ public class AxthrixLoader extends Mod{
         AxFactions.load();
         AxStats.load();
         AxthrixSounds.LoadSounds();
-        AxItems.load();
+        AxResources.Iload();
         AxthrixStatus.load();
         AxthrixWeathers.load();
-        AxLiquids.load();
+        AxResources.Lload();
         AxthrixEnvironment.load();
         AxthrixDrones.load();
         AxthrixUnits.load();
@@ -321,6 +374,7 @@ public class AxthrixLoader extends Mod{
         AxthrixTurrets.loadAxthrix();
         AxthrixTurrets.loadIkatusa();
         AxthrixTurrets.loadRaodon();
+        AxthrixTurrets.loadDef();
         AxPlanets.load();
         //AxSectorPresets.load();
         AxthrixTechTree.load();
@@ -330,62 +384,92 @@ public class AxthrixLoader extends Mod{
         Events.on(ClientLoadEvent.class, e -> Time.runTask(10f, () -> {
             if (!showMessage) return;
 
-            AnimatedWelcomeDialog MarkMyWords = new AnimatedWelcomeDialog(
-                    "menu.aj-menu.title",
-                    "menu.aj-menu.message",
-                    "mark-my-words",
-                    AxthrixSounds.MarkMyWords,
-                    244
-            ){{
-                chanceToTrigger = 0.02f;
-                targetAudioDurationSeconds = 24.46f;
-                showSkipButton = false;
-            }};
+            Seq<AnimatedWelcomeDialog> dialogPool = new Seq<>();
 
-            AnimatedWelcomeDialog Phoenix = new AnimatedWelcomeDialog(
-                   "menu.secret.title",
-                    "menu.secret.message",
-                    "phoenix",
-                    AxthrixSounds.Phoenix,
-                    401
-            ){{
-                chanceToTrigger = 0.02f;
-                targetAudioDurationSeconds = 40.26f;
-                showSkipButton = false;
-            }};
-
-
-            AnimatedWelcomeDialog AuraMonster = new AnimatedWelcomeDialog(
-                    "menu.secret.title",
-                    "menu.secret.message",
-                    "aura-monster",
-                    AxthrixSounds.AuraMonster,
-                    102
-            ){{
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-mark-my-words.message", "mark-my-words", AxthrixSounds.MarkMyWords, 244) {{
                 chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 24.450f;
+                showSkipButton = false;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-phoenix.message", "phoenix", AxthrixSounds.Phoenix, 401) {{
+                chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 40.333f;
+                showSkipButton = false;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-aura-monster.message", "aura-monster", AxthrixSounds.AuraMonster, 102) {{
+                chanceToTrigger = 0.001f;
                 targetAudioDurationSeconds = 4.26f;
-                loopAnimation = showSkipButton= true;
-                delayBetweenLoops = 2;
-                cutsceneVolume = 5;
-            }};
+                loopAnimation = true;
+                showSkipButton = true;
+                delayBetweenLoops = 2f;
+                cutsceneVolume = 5f;
+            }});
 
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-lotro.message", "lotro", AxthrixSounds.LOTRO, 120) {{
+                chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 230.086f;
+                isMusicMode = true;
+            }});
 
-            if (arc.math.Mathf.chance(MarkMyWords.chanceToTrigger)) {
-                MarkMyWords.chanceToTrigger = 1.0f;
-                MarkMyWords.show();
-            } else if (arc.math.Mathf.chance(Phoenix.chanceToTrigger)) {
-                Phoenix.chanceToTrigger = 1.0f;
-                Phoenix.show();
-            } else if (arc.math.Mathf.chance(AuraMonster.chanceToTrigger)) {
-                AuraMonster.chanceToTrigger = 1.0f;
-                AuraMonster.show();
-            } else {
-                BaseDialog fallbackDialog = new BaseDialog(bundle.get("menu.aj-menu.title"));
-                fallbackDialog.cont.add(bundle.get("menu.aj-menu.message")).row();
-                fallbackDialog.cont.image(atlas.find("aj-welcome-icon")).pad(20f).row();
-                fallbackDialog.cont.button("okay", fallbackDialog::hide).size(100f, 50f);
-                fallbackDialog.show();
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-erza.message", "erza", AxthrixSounds.Erza, 120) {{
+                chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 180.506f;
+                isMusicMode = true;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-edge.message", "edge", AxthrixSounds.Edge, 120) {{
+                chanceToTrigger = 0.01f;
+                targetAudioDurationSeconds = 166.060f;
+                isMusicMode = true;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-horizon.message", "horizon", AxthrixSounds.Horizon, 120) {{
+                chanceToTrigger = 0.015f;
+                targetAudioDurationSeconds = 179.487f;
+                isMusicMode = true;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-intra.message", "intra", AxthrixSounds.Intraregios, 120) {{
+                chanceToTrigger = 0.015f;
+                targetAudioDurationSeconds = 206.080f;
+                isMusicMode = true;
+            }});
+
+            dialogPool.add(new AnimatedWelcomeDialog("menu.aj-menu.title", "menu.aj-valence.message", "valence", AxthrixSounds.Valence, 120) {{
+                chanceToTrigger = 0.001f;
+                targetAudioDurationSeconds = 240.048f;
+                isMusicMode = true;
+            }});
+
+            float totalRarityWeightAccumulator = 0f;
+            for (AnimatedWelcomeDialog d : dialogPool) {
+                totalRarityWeightAccumulator += d.chanceToTrigger;
             }
+
+            float rolledRaritySelectorValue = arc.math.Mathf.random(0f, 1f);
+
+            if (rolledRaritySelectorValue <= totalRarityWeightAccumulator) {
+                float currentWeightRangeBracket = 0f;
+                boolean matchFound = false;
+
+                for (AnimatedWelcomeDialog d : dialogPool) {
+                    currentWeightRangeBracket += d.chanceToTrigger;
+                    if (rolledRaritySelectorValue <= currentWeightRangeBracket) {
+                        d.chanceToTrigger = 1.0f;
+                        d.show();
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (matchFound) return;
+            }
+            BaseDialog fallbackDialog = new BaseDialog(bundle.get("menu.aj-menu.title"));
+            fallbackDialog.cont.add(bundle.get("menu.aj-menu.message")).row();
+            fallbackDialog.cont.image(atlas.find("aj-welcome-icon")).pad(20f).row();
+            fallbackDialog.cont.button("okay", fallbackDialog::hide).size(100f, 50f);
+            fallbackDialog.show();
         }));
 
     }
@@ -406,8 +490,6 @@ public class AxthrixLoader extends Mod{
             t.pref(new AxUtil.Separator(5));
             t.checkPref("aj-mount-power-debug", false);
             t.checkPref("aj-mount-liquid-debug", false);
-            t.pref(new AxUtil.Separator(5));
-            t.checkPref("aj-nado-3d-debug", false);
 
             t.pref(new AxUtil.Separator(10));
             t.pref(new AxUtil.Header("Temperature Elements",20,true,true));
@@ -448,14 +530,22 @@ public class AxthrixLoader extends Mod{
 
             t.pref(new AxUtil.Separator(10));
             t.pref(new AxUtil.Header("Ui Elements",20,true,true));
-            t.checkPref("aj-show-mobile-dive-button", false, b -> {
-                showMobileDiveButton = b;
+            if(!mobile){
+                t.checkPref("aj-show-mobile-buttons", false, b -> {
+                    showMobileButtons = b;
+                });
+                t.pref(new AxUtil.Separator(4));
+            }else{
+                showMobileButtons = true;
+            }
+            t.sliderPref("aj-hud-button-scale", 100, 100, 150, 5, i -> {
+                hudButtonScale = i / 100f;
+                return i + "%";
             });
             t.pref(new AxUtil.Separator(10));
             t.checkPref("aj-advanced-ui", true, b -> {
                 showAdvanced = b;
             });
-            t.checkPref("aj-hud-mini-face-up", false, b -> hudMiniFacesUp = b);
 
             t.pref(new AxUtil.Separator(4));
             t.pref(new AxUtil.Header("Custom HUD Positioning Offsets", 1, true, false));
@@ -468,6 +558,46 @@ public class AxthrixLoader extends Mod{
                 return i + "px";
             });
 
+            if (!mobile) {
+                t.pref(new AxUtil.Separator(4));
+                t.pref(new AxUtil.Header("Keybinds (Desktop)", 1, true, false));
+
+                t.pref(new SettingsMenuDialog.SettingsTable.Setting("aj-bind-toggle") {
+                    {
+                        title = "setting.aj-bind-toggle";
+                    }
+
+                    @Override
+                    public void add(SettingsMenuDialog.SettingsTable table) {
+                        table.table(col -> {
+                            col.left();
+                            col.add(bundle.get(title)).left().wrap().width(Core.graphics.getWidth() > 400 ? 280f : 200f).row();
+                            col.button(b -> b.label(() -> bindToggle.toString()).labelAlign(Align.center),
+                                    Styles.defaultt,
+                                    () -> startRebind(true)
+                            ).width(200f).height(40f).left();
+                        }).left().padTop(6f).padBottom(4f).growX().row();
+                    }
+                });
+
+                t.pref(new SettingsMenuDialog.SettingsTable.Setting("aj-bind-activate") {
+                    {
+                        title = "setting.aj-bind-activate";
+                    }
+
+                    @Override
+                    public void add(SettingsMenuDialog.SettingsTable table) {
+                        table.table(col -> {
+                            col.left();
+                            col.add(bundle.get(title)).left().wrap().width(Core.graphics.getWidth() > 400 ? 280f : 200f).row();
+                            col.button(b -> b.label(() -> bindActivate.toString()).labelAlign(Align.center),
+                                    Styles.defaultt,
+                                    () -> startRebind(false)
+                            ).width(200f).height(40f).left();
+                        }).left().padTop(6f).padBottom(4f).growX().row();
+                    }
+                });
+            }
 
         });
     }

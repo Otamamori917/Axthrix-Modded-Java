@@ -6,8 +6,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import axthrix.content.AxLiquids;
-import mindustry.content.Items;
 import mindustry.entities.*;
 import mindustry.gen.Unit;
 import mindustry.graphics.*;
@@ -28,7 +26,7 @@ public class AxthrixFx {
         Draw.z(Layer.flyingUnit);
 
         // Calculate movement
-        float speed = 8f;
+        float speed = 0f;
         float distance = speed * e.time;
 
         // Calculate position along angle

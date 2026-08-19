@@ -4,11 +4,10 @@ package axthrix.content.blocks;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import axthrix.content.AxFactions;
-import axthrix.content.AxItems;
-import axthrix.content.AxLiquids;
+import axthrix.content.AxResources;
+import axthrix.content.AxResources;
 import axthrix.content.units.AxthrixUnits;
 import axthrix.world.types.ai.WallBreakerAI;
-import axthrix.world.types.block.PayloadAmmoBlock;
 import axthrix.world.types.block.drill.AxDrill;
 import axthrix.world.types.block.drill.WallBreakerSpawner;
 import axthrix.world.types.block.effect.GeneratorCoreBlock;
@@ -16,7 +15,7 @@ import axthrix.world.types.block.effect.NanobotProjector;
 import axthrix.world.types.block.production.*;
 import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.storage.TemperatureStorage;
-import axthrix.world.types.block.temperature.TemperatureDrainBlock;
+import axthrix.world.types.block.temperature.TemperatureSinkBlock;
 import axthrix.world.types.block.temperature.TemperatureSourceBlock;
 import axthrix.world.types.block.temperature.TemperatureVoidBlock;
 import axthrix.world.types.block.traversal.*;
@@ -174,7 +173,7 @@ public class AxthrixCrafters {
 				legSpeed = 0.05f;
 			}};
 
-			setWallData(Blocks.stoneWall, null, AxItems.stone, 1f);
+			setWallData(Blocks.stoneWall, null, AxResources.stone, 1f);
 			setWallData(Blocks.sandWall, Blocks.oreCopper, Items.sand, 1.5f);
 			setWallData(Blocks.iceWall, null, Items.lead, 0.6f);
 			setWallData(Blocks.dirtWall, Blocks.oreCrystalThorium, Items.coal, 4f);
@@ -285,8 +284,8 @@ public class AxthrixCrafters {
 			effectResistanceCold = 0;
 			accumulationResistanceHeat = 0.4f;
 
-			consumeItems(with(AxItems.tungstenCoil, 8, AxItems.iodine, 4, AxItems.silverCoil,10));
-			outputItem = new ItemStack(AxItems.coolingAssembly, 2);
+			consumeItems(with(AxResources.tungstenCoil, 8, AxResources.iodine, 4, AxResources.silverCoil,10));
+			outputItem = new ItemStack(AxResources.coolingAssembly, 2);
 			craftTime = 120f;
 			requirements(Category.crafting, with(
 					Items.copper, 75,
@@ -302,7 +301,7 @@ public class AxthrixCrafters {
 			costRate = 235f;
 
 
-			addBoost(AxItems.sulfur, 16f);
+			addBoost(AxResources.sulfur, 16f);
 			faction = Seq.with(AxFactions.axthrix);
 
 			unitType = AxthrixUnits.shale;
@@ -364,8 +363,8 @@ public class AxthrixCrafters {
 					Items.lead, 100));
 
 			consumePower(1.5f);
-			consumeItem(AxItems.sulfur, 1);
-			consumeLiquid(AxLiquids.mercury, 0.2f).boost();
+			consumeItem(AxResources.sulfur, 1);
+			consumeLiquid(AxResources.mercury, 0.2f).boost();
 		}};
 		nanobotDome = new NanobotProjector("nanobot-dome"){{
 			size = 3;
@@ -395,8 +394,8 @@ public class AxthrixCrafters {
 					Items.lead, 100));
 
 			consumePower(4.25f);
-			consumeItem(AxItems.sulfur, 1);
-			consumeLiquid(AxLiquids.mercury, 0.4f).boost();
+			consumeItem(AxResources.sulfur, 1);
+			consumeLiquid(AxResources.mercury, 0.4f).boost();
 		}};
 		nanobotRealm = new NanobotProjector("nanobot-realm"){{
 			size = 5;
@@ -426,8 +425,8 @@ public class AxthrixCrafters {
 					Items.lead, 100));
 
 			consumePower(8f);
-			consumeItem(AxItems.sulfur, 2);
-			consumeLiquid(AxLiquids.mercury, 0.8f).boost();
+			consumeItem(AxResources.sulfur, 2);
+			consumeLiquid(AxResources.mercury, 0.8f).boost();
 		}};
 		centrifugalAccelerator = new AxMulticrafter("centrifugal-accelerator")
 		{{
@@ -485,13 +484,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(with(AxItems.carbonCoil, 8, AxItems.silverCoil, 1)),
+									Seq.with(with(AxResources.carbonCoil, 8, AxResources.silverCoil, 1)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(with(AxItems.CSW, 2)),
+									Seq.with(with(AxResources.CSW, 2)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -503,13 +502,13 @@ public class AxthrixCrafters {
 //							//IOEntry input
 //							new IOEntry(
 //									//item input
-//									Seq.with(ItemStack.with(AxItems.tungstenCoil, 2, AxItems.copperCoil, 4, AxItems.silverCoil,1)),
+//									Seq.with(ItemStack.with(AxResources.tungstenCoil, 2, AxResources.copperCoil, 4, AxResources.silverCoil,1)),
 //									//Liquid input
 //									Seq.with(LiquidStack.with(Liquids.cryofluid, 0.265f))
 //							),
 //							//IOEntry output
 //							new IOEntry(
-//									Seq.with(ItemStack.with(AxItems.coolingAssembly, 1)),
+//									Seq.with(ItemStack.with(AxResources.coolingAssembly, 1)),
 //									//output fluids, again, it can be empty
 //									Seq.with()
 //							),
@@ -534,13 +533,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(with(AxItems.aqullium, 2)),
+									Seq.with(with(AxResources.aqullium, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(with(AxItems.carbonCoil, 2, AxItems.tungstenCoil, 1, AxItems.ingot, 1)),
+									Seq.with(with(AxResources.carbonCoil, 2, AxResources.tungstenCoil, 1, AxResources.ingot, 1)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -551,13 +550,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(with(AxItems.esperillo, 2)),
+									Seq.with(with(AxResources.esperillo, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(with(AxItems.copperCoil, 2, AxItems.ingot, 4)),
+									Seq.with(with(AxResources.copperCoil, 2, AxResources.ingot, 4)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -568,13 +567,13 @@ public class AxthrixCrafters {
 							//IOEntry input
 							new IOEntry(
 									//item input
-									Seq.with(with(AxItems.komainium, 2)),
+									Seq.with(with(AxResources.komainium, 2)),
 									//Liquid input
 									Seq.with()
 							),
 							//IOEntry output
 							new IOEntry(
-									Seq.with(with(AxItems.leadCoil, 2, AxItems.silverCoil, 1, AxItems.ingot, 1)),
+									Seq.with(with(AxResources.leadCoil, 2, AxResources.silverCoil, 1, AxResources.ingot, 1)),
 									//output fluids, again, it can be empty
 									Seq.with()
 							),
@@ -597,16 +596,16 @@ public class AxthrixCrafters {
 
 			drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
-					new DrawLiquidTile(AxLiquids.xenon),
-					new DrawLiquidTile(AxLiquids.mercury, 10f),
+					new DrawLiquidTile(AxResources.xenon),
+					new DrawLiquidTile(AxResources.mercury, 10f),
 					new DrawDefault()
 			);
 			consumePower(800f/60f);
-			outputItem = new ItemStack(AxItems.RDC, 1);
+			outputItem = new ItemStack(AxResources.smallRDC, 1);
 			researchCost = with(Items.copper, 1);
 			requirements(Category.crafting, with(Items.copper, 1));
-			consumeLiquids(LiquidStack.with(AxLiquids.xenon, 0.2f, AxLiquids.iodineGas, 0.15));
-			consumeItems(with(AxItems.CSW, 2, AxItems.coolingAssembly, 1,AxItems.dysprosium,4));
+			consumeLiquids(LiquidStack.with(AxResources.xenon, 0.2f, AxResources.iodineGas, 0.15));
+			consumeItems(with(AxResources.CSW, 2, AxResources.coolingAssembly, 1, AxResources.dysprosium,4));
 		}};
 
 		chemicalSeparator = new AxSeparator("chemical-separator"){{
@@ -614,11 +613,11 @@ public class AxthrixCrafters {
 
 			requirements(Category.crafting, with(Items.copper, 1));
 			results = with(
-					AxItems.sulfur, 8,
-					AxItems.iodine, 5,
-					AxItems.samarium, 2,
-					AxItems.curium, 2,
-					AxItems.dysprosium, 1
+					AxResources.sulfur, 8,
+					AxResources.iodine, 5,
+					AxResources.samarium, 2,
+					AxResources.curium, 2,
+					AxResources.dysprosium, 1
 			);
 
 			hasPower = true;
@@ -627,7 +626,7 @@ public class AxthrixCrafters {
 			itemCapacity = 40;
 
 			consumePower(8f);
-			consumeItem(AxItems.ingot, 4);
+			consumeItem(AxResources.ingot, 4);
 
 			drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
@@ -650,12 +649,12 @@ public class AxthrixCrafters {
 
 			liquidCapacity = 50f;
 
-			consumeItem(AxItems.ingot,3);
+			consumeItem(AxResources.ingot,3);
 			consumePower(2f);
 
 			drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
-					new DrawBubbles(AxLiquids.xenon.color.cpy().add(AxLiquids.mercury.color)){{
+					new DrawBubbles(AxResources.xenon.color.cpy().add(AxResources.mercury.color)){{
 						sides = 10;
 						recurrence = 3f;
 						spread = 6;
@@ -675,7 +674,7 @@ public class AxthrixCrafters {
 			ambientSoundVolume = 0.08f;
 
 			regionRotated1 = 3;
-			outputLiquids = LiquidStack.with(AxLiquids.xenon, 16f / 60, AxLiquids.mercury, 15f / 60);
+			outputLiquids = LiquidStack.with(AxResources.xenon, 16f / 60, AxResources.mercury, 15f / 60);
 			liquidOutputDirections = new int[]{1, 3};
 		}};
 		broiler = new AxGenericCrafter("broiler"){{
@@ -686,8 +685,8 @@ public class AxthrixCrafters {
 			craftTime = 4f;
 
 			consumePower(10f);
-			consumeItem(AxItems.iodine, 2);
-			outputLiquid = new LiquidStack(AxLiquids.iodineGas, 12.5f/60f);
+			consumeItem(AxResources.iodine, 2);
+			outputLiquid = new LiquidStack(AxResources.iodineGas, 12.5f/60f);
 			drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion());
 			requirements(Category.liquid, with(Items.copper,1));
 		}};
@@ -748,20 +747,20 @@ public class AxthrixCrafters {
 		}};
 
 
-		salvageDefroster = new TemperatureDrainBlock("salvage-defroster"){{
-			requirements(Category.liquid, with(
-					AxItems.ingot, 15,
-					AxItems.iron,10
+		salvageDefroster = new TemperatureSinkBlock("salvage-defroster"){{
+			requirements(Category.effect, with(
+					AxResources.ingot, 15,
+					AxResources.iron,10
 			));
 			drainHeat = false;
 			swappable = false;
 			drainRate = 2;
 			drainMode = 1;
 		}};
-		salvageHeatSink = new TemperatureDrainBlock("salvage-heat-sink"){{
-			requirements(Category.liquid, with(
-					AxItems.ingot, 15,
-					AxItems.iron,10
+		salvageHeatSink = new TemperatureSinkBlock("salvage-heat-sink"){{
+			requirements(Category.effect, with(
+					AxResources.ingot, 15,
+					AxResources.iron,10
 			));
 			drainHeat = true;
 			swappable = false;

@@ -2,13 +2,15 @@ package axthrix.world.types.abilities.heatbased;
 
 import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.AxthrixLoader;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.world.util.logics.TemperatureLogic;
 import mindustry.content.Fx;
@@ -45,45 +47,63 @@ public class ThermalDashAbility extends PassiveHeatAbility {
 
     public Color dashColor = Color.cyan;
 
-    private static ObjectMap<Integer, Boolean> autoModeMap = new ObjectMap<>();
+    private static final ObjectMap<Integer, Boolean> autoModeMap = new ObjectMap<>();
+    /** UI: request one manual dash. */
+    public static final ObjectMap<Integer, Boolean> uiDashRequest = new ObjectMap<>();
 
-    private ObjectMap<Integer, Float> cooldownTimer = new ObjectMap<>();
-    private ObjectMap<Integer, Float> dashProgress = new ObjectMap<>();
-    private ObjectMap<Integer, Float> dashAngle = new ObjectMap<>();
-    private ObjectMap<Integer, Boolean> isDodgeDash = new ObjectMap<>();
+    private final ObjectMap<Integer, Float> cooldownTimer = new ObjectMap<>();
+    private final ObjectMap<Integer, Float> dashProgress = new ObjectMap<>();
+    private final ObjectMap<Integer, Float> dashAngle = new ObjectMap<>();
+    private final ObjectMap<Integer, Boolean> isDodgeDash = new ObjectMap<>();
 
-    public ThermalDashAbility(){
+    public ThermalDashAbility() {
         singleTickHeatLoss = 0.15f;
         bytickHeatLoss = 2f;
         idleHeatGain = 4;
         scaleByCurrent = false;
     }
 
+    public static boolean isAuto(Unit unit) {
+        return autoModeMap.get(unit.id, true);
+    }
+
+    public static void toggleAuto(Unit unit) {
+        autoModeMap.put(unit.id, !autoModeMap.get(unit.id, true));
+    }
+
+    public static void requestDash(Unit unit) {
+        uiDashRequest.put(unit.id, true);
+    }
+
+    public float cooldownLeft(Unit unit) {
+        return Math.max(0f, cooldownTimer.get(unit.id, 0f));
+    }
+
     @Override
-    public void update(Unit unit){
+    public void update(Unit unit) {
         super.update(unit);
 
-        if(!cooldownTimer.containsKey(unit.id)){
+        if (!cooldownTimer.containsKey(unit.id)) {
             cooldownTimer.put(unit.id, 0f);
             dashProgress.put(unit.id, 0f);
             dashAngle.put(unit.id, 0f);
             isDodgeDash.put(unit.id, false);
         }
 
-        if(!autoModeMap.containsKey(unit.id)){
+        if (!autoModeMap.containsKey(unit.id)) {
             autoModeMap.put(unit.id, true);
         }
 
         float timer = cooldownTimer.get(unit.id);
         float progress = dashProgress.get(unit.id);
 
-        if(timer > 0f){
+        if (timer > 0f) {
             cooldownTimer.put(unit.id, timer - Time.delta);
         }
 
         float heat = TemperatureLogic.getHeatUnit(unit);
 
-        if(progress > 0f && progress < 1f){
+        if (progress > 0f && progress < 1f) {
             isDealingDamage = true;
 
             float angle = dashAngle.get(unit.id);
@@ -92,13 +112,13 @@ public class ThermalDashAbility extends PassiveHeatAbility {
             Tmp.v1.trns(angle, moveAmount);
             unit.move(Tmp.v1.x, Tmp.v1.y);
 
-            if(Mathf.chance(0.8)){
-                if(trailEffect == null){
+            if (Mathf.chance(0.8)) {
+                if (trailEffect == null) {
                     float anglefx = Mathf.random(360f);
-                    float dist = Mathf.random(unit.hitSize*4);
+                    float dist = Mathf.random(unit.hitSize * 4);
                     AxthrixFfx.lightningPart(unit.x, unit.y, Mathf.random(1f, 4f), 29f, 0, dashColor).at(
                             unit.x + Mathf.cosDeg(angle) * dist,
-                            (unit.y - 5)+ Mathf.sinDeg(angle) * dist,
+                            (unit.y - 5) + Mathf.sinDeg(angle) * dist,
                             anglefx
                     );
                 } else {
@@ -111,9 +131,8 @@ public class ThermalDashAbility extends PassiveHeatAbility {
             float currentDashDistance = isDodgeDash.get(unit.id) ? dodgeDistance : dashDistance;
             progress += Time.delta / (currentDashDistance / dashSpeed * 60f);
             dashProgress.put(unit.id, Math.min(progress, 1f));
-
             return;
-        } else if(progress >= 1f){
+        } else if (progress >= 1f) {
             dashProgress.put(unit.id, 0f);
             isDodgeDash.put(unit.id, false);
         }
@@ -122,19 +141,21 @@ public class ThermalDashAbility extends PassiveHeatAbility {
         float targetAngle = 0f;
         boolean isDodge = false;
 
-        if(unit.isPlayer()){
-            if(Core.input.keyTap(Binding.control) && !Core.app.isMobile()){
-                boolean current = autoModeMap.get(unit.id);
-                autoModeMap.put(unit.id, !current);
+        if (unit.isPlayer()) {
+            if (AxthrixLoader.toggleTapped()) {
+                toggleAuto(unit);
             }
 
-            if(autoModeMap.get(unit.id)){
+            if (isAuto(unit)) {
                 Object[] decision = makeAIDecision(unit);
-                shouldDash = (boolean)decision[0];
-                targetAngle = (float)decision[1];
-                isDodge = (boolean)decision[2];
+                shouldDash = (Boolean) decision[0];
+                targetAngle = (Float) decision[1];
+                isDodge = (Boolean) decision[2];
             } else {
-                if(Core.input.keyTap(Binding.boost)){
+                boolean keyDash = AxthrixLoader.activateTapped();
+                boolean uiDash = uiDashRequest.get(unit.id, false);
+                uiDashRequest.put(unit.id, false);
+                if (keyDash || uiDash) {
                     targetAngle = unit.rotation;
                     shouldDash = true;
                     isDodge = false;
@@ -142,14 +163,14 @@ public class ThermalDashAbility extends PassiveHeatAbility {
             }
         } else {
             Object[] decision = makeAIDecision(unit);
-            shouldDash = (boolean)decision[0];
-            targetAngle = (float)decision[1];
-            isDodge = (boolean)decision[2];
+            shouldDash = (Boolean) decision[0];
+            targetAngle = (Float) decision[1];
+            isDodge = (Boolean) decision[2];
         }
 
         float heatCost = scaleByCurrent ? heat * singleTickHeatLoss : maxSelfHeat * singleTickHeatLoss;
 
-        if(shouldDash && timer <= 0f && heat >= heatCost){
+        if (shouldDash && timer <= 0f && heat >= heatCost) {
             removeInstantHeat(unit);
 
             dashAngle.put(unit.id, targetAngle);
@@ -161,15 +182,13 @@ public class ThermalDashAbility extends PassiveHeatAbility {
         }
     }
 
-    private Object[] makeAIDecision(Unit unit){
+    private Object[] makeAIDecision(Unit unit) {
         boolean shouldDash = false;
         float targetAngle = unit.rotation;
         boolean isDodge = false;
 
         boolean incomingThreat = Groups.bullet.contains(bullet -> {
-            if(bullet.team != unit.team &&
-                    unit.within(bullet, aiDodgeDetectRadius) &&
-                    bullet.type != null){
+            if (bullet.team != unit.team && unit.within(bullet, aiDodgeDetectRadius) && bullet.type != null) {
                 Tmp.v1.set(bullet.vel).scl(30f);
                 return unit.within(bullet.x + Tmp.v1.x, bullet.y + Tmp.v1.y, unit.hitSize);
             }
@@ -177,14 +196,14 @@ public class ThermalDashAbility extends PassiveHeatAbility {
         });
 
         Unit closestEnemy = Units.closestEnemy(unit.team, unit.x, unit.y, aiAggroDetectRadius, u -> true);
-        boolean enemyInFront = closestEnemy != null &&
-                Angles.within(unit.angleTo(closestEnemy), unit.rotation, 45f);
+        boolean enemyInFront = closestEnemy != null
+                && Angles.within(unit.angleTo(closestEnemy), unit.rotation, 45f);
 
-        if(incomingThreat && Mathf.chance(aiDodgePriority)){
+        if (incomingThreat && Mathf.chance(aiDodgePriority)) {
             targetAngle = unit.rotation + (Mathf.randomBoolean() ? 90f : -90f);
             shouldDash = true;
             isDodge = true;
-        } else if(enemyInFront){
+        } else if (enemyInFront) {
             targetAngle = unit.angleTo(closestEnemy);
             shouldDash = true;
         }
@@ -192,78 +211,68 @@ public class ThermalDashAbility extends PassiveHeatAbility {
         return new Object[]{shouldDash, targetAngle, isDodge};
     }
 
-    private void performThermalBurst(Unit unit){
+    private void performThermalBurst(Unit unit) {
         Seq<Unit> hitUnits = new Seq<>();
         Seq<Building> hitBuildings = new Seq<>();
 
         float scaledDamage = getScaledDamage(unit, burstDamage, selfHeatMultiplier);
 
         Units.nearbyEnemies(unit.team, unit.x, unit.y, burstRadius, target -> {
-            if(hitUnits.size < maxChainTargets){
-                hitUnits.add(target);
-            }
+            if (hitUnits.size < maxChainTargets) hitUnits.add(target);
         });
 
-        if(damageBuildings){
+        if (damageBuildings) {
             Units.nearbyBuildings(unit.x, unit.y, burstRadius, building -> {
-                if(building.team != unit.team &&
-                        building.block.destructible &&
-                        hitBuildings.size < maxChainTargets){
+                if (building.team != unit.team && building.block.destructible && hitBuildings.size < maxChainTargets) {
                     hitBuildings.add(building);
                 }
             });
         }
 
         Unit lastTarget = unit;
-        for(Unit target : hitUnits){
+        for (Unit target : hitUnits) {
             float targetHeat = TemperatureLogic.getHeatUnit(target);
             float targetEffectResist = TemperatureLogic.getEffectResistanceHeatUnit(target);
-
             float finalDamage = applyTargetHeatBonus(targetHeat, targetEffectResist, scaledDamage, targetHeatDamageBonus);
             target.damage(finalDamage);
             TemperatureLogic.applyTemperatureUnit(target, burstTemperature);
 
-            if(collideEffect != null){
+            if (collideEffect != null) {
                 collideEffect.at(lastTarget.x, lastTarget.y, 0f, new float[]{target.x, target.y});
             }
             lastTarget = target;
         }
 
-        for(Building building : hitBuildings){
+        for (Building building : hitBuildings) {
             float buildingHeat = TemperatureLogic.getHeatBuilding(building);
             float buildingEffectResist = TemperatureLogic.getEffectResistanceHeatBuilding(building);
-
             float finalDamage = applyTargetHeatBonus(buildingHeat, buildingEffectResist, scaledDamage, targetHeatDamageBonus);
-
             building.damage(finalDamage * buildingDamageMultiplier);
             TemperatureLogic.applyTemperatureBuilding(building, burstTemperature);
 
-            if(collideEffect != null){
+            if (collideEffect != null) {
                 collideEffect.at(unit.x, unit.y, 0f, new float[]{building.x, building.y});
             }
         }
     }
 
     @Override
-    public void draw(Unit unit){
-        if(!cooldownTimer.containsKey(unit.id)) return;
+    public void draw(Unit unit) {
+        if (!cooldownTimer.containsKey(unit.id)) return;
 
         float timer = cooldownTimer.get(unit.id);
         float progress = dashProgress.get(unit.id);
 
-        if(timer > 0f && progress == 0f){
+        if (timer > 0f && progress == 0f) {
             Draw.z(29f);
-
             float cooldownProgress = 1f - (timer / cooldown);
             Draw.color(dashColor, Color.white, cooldownProgress);
             Draw.alpha(0.5f);
-
             Fill.arc(unit.x, unit.y - unit.hitSize - 4f, 6f, cooldownProgress, unit.rotation - 90f);
-
             Draw.reset();
         }
 
-        if(progress > 0f && progress < 1f){
+        if (progress > 0f && progress < 1f) {
             Draw.z(29f);
             Draw.color(dashColor);
             Draw.alpha(0.6f);
@@ -273,7 +282,7 @@ public class ThermalDashAbility extends PassiveHeatAbility {
     }
 
     @Override
-    public String localized(){
+    public String localized() {
         return "Thermal Dash";
     }
 }

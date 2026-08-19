@@ -8,7 +8,7 @@ import arc.math.*;
 import arc.util.*;
 import axthrix.AxthrixLoader;
 import axthrix.world.types.sea.managers.LayerManager;
-import axthrix.world.types.block.defense.HeadTurretClass;
+import axthrix.world.types.block.defense.parent.HeadTurretClass;
 import mindustry.entities.part.*;
 import mindustry.game.Gamemode;
 import mindustry.gen.Building;

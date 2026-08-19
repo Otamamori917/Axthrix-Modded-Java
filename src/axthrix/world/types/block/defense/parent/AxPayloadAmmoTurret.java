@@ -1,0 +1,202 @@
+package axthrix.world.types.block.defense.parent;
+
+import arc.Events;
+import arc.func.Boolp;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.io.*;
+import axthrix.world.util.AxStatValues;
+import mindustry.ctype.*;
+import mindustry.entities.bullet.*;
+import mindustry.game.EventType;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
+
+import static mindustry.Vars.*;
+
+public class AxPayloadAmmoTurret extends PerkTurretType {
+    public ObjectMap<UnlockableContent, BulletType> ammoTypes = new ObjectMap<>();
+    protected UnlockableContent[] ammoKeys;
+
+    private final Seq<ConditionalAmmo> conditionalAmmo = new Seq<>();
+
+    public AxPayloadAmmoTurret(String name) {
+        super(name);
+        maxAmmo = 3;
+        acceptsPayload = true;
+    }
+
+    public void ammo(Object... objects) {
+        ammoTypes = ObjectMap.of(objects);
+    }
+
+    public void conditionalAmmo(UnlockableContent key, BulletType bullet, Boolp condition) {
+        conditionalAmmo.add(new ConditionalAmmo(key, bullet, condition));
+    }
+
+    private void updateConditionalAmmo() {
+        if(!state.isGame()) return;
+
+        boolean changed = false;
+        for(ConditionalAmmo c : conditionalAmmo) {
+            boolean should = c.condition.get();
+            if(should != c.active) {
+                c.active = should;
+                if(should) ammoTypes.put(c.key, c.bullet);
+                else ammoTypes.remove(c.key);
+                changed = true;
+            }
+        }
+
+        if(changed) ammoKeys = ammoTypes.keys().toSeq().toArray(UnlockableContent.class);
+    }
+
+    private static class ConditionalAmmo {
+        final UnlockableContent key;
+        final BulletType bullet;
+        final Boolp condition;
+        boolean active = false;
+
+        ConditionalAmmo(UnlockableContent key, BulletType bullet, Boolp condition) {
+            this.key = key;
+            this.bullet = bullet;
+            this.condition = condition;
+        }
+    }
+
+    public void limitRange() { limitRange(1f); }
+
+    public void limitRange(float margin) {
+        for(var entry : ammoTypes.copy().entries()) {
+            entry.value.lifetime = (range + margin) / entry.value.speed;
+        }
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.itemCapacity);
+        stats.add(Stat.ammo, AxStatValues.ammo(ammoTypes,0, true));
+    }
+
+    @Override
+    public void init() {
+        consume(new ConsumePayloadFilter(i -> ammoTypes.containsKey(i)) {
+            @Override
+            public void build(Building build, Table table) {
+                MultiReqImage image = new MultiReqImage();
+                for(var block : content.blocks()) displayContent(build, image, block);
+                for(var unit : content.units()) displayContent(build, image, unit);
+                table.add(image).size(8 * 4);
+            }
+
+            void displayContent(Building build, MultiReqImage image, UnlockableContent content) {
+                if(filter.get(content) && content.unlockedNow()) {
+                    image.add(new ReqImage(new Image(content.uiIcon), () -> build instanceof AxPayloadTurretBuild it && it.payloads.any() && it.currentAmmo() == content));
+                }
+            }
+
+            @Override
+            public float efficiency(Building build) {
+                return build instanceof AxPayloadTurretBuild it && it.payloads.any() ? 1f : 0f;
+            }
+
+            @Override
+            public void display(Stats stats) {}
+        });
+
+        ammoKeys = ammoTypes.keys().toSeq().toArray(UnlockableContent.class);
+
+        if(conditionalAmmo.any()) {
+            Events.run(EventType.Trigger.update, this::updateConditionalAmmo);
+        }
+
+        super.init();
+    }
+
+    public class AxPayloadTurretBuild extends PerkTurretTypeBuild {
+        public PayloadSeq payloads = new PayloadSeq();
+
+        public UnlockableContent currentAmmo() {
+            for(var content : ammoKeys) {
+                if(payloads.contains(content)) return content;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean acceptPayload(Building source, Payload payload) {
+            return payloads.total() < maxAmmo && ammoTypes.containsKey(payload.content());
+        }
+
+        @Override
+        public void handlePayload(Building source, Payload payload) {
+            payloads.add(payload.content());
+        }
+
+        @Override
+        public boolean hasAmmo() {
+            if(getPendingPerkBullet() != null) return true;
+            return payloads.total() > 0;
+        }
+
+        @Override
+        public BulletType peekAmmo() {
+            BulletType perk = getPendingPerkBullet();
+            if(perk != null) return perk;
+            for(var content : ammoKeys) {
+                if(payloads.contains(content)) return ammoTypes.get(content);
+            }
+            return null;
+        }
+
+        @Override
+        public BulletType useAmmo() {
+            BulletType perk = consumePerkShot();
+            if(perk != null) return perk;
+            for(var content : ammoKeys) {
+                if(payloads.contains(content)) {
+                    payloads.remove(content);
+                    return ammoTypes.get(content);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public PayloadSeq getPayloads() { return payloads; }
+
+        @Override
+        public void updateTile() {
+            totalAmmo = payloads.total();
+            unit.ammo((float)unit.type().ammoCapacity * totalAmmo / maxAmmo);
+            super.updateTile();
+        }
+
+        @Override
+        public void displayBars(Table bars) {
+            super.displayBars(bars);
+            bars.add(new Bar("stat.ammo", Pal.ammo, () -> (float)totalAmmo / maxAmmo)).growX();
+            bars.row();
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+            payloads.write(write);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            payloads.read(read);
+            payloads.removeAll(u -> !ammoTypes.containsKey(u));
+        }
+    }
+}

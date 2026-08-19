@@ -2,10 +2,9 @@ package axthrix.world.types.weapontypes;
 
 import arc.scene.ui.layout.Table;
 import arc.struct.ObjectIntMap;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Strings;
-import axthrix.content.AxLiquids;
+import axthrix.content.AxResources;
 import axthrix.world.types.perks.*;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.AxStatValues;
@@ -13,10 +12,8 @@ import mindustry.entities.units.WeaponMount;
 import mindustry.gen.Unit;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.ui.Styles;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
 
 /**
  * A weapon type that supports the modular perk system.
@@ -71,7 +68,7 @@ public class PerkWeapon extends Weapon {
             t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
         }
 
-        AxStatValues.appendCustomStats(t, bullet, AxLiquids.nothingness);
+        AxStatValues.appendCustomStats(t, bullet, AxResources.nothingness,true);
     }
 
 

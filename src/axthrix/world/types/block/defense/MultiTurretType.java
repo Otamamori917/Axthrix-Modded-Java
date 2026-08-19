@@ -2,6 +2,7 @@ package axthrix.world.types.block.defense;
 
 import arc.graphics.g2d.*;
 import arc.struct.Seq;
+import axthrix.world.types.block.defense.parent.HeadTurretClass;
 import axthrix.world.types.weapontypes.BlockWeapon;
 import axthrix.world.util.AxStatValues;
 import mindustry.world.meta.Stat;

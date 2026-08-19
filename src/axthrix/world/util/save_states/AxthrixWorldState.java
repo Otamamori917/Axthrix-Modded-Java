@@ -193,11 +193,10 @@ public class AxthrixWorldState {
                             }
                         }
 
-                        if(TemperatureLogic.debugLogging){
                             Log.info("[DroneSave] Saved DroneUnitType @ (ID: @) - @ tethers, @ slots",
                                     droneType.name, droneType.id,
                                     droneType.tetherUnit.size(), droneType.droneSlot.size());
-                        }
+
                     }
                 }
 
@@ -288,11 +287,10 @@ public class AxthrixWorldState {
                             }
                         }
 
-                        if(TemperatureLogic.debugLogging){
                             Log.info("[DroneSave] Loaded DroneUnitType @ (ID: @) - @ tethers, @ slots",
                                     droneType.name, droneType.id,
                                     droneType.tetherUnit.size(), droneType.droneSlot.size());
-                        }
+
                     }
                 }
 
@@ -321,10 +319,9 @@ public class AxthrixWorldState {
                             spawn.timer = timer;
                             spawn.droneSlot = droneSlot;
 
-                            if(TemperatureLogic.debugLogging){
                                 Log.info("[DroneSave] Loaded ability for unit @ (ability @) - alive drone: @, warmup: @, timer: @",
                                         unitId, abilityIndex, aliveUnitId, warmup, timer);
-                            }
+
                         }
                     }
                 }

@@ -2,12 +2,11 @@ package axthrix.world.util.draw;
 
 import arc.graphics.g2d.*;
 import arc.util.*;
-import axthrix.world.types.block.defense.AxPayloadAmmoTurret;
+import axthrix.world.types.block.defense.parent.AxPayloadAmmoTurret;
 import mindustry.ctype.*;
 import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.blocks.defense.turrets.PayloadAmmoTurret.*;
 
 public class DrawIPayloadAmmo extends RegionPart{
     public PartProgress matProgress = PartProgress.warmup;

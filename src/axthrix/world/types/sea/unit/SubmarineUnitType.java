@@ -7,6 +7,7 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Time;
 import arc.util.Tmp;
+import axthrix.AxthrixLoader;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.block.AxBlock;
 import axthrix.world.types.sea.managers.LayerManager;
@@ -81,7 +82,7 @@ public class SubmarineUnitType extends UnitType {
             }
         }
 
-        if (unit.isPlayer() && Core.input.keyTap(Binding.boost)) {
+        if (unit.isPlayer() && AxthrixLoader.activateTapped()) {
             handleDiveToggle(unit);
         }
     }
@@ -97,22 +98,14 @@ public class SubmarineUnitType extends UnitType {
         boolean isSub = LayerManager.isSubmerged(unit);
 
         if (isSub) {
-            // 1. Get the floor color beneath the unit
             Color floorCol = Vars.world.floorWorld(unit.x, unit.y).mapColor;
 
-            // 2. Prepare the "Submerged Tint" (matches the block hue shift)
-            // We use intensity to decide how strong the "underwater" look is.
             Tmp.c1.set(Color.white).lerp(Tmp.c2.set(floorCol).add(0.2f, 0.2f, 0.2f, 0f), intensity);
 
-            // 3. Apply the tint to the unit's sprite
-            // We mix the unit's base textures with the underwater hue
             Draw.color(Tmp.c1);
 
-            // Mixcol handles the "depth" look (darkening the unit)
-            // We use 0.6f * intensity so it gets darker the deeper the player "looks"
             Draw.mixcol(Tmp.c2.set(floorCol).mul(0.83f), 0.6f * intensity);
         } else {
-            // Normal surface drawing
             super.applyColor(unit);
         }
     }
@@ -123,26 +116,21 @@ public class SubmarineUnitType extends UnitType {
         boolean playerSub = LayerManager.isPlayerSubmerged();
         boolean unitSub = LayerManager.isSubmerged(unit);
 
-        // 4. Selective Rendering Logic
-        // If unit is submerged but player is NOT, the unit should be a shadow.
         if (unitSub && !playerSub) {
             float shadowWeight = 1f - intensity;
             float ox = Mathf.sin(Time.time, 15f, 1.2f) * shadowWeight;
             float oy = Mathf.cos(Time.time, 18f, 0.8f) * shadowWeight;
 
-            Draw.z(Layer.groundUnit-1); // Draw on floor level
+            Draw.z(Layer.groundUnit-1);
             Draw.color(Color.black);
             Draw.alpha(0.3f * shadowWeight);
 
-            // Draw a simplified silhouette of the unit
             Draw.rect(unit.type.fullIcon, unit.x + ox, unit.y + oy, unit.rotation - 90);
             Draw.reset();
 
-            // If the shadow is strong enough, don't draw the actual unit sprite
             if (shadowWeight > 0.9f) return;
         }
 
-        // Standard unit drawing (will use the color from applyColor above)
         super.draw(unit);
     }
 

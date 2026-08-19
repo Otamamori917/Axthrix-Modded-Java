@@ -68,6 +68,8 @@ public class TemperatureLogic {
     protected static ObjectMap<Integer, Float> buildingEffectResistanceHeat = new ObjectMap<>();
     protected static ObjectMap<Integer, Float> buildingEffectResistanceCold = new ObjectMap<>();
 
+    protected static ObjectMap<Class<?>, Float> sinkEffectivenessCache = new ObjectMap<>();
+
     /// per-building tile cache used by applyTemperatureFromFloors
     protected static ObjectMap<Integer, TileCont> blockTilesList = new ObjectMap<>();
 
@@ -245,21 +247,22 @@ public class TemperatureLogic {
 
     public static void drainTemperatureTowardZero(Building building, boolean drainHeat, float amountPerTick){
         int pos = building.pos();
+        float amount = amountPerTick * getSinkEffectiveness(building.block);
 
         if(needsBothTemps(building.block)){
             if(drainHeat){
                 float heat = buildingHeat.get(pos, 0f);
-                if(heat > 0f) buildingHeat.put(pos, Math.max(0f, heat - amountPerTick));
+                if(heat > 0f) buildingHeat.put(pos, Math.max(0f, heat - amount));
             }else{
                 float cold = buildingCold.get(pos, 0f);
-                if(cold > 0f) buildingCold.put(pos, Math.max(0f, cold - amountPerTick));
+                if(cold > 0f) buildingCold.put(pos, Math.max(0f, cold - amount));
             }
         }else{
             float temp = buildingTemperature.get(pos, 0f);
             if(drainHeat && temp > 0f){
-                buildingTemperature.put(pos, Math.max(0f, temp - amountPerTick));
+                buildingTemperature.put(pos, Math.max(0f, temp - amount));
             }else if(!drainHeat && temp < 0f){
-                buildingTemperature.put(pos, Math.min(0f, temp + amountPerTick));
+                buildingTemperature.put(pos, Math.min(0f, temp + amount));
             }
         }
     }
@@ -281,6 +284,22 @@ public class TemperatureLogic {
         }
 
         needsBothCache.put(cls, result);
+        return result;
+    }
+
+    public static float getSinkEffectiveness(Block block){
+        Class<?> cls = block.getClass();
+        if(sinkEffectivenessCache.containsKey(cls)) return sinkEffectivenessCache.get(cls);
+
+        float result;
+        try {
+            var field = cls.getField("sinkEffectiveness");
+            result = field.getFloat(block);
+        } catch(Exception e){
+            result = 1f;
+        }
+
+        sinkEffectivenessCache.put(cls, result);
         return result;
     }
 
@@ -952,6 +971,7 @@ public class TemperatureLogic {
         buildingAccumulationResistanceCold.clear();
         buildingEffectResistanceHeat.clear();
         buildingEffectResistanceCold.clear();
+        sinkEffectivenessCache.clear();
     }
 
     /// CLEANUP

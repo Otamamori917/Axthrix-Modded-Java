@@ -10,7 +10,7 @@ import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.AxLayers;
-import axthrix.world.types.block.defense.HeadTurretClass;
+import axthrix.world.types.block.defense.parent.HeadTurretClass;
 import axthrix.world.types.sea.block.SubmergedOre;
 import axthrix.world.types.sea.unit.SubmarineUnitType;
 import mindustry.*;
@@ -161,58 +161,58 @@ public class SubmergedUpdaterAndRenderer {
                 }
             });
 
-            /// submarine mobile button
-            if (Vars.ui == null || Vars.player.unit() == null) return;
-            Element existing = Vars.ui.hudGroup.find("submarine-dive-button");
-            if (existing == null) {
-                Vars.ui.hudGroup.fill(t -> {
-                    t.name = "submarine-dive-button";
-                    t.bottom().left();
-
-
-                    t.update(() -> {
-                        float offsetY = 0f;
-                        float offsetX = 0f;
-
-                        //Time Control
-                        if(Vars.mods.getMod("time-control") != null && Vars.mods.getMod("time-control").enabled()){
-                            offsetY += 80f;
-                        }
-
-                        //Testing Utilities
-                        if(Vars.mods.getMod("test-utils") != null && Vars.mods.getMod("test-utils").enabled()){
-                            offsetY += 5f;
-                            offsetX += 10f;
-                        }
-
-                        t.marginBottom(offsetY);
-                        t.marginLeft(offsetX);
-                    });
-
-                    // Visibility: (Is Sub) AND (Is Mobile OR Desktop Setting Enabled)
-                    t.visible(() -> Vars.player.unit() != null &&
-                            Vars.player.unit().type instanceof SubmarineUnitType &&
-                            (Vars.mobile || AxthrixLoader.showMobileDiveButton));
-
-                    t.button(b -> {
-                        b.label(() -> LayerManager.isPlayerSubmerged() ? "SURFACE" : "DIVE").pad(10);
-                    }, Styles.flatBordert, () -> {
-                        Unit unit = Vars.player.unit();
-                        Tile currentTile = unit.tileOn();
-
-                        if (!LayerManager.isPlayerSubmerged()) {
-                            if (currentTile == null || currentTile.floor().name.contains("shallow") || LayerManager.isShallow(currentTile)) {
-                                Vars.ui.showInfoToast("Water too shallow to dive!", 2f);
-                                return;
-                            }
-                        }
-
-                        boolean isSub = LayerManager.submergedUnits.contains(unit);
-                        LayerManager.setSubmerged(unit, !isSub);
-                        Fx.bubble.at(unit.x, unit.y);
-                    }).size(140f, 50f);
-                });
-            }
+//            /// submarine mobile button
+//            if (Vars.ui == null || Vars.player.unit() == null) return;
+//            Element existing = Vars.ui.hudGroup.find("submarine-dive-button");
+//            if (existing == null) {
+//                Vars.ui.hudGroup.fill(t -> {
+//                    t.name = "submarine-dive-button";
+//                    t.bottom().left();
+//
+//
+//                    t.update(() -> {
+//                        float offsetY = 0f;
+//                        float offsetX = 0f;
+//
+//                        //Time Control
+//                        if(Vars.mods.getMod("time-control") != null && Vars.mods.getMod("time-control").enabled()){
+//                            offsetY += 80f;
+//                        }
+//
+//                        //Testing Utilities
+//                        if(Vars.mods.getMod("test-utils") != null && Vars.mods.getMod("test-utils").enabled()){
+//                            offsetY += 5f;
+//                            offsetX += 10f;
+//                        }
+//
+//                        t.marginBottom(offsetY);
+//                        t.marginLeft(offsetX);
+//                    });
+//
+//                    // Visibility: (Is Sub) AND (Is Mobile OR Desktop Setting Enabled)
+//                    t.visible(() -> Vars.player.unit() != null &&
+//                            Vars.player.unit().type instanceof SubmarineUnitType &&
+//                            (Vars.mobile || AxthrixLoader.showMobileButtons));
+//
+//                    t.button(b -> {
+//                        b.label(() -> LayerManager.isPlayerSubmerged() ? "SURFACE" : "DIVE").pad(10);
+//                    }, Styles.flatBordert, () -> {
+//                        Unit unit = Vars.player.unit();
+//                        Tile currentTile = unit.tileOn();
+//
+//                        if (!LayerManager.isPlayerSubmerged()) {
+//                            if (currentTile == null || currentTile.floor().name.contains("shallow") || LayerManager.isShallow(currentTile)) {
+//                                Vars.ui.showInfoToast("Water too shallow to dive!", 2f);
+//                                return;
+//                            }
+//                        }
+//
+//                        boolean isSub = LayerManager.submergedUnits.contains(unit);
+//                        LayerManager.setSubmerged(unit, !isSub);
+//                        Fx.bubble.at(unit.x, unit.y);
+//                    }).size(140f, 50f);
+//                });
+//            }
         });
 
     }

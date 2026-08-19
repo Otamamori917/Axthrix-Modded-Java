@@ -13,8 +13,8 @@ import arc.util.Log;
 import arc.util.Scaling;
 import arc.util.Time;
 import arc.util.noise.Simplex;
-import axthrix.content.AxLiquids;
-import axthrix.world.types.block.defense.AxItemTurret;
+import axthrix.content.AxResources;
+import axthrix.world.types.block.defense.parent.AxItemTurret;
 import axthrix.world.types.block.storage.LiquidDeposit;
 import axthrix.world.types.block.defense.PayloadTurretType;
 import axthrix.world.util.draw.DrawIPayloadTurret;
@@ -98,7 +98,7 @@ public class MountUnitType extends AxUnitType {
             bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
             bars.row();
 
-            bars.add(new Bar(liquidType.get(unit) != AxLiquids.nothingness ? liquidType.get(unit).localizedName : "Liquid", liquidType.get(unit) != null ? liquidType.get(unit).barColor() : Color.black, () -> ((float) liquidAmount.get(unit) / (liquidCap) )));
+            bars.add(new Bar(liquidType.get(unit) != AxResources.nothingness ? liquidType.get(unit).localizedName : "Liquid", liquidType.get(unit) != null ? liquidType.get(unit).barColor() : Color.black, () -> ((float) liquidAmount.get(unit) / (liquidCap) )));
             bars.row();
 
             for(Ability ability : unit.abilities){
@@ -245,7 +245,7 @@ public class MountUnitType extends AxUnitType {
         Units.nearbyBuildings(unit.x, unit.y, liquidPickupRange, b -> {
             if(b instanceof LiquidRouter.LiquidRouterBuild lr) {
                 if(lr.liquids.currentAmount() != 0  && lr.team() == unit.team()) {
-                    if (liquidType.get(unit) == AxLiquids.nothingness && lr.liquids.current() != null){
+                    if (liquidType.get(unit) == AxResources.nothingness && lr.liquids.current() != null){
                         liquidType.replace(unit, lr.liquids.current());
                     }
                     if (!Objects.equals(liquidAmount.get(unit), liquidCap) && liquidType.get(unit) == lr.liquids.current() ) {
@@ -255,8 +255,8 @@ public class MountUnitType extends AxUnitType {
                 }
             } else if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
                 if (ld.liquids.currentAmount() <= ld.block.liquidCapacity && ld.team() == unit.team()) {
-                    if (liquidType.get(unit) != AxLiquids.nothingness && liquidAmount.get(unit) == 0){
-                        liquidType.replace(unit, AxLiquids.nothingness);
+                    if (liquidType.get(unit) != AxResources.nothingness && liquidAmount.get(unit) == 0){
+                        liquidType.replace(unit, AxResources.nothingness);
                     }
                     if (liquidAmount.get(unit) > 0 && ld.liquids.currentAmount() != ld.block.liquidCapacity) {
                         if (ld.liquids.current() == liquidType.get(unit) || ld.liquids.current() == Liquids.water){
@@ -402,7 +402,7 @@ public class MountUnitType extends AxUnitType {
 
         if(build.block.hasLiquids && build.liquids != null) {
             if (liquidAmount.get(unit) == 0){
-                liquidType.replace(unit, AxLiquids.nothingness);
+                liquidType.replace(unit, AxResources.nothingness);
             }
             if (amosLiquidDebug){
                 Log.info("unit:" + unit + "  liquid:" + liquidType.get(unit) + "  liquid amount:" + liquidAmount.get(unit));
@@ -429,7 +429,7 @@ public class MountUnitType extends AxUnitType {
             powTick.put(unit, 0f);
         }
         if (!liquidType.containsKey(unit)){
-            liquidType.put(unit, AxLiquids.nothingness);
+            liquidType.put(unit, AxResources.nothingness);
         }
         if (!liquidAmount.containsKey(unit)){
             liquidAmount.put(unit, Mathf.clamp(0,0,liquidCap));

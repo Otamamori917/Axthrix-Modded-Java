@@ -42,6 +42,8 @@ public class NanobotAbility extends Ability {
     public float nanobotMoveSpeed = 0.05f;
 
     public boolean useAmmo = false;
+    /** When true, damages host team (debuff) instead of healing allies. */
+    public boolean inverted = false;
 
     protected float timer = 0f;
     protected float soundTimer = 0f;
@@ -141,6 +143,10 @@ public class NanobotAbility extends Ability {
         params.nanobotOrbitSpeed = nanobotOrbitSpeed;
         params.nanobotMoveSpeed = nanobotMoveSpeed;
         params.team = unit.team;
+        params.inverted = inverted;
+
+        NanobotLogic.updateNanobots(unit, params, timer, useAmmo, null);
+        if (timer >= tickRate) timer = 0f;
 
         NanobotLogic.updateBoost(unit, params, 6);
     }

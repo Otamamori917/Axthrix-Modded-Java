@@ -14,11 +14,10 @@ import arc.util.Strings;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import axthrix.content.AxLiquids;
+import axthrix.content.AxResources;
 import axthrix.world.util.AxStatValues;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.part.DrawPart;
-import mindustry.gen.Building;
 import mindustry.gen.Icon;
 import mindustry.gen.Tex;
 import mindustry.graphics.Drawf;
@@ -151,7 +150,7 @@ public class TransformingTurret extends Turret {
 
                     Table bulletBody = new Table();
                     StatValues.ammo(ObjectMap.of(this, form.bullet), true, false).display(bulletBody);
-                    AxStatValues.appendCustomStats(bulletBody, form.bullet, AxLiquids.nothingness);
+                    AxStatValues.appendCustomStats(bulletBody, form.bullet, AxResources.nothingness,false);
 
                     Collapser coll = new Collapser(bulletBody, true);
                     coll.setDuration(0.1f);

@@ -21,6 +21,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import arc.util.pooling.Pools;
+import axthrix.world.types.bulletypes.TemperatureBulletType;
 import axthrix.world.util.AxPartParms;
 import axthrix.world.util.draw.AxDrawf;
 import axthrix.world.util.draw.FlatIconShader;
@@ -170,7 +171,7 @@ public class ShieldPlateAbility extends Ability {
                 Color.valueOf("FFAA5E")
         };
 
-        t.add("[#404042]-------------------------------------------------------").left();
+        t.add("[#404042]───────────────────────────────────────────────").left();
         t.row();
 
         final UnitType finalType = activeType;
@@ -446,8 +447,9 @@ public class ShieldPlateAbility extends Ability {
         state.buildRemaining = buildTime;
     }
 
-    protected boolean enemyNearby(Unit unit) {
-        return Units.closestEnemy(unit.team, unit.x, unit.y, combatCheckRange, u -> true) != null;
+    public boolean enemyNearby(Unit unit) {
+        return Units.closestEnemy(unit.team, unit.x, unit.y, combatCheckRange, u -> false) != null
+        || Vars.indexer.findEnemyTile(unit.team, unit.x, unit.y, combatCheckRange, b -> true) != null;
     }
 
     @Override
@@ -728,6 +730,7 @@ public class ShieldPlateAbility extends Ability {
      * {@code Events.on(EventType.UnitDamageEvent.class, ShieldPlateAbility::onUnitDamage);}
      * inside your ModLoader's init
      * and every bullet in the mod (and any vanilla bullet) should respect shield plates automatically,
+     *
      */
     public static void onUnitDamage(EventType.UnitDamageEvent event) {
         Unit unit = event.unit;
@@ -739,6 +742,16 @@ public class ShieldPlateAbility extends Ability {
         if (dealt <= 0.001f) return;
 
         boolean pierce = bullet.type != null && bullet.type.pierce;
+
+        if (bullet.type instanceof TemperatureBulletType t
+                && t.bypassShields) {
+            damagePlatesOnly(unit, bullet, dealt, pierce);
+            UnitTrack track = trackFor(unit);
+            track.lastHealth = unit.health;
+            track.lastFrame = Time.time;
+            return;
+        }
+
         float shouldRemain = computeAbsorb(unit, bullet, dealt, pierce);
         float refund = dealt - shouldRemain;
 
@@ -804,6 +817,77 @@ public class ShieldPlateAbility extends Ability {
         }
     }
 
+    /** Reduces plate durability from a hit without protecting the unit. */
+    protected static void damagePlatesOnly(Unit unit, Bullet bullet, float incomingDamage, boolean pierce) {
+        Seq<ShieldPlateAbility> plates = allPlates(unit);
+        if (plates.isEmpty()) return;
+
+        plates.sort((a, b) -> Integer.compare(a.plateIndex, b.plateIndex));
+
+        float hitAngle = Angles.angle(unit.x, unit.y, bullet.x, bullet.y);
+        float relativeAngle = Mathf.mod(hitAngle - unit.rotation, 360f);
+
+        ShieldPlateAbility direct = null;
+        for (ShieldPlateAbility p : plates) {
+            ShieldState s = p.stateFor(unit);
+            if (s.durability <= 0f) continue;
+            if (Angles.angleDist(relativeAngle, p.facingAngle) <= p.coverageArc / 2f) {
+                direct = p;
+                break;
+            }
+        }
+
+        if (direct != null) {
+            applyPlateDamageOnly(unit, direct, incomingDamage, pierce);
+            return;
+        }
+
+        boolean bigBullet = bullet.type != null && bullet.type.hitSize >= bigBulletSizeThreshold;
+        if (!bigBullet) return;
+
+        Seq<ShieldPlateAbility> nearby = new Seq<>();
+        for (ShieldPlateAbility p : plates) {
+            ShieldState s = p.stateFor(unit);
+            if (s.durability <= 0f) continue;
+            if (Angles.angleDist(relativeAngle, p.facingAngle) <= p.gapAssistRange) nearby.add(p);
+        }
+        nearby.sort((a, b) -> Float.compare(
+                Angles.angleDist(relativeAngle, a.facingAngle),
+                Angles.angleDist(relativeAngle, b.facingAngle)
+        ));
+
+        if (nearby.size >= 2) {
+            float half = incomingDamage / 2f;
+            applyPlateDamageOnly(unit, nearby.get(0), half, pierce);
+            applyPlateDamageOnly(unit, nearby.get(1), half, pierce);
+        } else if (nearby.size == 1) {
+            applyPlateDamageOnly(unit, nearby.first(), incomingDamage * nearby.first().gapAbsorbRatio, pierce);
+        }
+    }
+
+    /** Damages a single plate's durability only (no unit protection). */
+    protected static void applyPlateDamageOnly(Unit unit, ShieldPlateAbility plate, float amount, boolean pierce) {
+        ShieldState state = plate.stateFor(unit);
+        float shieldShare = pierce ? amount * plate.pierceAbsorbRatio : amount;
+
+        float absorbed = Math.min(shieldShare, state.durability);
+        state.durability -= absorbed;
+        state.hitImpulse = 1f;
+        state.lastHitTime = Time.time;
+
+        if (state.durability <= 0f && plate.canRebuild) {
+            Tmp.v1.set(plate.part.x, plate.part.y).rotate(unit.rotation);
+            float worldX = unit.x + Tmp.v1.x;
+            float worldY = unit.y + Tmp.v1.y;
+
+            if (plate.destroySound != null) {
+                plate.destroySound.at(worldX, worldY);
+            }
+            mindustry.content.Fx.smoke.at(worldX, worldY);
+            plate.beginRebuild(state);
+        }
+    }
+
     /** Applies a damage amount against a single plate, respecting pierce, and returns the leftover that spills to the unit. */
     protected static float applySplit(Unit unit, ShieldPlateAbility plate, float amount, boolean pierce) {
         ShieldState state = plate.stateFor(unit);
@@ -822,12 +906,10 @@ public class ShieldPlateAbility extends Ability {
             float worldX = unit.x + Tmp.v1.x;
             float worldY = unit.y + Tmp.v1.y;
 
-            // FIX: Trigger your customizable destroySound directly at the exact split coordinate!
             if (plate.destroySound != null) {
                 plate.destroySound.at(worldX, worldY);
             }
 
-            // Standard generic explosion effect fallback
             mindustry.content.Fx.smoke.at(worldX, worldY);
 
             plate.beginRebuild(state);
@@ -916,7 +998,7 @@ public class ShieldPlateAbility extends Ability {
     public static class ShieldState {
         public float durability;
         public boolean underConstruction;
-        boolean building;
+        public boolean building;
         boolean pausedForCombat;
         boolean combatBlocking;
         float delayRemaining;

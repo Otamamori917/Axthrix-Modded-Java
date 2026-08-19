@@ -1,7 +1,7 @@
 package axthrix.content.units;
 
 import arc.graphics.Color;
-import axthrix.content.AxItems;
+import axthrix.content.AxResources;
 import axthrix.content.FX.AxthrixFfx;
 import axthrix.content.blocks.AxthrixEnvironment;
 import axthrix.world.types.block.Egg;
@@ -120,7 +120,7 @@ public class IkatusaUnits {
             ((IkatusaUnitType)AdultJelly).egg = this;
             attributes.addAll(Blocks.water,Blocks.deepwater,Blocks.deepTaintedWater,
                     Blocks.sandWater,Blocks.darksandWater,Blocks.darksandTaintedWater);
-            requirements(Category.units, with(AxItems.fossilizedIkatusa, 10));
+            requirements(Category.units, with(AxResources.fossilizedIkatusa, 10));
         }};
 
         MaleAdultCrocit = new LeggedWaterUnit("rakdosm") {{
@@ -210,7 +210,7 @@ public class IkatusaUnits {
             nextStage = YoungCrocit;
             ((IkatusaUnitType)FemaleAdultCrocit).egg = this;
             attributes.add(AxthrixEnvironment.crimsonSandDeepFloor);
-            requirements(Category.units, with(AxItems.fossilizedIkatusa, 10, Items.sand, 10));
+            requirements(Category.units, with(AxResources.fossilizedIkatusa, 10, Items.sand, 10));
         }};
 
         GandrElder = new JormungandrUnitType("gandr-elder") {{

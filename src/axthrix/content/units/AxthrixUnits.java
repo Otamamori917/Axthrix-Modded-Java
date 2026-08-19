@@ -15,7 +15,6 @@ import axthrix.world.types.entities.CptrUnitEntity;
 import axthrix.world.types.entities.comp.LeggedWaterEntity;
 import axthrix.world.types.entities.comp.ProductionUnit;
 import axthrix.world.types.entities.comp.StealthUnit;
-import axthrix.world.types.parts.DrawOrbitRegions;
 import axthrix.world.types.parts.LightningPart;
 import axthrix.world.types.parts.Propeller;
 import axthrix.world.types.sea.unit.SubmarineUnitType;
@@ -30,7 +29,6 @@ import static arc.math.Interp.pow10Out;
 import static blackhole.utils.BlackHoleUtils.immuneUnits;
 
 import mindustry.Vars;
-import mindustry.entities.Effect;
 import mindustry.entities.abilities.*;
 import axthrix.world.types.abilities.*;
 import axthrix.world.types.bulletypes.*;
@@ -230,7 +228,7 @@ public class AxthrixUnits {
                     despawnEffect = hitEffect = Fx.none;
                     shootSound = Sounds.shootElude;
                     soundPitchMax = soundPitchMin = 6;
-
+                    status = AxthrixStatus.blast;
                 }};
             }});
         }};
@@ -650,12 +648,7 @@ public class AxthrixUnits {
                 pipeSpeed = 45;
                 maxTargets = 4;
                 damagePerSecond = 240;
-            }},
-                    new StatusFieldAbility(none,1,1,1){{
-                        activeEffect = new ParticleEffect(){{
-
-                        }};
-                    }});
+            }});
             effectResistanceHeat = 0;
             //hover/mechanical parts
             parts.addAll(
@@ -2237,6 +2230,7 @@ public class AxthrixUnits {
                     collidesAir = true;
                     shootSound = Sounds.shootArc;
                     soundPitchMax = soundPitchMin = 1.2f;
+
                 }};
                 parts.add(new RegionPart("-blade"){{
                     mirror = under = true;
@@ -2951,7 +2945,7 @@ public class AxthrixUnits {
                             speed = 22;
                             hitSize = 12;
                             damage = 15;
-                            liquid = AxLiquids.xenon;
+                            liquid = AxResources.xenon;
                             fragBullets = 1;
                             fragBullet = new LiquidBulletType(){{
                                 lifetime = 1;
@@ -2959,8 +2953,8 @@ public class AxthrixUnits {
                                 hitSize = puddleSize = 12;
                                 splashDamageRadius = 8*8;
                                 splashDamage = 50;
-                                liquid = AxLiquids.xenon;
-                                status = AxthrixStatus.ReapAndSow;
+                                liquid = AxResources.xenon;
+                                status = AxthrixStatus.execute;
                                 statusDuration = 360;
                             }};
                         }};
@@ -3036,41 +3030,19 @@ public class AxthrixUnits {
             buildSpeed = 1.5f;
 
             abilities.addAll(
-                    new DroneSpawnAbility(){{
-                        drone = AxthrixDrones.builderDrone;
-                        spawnTime = 180f;
-                        dX = -22f;
-                        dRot = -90;
-                        moveX = moveY = 0f;
-                        number = 2;
-                    }},
-                    new DroneSpawnAbility(){{
-                        droneSlot = 1;
-                        drone = AxthrixDrones.builderDrone;;
-                        spawnTime = 180f;
-                        dX = 22f;
-                        dRot = 90;
-                        moveX = moveY = 0f;
-                        display = false;
-                    }},
-                    new SwarmIntelligenceAbility(){{
-                        damageBonus = reloadBonus = rangeBonus = speedBonus  = armorBonus = shieldRegenBonus = 0f;
-                        healthRegenBonus = 0.1f;
-                        buildSpeedBonus = 0.2f;
-                    }},
                     new ScrapCollectorAbility(){{
                         collectionRange = 240f;
-                        itemType = AxItems.ingot;
+                        itemType = AxResources.ingot;
                         armorMultiplier = 1.2f;
                     }},
 
                     new PayloadCrafterAbility(){{
                         ticksPerCost = 10;
-                        itemType = AxItems.ingot;
-                        addBlock(Blocks.copperWall, 8,false);
-                        addBlock(Blocks.copperWallLarge, 24,false);
-                        addUnit(barrier,64,true);
-                        addUnit(rai,96,true);
+                        itemType = AxResources.ingot;
+                        addBlock(Blocks.copperWall, 8,1.25f);
+                        addBlock(Blocks.copperWallLarge, 24,1.3f);
+                        addUnitpwr(barrier,64);
+                        addUnitpwr(rai,96);
                     }}
             );
 
@@ -3085,7 +3057,7 @@ public class AxthrixUnits {
 
                 bullet = new BasicBulletType(){{
                     chargeEffect = AxthrixFx.blockLaunch;
-                    sprite = "block-copper-wall"; // Use block sprite
+                    sprite = "copper-wall"; // Use block sprite
 
                     speed = 8f;
                     damage = 80f;

@@ -1,5 +1,6 @@
 package axthrix.world.types.bulletypes;
 
+import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.math.Interp;
@@ -105,6 +106,7 @@ public class TornadoBulletType extends BulletType {
         layer = BHLayer.end + 0.01F;
     }
 
+    @Override
     public void init() {
         super.init();
 
@@ -121,15 +123,15 @@ public class TornadoBulletType extends BulletType {
         }
 
     }
-
+    @Override
     public float continuousDamage() {
         return damage / 2.0F * 60.0F;
     }
-
+    @Override
     public void updateTrailEffects(Bullet b) {
         super.updateTrailEffects(b);
     }
-
+    @Override
     public void init(Bullet b) {
         super.init(b);
         if (loopSound != null) {
@@ -137,7 +139,7 @@ public class TornadoBulletType extends BulletType {
         }
 
     }
-
+    @Override
     public void update(Bullet b) {
         if (b.timer(1, 2.0F)) {
             float fout = fout(b);
@@ -191,20 +193,21 @@ public class TornadoBulletType extends BulletType {
 
         super.update(b);
     }
-
+    @Override
     public void draw(Bullet b) {
-        if (AxthrixLoader.nado3dDebug) {
-            DrawPseudo3d.slantTube(b.x, b.y, b.lastX, b.lastY, width, height,colors[0],colors[1],colors[2],colors[3]);
+        if (Core.settings.getBool("drawhitboxes")) {
+            Color c = Color.lime.cpy().a(0.4f);
+            DrawPseudo3d.slantTube(b.x, b.y, b.lastX, b.lastY, width, height,c,c,c,c);
         }
     }
-
+    @Override
     public void drawLight(Bullet b) {
     }
 
     public float fout(Bullet b) {
         return Interp.sineOut.apply(Mathf.curve(b.time, 0.0F, growTime) - Mathf.curve(b.time, b.lifetime - shrinkTime, b.lifetime));
     }
-
+    @Override
     public void despawned(Bullet b) {
         if (despawnHit) {
             hit(b);
@@ -219,7 +222,7 @@ public class TornadoBulletType extends BulletType {
         despawnEffect.at(b.x, b.y, b.rotation(), b.team.color);
         despawnSound.at(b);
     }
-
+    @Override
     public void removed(Bullet b) {
         super.removed(b);
         Object var3 = b.data;

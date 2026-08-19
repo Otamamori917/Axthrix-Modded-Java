@@ -12,17 +12,16 @@ import arc.util.Strings;
 import arc.util.Tmp;
 import axthrix.AxthrixLoader;
 import axthrix.world.util.draw.AxDrawf;
+import axthrix.world.util.net.AxPayloadCraft;
 import mindustry.Vars;
 import mindustry.core.Renderer;
 import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
 import mindustry.game.EventType;
-import mindustry.gen.Icon;
-import mindustry.gen.Payloadc;
-import mindustry.gen.Tex;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.graphics.Layer;
+import mindustry.net.Packet;
 import mindustry.type.Item;
 import mindustry.type.UnitType;
 import mindustry.ui.Styles;
@@ -48,17 +47,69 @@ public class PayloadCrafterAbility extends Ability {
     public static ObjectMap<Integer, Float> constructionProgress = new ObjectMap<>();
     public static ObjectMap<Integer, UnlockableContent> constructingContent = new ObjectMap<>();
 
-    protected transient boolean uiInitialized = false;
     protected transient boolean showCraftOptions = false;
+    public static ObjectMap<Integer, UnlockableContent> lastCraft = new ObjectMap<>();
 
-    public PayloadCrafterAbility(){}
-
-    public void addBlock(Block block, int cost, boolean requirePower){
-        craftOptions.put(block, new CraftOption(cost, requirePower));
+    public PayloadCrafterAbility(){
+        AxPayloadCraft.register();
     }
 
-    public void addUnit(UnitType unit, int cost, boolean requirePower){
-        craftOptions.put(unit, new CraftOption(cost, requirePower));
+    public void addBlock(Block block, int cost, float  poweredSpeedBonus){
+        craftOptions.put(block, new CraftOption(cost, false, poweredSpeedBonus));
+    }
+
+    public void addBlockpwr(Block block, int cost){
+        craftOptions.put(block, new CraftOption(cost, true, 1));
+    }
+
+    public void addUnit(UnitType unit, int cost, float poweredSpeedBonus){
+        craftOptions.put(unit, new CraftOption(cost, false, poweredSpeedBonus));
+    }
+
+    public void addUnitpwr(UnitType unit, int cost){
+        craftOptions.put(unit, new CraftOption(cost, true, 1));
+    }
+
+    public UnlockableContent getPreviewCraft(Unit unit) {
+        UnlockableContent on = getSelectedCraft(unit);
+        if (on != null) return on;
+        UnlockableContent last = lastCraft.get(unit.id);
+        if (last != null && craftOptions.containsKey(last) && isUnlocked(last)) return last;
+        Seq<UnlockableContent> sorted = getSortedCraftOptions();
+        return sorted.isEmpty() ? null : sorted.first();
+    }
+
+    public void cycleCraft(Unit unit) {
+        if (unit == null) return;
+        if (getSelectedCraft(unit) != null) return;
+        Seq<UnlockableContent> sorted = getSortedCraftOptions();
+        if (sorted.isEmpty()) return;
+
+        UnlockableContent cur = lastCraft.get(unit.id);
+        int idx = cur == null ? -1 : sorted.indexOf(cur);
+        if (idx < 0) idx = 0;
+        else idx = (idx + 1) % sorted.size;
+
+        lastCraft.put(unit.id, sorted.get(idx));
+    }
+
+    public void toggleCrafting(Unit unit) {
+        if (unit == null) return;
+
+        UnlockableContent cur = getSelectedCraft(unit);
+        if (cur != null) {
+            lastCraft.put(unit.id, cur);
+            setSelectedCraft(unit, null);
+            return;
+        }
+
+        UnlockableContent restore = lastCraft.get(unit.id);
+        if (restore == null || !craftOptions.containsKey(restore) || !isUnlocked(restore)) {
+            Seq<UnlockableContent> sorted = getSortedCraftOptions();
+            restore = sorted.isEmpty() ? null : sorted.first();
+        }
+        if (restore != null) lastCraft.put(unit.id, restore);
+        setSelectedCraft(unit, restore);
     }
 
     protected boolean isUnlocked(UnlockableContent content){
@@ -148,6 +199,9 @@ public class PayloadCrafterAbility extends Ability {
                         if(option.requirePower){
                             info.row();
                             info.add("[stat]⚡ [lightgray]"+ Core.bundle.format("stat.aj-power"));
+                        }else if (option.poweredSpeedBonus != 1){
+                            info.add("[lightgray]" + Core.bundle.format("stat.aj-powered-bonus",
+                                    Strings.autoFixed(option.poweredSpeedBonus, 2) + "x")).row();
                         }
                     }else{
                         info.add("[red]???").row();
@@ -166,20 +220,6 @@ public class PayloadCrafterAbility extends Ability {
         Events.on(EventType.UnitDestroyEvent.class, event -> {
             constructionProgress.remove(event.unit.id);
             constructingContent.remove(event.unit.id);
-        });
-
-        Events.on(EventType.ResearchEvent.class, event -> {
-            if(headless || player == null || player.unit() == null) return;
-
-            Unit controlled = player.unit();
-            if(controlled.abilities != null){
-                for(var ab : controlled.abilities){
-                    if(ab instanceof PayloadCrafterAbility pca){
-                        // Removed the old pca.selectionTable reload post hook since CustomUnitInfoBar handles its own updates automatically
-                        break;
-                    }
-                }
-            }
         });
     }
 
@@ -254,76 +294,100 @@ public class PayloadCrafterAbility extends Ability {
         return selectedCraft.get(unit.id);
     }
 
-    public void setSelectedCraft(Unit unit, UnlockableContent content){
-        UnlockableContent previousSelection = selectedCraft.get(unit.id);
+    public void setSelectedCraft(Unit unit, UnlockableContent content) {
+        if (unit == null) return;
 
-        if(previousSelection != content){
+        if (net.client()) {
+            AxPayloadCraft.setSelected(unit.id, content == null ? -1 : content.id);
+            applySelectedCraftLocal(unit, content);
+            return;
+        }
+
+        applySelectedCraftLocal(unit, content);
+    }
+
+    private void applySelectedCraftLocal(Unit unit, UnlockableContent content) {
+        UnlockableContent previous = selectedCraft.get(unit.id);
+        if (previous != content) {
             constructionProgress.remove(unit.id);
             constructingContent.remove(unit.id);
         }
-
-        if(content == null){
+        if (content == null) {
             selectedCraft.remove(unit.id);
-        }else{
+        } else {
             selectedCraft.put(unit.id, content);
         }
     }
 
     @Override
-    public void update(Unit unit){
+    public void update(Unit unit) {
+        if ((player != null && player.unit() == unit) && !net.client()) {
+            if (AxthrixLoader.toggleTapped()) toggleCrafting(unit);
+            if (AxthrixLoader.activateTapped()) cycleCraft(unit);
+        } else if ((player != null && player.unit() == unit) && net.client()) {
+            if (AxthrixLoader.toggleTapped()) toggleCrafting(unit);
+            if (AxthrixLoader.activateTapped()) cycleCraft(unit);
+        }
+
         UnlockableContent selected = getSelectedCraft(unit);
 
-        if(selected != null && craftOptions.containsKey(selected) && isUnlocked(selected)){
-            CraftOption option = craftOptions.get(selected);
-            float buildTime = option.cost * ticksPerCost;
-
-            if(option.requirePower && isNotPowered(unit)){
-                constructionProgress.remove(unit.id);
-                constructingContent.remove(unit.id);
-                return;
-            }
-
-            if(unit.stack.amount >= option.cost && unit.stack.item == itemType && unit instanceof Payloadc p){
-                if(hasPayloadSpace(p, selected)){
-                    UnlockableContent currentlyConstructing = constructingContent.get(unit.id);
-
-                    if(currentlyConstructing != selected){
-                        constructionProgress.put(unit.id, 0f);
-                        constructingContent.put(unit.id, selected);
-                    }
-
-                    float progress = constructionProgress.get(unit.id, 0f);
-                    progress += arc.util.Time.delta;
-                    constructionProgress.put(unit.id, progress);
-
-                    if(progress >= buildTime){
-                        if(selected instanceof Block block){
-                            BuildPayload payload = new BuildPayload(block, unit.team);
-                            p.addPayload(payload);
-                        }else if(selected instanceof UnitType unitType){
-                            Unit spawned = unitType.create(unit.team);
-                            UnitPayload payload = new UnitPayload(spawned);
-                            p.addPayload(payload);
-                        }
-
-                        unit.stack.amount -= option.cost;
-                        mindustry.content.Fx.spawn.at(unit.x, unit.y);
-
-                        constructionProgress.remove(unit.id);
-                        constructingContent.remove(unit.id);
-                    }
-                }else{
-                    constructionProgress.remove(unit.id);
-                    constructingContent.remove(unit.id);
-                }
-            }else{
-                constructionProgress.remove(unit.id);
-                constructingContent.remove(unit.id);
-            }
-        }else{
+        if (selected == null || !craftOptions.containsKey(selected) || !isUnlocked(selected)) {
             constructionProgress.remove(unit.id);
             constructingContent.remove(unit.id);
+            return;
         }
+
+        CraftOption option = craftOptions.get(selected);
+        float buildTime = option.cost * ticksPerCost;
+
+        if (option.requirePower && isNotPowered(unit)) {
+            constructionProgress.remove(unit.id);
+            constructingContent.remove(unit.id);
+            return;
+        }
+
+        if (unit.stack.amount < option.cost || unit.stack.item != itemType || !(unit instanceof Payloadc p)) {
+            constructionProgress.remove(unit.id);
+            constructingContent.remove(unit.id);
+            return;
+        }
+
+        if (!hasPayloadSpace(p, selected)) {
+            constructionProgress.remove(unit.id);
+            constructingContent.remove(unit.id);
+            return;
+        }
+
+        UnlockableContent currentlyConstructing = constructingContent.get(unit.id);
+        if (currentlyConstructing != selected) {
+            constructionProgress.put(unit.id, 0f);
+            constructingContent.put(unit.id, selected);
+        }
+
+        float speed = 1f;
+        if (!option.requirePower && !isNotPowered(unit)) {
+            speed = option.poweredSpeedBonus;
+        }
+
+        float progress = constructionProgress.get(unit.id, 0f);
+        progress += arc.util.Time.delta * speed;
+        constructionProgress.put(unit.id, progress);
+
+        if (progress < buildTime) return;
+
+        if (!net.client()) {
+            if (selected instanceof Block block) {
+                p.addPayload(new BuildPayload(block, unit.team));
+            } else if (selected instanceof UnitType unitType) {
+                Unit spawned = unitType.create(unit.team);
+                p.addPayload(new UnitPayload(spawned));
+            }
+            unit.stack.amount -= option.cost;
+            mindustry.content.Fx.spawn.at(unit.x, unit.y);
+        }
+
+        constructionProgress.remove(unit.id);
+        constructingContent.remove(unit.id);
     }
 
     @Override
@@ -366,57 +430,74 @@ public class PayloadCrafterAbility extends Ability {
         targetRow.clearChildren();
         targetRow.margin(4f);
 
-        UnlockableContent selected = getSelectedCraft(unit);
+        boolean on = getSelectedCraft(unit) != null;
+        String toggleTip = Core.bundle.format("ui.ax-info.craft-toggle-key", AxthrixLoader.bindToggle)
+                + "\n" + Core.bundle.get(on ? "ui.ax-info.craft-on" : "ui.ax-info.craft-off");
 
-        // Standard close selection button to clear active crafting
-        targetRow.button(Icon.cancel, Styles.clearNoneTogglei, 32f, () -> setSelectedCraft(unit, null))
-                .tooltip(Core.bundle.format("stat.aj-disable"))
-                .checked(b -> selected == null)
-                .padRight(4f);
+        targetRow.button(on ? Icon.ok : Icon.cancel, Styles.clearNonei, 32f, () -> toggleCrafting(unit))
+                .tooltip(toggleTip)
+                .padRight(6f);
 
         Seq<UnlockableContent> sorted = getSortedCraftOptions();
+        UnlockableContent preview = getPreviewCraft(unit);
 
         for (UnlockableContent content : sorted) {
             CraftOption option = craftOptions.get(content);
             float constructionTime = option.cost * ticksPerCost / 60f;
-
             boolean unlocked = isUnlocked(content);
 
             if (!unlocked) {
-                targetRow.button(Icon.cancel, Styles.clearNoneTogglei, 32f, () -> {})
+                targetRow.button(Icon.cancel, Styles.clearNonei, 32f, () -> {})
                         .disabled(true)
-                        .tooltip("[red]" + Core.bundle.format("stat.aj-locked") + " - " + Core.bundle.format("stat.aj-missing-research"))
+                        .tooltip("[red]" + Core.bundle.format("stat.aj-locked") + " - "
+                                + Core.bundle.format("stat.aj-missing-research"))
                         .padRight(4f);
                 continue;
             }
 
             boolean canCraftNow = canCraft(unit, content);
+            boolean marked = preview == content; // shows selection even when off
 
-            // Active recipe button mapping
             var btn = targetRow.button(
                     new arc.scene.style.TextureRegionDrawable(content.uiIcon),
-                    Styles.clearNoneTogglei, 32f, () -> setSelectedCraft(unit, content)
+                    Styles.clearNoneTogglei, 32f,
+                    () -> {
+                        lastCraft.put(unit.id, content);
+                        if (getSelectedCraft(unit) != null) {
+                            setSelectedCraft(unit, content); // only switch while on
+                        }
+                    }
             ).tooltip(
-                    content.localizedName +
-                            "\n[lightgray]" + Core.bundle.format("stat.aj-cost") + " [white]" + option.cost + " " +
-                            "\n[lightgray]" + Core.bundle.format("stat.aj-time") + " [white]" + Strings.autoFixed(constructionTime, 1) + " " + StatUnit.seconds.localized() +
-                            (option.requirePower ? "\n[stat]⚡ [lightgray]" + Core.bundle.format("stat.aj-power") : "")
-            ).checked(b -> selected == content).padRight(4f).get();
+                    content.localizedName
+                            + "\n[lightgray]" + Core.bundle.format("stat.aj-cost") + " [white]" + option.cost
+                            + "\n[lightgray]" + Core.bundle.format("stat.aj-time") + " [white]"
+                            + Strings.autoFixed(constructionTime, 1) + " " + StatUnit.seconds.localized()
+                            + (option.requirePower
+                            ? "\n[stat]⚡ [lightgray]" + Core.bundle.format("stat.aj-power")
+                            : option.poweredSpeedBonus != 1f
+                            ? "\n[accent]" + Strings.autoFixed(option.poweredSpeedBonus, 2) + "x"
+                            : "")
+            ).checked(b -> getPreviewCraft(unit) == content).padRight(4f).get();
 
-            // Color code button frames when advanced visual toggles are active
             if (AxthrixLoader.showAdvanced) {
                 btn.setColor(canCraftNow ? Color.white : Color.valueOf("8B4444"));
             }
         }
     }
 
+    public void applySelectedFromServer(Unit unit, UnlockableContent content) {
+        applySelectedCraftLocal(unit, content);
+    }
+
     public static class CraftOption {
         public int cost;
         public boolean requirePower;
+        public float poweredSpeedBonus;
 
-        public CraftOption(int cost, boolean requirePower){
+        public CraftOption(int cost, boolean requirePower,float bonus){
             this.cost = cost;
             this.requirePower = requirePower;
+            this.poweredSpeedBonus = bonus;
         }
     }
 }

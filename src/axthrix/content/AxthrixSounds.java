@@ -28,15 +28,24 @@ public class AxthrixSounds {
              parserCharge = new Sound(),
              pop = new Sound(),
              gluon = new Sound(),
+             euclidean = new Sound(),
 
-    /// welcome animations
-             MarkMyWords = new Sound(),
-             Phoenix = new Sound(),
-             AuraMonster = new Sound()
+    /// welcome easter eggs
+            MarkMyWords = new Sound(),
+            Phoenix = new Sound(),
+            AuraMonster = new Sound(),
+            LOTRO = new Sound(),
+            Edge = new Sound(),
+            Horizon = new Sound(),
+            Intraregios = new Sound(),
+            Valence = new Sound(),
+            Erza = new Sound()
 
 
 
-                     ;
+
+
+             ;
 
     public static void  LoadSounds(){
         //Note: Vars.tree.loadSound only works with .mp3 and .ogg
@@ -66,6 +75,12 @@ public class AxthrixSounds {
         MarkMyWords = tree.loadSound("mark-my-words");
         Phoenix = tree.loadSound("phoenix");
         AuraMonster = tree.loadSound("aura-monster");
-
+        LOTRO = tree.loadSound("lotro");
+        Edge = tree.loadSound("edge-of-a-blade");
+        Horizon = tree.loadSound("horizon");
+        Intraregios = tree.loadSound("intraregios");
+        Valence = tree.loadSound("valence");
+        Erza = tree.loadSound("erza");
+        euclidean = tree.loadSound("euclidean-theme");
     }
 }

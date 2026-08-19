@@ -4,11 +4,13 @@ import arc.Events;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import mindustry.content.TechTree;
+import mindustry.ctype.ContentType;
+import mindustry.ctype.UnlockableContent;
 import mindustry.game.EventType;
 import mindustry.game.Team;
 import axthrix.world.teamResearch;
 
-public class AxFaction {
+public class AxFaction extends UnlockableContent {
 
     Seq<Team> linkedTeams = new Seq<>();
     public TechTree.TechNode techTree = null;
@@ -22,6 +24,7 @@ public class AxFaction {
     public teamResearch icon;
     public AxFaction(String name, Color color)
     {
+        super(name);
         id = idGiver++;
         this.color = color;
         this.name = name;
@@ -72,5 +75,10 @@ public class AxFaction {
     public void clearTeams()
     {
         linkedTeams.clear();
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return ContentType.team;
     }
 }

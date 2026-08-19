@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.util.*;
 import axthrix.AxthrixLoader;
 import axthrix.content.AxthrixSounds;
+import axthrix.world.types.block.defense.parent.AxItemTurret;
 import axthrix.world.util.logics.RevolverLogic;
 import mindustry.Vars;
 import mindustry.content.Fx;

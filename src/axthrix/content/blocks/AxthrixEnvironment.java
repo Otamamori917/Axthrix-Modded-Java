@@ -1,7 +1,7 @@
 package axthrix.content.blocks;
 
 import arc.graphics.Color;
-import axthrix.content.AxItems;
+import axthrix.content.AxResources;
 import axthrix.world.types.block.ObeliskBlock;
 import axthrix.world.types.block.env.TemperatureFloor;
 import axthrix.world.types.sea.block.SubmergedOre;
@@ -181,13 +181,13 @@ public class AxthrixEnvironment {
 
         // Ocean Ores
 
-        testOceanOre = new SubmergedOre("sea-ore", AxItems.sulfur){{
+        testOceanOre = new SubmergedOre("sea-ore", AxResources.sulfur){{
             variants = 3;
         }};
 
 
         // Ores
-        ironOre = new OreBlock("ore-iron", AxItems.iron){{
+        ironOre = new OreBlock("ore-iron", AxResources.iron){{
            variants = 2;
            
         }};
