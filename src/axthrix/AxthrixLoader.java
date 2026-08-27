@@ -76,9 +76,15 @@ public class AxthrixLoader extends Mod{
 
     public static KeyCode bindToggle = KeyCode.controlLeft;
     public static KeyCode bindActivate = KeyCode.altLeft;
+    public static KeyCode bindActivateBack = KeyCode.controlLeft;
 
-    private static boolean rebindingToggle;
-    private static boolean rebindingActivate;
+    private static final int REBIND_NONE = 0;
+    private static final int REBIND_TOGGLE = 1;
+    private static final int REBIND_ACTIVATE = 2;
+    private static final int REBIND_ACTIVATE_BACK = 3;
+
+    private static int rebindMode = REBIND_NONE;
+
 
     public static boolean toggleTapped() {
         return !mobile && Core.input.keyTap(bindToggle);
@@ -92,9 +98,12 @@ public class AxthrixLoader extends Mod{
         return !mobile && Core.input.keyDown(bindActivate);
     }
 
-    private static void startRebind(boolean toggle) {
-        rebindingToggle = toggle;
-        rebindingActivate = !toggle;
+    public static boolean activateBackTapped() {
+        return !mobile && Core.input.keyTap(bindActivateBack);
+    }
+
+    private static void startRebind(int mode) {
+        rebindMode = mode;
         ui.showInfoToast(bundle.get("setting.aj-rebind-press"), 2f);
     }
 
@@ -150,6 +159,7 @@ public class AxthrixLoader extends Mod{
         customHudOffsetY = settings.getInt("aj-hud-Y-offset", -120);
         bindToggle = KeyCode.valueOf(settings.getString("aj-bind-toggle", KeyCode.controlLeft.name()));
         bindActivate = KeyCode.valueOf(settings.getString("aj-bind-activate", KeyCode.altLeft.name()));
+        bindActivateBack = KeyCode.valueOf(settings.getString("aj-bind-activate-back", KeyCode.controlLeft.name()));
 
 
         /// CLIENT LOAD EVENTS
@@ -174,18 +184,21 @@ public class AxthrixLoader extends Mod{
                 ui.showInfoToast(Core.bundle.get("menu.mini-scaler-page-warning"), 20f);
             }
 
-            if (rebindingToggle || rebindingActivate) {
+            if (rebindMode != REBIND_NONE) {
                 for (KeyCode k : KeyCode.all) {
                     if (k == KeyCode.mouseLeft || k == KeyCode.mouseRight || k == KeyCode.mouseMiddle) continue;
                     if (Core.input.keyTap(k)) {
-                        if (rebindingToggle) {
+                        if (rebindMode == REBIND_TOGGLE) {
                             bindToggle = k;
                             settings.put("aj-bind-toggle", k.name());
-                        } else {
+                        } else if (rebindMode == REBIND_ACTIVATE) {
                             bindActivate = k;
                             settings.put("aj-bind-activate", k.name());
+                        } else if (rebindMode == REBIND_ACTIVATE_BACK) {
+                            bindActivateBack = k;
+                            settings.put("aj-bind-activate-back", k.name());
                         }
-                        rebindingToggle = rebindingActivate = false;
+                        rebindMode = REBIND_NONE;
                         ui.showInfoToast(k.toString(), 1.5f);
                         break;
                     }
@@ -574,7 +587,7 @@ public class AxthrixLoader extends Mod{
                             col.add(bundle.get(title)).left().wrap().width(Core.graphics.getWidth() > 400 ? 280f : 200f).row();
                             col.button(b -> b.label(() -> bindToggle.toString()).labelAlign(Align.center),
                                     Styles.defaultt,
-                                    () -> startRebind(true)
+                                    () -> startRebind(REBIND_TOGGLE)
                             ).width(200f).height(40f).left();
                         }).left().padTop(6f).padBottom(4f).growX().row();
                     }
@@ -592,7 +605,25 @@ public class AxthrixLoader extends Mod{
                             col.add(bundle.get(title)).left().wrap().width(Core.graphics.getWidth() > 400 ? 280f : 200f).row();
                             col.button(b -> b.label(() -> bindActivate.toString()).labelAlign(Align.center),
                                     Styles.defaultt,
-                                    () -> startRebind(false)
+                                    () -> startRebind(REBIND_ACTIVATE)
+                            ).width(200f).height(40f).left();
+                        }).left().padTop(6f).padBottom(4f).growX().row();
+                    }
+                });
+                t.pref(new SettingsMenuDialog.SettingsTable.Setting("aj-bind-activate-back") {
+                    {
+                        title = "setting.aj-bind-activate-back";
+                    }
+
+                    @Override
+                    public void add(SettingsMenuDialog.SettingsTable table) {
+                        table.table(col -> {
+                            col.left();
+                            col.add(bundle.get(title)).left().wrap()
+                                    .width(Core.graphics.getWidth() > 400 ? 280f : 200f).row();
+                            col.button(b -> b.label(() -> bindActivateBack.toString()).labelAlign(Align.center),
+                                    Styles.defaultt,
+                                    () -> startRebind(REBIND_ACTIVATE_BACK)
                             ).width(200f).height(40f).left();
                         }).left().padTop(6f).padBottom(4f).growX().row();
                     }

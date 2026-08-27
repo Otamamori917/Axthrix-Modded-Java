@@ -34,6 +34,7 @@ import axthrix.world.types.sea.unit.SubmarineUnitType;
 import axthrix.world.types.statuseffects.AccumStackStatusEffect;
 import axthrix.world.types.statuseffects.AccumStackStatusEffect.TriggerLock;
 import axthrix.world.types.unittypes.AxUnitType;
+import axthrix.world.types.unittypes.MountUnitType;
 import axthrix.world.types.weapontypes.PerkWeapon;
 import axthrix.world.util.TempUnit;
 import axthrix.world.util.logics.TemperatureLogic;
@@ -165,18 +166,33 @@ public class CustomUnitInfoBar {
         }
 
         if (unit.stack.amount > 0 && unit.stack.item != null) {
-            sb.append(unit.stack.item.id);
+            sb.append("i").append(unit.stack.item.id).append(':').append(unit.stack.amount);
         } else {
-            sb.append("noitem");
+            sb.append("i0");
         }
         sb.append('|');
 
-        if (unit instanceof Payloadc pay) {
-            sb.append(pay.payloads().size);
-        } else {
-            sb.append(0);
+        if (unit.type instanceof MountUnitType) {
+            MountUnitType.MountData md = MountUnitType.data(unit);
+            sb.append("ml").append(md.liquid == null ? -1 : md.liquid.id)
+                    .append(':').append((int) md.liquidAmount)
+                    .append("mpw").append((int) md.power)
+                    .append("ms").append(md.selectedSlot)
+                    .append("mp").append(md.selectedPayload);
+            for (MountUnitType.ModuleState m : md.modules) {
+                sb.append('b').append(m.block != null ? m.block.id : -1)
+                        .append('h').append((int) m.health);
+            }
+            sb.append('|');
         }
-        sb.append('|');
+
+        if (unit instanceof Payloadc pay) {
+            sb.append("pz").append(pay.payloads().size);
+            for (Payload p : pay.payloads()) {
+                if (p.content() != null) sb.append(p.content().id).append(',');
+            }
+            sb.append('|');
+        }
 
         return sb.toString();
     }
@@ -241,6 +257,12 @@ public class CustomUnitInfoBar {
         MiniUnitDisplay mini = new MiniUnitDisplay(unit);
         if (mini.hasContent()) {
             container.add(mini).size(210f).padBottom(8f).row();
+            hasAnyInfo = true;
+            addSolidDivider(container);
+        }
+
+        if (unit.type instanceof MountUnitType mt && mt.slots.size > 0) {
+            addMountUnitInfo(container, unit, mt);
             hasAnyInfo = true;
             addSolidDivider(container);
         }
@@ -553,6 +575,82 @@ public class CustomUnitInfoBar {
                 return hexColor + title + " " + s.currentStacks + "/" + perk.maxStacks;
             }).style(Styles.outlineLabel).minWidth(100f);
         }).left().padBottom(6f);
+        c.row();
+    }
+
+    private void addMountUnitInfo(Table c, Unit unit, MountUnitType mount) {
+        MountUnitType.MountData d = MountUnitType.data(unit);
+
+        c.table(t -> {
+            t.left();
+            t.add(Core.bundle.format("ui.ax-info.mount-slot-select",
+                    d.selectedSlot + 1, Math.max(1, mount.slots.size))
+            ).style(Styles.outlineLabel).padRight(8f);
+
+            if (unit instanceof Payloadc pay && !pay.payloads().isEmpty()) {
+                int idx = Mathf.clamp(d.selectedPayload, 0, pay.payloads().size - 1);
+                Payload pl = pay.payloads().get(idx);
+                if (pl.content() != null) {
+                    t.image(pl.content().uiIcon).size(20f).padRight(4f);
+                    t.add("[accent]" + pl.content().localizedName).style(Styles.outlineLabel);
+                }
+            } else {
+                t.add("[lightgray]" + Core.bundle.get("ui.ax-info.mount-payload-empty"))
+                        .style(Styles.outlineLabel);
+            }
+        }).left().padBottom(4f);
+        c.row();
+
+        c.table(row -> {
+            row.left();
+            if (unit.stack.amount > 0 && unit.stack.item != null) {
+                row.image(unit.stack.item.uiIcon).size(18f).padRight(3f);
+                row.add(String.valueOf(unit.stack.amount)).style(Styles.outlineLabel).padRight(10f);
+            } else {
+                row.add("[lightgray]" + Core.bundle.get("ui.ax-info.mount-no-items"))
+                        .style(Styles.outlineLabel).padRight(10f);
+            }
+
+            if (d.liquid != null && d.liquidAmount > 0.01f) {
+                row.image(d.liquid.uiIcon).size(18f).padRight(3f);
+                row.add(Strings.autoFixed(d.liquidAmount, 0) + "/"
+                        + Strings.autoFixed(mount.liquidCapacity, 0)).style(Styles.outlineLabel);
+            } else {
+                row.add("[lightgray]" + Core.bundle.get("ui.ax-info.mount-no-liquid"))
+                        .style(Styles.outlineLabel);
+            }
+        }).left().padBottom(4f);
+        c.row();
+
+        if (unit instanceof Payloadc pay && !pay.payloads().isEmpty()) {
+            c.table(p -> {
+                p.left();
+                for (int i = 0; i < pay.payloads().size; i++) {
+                    Payload pl = pay.payloads().get(i);
+                    if (pl.content() == null) continue;
+                    boolean sel = i == d.selectedPayload;
+                    var img = p.image(pl.content().uiIcon).size(sel ? 26f : 22f).pad(2f).get();
+                    img.setColor(sel ? Pal.accent : Color.white);
+                }
+            }).left().padBottom(4f);
+            c.row();
+        }
+
+        c.table(slots -> {
+            slots.left();
+            for (int i = 0; i < mount.slots.size; i++) {
+                MountUnitType.ModuleState m = d.modules.get(i);
+                boolean sel = i == d.selectedSlot;
+                var cell = slots.table(t -> {
+                    if (m.block != null) {
+                        t.image(m.block.uiIcon).size(sel ? 26f : 22f);
+                    } else {
+                        t.image(Icon.none).size(22f).color(Pal.gray);
+                    }
+                }).pad(2f).get();
+                cell.setColor(sel ? Pal.accent : Color.white);
+            }
+        }).left();
         c.row();
     }
 

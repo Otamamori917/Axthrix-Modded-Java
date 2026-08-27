@@ -335,10 +335,9 @@ public class HeadTurretClass extends Turret {
         public void transferUpgradeLiquid(Liquid liquid, Unit unit) {
             if (unit == null || !(unit.type instanceof MountUnitType mount)) return;
 
-            Liquid unitLiq = mount.liquidType.get(unit);
-            int unitAmt = mount.liquidAmount.getOrDefault(unit, 0);
+            MountUnitType.MountData d = MountUnitType.data(unit);
 
-            if (needsUpgradeLiquid(liquid) && unitLiq == liquid && unitAmt > 0) {
+            if (needsUpgradeLiquid(liquid) && d.liquid == liquid && d.liquidAmount > 0f) {
                 float needed = 0f;
                 for (LiquidStack stack : upgradeLiquidRequirements) {
                     if (stack.liquid == liquid) {
@@ -347,14 +346,14 @@ public class HeadTurretClass extends Turret {
                     }
                 }
                 if (needed > 0f) {
-                    float take = Math.min(needed, unitAmt);
-                    int takeInt = (int) take;
-                    if (takeInt > 0) {
-                        mount.liquidAmount.put(unit, unitAmt - takeInt);
-                        if (unitAmt - takeInt <= 0) {
-                            mount.liquidType.put(unit, AxResources.nothingness);
+                    float take = Math.min(needed, d.liquidAmount);
+                    if (take > 0f) {
+                        d.liquidAmount -= take;
+                        if (d.liquidAmount <= 0.001f) {
+                            d.liquidAmount = 0f;
+                            d.liquid = null;
                         }
-                        upgradeLiquidStock.put(liquid, upgradeLiquidStock.get(liquid, 0f) + takeInt);
+                        upgradeLiquidStock.put(liquid, upgradeLiquidStock.get(liquid, 0f) + take);
                         return;
                     }
                 }
@@ -369,23 +368,21 @@ public class HeadTurretClass extends Turret {
             float has = upgradeLiquidStock.get(liquid, 0f);
             if (has <= 0f) return;
 
-            Liquid unitLiq = mount.liquidType.get(collector);
-            int unitAmt = mount.liquidAmount.getOrDefault(collector, 0);
+            MountUnitType.MountData d = MountUnitType.data(collector);
 
-            if (unitLiq != null && unitLiq != liquid && unitLiq != AxResources.nothingness && unitAmt > 0) return;
+            if (d.liquid != null && d.liquid != liquid && d.liquidAmount > 0.01f) return;
 
-            int capacity = mount.liquidCap;
-            int space = capacity - unitAmt;
-            if (space <= 0) return;
+            float space = mount.liquidCapacity - d.liquidAmount;
+            if (space <= 0f) return;
 
-            int takeInt = Math.min(space, (int) has);
-            if (takeInt == 0) return;
+            float take = Math.min(space, has);
+            if (take <= 0f) return;
 
-            if (unitAmt == 0 || unitLiq == AxResources.nothingness || unitLiq == null) {
-                mount.liquidType.put(collector, liquid);
+            if (d.liquidAmount <= 0.001f || d.liquid == null) {
+                d.liquid = liquid;
             }
-            mount.liquidAmount.put(collector, unitAmt + takeInt);
-            upgradeLiquidStock.put(liquid, has - takeInt);
+            d.liquidAmount += take;
+            upgradeLiquidStock.put(liquid, has - take);
         }
 
         public boolean upgradeRequirementsMet() {

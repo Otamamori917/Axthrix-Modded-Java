@@ -27,58 +27,12 @@ public class AxthrixWorldState {
         SaveVersion.addCustomChunk("mountUnits", new SaveFileReader.CustomChunk() {
             @Override
             public void write(DataOutput stream) throws IOException {
-                int count = Vars.content.units().count(mu -> mu instanceof MountUnitType);
-                stream.writeInt(count);
-                Vars.content.units().each(mu -> {
-                    if (mu instanceof MountUnitType mut){
-                        try {
-                            stream.writeInt(mut.id);
-                            stream.writeInt(mut.powTick.size());
-                            mut.powTick.forEach((unit,c) -> {
-                                try {
-                                    if (unit == null) return;
-                                    stream.writeInt(unit.id);
-                                    stream.writeFloat(c);
-                                    if (mut.liquidType.containsKey(unit) && mut.liquidType.get(unit) != null)
-                                        stream.writeInt(mut.liquidType.get(unit).id);
-                                    else
-                                        stream.writeInt(-1);
-                                    stream.writeInt(mut.liquidAmount.get(unit));
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                });
+                MountUnitType.writeSaveData(stream);
             }
 
             @Override
             public void read(DataInput stream) throws IOException {
-                int count = stream.readInt();
-                for(;count > 0;count--) {
-                    int mountUnitId = stream.readInt();
-                    int unitsize = stream.readInt();
-                    UnitType unittype = Vars.content.units().find(mu -> mu.id == mountUnitId);
-                    if (unittype instanceof MountUnitType mut) {
-                        mut.liquidAmount.clear();
-                        mut.liquidType.clear();
-                        mut.powTick.clear();
-                        for(;unitsize > 0;unitsize--) {
-                            int unitId = stream.readInt();
-                            float unitT = stream.readFloat();
-                            int unitLid = stream.readInt();
-                            int unitLAmt = stream.readInt();
-                            Unit unit = Groups.unit.find(u->u.id == unitId);
-                            if (unit == null) continue;
-                            mut.powTick.put(unit,unitT);
-                            mut.liquidType.put(unit, Vars.content.liquid(unitLid));
-                            mut.liquidAmount.put(unit,unitLAmt);
-                        }
-                    }
-                }
+                MountUnitType.readSaveData(stream);
             }
         });
 
@@ -156,7 +110,6 @@ public class AxthrixWorldState {
         SaveVersion.addCustomChunk("axthrixDrones", new SaveVersion.CustomChunk(){
             @Override
             public void write(DataOutput stream) throws IOException {
-                // Count drone unit types
                 int droneTypeCount = 0;
                 for(var unit : Vars.content.units()){
                     if(unit instanceof DroneUnitType){
@@ -166,12 +119,10 @@ public class AxthrixWorldState {
 
                 stream.writeInt(droneTypeCount);
 
-                // Write each drone type's data
                 for(var unit : Vars.content.units()){
                     if(unit instanceof DroneUnitType droneType){
                         stream.writeInt(droneType.id);
 
-                        // Write tetherUnit map
                         stream.writeInt(droneType.tetherUnit.size());
                         for(var entry : droneType.tetherUnit.entrySet()){
                             Unit drone = entry.getKey();
@@ -182,7 +133,6 @@ public class AxthrixWorldState {
                             }
                         }
 
-                        // Write droneSlot map
                         stream.writeInt(droneType.droneSlot.size());
                         for(var entry : droneType.droneSlot.entrySet()){
                             Unit drone = entry.getKey();
@@ -200,10 +150,8 @@ public class AxthrixWorldState {
                     }
                 }
 
-                // Write DroneSpawnAbility data
                 int abilityDataCount = 0;
 
-                // Count abilities with data
                 for(var unit : Groups.unit){
                     if(unit.abilities != null){
                         for(var ability : unit.abilities){
@@ -216,16 +164,15 @@ public class AxthrixWorldState {
 
                 stream.writeInt(abilityDataCount);
 
-                // Write ability data
                 for(var unit : Groups.unit){
                     if(unit.abilities != null){
                         for(int i = 0; i < unit.abilities.length; i++){
                             var ability = unit.abilities[i];
                             if(ability instanceof DroneSpawnAbility spawn){
                                 if(spawn.aliveUnit.containsKey(unit)){
-                                    stream.writeInt(unit.id); // Tether unit ID
-                                    stream.writeInt(i); // Ability index
-                                    stream.writeInt(spawn.droneSlot); // Drone slot
+                                    stream.writeInt(unit.id);
+                                    stream.writeInt(i);
+                                    stream.writeInt(spawn.droneSlot);
 
                                     Unit aliveUnit = spawn.aliveUnit.get(unit);
                                     stream.writeInt(aliveUnit != null ? aliveUnit.id : -1);
@@ -247,20 +194,19 @@ public class AxthrixWorldState {
 
             @Override
             public void read(DataInput stream) throws IOException {
-                // Read drone type count
+
                 int droneTypeCount = stream.readInt();
 
-                // Read each drone type's data
+
                 for(int i = 0; i < droneTypeCount; i++){
                     int typeId = stream.readInt();
                     var unitType = Vars.content.unit(typeId);
 
                     if(unitType instanceof DroneUnitType droneType){
-                        // Clear existing data
+
                         droneType.tetherUnit.clear();
                         droneType.droneSlot.clear();
 
-                        // Read tetherUnit map
                         int tetherCount = stream.readInt();
                         for(int j = 0; j < tetherCount; j++){
                             int droneId = stream.readInt();
@@ -274,7 +220,7 @@ public class AxthrixWorldState {
                             }
                         }
 
-                        // Read droneSlot map
+
                         int slotCount = stream.readInt();
                         for(int j = 0; j < slotCount; j++){
                             int droneId = stream.readInt();
@@ -294,10 +240,10 @@ public class AxthrixWorldState {
                     }
                 }
 
-                // Read ability data count
+
                 int abilityDataCount = stream.readInt();
 
-                // Read ability data
+
                 for(int i = 0; i < abilityDataCount; i++){
                     int unitId = stream.readInt();
                     int abilityIndex = stream.readInt();

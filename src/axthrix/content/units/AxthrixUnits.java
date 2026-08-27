@@ -2625,6 +2625,7 @@ public class AxthrixUnits {
         //amos,arvad,amasya,anuvaha,ambuvahini,
         amos = new MountUnitType("amos")
         {{
+            buildSpeed = 1.5f;
 
             constructor = PayloadUnit::create;
             health = 600;
@@ -2635,12 +2636,15 @@ public class AxthrixUnits {
             accel = 0.06f;
             drag = 0.017f;
             hitSize = 16.05f;
-            itemCapacity = 300;
             itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
             flying = true;
-            payloadCapacity = tilePayload * ((2 * 2) - 1);
+            payloadCapacity = tilePayload * (2 * 2 - 1);
+            liquidCapacity = 300f;
+            itemCapacity = 300;
+
+            addSlot(0f, 0f, 1);
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2651,6 +2655,7 @@ public class AxthrixUnits {
         }};
         arvad = new MountUnitType("arvad")
         {{
+            buildSpeed = 1.5f;
             constructor = PayloadUnit::create;
             health = 1800;
             armor = 5;
@@ -2661,11 +2666,24 @@ public class AxthrixUnits {
             accel = 0.06f;
             drag = 0.017f;
             hitSize = 24.05f;
-            itemCapacity = liquidCap = 600;
+            itemCapacity = 600;
             itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
-            payloadCapacity = tilePayload * ((3 * 3) - 1);
+            payloadCapacity = tilePayload * (3 * 3 - 1);
+            liquidCapacity = 600f;
+            MountSlot armorF = addSlot(0f, 10f, 1);
+            armorF.allowTurrets = false;
+            armorF.allowWalls = true;
+            armorF.allowSupport = true;
+
+            MountSlot main = addSlot(0f, 2f, 2);
+            main.allowWalls = false;
+
+            MountSlot armorB = addSlot(0f, -10f, 1);
+            armorB.allowTurrets = false;
+            armorB.allowWalls = true;
+            armorB.allowSupport = true;
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2676,6 +2694,7 @@ public class AxthrixUnits {
         }};
         amasya = new MountUnitType("amasya")
         {{
+            buildSpeed = 1.5f;
             constructor = PayloadUnit::create;
             health = 5400;
             armor = 8;
@@ -2692,7 +2711,18 @@ public class AxthrixUnits {
             itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
-            payloadCapacity = tilePayload * ((4 * 4) - 1);
+            payloadCapacity = tilePayload * (4 * 4 - 1);
+
+            MountSlot main = addSlot(0f, 4f, 3);
+            main.allowWalls = false;
+
+            MountSlot left = addSlot(-10f, 0f, 1);
+            left.allowTurrets = true;
+            left.allowWalls = true;
+
+            MountSlot right = addSlot(10f, 0f, 1);
+            right.allowTurrets = true;
+            right.allowWalls = true;
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2704,7 +2734,7 @@ public class AxthrixUnits {
         rahela = new MountUnitType("rahela")
         {{
 
-
+            buildSpeed = 1.5f;
             constructor = PayloadUnit::create;
             health = 16200;
             armor = 11;
@@ -2721,7 +2751,10 @@ public class AxthrixUnits {
             itemOffsetY = 6;
             lowAltitude = true;
             pickupUnits = false;
-            payloadCapacity = tilePayload * ((5 * 5) - 1);
+            addSlot(0f, 8f, 4).allowWalls = false;   // heavy
+            addSlot(-14f, 0f, 2);                      // wing
+            addSlot(14f, 0f, 2);
+            addSlot(0f, -12f, 1).allowTurrets = false;
             range = 12*8;
             engineSize = 0;
             engines = Seq.with(
@@ -2739,7 +2772,7 @@ public class AxthrixUnits {
         }};
         chavash = new MountUnitType("chavash")
         {{
-
+            buildSpeed = 1.5f;
             constructor = PayloadUnit::create;
             health = 32500;
             armor = 26;
@@ -2751,7 +2784,17 @@ public class AxthrixUnits {
             drag = 0.018f;
             flying = true;
             hitSize = 66f;
-            payloadCapacity = tilePayload * ((6 * 6) - 1);
+            payloadCapacity = tilePayload * (6 * 6 - 1);
+
+            addSlot(0f, 10f, 5).allowWalls = false;
+            addSlot(-18f, 2f, 3);
+            addSlot(18f, 2f, 3);
+            MountSlot a1 = addSlot(-12f, -14f, 2);
+            a1.allowTurrets = false;
+            a1.allowWalls = true;
+            MountSlot a2 = addSlot(12f, -14f, 2);
+            a2.allowTurrets = false;
+            a2.allowWalls = true;
             range = 12*8;
             engineSize = 0;
             lowAltitude = true;
@@ -2763,6 +2806,7 @@ public class AxthrixUnits {
         }};
         atlas = new MountUnitType("atlas")//Todo Might have weapons or abilities
         {{
+            buildSpeed = 1.5f;
             constructor = PayloadUnit::create;
             health = 65000;
             armor = 39;
@@ -2774,7 +2818,14 @@ public class AxthrixUnits {
             drag = 0.018f;
             flying = true;
             hitSize = 80f;
-            payloadCapacity = tilePayload * ((7 * 7) -1);
+            payloadCapacity = tilePayload * (7 * 7 - 1);
+
+            addSlot(0f, 12f, 6).allowWalls = false;
+            addSlot(-22f, 0f, 4);
+            addSlot(22f, 0f, 4);
+            addSlot(-16f, -16f, 2).allowTurrets = false;
+            addSlot(16f, -16f, 2).allowTurrets = false;
+            addSlot(0f, -20f, 2); // support / repair / battery
             range = 12*8;
             engineSize = 0;
             lowAltitude = true;

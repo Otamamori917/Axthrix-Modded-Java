@@ -1,535 +1,766 @@
 package axthrix.world.types.unittypes;
 
 import arc.Core;
-import arc.graphics.Blending;
+import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
 import arc.math.Mathf;
-import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
-import arc.util.Log;
-import arc.util.Scaling;
+import arc.struct.IntMap;
+import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Time;
-import arc.util.noise.Simplex;
-import axthrix.content.AxResources;
-import axthrix.world.types.block.defense.parent.AxItemTurret;
+import arc.util.Tmp;
+import axthrix.AxthrixLoader;
 import axthrix.world.types.block.storage.LiquidDeposit;
-import axthrix.world.types.block.defense.PayloadTurretType;
 import axthrix.world.util.draw.DrawIPayloadTurret;
-import mindustry.Vars;
-import mindustry.content.Liquids;
-import mindustry.entities.Puddles;
+import mindustry.content.Fx;
 import mindustry.entities.Units;
-import mindustry.entities.abilities.Ability;
 import mindustry.entities.part.DrawPart;
+import mindustry.game.EventType;
 import mindustry.gen.Building;
 import mindustry.gen.Payloadc;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
-import mindustry.world.Tile;
-import mindustry.world.blocks.defense.ForceProjector;
-import mindustry.world.blocks.defense.MendProjector;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.liquid.LiquidRouter;
 import mindustry.world.blocks.payloads.BuildPayload;
 import mindustry.world.blocks.payloads.Payload;
-import mindustry.world.blocks.units.RepairTurret;
+import mindustry.world.blocks.power.PowerBlock;
+import mindustry.world.blocks.power.PowerGenerator;
+import mindustry.world.blocks.storage.StorageBlock;
+import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawTurret;
-import arc.math.Interp;
-import arc.math.Rand;
+import mindustry.world.modules.ItemModule;
+import mindustry.world.modules.LiquidModule;
+import mindustry.world.modules.PowerModule;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
-import java.util.HashMap;
-import java.util.Objects;
-
-import static arc.input.KeyCode.mouseLeft;
-import static axthrix.AxthrixLoader.*;
 import static mindustry.Vars.*;
-import static mindustry.input.Binding.dropCargo;
 
 public class MountUnitType extends AxUnitType {
-    public MountUnitType(String name)
-    {
+
+    public Seq<MountSlot> slots = new Seq<>();
+
+    public float liquidCapacity = 160f;
+    public float liquidPickupRange = 40f;
+    public float powerCapacity = 1000f;
+    public float itemFeedPerTick = 1f;
+    public float liquidFeedPerTick = 1f;
+    public float powerFeedPerTick = 5f;
+
+    public float nonWallAbsorbRatio = 0.05f;
+    public float wallAbsorbRatio = 0.55f;
+    public float wallCoverageArc = 360f;
+
+    private static final IntMap<MountData> data = new IntMap<>();
+    private static boolean damageEventHooked = false;
+
+    public MountUnitType(String name) {
         super(name);
     }
-    //liquid
-    public HashMap<Unit, Liquid> liquidType = new HashMap<>();
-    public HashMap<Unit, Integer> liquidAmount = new HashMap<>();
-    public Integer liquidCap = 160;
-    public Integer liquidPickupRange = 40;
-    //power
-    public HashMap<Unit, Float> powTick = new HashMap<>();
-    public HashMap<Unit, Boolean> Validation = new HashMap<>();
-    public HashMap<Unit, Float> DelpeltionRate = new HashMap<>();
-    public HashMap<Unit, Boolean> hadPayloadLastFrame = new HashMap<>();
-
-    public float BaseItemDelpeltionRate = 20;
-
-    // payload
-    static final Rand rand = new Rand();
-
-    // textures
-
-    public TextureRegion liquidRegion;
-    public TextureRegion laser;
-    public TextureRegion laserEnd;
-    public TextureRegion laserTop;
-    public TextureRegion laserTopEnd;
 
     @Override
-    public void display(Unit unit, Table table){
-        table.table(t -> {
-            t.left();
-            t.add(new Image(uiIcon)).size(iconMed).scaling(Scaling.fit);
-            t.labelWrap(localizedName).left().width(190f).padLeft(5);
-        }).growX().left();
-        table.row();
-
-        table.table(bars -> {
-            bars.defaults().growX().height(20f).pad(4);
-
-            bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
-            bars.row();
-
-            bars.add(new Bar(liquidType.get(unit) != AxResources.nothingness ? liquidType.get(unit).localizedName : "Liquid", liquidType.get(unit) != null ? liquidType.get(unit).barColor() : Color.black, () -> ((float) liquidAmount.get(unit) / (liquidCap) )));
-            bars.row();
-
-            for(Ability ability : unit.abilities){
-                ability.displayBars(unit, bars);
-            }
-
-            if(payloadCapacity > 0 && unit instanceof Payloadc payload){
-                bars.add(new Bar("stat.payloadcapacity", Pal.items, () -> payload.payloadUsed() / unit.type().payloadCapacity));
-                bars.row();
-
-                var count = new float[]{-1};
-                bars.table().update(t -> {
-                    if(count[0] != payload.payloadUsed()){
-                        payload.contentInfo(t, 8 * 2, 270);
-                        count[0] = payload.payloadUsed();
-                    }
-                }).growX().left().height(0f).pad(0f);
-            }
-        }).growX();
-
-        table.row();
-    }
-
-    @Override
-    public <T extends Unit & Payloadc> void drawPayload(T unit){
-        Units.nearbyBuildings(unit.x,unit.y,liquidPickupRange, b -> {
-            if(b instanceof LiquidRouter.LiquidRouterBuild lr) {
-                if(lr.liquids.currentAmount() != 0  && lr.team() == unit.team()) {
-                    if (!Objects.equals(liquidAmount.get(unit), liquidCap) && liquidType.get(unit) == lr.liquids.current() ){
-                        Draw.z(116.0F);
-                        Draw.color(lr.liquids.current().color);
-                        float f = (Time.time / 85.0F + rand.random(1.0F)) % 1.0F;
-                        Draw.alpha(1.0F - Interp.pow5In.apply(f));
-                        Lines.stroke(1);
-                        Lines.circle(unit.x, unit.y, 1.0F + f * 5);
-                        Draw.color(lr.liquids.current().color);
-                        Drawf.laser(laser, laserEnd, lr.x, lr.y, unit.x, unit.y, 1);
-                        Draw.z(116.1F);
-                        Draw.color(lr.liquids.current().color);
-                        Drawf.laser(laserTop, laserTopEnd, lr.x, lr.y, unit.x, unit.y, 1);
-                        Draw.color();
-                    }
+    public void init() {
+        super.init();
+        if (!damageEventHooked) {
+            damageEventHooked = true;
+            Events.on(EventType.UnitDamageEvent.class, e -> {
+                if (e.bullet != null) {
+                    onUnitDamage(e.unit, e.bullet.damage, e.bullet.x, e.bullet.y);
                 }
-            } else if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
-                    if (ld.liquids.currentAmount() < ld.block.liquidCapacity && ld.team() == unit.team()) {
-                        if(ld.liquids.current() == liquidType.get(unit) || ld.liquids.current() == Liquids.water) {
-                            if (liquidAmount.get(unit) != 0){
-                                Draw.z(116.0F);
-                                Draw.color(liquidType.get(unit).color);
-                                float f = (Time.time / 85.0F + rand.random(1.0F)) % 1.0F;
-                                Draw.alpha(1.0F - Interp.pow5In.apply(f));
-                                Lines.stroke(1);
-                                Lines.circle(ld.x, ld.y, 1.0F + f * 5);
-                                Draw.color(liquidType.get(unit).color);
-                                Drawf.laser(laser, laserEnd, unit.x, unit.y, ld.x, ld.y, 1);
-                                Draw.z(116.1F);
-                                Draw.color(liquidType.get(unit).color);
-                                Drawf.laser(laserTop, laserTopEnd, unit.x, unit.y, ld.x, ld.y, 1);
-                                Draw.color();
-                            }
-                        }
-                    }
-
-            }
-        });
-        if(unit.hasPayload()){
-            Payload turret = unit.payloads().first();
-            float layer = unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit;
-            Draw.z(layer + 5);
-            if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret)
-            {
-                Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
-                turret.set(unit.x, unit.y, unit.rotation);
-                drawBuild(build, unit, layer);
-            }
-
-            else {
-                Draw.rect(turret.content().fullIcon, unit.x, unit.y, unit.rotation - 90);
-            }
-            Payload module = unit.payloads().peek();
-            if (module instanceof BuildPayload buildModule && !(buildModule.block() instanceof Turret)){
-                if (buildModule.build.block instanceof MendProjector mend) {
-                    MendProjector.MendBuild mendb = (MendProjector.MendBuild)buildModule.build;
-                    float rot = unit.rotation - mendb.rotation;
-                    module.set(unit.x, unit.y, unit.rotation);
-                    mendb.rotation += rot;
-                    float f = 1.0F - Time.time / 100.0F % 1.0F;
-                    Draw.color(mend.baseColor, mend.phaseColor, mendb.phaseHeat);
-                    Draw.alpha(mendb.heat * Mathf.absin(Time.time, 7.957747F, 1.0F) * 0.5F);
-                    Draw.rect(mend.topRegion, unit.x, unit.y,unit.rotation);
-                    Draw.alpha(1.0F);
-                    Lines.stroke((2.0F * f + 0.2F) * mendb.heat);
-                    Lines.square(unit.x, unit.y, Math.min(1.0F + (1.0F - f) * (float)mend.size * 8.0F / 2.0F, (float)(mend.size * 8) / 2.0F), unit.rotation);
-                    Draw.reset();
-                }
-                if (buildModule.build.block instanceof ForceProjector force) {
-                    ForceProjector.ForceBuild forceb = (ForceProjector.ForceBuild)buildModule.build;
-                    float rot = unit.rotation - forceb.rotation;
-                    module.set(unit.x, unit.y, unit.rotation);
-                    forceb.rotation += rot;
-                    if (forceb.buildup > 0.0F) {
-                        Draw.alpha(forceb.buildup / force.shieldHealth * 0.75F);
-                        Draw.z(31.0F);
-                        Draw.blend(Blending.additive);
-                        Draw.rect(force.topRegion, unit.x, unit.y, unit.rotation);
-                        Draw.blend();
-                        Draw.z(30.0F);
-                        Draw.reset();
-                    }
-
-                    forceb.drawShield();
-                }
-                if (buildModule.build.block instanceof RepairTurret repair) {
-                    RepairTurret.RepairPointBuild repairb = (RepairTurret.RepairPointBuild)buildModule.build;
-                    float rot = unit.rotation - repairb.rotation;
-                    module.set(unit.x, unit.y, unit.rotation);
-                    repairb.rotation += rot;
-                    Draw.z(50.0F);
-                    Drawf.shadow(repair.region, unit.x - (float)repair.size / 2.0F, unit.y - (float)repair.size / 2.0F, unit.rotation - 90.0F);
-                    Draw.rect(repair.region, unit.x, unit.y, unit.rotation);
-                    RepairTurret.drawBeam(unit.x, unit.y, unit.rotation, repair.length, repairb.id, repairb.target, repairb.team, repairb.strength, repair.pulseStroke, repair.pulseRadius, repair.beamWidth, repairb.lastEnd, repairb.offset, repair.laserColor, repair.laserTopColor, repair.laser, repair.laserEnd, repair.laserTop, repair.laserTopEnd);
-                }
-
-            }
-            Draw.z(layer);
+            });
         }
     }
 
-    @Override
-    public void update(Unit unit){
-        if (unit.dead()){
-            liquidDeath(unit);
-            powTick.remove(unit);
-            DelpeltionRate.remove(unit);
-            Validation.remove(unit);
-            liquidAmount.remove(unit);
-            liquidType.remove(unit);
-            hadPayloadLastFrame.remove(unit);
+    public MountSlot addSlot(float x, float y, int maxSize) {
+        MountSlot s = new MountSlot();
+        s.index = slots.size;
+        s.x = x;
+        s.y = y;
+        s.maxSize = maxSize;
+        slots.add(s);
+        return s;
+    }
+
+    public static MountData data(Unit unit) {
+        MountData d = data.get(unit.id);
+        if (d == null) {
+            d = new MountData();
+            data.put(unit.id, d);
         }
-        existCheck(unit);
+        if (unit.type instanceof MountUnitType mt) {
+            while (d.modules.size < mt.slots.size) {
+                d.modules.add(new ModuleState());
+            }
+        }
+        return d;
+    }
 
-        if(!hadPayloadLastFrame.containsKey(unit)) hadPayloadLastFrame.put(unit, false);
+    public static void clear(Unit unit) {
+        data.remove(unit.id);
+    }
 
+    @Override
+    public void update(Unit unit) {
+        super.update(unit);
+
+        if (unit.dead) {
+            clear(unit);
+            return;
+        }
+
+        MountData d = data(unit);
+        if (!(unit instanceof Payloadc)) return;
+
+        if (!net.client()) {
+            updateLiquidPickup(unit, d);
+            updateFeeds(unit, d);
+        }
+
+        for (int i = 0; i < slots.size; i++) {
+            ModuleState m = d.modules.get(i);
+            if (m.block == null) continue;
+
+            if (m.health <= 0f) {
+                destroyModule(unit, d, i, true);
+                continue;
+            }
+
+            Tmp.v1.set(slots.get(i).x, slots.get(i).y).rotate(unit.rotation - 90f);
+            float wx = unit.x + Tmp.v1.x;
+            float wy = unit.y + Tmp.v1.y;
+
+            if (m.build != null) {
+                ensureModules(m.build);
+                m.build.x = wx;
+                m.build.y = wy;
+                m.build.tile = emptyTile;
+                m.build.team = unit.team;
+
+                if (!net.client()) {
+                    try {
+                        m.build.update();
+                    } catch (Throwable ignored) {
+                    }
+                    harvestPower(d, m);
+                    feedPower(d, m);
+                }
+            }
+        }
+
+        if (player != null && player.unit() == unit) {
+            if (AxthrixLoader.toggleTapped()) toggleEquip(unit);
+            if (AxthrixLoader.activateTapped()) cyclePayload(unit);
+            if (AxthrixLoader.activateBackTapped()) cycleSlotOrPayloadBack(unit);
+        }
+    }
+
+    private void updateLiquidPickup(Unit unit, MountData d) {
         Units.nearbyBuildings(unit.x, unit.y, liquidPickupRange, b -> {
-            if(b instanceof LiquidRouter.LiquidRouterBuild lr) {
-                if(lr.liquids.currentAmount() != 0  && lr.team() == unit.team()) {
-                    if (liquidType.get(unit) == AxResources.nothingness && lr.liquids.current() != null){
-                        liquidType.replace(unit, lr.liquids.current());
-                    }
-                    if (!Objects.equals(liquidAmount.get(unit), liquidCap) && liquidType.get(unit) == lr.liquids.current() ) {
-                        liquidAmount.replace(unit, liquidAmount.get(unit) + 1);
-                        lr.liquids.set(lr.liquids.current(), lr.liquids.currentAmount() - 1);
-                    }
-                }
-            } else if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
-                if (ld.liquids.currentAmount() <= ld.block.liquidCapacity && ld.team() == unit.team()) {
-                    if (liquidType.get(unit) != AxResources.nothingness && liquidAmount.get(unit) == 0){
-                        liquidType.replace(unit, AxResources.nothingness);
-                    }
-                    if (liquidAmount.get(unit) > 0 && ld.liquids.currentAmount() != ld.block.liquidCapacity) {
-                        if (ld.liquids.current() == liquidType.get(unit) || ld.liquids.current() == Liquids.water){
-                            if(liquidType.get(unit) != Liquids.water){
-                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
-                                ld.liquids.set(liquidType.get(unit), ld.liquids.currentAmount() + 1);
-                            }else{
-                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
-                                ld.liquids.set(Liquids.water, ld.liquids.currentAmount() + 1);
-                            }
-                        }
-                    }
+            if (b.team != unit.team) return;
+
+            if (b instanceof LiquidRouter.LiquidRouterBuild lr) {
+                if (d.liquidAmount >= liquidCapacity - 0.001f) return;
+                Liquid liq = lr.liquids.current();
+                float amt = lr.liquids.currentAmount();
+                if (liq == null || amt <= 0f) return;
+                if (d.liquid != null && d.liquid != liq && d.liquidAmount > 0.01f) return;
+
+                float take = Math.min(1f, Math.min(amt, liquidCapacity - d.liquidAmount));
+                if (take <= 0f) return;
+                d.liquid = liq;
+                d.liquidAmount += take;
+                lr.liquids.remove(liq, take);
+                return;
+            }
+
+            if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
+                if (d.liquid == null || d.liquidAmount <= 0f) return;
+                if (ld.liquids.currentAmount() >= ld.block.liquidCapacity) return;
+                Liquid cur = ld.liquids.current();
+                if (cur != null && cur != d.liquid && ld.liquids.currentAmount() > 0.01f) return;
+
+                float room = ld.block.liquidCapacity - ld.liquids.get(d.liquid);
+                float put = Math.min(1f, Math.min(d.liquidAmount, room));
+                if (put <= 0f) return;
+                ld.liquids.add(d.liquid, put);
+                d.liquidAmount -= put;
+                if (d.liquidAmount <= 0.001f) {
+                    d.liquidAmount = 0f;
+                    d.liquid = null;
                 }
             }
         });
+    }
 
-        if (unit.stack.amount != 0) {
-            if (unit.stack.item.charge != 0 || unit.stack.item.flammability != 0) {
-                if (unit.stack.item.charge > unit.stack.item.flammability) {
-                    DelpeltionRate.replace(unit, BaseItemDelpeltionRate + BaseItemDelpeltionRate * unit.stack.item.charge);
-                    Validation.replace(unit, true);
-                } else if (unit.stack.item.flammability > unit.stack.item.charge) {
-                    DelpeltionRate.replace(unit, BaseItemDelpeltionRate + BaseItemDelpeltionRate * unit.stack.item.flammability);
-                    Validation.replace(unit, true);
+    private void updateFeeds(Unit unit, MountData d) {
+        for (int i = 0; i < slots.size; i++) {
+            ModuleState m = d.modules.get(i);
+            if (m.build == null || m.block == null) continue;
+            Building b = m.build;
+            ensureModules(b);
+
+            if (unit.stack.amount > 0 && unit.stack.item != null && b.block.consumesItem(unit.stack.item)) {
+                int moved = Math.min(unit.stack.amount, (int) itemFeedPerTick);
+                moved = Math.min(moved, b.acceptStack(unit.stack.item, moved, b));
+                if (moved > 0) {
+                    b.handleStack(unit.stack.item, moved, b);
+                    unit.stack.amount -= moved;
+                    if (unit.stack.amount <= 0) unit.clearItem();
                 }
             }
 
-            if (powTick.get(unit) >= DelpeltionRate.get(unit)) {
-                powTick.replace(unit, 0f);
-                unit.stack.amount -= 1;
+            if (b.items != null && b.block.hasItems) {
+                for (ModuleState storage : d.modules) {
+                    if (storage == m || storage.build == null || storage.build.items == null) continue;
+                    if (!(storage.block instanceof StorageBlock)
+                            && storage.block.itemCapacity <= 0) continue;
+
+                    storage.build.items.each((item, amount) -> {
+                        if (amount <= 0 || !b.block.consumesItem(item)) return;
+                        int space = b.acceptStack(item, amount, b);
+                        if (space <= 0) return;
+                        int n = Math.min(space, Math.min(amount, (int) itemFeedPerTick));
+                        if (n > 0) {
+                            storage.build.items.remove(item, n);
+                            b.handleStack(item, n, b);
+                        }
+                    });
+                }
+            }
+
+            if (d.liquid != null && d.liquidAmount > 0f && b.block.hasLiquids && b.liquids != null) {
+                float room = b.block.liquidCapacity - b.liquids.get(d.liquid);
+                float move = Math.min(liquidFeedPerTick, Math.min(d.liquidAmount, room));
+                if (move > 0f && b.acceptLiquid(b, d.liquid)) {
+                    b.handleLiquid(b, d.liquid, move);
+                    d.liquidAmount -= move;
+                    if (d.liquidAmount <= 0.001f) {
+                        d.liquidAmount = 0f;
+                        d.liquid = null;
+                    }
+                }
             }
         }
 
-        if (unit instanceof Payloadc p) {
-            if (hadPayloadLastFrame.get(unit) && !p.hasPayload()) {
-                hadPayloadLastFrame.replace(unit, false);
-            }
+//        if (unit.stack.amount > 0 && unit.stack.item != null && unit.stack.item.charge > 0f && d.power < powerCapacity) {
+//            d.power = Math.min(powerCapacity, d.power + unit.stack.item.charge * 0.15f);
+//        }
+    }
 
-            if (p.hasPayload()) {
-                hadPayloadLastFrame.replace(unit, true);
-
-                Payload turret = p.payloads().first();
-                Payload module = p.payloads().peek();
-                if (module instanceof BuildPayload buildModule && !(buildModule.block() instanceof Turret)){
-                    if(buildModule.build.block.hasLiquids && buildModule.build.liquids != null && liquidType.get(unit) != null) {
-                        if(buildModule.build.acceptLiquid(null, liquidType.get(unit)) && liquidAmount.get(unit) != 0){
-                            if (buildModule.build.liquids.currentAmount() < buildModule.build.block.liquidCapacity){
-                                buildModule.build.handleLiquid(null, liquidType.get(unit), 1);
-                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
-                            }
-                        }
-                    }
-                    if (buildModule.build instanceof MendProjector.MendBuild mend) {
-                        mend.x(unit.x);
-                        mend.y(unit.y);
-                        tickEnd(mend, unit);
-                    }
-                    if (buildModule.build instanceof ForceProjector.ForceBuild force) {
-                        force.x(unit.x);
-                        force.y(unit.y);
-                        tickEnd(force, unit);
-                    }
-                    if (buildModule.build instanceof RepairTurret.RepairPointBuild repair) {
-                        repair.x(unit.x);
-                        repair.y(unit.y);
-                        tickEnd(repair, unit);
-                    }
-                }
-
-                if (turret instanceof BuildPayload buildTurret && buildTurret.block() instanceof Turret) {
-                    Turret.TurretBuild build = (Turret.TurretBuild)buildTurret.build;
-                    build.x(unit.x);
-                    build.y(unit.y);
-                    if(build.block.hasLiquids && build.liquids != null && liquidType.get(unit) != null) {
-                        if(build.acceptLiquid(null, liquidType.get(unit)) && liquidAmount.get(unit) != 0){
-                            if (build.liquids.currentAmount() < build.block.liquidCapacity){
-                                build.handleLiquid(null, liquidType.get(unit), 1);
-                                liquidAmount.replace(unit, liquidAmount.get(unit) - 1);
-                            }
-                        }
-                    }
-
-                    if (build.block instanceof ItemTurret) {
-                        ItemTurret.ItemTurretBuild Itembuild = (ItemTurret.ItemTurretBuild) buildTurret.build;
-                        if (Itembuild.acceptItem(null, unit.item()) && unit.stack.amount != 0) {
-                            Itembuild.handleItem(null, unit.item());
-                            unit.stack.amount -= 1;
-                        }
-                        tickEnd(Itembuild, unit);
-                    } else if (build.block instanceof AxItemTurret) {
-                        AxItemTurret.AxItemTurretBuild Axitembuild = (AxItemTurret.AxItemTurretBuild) buildTurret.build;
-                        if (Axitembuild.acceptItem(null, unit.item()) && unit.stack.amount != 0) {
-                            Axitembuild.handleItem(null, unit.item());
-                            unit.stack.amount -= 1;
-                        }
-                        tickEnd(Axitembuild, unit);
-                    } else if (build.block instanceof PayloadTurretType && build.block.size * build.block.size < payloadCapacity) {
-                        Payload ammo = p.payloads().random();
-
-                        PayloadTurretType.PayloadTurretTypeBuild paybuild = (PayloadTurretType.PayloadTurretTypeBuild) buildTurret.build;
-                        if (paybuild.acceptPayload(null, ammo)) {
-                            paybuild.handlePayload(null, ammo);
-                            p.payloads().remove(ammo);
-                        }
-                        tickEnd(paybuild, unit);
-                    } else {
-                        tickEnd(build, unit);
-                    }
-                }
-            }
+    private void harvestPower(MountData d, ModuleState m) {
+        if (!(m.block instanceof PowerGenerator gen) || m.build == null) return;
+        float out = gen.powerProduction * m.build.efficiency * Time.delta;
+        if (out > 0f) {
+            d.power = Math.min(powerCapacity, d.power + out);
         }
     }
 
+    private void feedPower(MountData d, ModuleState m) {
+        if (m.build == null || m.block == null || m.block.consPower == null || m.build.power == null) return;
+        float usage = m.block.consPower.usage * Time.delta;
+        if (usage <= 0f) {
+            m.build.power.status = 1f;
+            return;
+        }
+        float take = Math.min(usage, d.power);
+        d.power -= take;
+        m.build.power.status = Mathf.clamp(take / usage);
+    }
 
-    public void tickEnd(Building build, Unit unit){
-        if (build.block.consumesPower && build.power != null) {
-            if (Validation.get(unit)) {
-                build.enabled = true;
+    public int takeItems(Unit unit, Item item, int amount) {
+        int left = amount;
+        if (unit.stack.item == item && unit.stack.amount > 0) {
+            int n = Math.min(left, unit.stack.amount);
+            unit.stack.amount -= n;
+            left -= n;
+            if (unit.stack.amount <= 0) unit.clearItem();
+        }
+        MountData d = data(unit);
+        for (ModuleState m : d.modules) {
+            if (left <= 0) break;
+            if (m.build == null || m.build.items == null) continue;
+            int n = Math.min(left, m.build.items.get(item));
+            if (n > 0) {
+                m.build.items.remove(item, n);
+                left -= n;
+            }
+        }
+        return amount - left;
+    }
+
+    public int putItems(Unit unit, Item item, int amount) {
+        int left = amount;
+        MountData d = data(unit);
+        for (ModuleState m : d.modules) {
+            if (left <= 0) break;
+            if (m.build == null || m.build.items == null) continue;
+            int n = m.build.acceptStack(item, left, m.build);
+            if (n > 0) {
+                m.build.handleStack(item, n, m.build);
+                left -= n;
+            }
+        }
+        return amount - left;
+    }
+
+    public void toggleEquip(Unit unit) {
+        if (net.client()) return;
+        doToggleEquip(unit);
+    }
+
+    private void doToggleEquip(Unit unit) {
+        if (!(unit instanceof Payloadc pay)) return;
+        MountData d = data(unit);
+        if (slots.isEmpty()) return;
+
+        int slot = Mathf.clamp(d.selectedSlot, 0, slots.size - 1);
+        ModuleState m = d.modules.get(slot);
+
+        if (m.block != null) {
+            tryUnequip(unit, slot);
+            return;
+        }
+
+        Seq<Payload> list = pay.payloads();
+        if (list.isEmpty()) return;
+        d.selectedPayload = Mathf.clamp(d.selectedPayload, 0, list.size - 1);
+        tryEquip(unit, slot, d.selectedPayload);
+    }
+
+    public void cyclePayload(Unit unit) {
+        if (!(unit instanceof Payloadc pay)) return;
+        Seq<Payload> list = pay.payloads();
+        if (list.isEmpty()) return;
+        MountData d = data(unit);
+        d.selectedPayload = (d.selectedPayload + 1) % list.size;
+    }
+
+    public void cyclePayloadBack(Unit unit) {
+        if (!(unit instanceof Payloadc pay)) return;
+        Seq<Payload> list = pay.payloads();
+        if (list.isEmpty()) return;
+        MountData d = data(unit);
+        d.selectedPayload = (d.selectedPayload - 1 + list.size) % list.size;
+    }
+
+    public void cycleSlotOrPayloadBack(Unit unit) {
+        MountData d = data(unit);
+        if (slots.size <= 1) {
+            cyclePayloadBack(unit);
+            return;
+        }
+        d.selectedSlot = (d.selectedSlot - 1 + slots.size) % slots.size;
+    }
+
+    public boolean tryEquip(Unit unit, int slotIndex, int payloadIndex) {
+        if (net.client()) return false;
+        if (!(unit instanceof Payloadc pay)) return false;
+        if (slotIndex < 0 || slotIndex >= slots.size) return false;
+
+        MountData d = data(unit);
+        ModuleState m = d.modules.get(slotIndex);
+        if (m.block != null) return false;
+
+        Seq<Payload> list = pay.payloads();
+        if (payloadIndex < 0 || payloadIndex >= list.size) return false;
+        Payload p = list.get(payloadIndex);
+        if (!(p instanceof BuildPayload bp)) return false;
+
+        Block block = bp.block();
+        if (!slots.get(slotIndex).allows(block)) return false;
+
+        list.remove(payloadIndex);
+        m.block = block;
+        m.health = block.health;
+        m.maxHealth = block.health;
+        m.build = bp.build != null ? bp.build : createModuleBuild(block, unit.team);
+        m.build.team = unit.team;
+        m.build.tile = emptyTile;
+        ensureModules(m.build);
+        return true;
+    }
+
+    public boolean tryUnequip(Unit unit, int slotIndex) {
+        if (net.client()) return false;
+        if (!(unit instanceof Payloadc pay)) return false;
+        if (slotIndex < 0 || slotIndex >= slots.size) return false;
+
+        MountData d = data(unit);
+        ModuleState m = d.modules.get(slotIndex);
+        if (m.block == null) return false;
+        if (!hasPayloadSpace(pay, m.block)) return false;
+
+        BuildPayload bp = new BuildPayload(m.block, unit.team);
+        if (m.build != null) bp.build = m.build;
+        pay.addPayload(bp);
+        clearModule(m);
+        return true;
+    }
+
+    private Building createModuleBuild(Block block, mindustry.game.Team team) {
+        Building b = block.newBuilding();
+        b.block = block;
+        b.team = team;
+        b.tile = emptyTile;
+        ensureModules(b);
+        return b;
+    }
+
+    private void ensureModules(Building b) {
+        if (b == null || b.block == null) return;
+        if (b.block.hasItems && b.items == null) b.items = new ItemModule();
+        if (b.block.hasLiquids && b.liquids == null) b.liquids = new LiquidModule();
+        if (b.block.hasPower && b.power == null) b.power = new PowerModule();
+    }
+
+    private boolean hasPayloadSpace(Payloadc p, Block block) {
+        float max = ((Unit) p).type.payloadCapacity;
+        float used = 0f;
+        for (Payload pl : p.payloads()) {
+            if (pl instanceof BuildPayload b && b.block() != null) {
+                used += b.block().size * b.block().size * tilePayload;
+            }
+        }
+        return used + block.size * block.size * tilePayload <= max;
+    }
+
+    private void destroyModule(Unit unit, MountData d, int index, boolean fx) {
+        ModuleState m = d.modules.get(index);
+        if (m.block == null) return;
+        if (fx) {
+            Tmp.v1.set(slots.get(index).x, slots.get(index).y).rotate(unit.rotation - 90f);
+            Fx.explosion.at(unit.x + Tmp.v1.x, unit.y + Tmp.v1.y);
+        }
+        clearModule(m);
+    }
+
+    private void clearModule(ModuleState m) {
+        m.block = null;
+        m.build = null;
+        m.health = 0f;
+        m.maxHealth = 0f;
+    }
+
+    public static void onUnitDamage(Unit unit, float damage, float bulletX, float bulletY) {
+        if (!(unit.type instanceof MountUnitType type)) return;
+        if (net.client() || damage <= 0.001f) return;
+
+        MountData d = data(unit);
+        float relative = Mathf.mod(Angles.angle(unit.x, unit.y, bulletX, bulletY) - unit.rotation, 360f);
+
+        for (int i = 0; i < type.slots.size; i++) {
+            ModuleState m = d.modules.get(i);
+            if (m.block == null || !(m.block instanceof Wall)) continue;
+            float facing = Angles.angle(type.slots.get(i).x, type.slots.get(i).y);
+            if (Angles.angleDist(relative, facing) > type.wallCoverageArc / 2f) continue;
+
+            float taken = Math.min(damage * type.wallAbsorbRatio, m.health);
+            m.health -= taken;
+            unit.health = Math.min(unit.maxHealth, unit.health + taken);
+            if (m.health <= 0f) type.destroyModule(unit, d, i, true);
+            return;
+        }
+
+        if (type.nonWallAbsorbRatio <= 0f) return;
+        for (int i = 0; i < type.slots.size; i++) {
+            ModuleState m = d.modules.get(i);
+            if (m.block == null || m.block instanceof Wall) continue;
+            float taken = Math.min(damage * type.nonWallAbsorbRatio, m.health);
+            m.health -= taken;
+            unit.health = Math.min(unit.maxHealth, unit.health + taken);
+            if (m.health <= 0f) type.destroyModule(unit, d, i, true);
+            break;
+        }
+    }
+
+    @Override
+    public void draw(Unit unit) {
+        super.draw(unit);
+
+        MountData d = data(unit);
+        float layer = unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit;
+
+        for (int i = 0; i < slots.size; i++) {
+            MountSlot slot = slots.get(i);
+            ModuleState m = d.modules.get(i);
+            Tmp.v1.set(slot.x, slot.y).rotate(unit.rotation - 90f);
+            float wx = unit.x + Tmp.v1.x;
+            float wy = unit.y + Tmp.v1.y;
+
+            float moduleLayer = layer + 5f + i * 3f;
+
+            if (m.block == null || m.build == null) {
+                Draw.z(moduleLayer);
+                Draw.color(Pal.gray, 0.35f);
+                Fill.square(wx, wy, 2f + slot.maxSize, unit.rotation);
+                Draw.color();
             } else {
-                build.enabled = false;
-            }
-
-            if (unit.isLocal()) {
-                if (!mobile) {
-                    if (Core.input.keyTap(dropCargo)) {
-                        build.enabled = false;
-                    }
-                } else if (Core.input.keyDown(mouseLeft)) {
-                    build.enabled = false;
-                }
-            }
-
-            if (build.power.graph != null) {
-                build.power.graph.remove(build);
-                build.power.graph = null;
-            }
-
-            powTick.replace(unit, powTick.get(unit) + 1);
-            if (amosPowerDebug){
-                Log.info("unit:" + unit + "  Tick:" + powTick.get(unit) + "  Rate:" + DelpeltionRate.get(unit) + "  Valid?:" + Validation.get(unit));
+                drawModule(unit, m, wx, wy, moduleLayer);
             }
         }
 
-        if(build.block.hasLiquids && build.liquids != null) {
-            if (liquidAmount.get(unit) == 0){
-                liquidType.replace(unit, AxResources.nothingness);
+        drawLiquidLasers(unit,d);
+    }
+
+    private void drawLiquidLasers(Unit unit, MountData d) {
+        Units.nearbyBuildings(unit.x, unit.y, liquidPickupRange, b -> {
+            if (b.team != unit.team) return;
+
+            if (b instanceof LiquidRouter.LiquidRouterBuild lr) {
+                if (d.liquidAmount >= liquidCapacity - 0.01f) return;
+                if (lr.liquids.currentAmount() <= 0f) return;
+                if (d.liquid != null && d.liquid != lr.liquids.current() && d.liquidAmount > 0.01f) return;
+                Liquid liq = lr.liquids.current();
+                Draw.z(Layer.flyingUnit + 1f);
+                Draw.color(liq.color);
+                Drawf.laser(laser, laserEnd, lr.x, lr.y, unit.x, unit.y, 0.4f);
+                Draw.z(Layer.flyingUnit + 1.1f);
+                Drawf.laser(laserTop, laserTopEnd, lr.x, lr.y, unit.x, unit.y, 0.4f);
+                Draw.color();
             }
-            if (amosLiquidDebug){
-                Log.info("unit:" + unit + "  liquid:" + liquidType.get(unit) + "  liquid amount:" + liquidAmount.get(unit));
+
+            if (b instanceof LiquidDeposit.LiquidDepositBuild ld) {
+                if (d.liquid == null || d.liquidAmount <= 0f) return;
+                if (ld.liquids.currentAmount() >= ld.block.liquidCapacity) return;
+                Draw.z(Layer.flyingUnit + 1f);
+                Draw.color(d.liquid.color);
+                Drawf.laser(laser, laserEnd, unit.x, unit.y, ld.x, ld.y, 0.4f);
+                Draw.z(Layer.flyingUnit + 1.1f);
+                Drawf.laser(laserTop, laserTopEnd, unit.x, unit.y, ld.x, ld.y, 0.4f);
+                Draw.color();
             }
+        });
+    }
+
+    private void drawModule(Unit unit, ModuleState m, float wx, float wy, float layer) {
+        ensureModules(m.build);
+        m.build.x = wx;
+        m.build.y = wy;
+        m.build.tile = emptyTile;
+        m.build.team = unit.team;
+
+        if (m.block instanceof Turret && m.build instanceof Turret.TurretBuild tb) {
+            drawBuild(tb, unit, layer);
+            return;
         }
 
-        if (!Vars.net.client()) {
-            build.update();
-        }
-        else {
-            if (build instanceof Turret.TurretBuild tb) {
-                build.update();
-                tb.reloadCounter = 0f;
-            } else {
-                build.update();
+        drawBlockRotated(m, unit, wx, wy, layer);
+    }
+
+    private void drawBlockRotated(ModuleState m, Unit unit, float wx, float wy, float layer) {
+        Block block = m.block;
+        float rot = unit.rotation - 90f;
+        float size = block.size * tilesize;
+
+        Draw.z(layer + 0.1f);
+        Drawf.shadow(block.region, wx - size / 2f, wy - size / 2f, rot);
+
+        Draw.z(layer + 0.15f);
+        Draw.rect(block.region, wx, wy, size, size, rot);
+
+        if (block.teamRegion.found()) {
+            if (block.teamRegions[unit.team.id] == block.teamRegion) {
+                Draw.color(unit.team.color);
             }
+            Draw.rect(block.teamRegions[unit.team.id], wx, wy, size, size, rot);
+            Draw.color();
+        }
+
+        if (block.variantRegions != null && block.variantRegions.length > 0) {
+            Draw.rect(block.variantRegions[Math.min(block.variantRegions.length - 1, 0)], wx, wy, size, size, rot);
         }
     }
 
-
-
-    public void existCheck(Unit unit){
-        if (!powTick.containsKey(unit)){
-            powTick.put(unit, 0f);
-        }
-        if (!liquidType.containsKey(unit)){
-            liquidType.put(unit, AxResources.nothingness);
-        }
-        if (!liquidAmount.containsKey(unit)){
-            liquidAmount.put(unit, Mathf.clamp(0,0,liquidCap));
+    public void drawBuild(Building build, Unit unit, float layer) {
+        if (!(build.block instanceof Turret turret) || !(build instanceof Turret.TurretBuild tb)) return;
+        if (!(turret.drawer instanceof DrawTurret drawer)) {
+            try { build.draw(); } catch (Throwable ignored) {
+                Draw.rect(turret.region, build.x, build.y, tb.drawrot());
+            }
+            return;
         }
 
-        if (!DelpeltionRate.containsKey(unit)){
-            DelpeltionRate.put(unit, BaseItemDelpeltionRate);
-        }else{
-            DelpeltionRate.replace(unit, BaseItemDelpeltionRate);
-        }
-
-        if (!Validation.containsKey(unit)){
-            Validation.put(unit, false);
-        }else{
-            Validation.replace(unit, false);
-        }
-    }
-
-    public void drawBuild(Building build, Unit unit, float layer){
-        Turret turret = (Turret)build.block;
-        Turret.TurretBuild tb = (Turret.TurretBuild)build;
-        DrawTurret drawer = (DrawTurret)turret.drawer;
-
-        if(drawer instanceof DrawIPayloadTurret dpt){
+        Draw.z(layer);
+        if (drawer instanceof DrawIPayloadTurret dpt) {
             Draw.rect(drawer.base, build.x, build.y, unit.rotation);
-            Draw.z(layer + 2000f);
+            Draw.z(layer + 0.05f);
             Draw.rect(dpt.cover, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, unit.rotation);
-        }else{
+        } else {
             Draw.rect(drawer.base, build.x, build.y, unit.rotation);
         }
         Draw.color();
 
-        Draw.z(layer + 4.5f);
+        Draw.z(layer + 0.1f);
+        Drawf.shadow(drawer.preview,
+                build.x + tb.recoilOffset.x - turret.elevation,
+                build.y + tb.recoilOffset.y - turret.elevation,
+                tb.drawrot());
 
-        Drawf.shadow(drawer.preview, build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
-
-        Draw.z(layer + 5);
+        Draw.z(layer + 0.2f);
         drawer.drawTurret(turret, tb);
         drawer.drawHeat(turret, tb);
 
-        if(drawer.parts.size > 0){
-            if(drawer.outline.found()){
-                Draw.z(layer + 4.99f);
+        if (drawer.parts.size > 0) {
+            if (drawer.outline.found()) {
+                Draw.z(layer + 0.15f);
                 Draw.rect(drawer.outline, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, tb.drawrot());
-                Draw.z(layer + 5);
             }
-
+            Draw.z(layer + 0.25f);
             float progress = tb.progress();
-
-            var params = DrawPart.params.set(tb.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
-
-            for(var part : drawer.parts){
-                params.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);
+            var params = DrawPart.params.set(
+                    tb.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge,
+                    tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation
+            );
+            for (var part : drawer.parts) {
+                params.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null
+                        ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);
                 part.draw(params);
             }
         }
     }
-    public void liquidDeath(Unit unit) {
-        int tx = unit.tileX();
-        int ty = unit.tileY();
-        int rad = Math.max((int)(unit.hitSize / 8.0F * 3), 1);
-        float realNoise = unit.hitSize / 5;
-
-        for(int x = -rad; x <= rad; ++x) {
-            for(int y = -rad; y <= rad; ++y) {
-                if ((float)(x * x + y * y) <= (float)(rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double)(1.0F / 5), (double)(x + tx), (double)(y + ty)) * realNoise * realNoise) {
-                    float scaling = (1.0F - Mathf.dst((float)x, (float)y) / (float)rad) * 5;
-                    Tile tile = Vars.world.tile(tx + x, ty + y);
-                    if(liquidAmount.containsKey(unit)){
-                        if (tile != null && liquidAmount.get(unit) != 0) {
-                            Puddles.deposit(tile, liquidType.get(unit), (liquidAmount.get(unit)/ (liquidAmount.get(unit) /  10)) * scaling);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
 
     @Override
-    public void draw(Unit unit){
-        super.draw(unit);
-        if (liquidAmount.containsKey(unit)){
-            if (liquidAmount.get(unit) > 0.001F) {
-                Draw.z(Layer.flyingUnitLow + 1f);
-                Draw.color(liquidType.get(unit).color, (float) liquidAmount.get(unit) / liquidCap * liquidType.get(unit).color.a);
-                Draw.rect(liquidRegion, unit.x, unit.y, unit.rotation - 90);
-                Draw.color();
+    public void display(Unit unit, Table table) {
+        super.display(unit, table);
+        MountData d = data(unit);
+
+        table.table(bars -> {
+            bars.defaults().growX().height(18f).pad(2f);
+            bars.add(new Bar(
+                    () -> d.liquid != null ? d.liquid.localizedName : "Liquid",
+                    () -> d.liquid != null ? d.liquid.barColor() : Color.darkGray,
+                    () -> liquidCapacity <= 0f ? 0f : data(unit).liquidAmount / liquidCapacity
+            )).row();
+            bars.add(new Bar("Power", Pal.powerBar, () -> powerCapacity <= 0f ? 0f : data(unit).power / powerCapacity)).row();
+            for (int i = 0; i < slots.size; i++) {
+                final int idx = i;
+                bars.add(new Bar(
+                        () -> {
+                            ModuleState m = data(unit).modules.get(idx);
+                            return m.block != null ? m.block.localizedName : "Slot " + (idx + 1);
+                        },
+                        () -> data(unit).modules.get(idx).block == null ? Pal.gray : Pal.bar,
+                        () -> {
+                            ModuleState m = data(unit).modules.get(idx);
+                            return m.block == null || m.maxHealth <= 0f ? 0f : m.health / m.maxHealth;
+                        }
+                )).row();
             }
-            Draw.reset();
-        }
+        }).growX();
+        table.row();
     }
+
+    public TextureRegion laser, laserEnd, laserTop, laserTopEnd;
 
     @Override
     public void load() {
-        liquidRegion = Core.atlas.find(name + "-liquid", name);
-        laser = Core.atlas.find(name + "-laser", "laser");
-        laserEnd = Core.atlas.find(name + "-laser-end", "laser-end");
-        laserTop = Core.atlas.find(name + "-laser-top", "laser-top");
-        laserTopEnd = Core.atlas.find(name + "-laser-top-end", "laser-top-end");
         super.load();
+        laser = Core.atlas.find("laser");
+        laserEnd = Core.atlas.find("laser-end");
+        laserTop = Core.atlas.find("laser-top");
+        laserTopEnd = Core.atlas.find("laser-top-end");
+    }
+
+    public static void writeSaveData(DataOutput stream) throws IOException {
+        stream.writeInt(data.size);
+        for (IntMap.Entry<MountData> e : data) {
+            stream.writeInt(e.key);
+            MountData d = e.value;
+            stream.writeFloat(d.power);
+            stream.writeFloat(d.liquidAmount);
+            stream.writeInt(d.liquid == null ? -1 : d.liquid.id);
+            stream.writeInt(d.selectedSlot);
+            stream.writeInt(d.selectedPayload);
+            stream.writeInt(d.modules.size);
+            for (ModuleState m : d.modules) {
+                stream.writeInt(m.block == null ? -1 : m.block.id);
+                stream.writeFloat(m.health);
+                stream.writeFloat(m.maxHealth);
+            }
+        }
+    }
+
+    public static void readSaveData(DataInput stream) throws IOException {
+        data.clear();
+        int n = stream.readInt();
+        for (int i = 0; i < n; i++) {
+            int id = stream.readInt();
+            MountData d = new MountData();
+            d.power = stream.readFloat();
+            d.liquidAmount = stream.readFloat();
+            int lid = stream.readInt();
+            d.liquid = lid < 0 ? null : content.liquid(lid);
+            d.selectedSlot = stream.readInt();
+            d.selectedPayload = stream.readInt();
+            int ms = stream.readInt();
+            for (int j = 0; j < ms; j++) {
+                ModuleState m = new ModuleState();
+                int bid = stream.readInt();
+                m.health = stream.readFloat();
+                m.maxHealth = stream.readFloat();
+                if (bid >= 0) {
+                    m.block = content.block(bid);
+                    if (m.block != null) {
+                        m.build = m.block.newBuilding();
+                        m.build.block = m.block;
+                        m.build.tile = emptyTile;
+                        if (m.block.hasItems) m.build.items = new ItemModule();
+                        if (m.block.hasLiquids) m.build.liquids = new LiquidModule();
+                        if (m.block.hasPower) m.build.power = new PowerModule();
+                    }
+                }
+                d.modules.add(m);
+            }
+            data.put(id, d);
+        }
+    }
+
+    public static class MountSlot {
+        public int index;
+        public float x, y;
+        public int maxSize = 1;
+        public boolean allowTurrets = true;
+        public boolean allowWalls = true;
+        public boolean allowSupport = true;
+        public boolean allowProduction = false;
+
+        public boolean allows(Block block) {
+            if (block == null || block.size > maxSize) return false;
+            if (block instanceof Turret) return allowTurrets;
+            if (block instanceof Wall) return allowWalls;
+            if (block instanceof PowerBlock) return allowSupport;
+            return allowProduction || allowSupport;
+        }
+    }
+
+    public static class ModuleState {
+        public @Nullable Block block;
+        public @Nullable Building build;
+        public float health;
+        public float maxHealth;
+    }
+
+    public static class MountData {
+        public Seq<ModuleState> modules = new Seq<>();
+        public float power;
+        public float liquidAmount;
+        public @Nullable Liquid liquid;
+        public int selectedSlot;
+        public int selectedPayload;
     }
 }

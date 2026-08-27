@@ -93,6 +93,21 @@ public class PayloadCrafterAbility extends Ability {
         lastCraft.put(unit.id, sorted.get(idx));
     }
 
+    public void cycleCraftBack(Unit unit) {
+        if (unit == null) return;
+        if (getSelectedCraft(unit) != null) return;
+
+        Seq<UnlockableContent> sorted = getSortedCraftOptions();
+        if (sorted.isEmpty()) return;
+
+        UnlockableContent cur = lastCraft.get(unit.id);
+        int idx = cur == null ? 0 : sorted.indexOf(cur);
+        if (idx < 0) idx = 0;
+        else idx = (idx - 1 + sorted.size) % sorted.size;
+
+        lastCraft.put(unit.id, sorted.get(idx));
+    }
+
     public void toggleCrafting(Unit unit) {
         if (unit == null) return;
 
@@ -321,12 +336,10 @@ public class PayloadCrafterAbility extends Ability {
 
     @Override
     public void update(Unit unit) {
-        if ((player != null && player.unit() == unit) && !net.client()) {
+        if (player != null && player.unit() == unit) {
             if (AxthrixLoader.toggleTapped()) toggleCrafting(unit);
             if (AxthrixLoader.activateTapped()) cycleCraft(unit);
-        } else if ((player != null && player.unit() == unit) && net.client()) {
-            if (AxthrixLoader.toggleTapped()) toggleCrafting(unit);
-            if (AxthrixLoader.activateTapped()) cycleCraft(unit);
+            if (AxthrixLoader.activateBackTapped()) cycleCraftBack(unit);
         }
 
         UnlockableContent selected = getSelectedCraft(unit);
